@@ -1,0 +1,307 @@
+/* ================================
+   📘 프로젝트 페이지 스타일
+================================ */
+
+/* 페이지 컨테이너 */
+.project-page {
+  padding: 20px;
+  background: #f4f6f8;
+  color: #1b263b;
+}
+
+/* 제목 */
+.project-page h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #1b263b;
+}
+
+/* ================================
+   ✅ 프로젝트 목록 테이블
+================================ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: center;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+table th,
+table td {
+  border: 1px solid #d1d5db;
+  padding: 8px 10px;
+}
+
+table th {
+  background: #f4f6f8;
+  font-weight: 600;
+}
+
+table td {
+  color: #333;
+}
+
+table td button {
+  margin: 0 3px;
+}
+
+/* ================================
+   ✅ 모달 (등록/조회)
+================================ */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 95%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.close {
+  float: right;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.modal h2 {
+  margin-top: 0;
+  color: #1b263b;
+  font-size: 20px;
+}
+
+/* 모달 내부 폼 */
+.form-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.form-group label {
+  width: 100px;
+  font-weight: 600;
+}
+
+.form-group input[type='date'] {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* ================================
+   ✅ 일정 등록 테이블 (plan-table)
+================================ */
+table.plan-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: #fff;
+}
+
+table.plan-table th,
+table.plan-table td {
+  border: 1px solid #999;
+  padding: 6px 8px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.plan-table input[type='date'] {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 3px;
+  width: 90%;
+}
+
+.plan-table td.sub-cell {
+  white-space: normal;
+}
+
+/* ================================
+   ✅ 일정 조회용 테이블 (plan-table-view)
+================================ */
+.plan-table-view {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.plan-table-view th,
+.plan-table-view td {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.plan-table-view .process-header,
+.plan-table-view .detail-cell,
+.plan-table-view .sub-cell,
+.plan-table-view .detail-merged {
+  text-align: center;
+  padding: 6px 10px;
+}
+
+.plan-table-view .col-process {
+  width: 120px;
+}
+
+.plan-table-view .col-detail {
+  width: 140px;
+}
+
+.plan-table-view .col-sub {
+  width: 90px;
+}
+
+.plan-table-view .col-week {
+  width: 64px;
+}
+
+.plan-table-view .week-header,
+.plan-table-view .week-cell {
+  width: 64px;
+  min-width: 64px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plan-table-view .week-cell {
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+  padding: 6px 6px;
+}
+
+.plan-table-view .month-header {
+  height: 36px;
+  background: #eef2f5;
+  font-weight: 600;
+}
+
+.plan-table-view .week-header {
+  height: 32px;
+  background: #f5f7fa;
+  font-weight: 500;
+}
+
+.plan-table-view .process-title {
+  background: #eef2f5;
+  font-weight: 600;
+}
+
+.plan-table-view .process-header {
+  background: #f5f7fa;
+  font-weight: 600;
+}
+
+.plan-table-view .week-cell {
+  height: 36px;
+}
+
+/* ================================
+   ✅ 버튼 색상 (페이지 전용)
+================================ */
+
+/* 파란색 (등록 버튼 등) */
+button.open-plan-modal {
+  background-color: #2563eb;
+  border: 1px solid #1e40af;
+  color: #fff;
+}
+button.open-plan-modal:hover {
+  background-color: #1e3a8a;
+}
+
+/* 초록색 (조회 버튼 등) */
+button.open-view-modal {
+  background-color: #16a34a;
+  border: 1px solid #15803d;
+  color: #fff;
+}
+button.open-view-modal:hover {
+  background-color: #166534;
+}
+
+/* 빨간색 (삭제 버튼 등) */
+button.delete-project {
+  background-color: #dc2626;
+  border: 1px solid #b91c1c;
+  color: #fff;
+}
+button.delete-project:hover {
+  background-color: #991b1b;
+}
+
+/* 회색 계열 (보조 버튼, 예: "기간 적용") */
+button.secondary {
+  background-color: #e5e7eb;
+  color: #1b263b;
+  border: 1px solid #cbd5e1;
+}
+button.secondary:hover {
+  background-color: #d1d5db;
+}
+
+/* 기본 남색 버튼 (전역 덮어쓰기 보장) */
+button.primary {
+  background-color: #1b263b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+button.primary:hover {
+  background-color: #34495e;
+}
+
+/* ================================
+   ✅ 반응형 / 가독성
+================================ */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .form-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-group label {
+    margin-bottom: 4px;
+  }
+}
