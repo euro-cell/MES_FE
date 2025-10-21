@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import '../styles/dashboard.css';
+import '../../styles/dashboard.css';
 
 interface Project {
   id: number;
