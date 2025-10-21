@@ -2,22 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { buildScheduleTable } from './processUtils';
 import { exportHtmlTableToExcel } from './exportExcel';
 
-export default function ProjectView({ project, onClose }: { project: any; onClose: () => void }) {
+export default function ProductionView({ production, onClose }: { production: any; onClose: () => void }) {
   const [html, setHtml] = useState('<p>📡 데이터를 불러오는 중...</p>');
 
   useEffect(() => {
-    fetch(`http://192.168.0.22:8080/projects/${project.id}/plan/search`)
+    fetch(`http://192.168.0.22:8080/production/${production.id}/plan/search`)
       .then(res => res.json())
       .then(data => {
-        console.log('🚀 ~ data:', data);
         if (!data.length) return setHtml('<p>등록된 일정이 없습니다.</p>');
         setHtml(buildScheduleTable(data[0]).html);
       })
       .catch(() => setHtml('<p style="color:red;">조회 실패</p>'));
-  }, [project.id]);
+  }, [production.id]);
 
   const handleExportExcel = () => {
-    exportHtmlTableToExcel(html, `${project.name}_schedule`);
+    exportHtmlTableToExcel(html, `${production.name}_schedule`);
   };
 
   return (
@@ -26,7 +25,7 @@ export default function ProjectView({ project, onClose }: { project: any; onClos
         <span className='close' onClick={onClose}>
           &times;
         </span>
-        <h2>{project.name} 일정 조회</h2>
+        <h2>{production.name} 일정 조회</h2>
 
         <button
           onClick={handleExportExcel}

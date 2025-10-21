@@ -3,7 +3,7 @@ import { startOfMonth, endOfMonth, eachWeekOfInterval, addMonths } from 'date-fn
 import { PROCESS_CONFIG, getProcessRowSpan, parseISODate } from './processUtils';
 import type { WeekData } from './processUtils';
 
-export default function ProjectRegister({ project, onClose }: { project: any; onClose: () => void }) {
+export default function ProductionRegister({ production, onClose }: { production: any; onClose: () => void }) {
   const [form, setForm] = useState({ startDate: '', endDate: '' });
   const [tableHtml, setTableHtml] = useState('');
 
@@ -104,7 +104,7 @@ export default function ProjectRegister({ project, onClose }: { project: any; on
       if (field && (start || end)) payload[field] = `${start}${end ? `~${end}` : ''}`;
     });
 
-    await fetch(`http://192.168.0.22:8080/projects/${project.id}/plan/save`, {
+    await fetch(`http://192.168.0.22:8080/production/${production.id}/plan/save`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -120,7 +120,7 @@ export default function ProjectRegister({ project, onClose }: { project: any; on
         <span className='close' onClick={onClose}>
           &times;
         </span>
-        <h2>{project.name} 일정 등록</h2>
+        <h2>{production.name} 일정 등록</h2>
 
         <form onSubmit={handleSubmit}>
           <div className='form-group'>

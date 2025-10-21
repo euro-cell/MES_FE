@@ -69,7 +69,7 @@
 }
 
 /* ================================
-   ✅ 프로젝트 목록 테이블
+   ✅ 생산계획 목록 테이블
 ================================ */
 .table-list {
   width: 100%;
@@ -140,11 +140,11 @@ button.open-view-modal:hover {
 }
 
 /* 빨간색 (삭제) */
-button.delete-project {
+button.delete-production {
   background-color: #dc2626;
   border: 1px solid #b91c1c;
 }
-button.delete-project:hover {
+button.delete-production:hover {
   background-color: #991b1b;
 }
 

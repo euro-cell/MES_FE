@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface Project {
+interface Production {
   id: number;
   name: string;
   company: string;
@@ -13,19 +13,19 @@ interface Project {
 }
 
 interface Props {
-  projects: Project[];
-  onRegister: (project: Project) => void;
-  onView: (project: Project) => void;
+  productions: Production[];
+  onRegister: (production: Production) => void;
+  onView: (production: Production) => void;
   onDelete: (id: number, name: string) => void;
 }
 
-export default function ProjectTable({ projects, onRegister, onView, onDelete }: Props) {
+export default function ProductionTable({ productions, onRegister, onView, onDelete }: Props) {
   return (
     <table className='table-list'>
       <thead>
         <tr>
           <th>ID</th>
-          <th>프로젝트명</th>
+          <th>생산계획명</th>
           <th>회사</th>
           <th>유형</th>
           <th>년도</th>
@@ -37,7 +37,7 @@ export default function ProjectTable({ projects, onRegister, onView, onDelete }:
         </tr>
       </thead>
       <tbody>
-        {projects.map(p => (
+        {productions.map(p => (
           <tr key={p.id}>
             <td>{p.id}</td>
             <td>{p.name}</td>
@@ -49,15 +49,9 @@ export default function ProjectTable({ projects, onRegister, onView, onDelete }:
             <td>{p.batteryType}</td>
             <td>{p.capacity}</td>
             <td>
-              <button className='open-plan-modal' onClick={() => onRegister(p)}>
-                등록
-              </button>
-              <button className='open-view-modal' onClick={() => onView(p)}>
-                조회
-              </button>
-              <button className='delete-project' onClick={() => onDelete(p.id, p.name)}>
-                삭제
-              </button>
+              <button onClick={() => onRegister(p)}>등록</button>
+              <button onClick={() => onView(p)}>조회</button>
+              <button onClick={() => onDelete(p.id, p.name)}>삭제</button>
             </td>
           </tr>
         ))}

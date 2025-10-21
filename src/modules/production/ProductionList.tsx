@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import ProjectTable from './ProductionTable';
-import ProjectRegister from './ProductionRegister';
-import ProjectView from './ProductionView';
-import '../../styles/project.css';
+import ProductionTable from './ProductionTable';
+import ProductionRegister from './ProductionRegister';
+import ProductionView from './ProductionView';
+import '../../styles/production.css'; // ✅ 파일명 변경
 
-interface Project {
+interface Production {
   id: number;
   name: string;
   company: string;
@@ -16,56 +16,56 @@ interface Project {
   capacity: number;
 }
 
-export default function Projects() {
-  const [projects, setProjects] = useState<Project[]>([]);
+export default function ProductionList() {
+  const [productions, setProductions] = useState<Production[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedProduction, setSelectedProduction] = useState<Production | null>(null);
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
 
-  // ✅ 프로젝트 목록 로드
+  // ✅ 생산계획 목록 로드
   useEffect(() => {
-    fetch('http://192.168.0.22:8080/project')
+    fetch('http://192.168.0.22:8080/production') // ✅ 엔드포인트 수정 (백엔드에 맞게)
       .then(res => res.json())
-      .then(setProjects)
-      .catch(() => setProjects([]))
+      .then(setProductions)
+      .catch(() => setProductions([]))
       .finally(() => setLoading(false));
   }, []);
 
   // ✅ 삭제 기능
   const handleDelete = async (id: number, name: string) => {
-    if (!window.confirm(`${name} 프로젝트를 삭제하시겠습니까?`)) return;
-    await fetch(`http://192.168.0.22:8080/project/${id}`, { method: 'DELETE' });
-    setProjects(prev => prev.filter(p => p.id !== id));
+    if (!window.confirm(`${name} 생산계획을 삭제하시겠습니까?`)) return;
+    await fetch(`http://192.168.0.22:8080/production/${id}`, { method: 'DELETE' });
+    setProductions(prev => prev.filter(p => p.id !== id));
   };
 
   return (
-    <div className='project-page'>
-      <h1>프로젝트 관리</h1>
+    <div className='production-page'>
+      <h1>생산계획 관리</h1>
 
       {loading ? (
         <p>📡 로딩 중...</p>
       ) : (
-        <ProjectTable
-          projects={projects}
-          onRegister={project => {
-            setSelectedProject(project);
+        <ProductionTable
+          productions={productions}
+          onRegister={production => {
+            setSelectedProduction(production);
             setShowPlanModal(true);
           }}
-          onView={project => {
-            setSelectedProject(project);
+          onView={production => {
+            setSelectedProduction(production);
             setShowViewModal(true);
           }}
           onDelete={handleDelete}
         />
       )}
 
-      {showPlanModal && selectedProject && (
-        <ProjectRegister project={selectedProject} onClose={() => setShowPlanModal(false)} />
+      {showPlanModal && selectedProduction && (
+        <ProductionRegister production={selectedProduction} onClose={() => setShowPlanModal(false)} />
       )}
 
-      {showViewModal && selectedProject && (
-        <ProjectView project={selectedProject} onClose={() => setShowViewModal(false)} />
+      {showViewModal && selectedProduction && (
+        <ProductionView production={selectedProduction} onClose={() => setShowViewModal(false)} />
       )}
     </div>
   );
