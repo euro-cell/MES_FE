@@ -2,54 +2,87 @@
   로그인 / 회원가입 전용
 ======================== */
 .auth-page {
+  position: fixed; /* ✅ BaseLayout 영향 완전 제거 */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   background: #f4f6f8;
-  flex-direction: column;
+  z-index: 1000;
 }
 
-/* 박스 */
+/* 로그인 박스 */
 .auth-container {
-  width: 360px;
-  background: white;
+  width: 340px;
+  background: #fff;
   border-radius: 12px;
-  padding: 40px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 40px 35px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-h2 {
-  text-align: center;
+/* 제목 */
+.auth-container h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1b263b;
   margin-bottom: 25px;
 }
 
-form {
+/* 입력 폼 */
+.auth-container form {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-input {
-  padding: 10px;
+/* 입력창 */
+.auth-container input {
+  padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  font-size: 14px;
 }
 
-button {
+/* 로그인 버튼 */
+.auth-container button {
   background: #1b263b;
   color: white;
   padding: 10px;
   border: none;
   border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-button:hover {
-  background: #34495e;
+.auth-container button:hover {
+  background: #0f1a2c;
 }
 
-.link {
+/* 회원가입 링크 */
+.auth-container .link {
   text-align: center;
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 14px;
+}
+
+.auth-container .link a {
+  color: #1b263b;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-container .link a:hover {
+  text-decoration: underline;
+}
+
+/* 에러 메세지 */
+.error-text {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 4px;
 }

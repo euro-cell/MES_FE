@@ -4,6 +4,17 @@ import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects/Projects';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import { useAuth } from './hooks/useAuth';
+import type { ReactElement } from 'react';
+
+function ProtectedRoute({ children }: { children: ReactElement }) {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) return <div>로딩 중...</div>;
+  if (!isAuthenticated) return <Navigate to='/login' replace />;
+
+  return children;
+}
 
 function App() {
   return (
@@ -12,31 +23,37 @@ function App() {
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
 
-      {/* 나머지는 공통 BaseLayout으로 감싸기 */}
+      {/* 보호된 라우트 (로그인 필요) */}
       <Route
         path='/'
         element={
-          <BaseLayout>
-            <Dashboard />
-          </BaseLayout>
+          <ProtectedRoute>
+            <BaseLayout>
+              <Dashboard />
+            </BaseLayout>
+          </ProtectedRoute>
         }
       />
 
       <Route
         path='/dashboard'
         element={
-          <BaseLayout>
-            <Dashboard />
-          </BaseLayout>
+          <ProtectedRoute>
+            <BaseLayout>
+              <Dashboard />
+            </BaseLayout>
+          </ProtectedRoute>
         }
       />
 
       <Route
         path='/projects'
         element={
-          <BaseLayout>
-            <Projects />
-          </BaseLayout>
+          <ProtectedRoute>
+            <BaseLayout>
+              <Projects />
+            </BaseLayout>
+          </ProtectedRoute>
         }
       />
 
