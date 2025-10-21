@@ -35,7 +35,7 @@ export default function DashboardContent() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:8080/project');
+        const res = await fetch('http://192.168.0.22:8080/project');
         const data = await res.json();
         setProjects(data);
       } catch (err) {
@@ -51,7 +51,7 @@ export default function DashboardContent() {
       try {
         const results = await Promise.all(
           projects.map(async p => {
-            const res = await fetch(`http://127.0.0.1:8080/projects/${p.id}/plan/search`);
+            const res = await fetch(`http://192.168.0.22:8080/projects/${p.id}/plan/search`);
             if (!res.ok) return { project: p, plan: null };
             const plans = await res.json();
             const plan = Array.isArray(plans) && plans.length ? plans[plans.length - 1] : null;
@@ -190,7 +190,7 @@ export default function DashboardContent() {
         {/* 프로젝트 등록 */}
         <div className='search box'>
           <h3>프로젝트 등록</h3>
-          <form method='POST' action='http://127.0.0.1:8080/project/create' className='project-form inline-form'>
+          <form method='POST' action='http://192.168.0.22:8080/project/create' className='project-form inline-form'>
             <div className='form-row'>
               <label>회사 약어</label>
               <input type='text' name='company' placeholder='예: NA' />
