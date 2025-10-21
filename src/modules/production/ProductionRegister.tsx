@@ -104,7 +104,7 @@ export default function ProjectRegister({ project, onClose }: { project: any; on
       if (field && (start || end)) payload[field] = `${start}${end ? `~${end}` : ''}`;
     });
 
-    await fetch(`http://127.0.0.1:8080/projects/${project.id}/plan/save`, {
+    await fetch(`http://192.168.0.22:8080/projects/${project.id}/plan/save`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

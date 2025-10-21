@@ -6,7 +6,7 @@ export default function ProjectView({ project, onClose }: { project: any; onClos
   const [html, setHtml] = useState('<p>📡 데이터를 불러오는 중...</p>');
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8080/projects/${project.id}/plan/search`)
+    fetch(`http://192.168.0.22:8080/projects/${project.id}/plan/search`)
       .then(res => res.json())
       .then(data => {
         console.log('🚀 ~ data:', data);

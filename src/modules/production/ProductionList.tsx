@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import ProjectTable from './ProjectTable';
-import ProjectRegister from './ProjectRegister';
-import ProjectView from './ProjectView';
+import ProjectTable from './ProductionTable';
+import ProjectRegister from './ProductionRegister';
+import ProjectView from './ProductionView';
 import '../../styles/project.css';
 
 interface Project {
@@ -25,7 +25,7 @@ export default function Projects() {
 
   // ✅ 프로젝트 목록 로드
   useEffect(() => {
-    fetch('http://127.0.0.1:8080/project')
+    fetch('http://192.168.0.22:8080/project')
       .then(res => res.json())
       .then(setProjects)
       .catch(() => setProjects([]))
@@ -35,7 +35,7 @@ export default function Projects() {
   // ✅ 삭제 기능
   const handleDelete = async (id: number, name: string) => {
     if (!window.confirm(`${name} 프로젝트를 삭제하시겠습니까?`)) return;
-    await fetch(`http://127.0.0.1:8080/project/${id}`, { method: 'DELETE' });
+    await fetch(`http://192.168.0.22:8080/project/${id}`, { method: 'DELETE' });
     setProjects(prev => prev.filter(p => p.id !== id));
   };
 
