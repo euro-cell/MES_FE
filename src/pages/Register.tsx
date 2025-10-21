@@ -1,20 +1,81 @@
 import '../styles/auth.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import axios from 'axios';
 
 export default function Register() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    employeeNumber: '',
+    name: '',
+    password: '',
+  });
+  const [error, setError] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!form.employeeNumber || !form.name || !form.password) {
+      setError('모든 필드를 입력해주세요.');
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        'http://192.168.0.22:8080/auth/register',
+        {
+          employeeNumber: form.employeeNumber,
+          name: form.name,
+          password: form.password,
+        },
+        { withCredentials: true }
+      );
+
+      if (res.status === 200 || res.status === 201) {
+        alert('회원가입이 완료되었습니다. 로그인해주세요.');
+        navigate('/login');
+      }
+    } catch (err: any) {
+      console.error('회원가입 실패:', err);
+      setError('회원가입 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <div className='auth-page'>
       <div className='auth-container'>
-        <h2>회원가입</h2>
-        <form>
-          <input type='text' placeholder='아이디' />
-          <input type='password' placeholder='비밀번호' />
-          <input type='password' placeholder='비밀번호 확인' />
-          <button type='submit'>가입하기</button>
+        <h2>유로셀 MES 회원가입</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type='text'
+            name='employeeNumber'
+            placeholder='사번'
+            value={form.employeeNumber}
+            onChange={handleChange}
+            required
+          />
+          <input type='text' name='name' placeholder='이름' value={form.name} onChange={handleChange} required />
+          <input
+            type='password'
+            name='password'
+            placeholder='비밀번호'
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
+
+          {error && <p className='error-text'>{error}</p>}
+          <button type='submit'>회원가입</button>
         </form>
-        <div className='link'>
-          <Link to='/login'>로그인으로 돌아가기</Link>
-        </div>
+
+        <p className='link'>
+          이미 계정이 있으신가요? <Link to='/login'>로그인</Link>
+        </p>
       </div>
     </div>
   );
