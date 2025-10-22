@@ -32,6 +32,7 @@ const Topbar: React.FC = () => {
     '/material': '자재관리',
     '/quality': '품질관리',
     '/status': '설비현황',
+    '/permission': '메뉴접근관리',
   };
 
   const currentPath = Object.keys(pathTitleMap).find(key => location.pathname.startsWith(key));

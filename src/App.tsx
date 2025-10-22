@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import { useAuth } from './hooks/useAuth';
 import type { ReactElement } from 'react';
 import User from './modules/users';
+import Permission from './modules/permission';
 
 function ProtectedRoute({ children }: { children: ReactElement }) {
   const { isAuthenticated, loading } = useAuth();
@@ -64,6 +65,17 @@ function App() {
           <ProtectedRoute>
             <BaseLayout>
               <User />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/permission'
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <Permission />
             </BaseLayout>
           </ProtectedRoute>
         }
