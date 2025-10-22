@@ -18,14 +18,22 @@ export default function Login() {
     try {
       const res = await axios.post(`${API_BASE}/auth/login`, { employeeNumber, password }, { withCredentials: true });
 
-      // ✅ 백엔드가 200 또는 201을 보낼 수 있으므로 둘 다 허용
       if (res.status === 200 || res.status === 201) {
         navigate('/dashboard', { replace: true });
       } else {
         console.warn('로그인 응답 상태:', res.status);
       }
     } catch (err: any) {
-      setError('사번 또는 비밀번호가 올바르지 않습니다.');
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+
+      if (status === 401) {
+        setError(message || '사번 또는 비밀번호가 올바르지 않습니다.');
+      } else if (status === 403) {
+        setError(message || '현재 계정은 활성화되지 않았습니다. 관리자 승인이 필요합니다.');
+      } else {
+        setError('로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      }
       console.error('로그인 실패:', err);
     }
   };
