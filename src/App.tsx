@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import BaseLayout from './layouts/BaseLayout';
 import Dashboard from './modules/dashboard/Dashboard';
-import Projects from './modules/production/ProductionList';
+import Production from './modules/production/ProductionList';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { useAuth } from './hooks/useAuth';
@@ -47,11 +47,11 @@ function App() {
       />
 
       <Route
-        path='/projects'
+        path='/production'
         element={
           <ProtectedRoute>
             <BaseLayout>
-              <Projects />
+              <Production />
             </BaseLayout>
           </ProtectedRoute>
         }
