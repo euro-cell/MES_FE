@@ -66,7 +66,7 @@ export default function UserList() {
   return (
     <div className='user-list-container'>
       <div className='user-list-header'>
-        <h2>👥 인원 관리</h2>
+        <h2>👥 인원 전체 리스트</h2>
         <button className='btn-primary' onClick={() => setShowForm(true)}>
           + 인원 추가
         </button>

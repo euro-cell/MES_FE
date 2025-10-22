@@ -15,17 +15,17 @@ const Sidebar: React.FC = () => {
       <ul>
         <li onClick={() => navigate('/dashboard')}>대시보드</li>
         <li onClick={() => navigate('/production')}>생산계획</li>
-
-        {/* 구현 중 */}
         <li onClick={() => navigate('/users')}>인원관리</li>
 
-        {/* 미구현 메뉴 */}
+        {/*                     미구현 메뉴                     */}
+        <li>----------------</li>
         <li onClick={() => handlePending('???')}>???</li>
         <li onClick={() => handlePending('자재관리')}>자재관리</li>
         <li onClick={() => handlePending('공정관리')}>공정관리</li>
         <li onClick={() => handlePending('품질관리')}>품질관리</li>
         <li onClick={() => handlePending('공정현황')}>공정현황</li>
         <li onClick={() => handlePending('메뉴접근관리')}>메뉴접근관리</li>
+        {/*                     미구현 메뉴                     */}
       </ul>
     </aside>
   );
