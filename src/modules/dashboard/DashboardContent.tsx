@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import '../../styles/dashboard.css';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 interface Project {
   id: number;
@@ -14,6 +17,8 @@ interface ProjectPlan {
 }
 
 export default function DashboardContent() {
+  const navigate = useNavigate();
+
   const [projects, setProjects] = useState<Project[]>([]);
   const [plans, setPlans] = useState<{ project: Project; plan: ProjectPlan | null }[]>([]);
   const [chart, setChart] = useState<Chart | null>(null);
@@ -21,6 +26,17 @@ export default function DashboardContent() {
     electrode: '-',
     assembly: '-',
     formation: '-',
+  });
+
+  // 🔹 등록 폼 상태
+  const [form, setForm] = useState({
+    company: '',
+    mode: '',
+    year: 2025,
+    month: 1,
+    round: 1,
+    batteryType: '',
+    capacity: '',
   });
 
   // 🔹 샘플 공정 데이터
@@ -31,17 +47,56 @@ export default function DashboardContent() {
     'D 프로젝트': { 전극: 60, 조립: 30, 화성: 40 },
   };
 
+  // ✅ 입력값 변경 핸들러
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  // ✅ 프로젝트 등록 핸들러
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch(`${API_BASE}/production`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) throw new Error('등록 실패');
+      alert('프로젝트 등록 완료 ✅');
+
+      // ✅ 등록 후 목록 새로고침
+      await fetchProjects();
+      setForm({
+        company: '',
+        mode: '',
+        year: 2025,
+        month: 1,
+        round: 1,
+        batteryType: '',
+        capacity: '',
+      });
+    } catch (err) {
+      console.error('등록 실패:', err);
+      alert('등록 중 오류가 발생했습니다.');
+    }
+  };
+
   // ✅ 프로젝트 목록 불러오기
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/production`, { credentials: 'include' });
+      const data = await res.json();
+      setProjects(data);
+    } catch (err) {
+      console.error('프로젝트 목록 불러오기 실패:', err);
+    }
+  };
+
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await fetch('http://192.168.0.22:8080/project');
-        const data = await res.json();
-        setProjects(data);
-      } catch (err) {
-        console.error('프로젝트 목록 불러오기 실패:', err);
-      }
-    };
     fetchProjects();
   }, []);
 
@@ -51,7 +106,7 @@ export default function DashboardContent() {
       try {
         const results = await Promise.all(
           projects.map(async p => {
-            const res = await fetch(`http://192.168.0.22:8080/projects/${p.id}/plan/search`);
+            const res = await fetch(`${API_BASE}/production/${p.id}/plan`, { credentials: 'include' });
             if (!res.ok) return { project: p, plan: null };
             const plans = await res.json();
             const plan = Array.isArray(plans) && plans.length ? plans[plans.length - 1] : null;
@@ -190,14 +245,14 @@ export default function DashboardContent() {
         {/* 프로젝트 등록 */}
         <div className='search box'>
           <h3>프로젝트 등록</h3>
-          <form method='POST' action='http://192.168.0.22:8080/project/create' className='project-form inline-form'>
+          <form onSubmit={handleSubmit} className='project-form inline-form'>
             <div className='form-row'>
               <label>회사 약어</label>
-              <input type='text' name='company' placeholder='예: NA' />
+              <input type='text' name='company' value={form.company} onChange={handleChange} placeholder='예: NA' />
             </div>
             <div className='form-row'>
               <label>회사 유형</label>
-              <select name='mode'>
+              <select name='mode' value={form.mode} onChange={handleChange}>
                 <option value=''>선택</option>
                 <option value='OME'>OME (E)</option>
                 <option value='ODM'>ODM (D)</option>
@@ -205,11 +260,11 @@ export default function DashboardContent() {
             </div>
             <div className='form-row'>
               <label>생산년도</label>
-              <input type='number' name='year' defaultValue={2025} />
+              <input type='number' name='year' value={form.year} onChange={handleChange} />
             </div>
             <div className='form-row'>
               <label>생산월</label>
-              <select name='month'>
+              <select name='month' value={form.month} onChange={handleChange}>
                 {[...Array(12)].map((_, i) => (
                   <option key={i + 1} value={i + 1}>
                     {i + 1}월
@@ -219,15 +274,21 @@ export default function DashboardContent() {
             </div>
             <div className='form-row'>
               <label>회차</label>
-              <input type='number' name='round' defaultValue={1} />
+              <input type='number' name='round' value={form.round} onChange={handleChange} />
             </div>
             <div className='form-row'>
               <label>전지 타입</label>
-              <input type='text' name='batteryType' placeholder='예: TNP' />
+              <input
+                type='text'
+                name='batteryType'
+                value={form.batteryType}
+                onChange={handleChange}
+                placeholder='예: TNP'
+              />
             </div>
             <div className='form-row'>
               <label>용량</label>
-              <input type='number' name='capacity' placeholder='예: 38' />
+              <input type='number' name='capacity' value={form.capacity} onChange={handleChange} placeholder='예: 38' />
             </div>
             <button type='submit' className='create-project-btn'>
               등록하기

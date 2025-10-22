@@ -1,3 +1,5 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 import React, { useState } from 'react';
 import { startOfMonth, endOfMonth, eachWeekOfInterval, addMonths } from 'date-fns';
 import { PROCESS_CONFIG, getProcessRowSpan, parseISODate } from './processUtils';
@@ -104,7 +106,7 @@ export default function ProductionRegister({ production, onClose }: { production
       if (field && (start || end)) payload[field] = `${start}${end ? `~${end}` : ''}`;
     });
 
-    await fetch(`http://192.168.0.22:8080/production/${production.id}/plan/save`, {
+    await fetch(`${API_BASE}/production/${production.id}/plan`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

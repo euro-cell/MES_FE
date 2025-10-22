@@ -1,3 +1,5 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 import '../styles/auth.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -14,11 +16,7 @@ export default function Login() {
     setError('');
 
     try {
-      const res = await axios.post(
-        'http://192.168.0.22:8080/auth/login',
-        { employeeNumber, password },
-        { withCredentials: true }
-      );
+      const res = await axios.post(`${API_BASE}/auth/login`, { employeeNumber, password }, { withCredentials: true });
 
       // ✅ 백엔드가 200 또는 201을 보낼 수 있으므로 둘 다 허용
       if (res.status === 200 || res.status === 201) {

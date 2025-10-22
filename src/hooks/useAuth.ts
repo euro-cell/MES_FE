@@ -1,4 +1,5 @@
-// src/hooks/useAuth.ts
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -19,7 +20,7 @@ export function useAuth() {
 
   useEffect(() => {
     axios
-      .get<AuthStatusResponse>('http://192.168.0.22:8080/auth/status', { withCredentials: true })
+      .get<AuthStatusResponse>(`${API_BASE}/auth/status`, { withCredentials: true })
       .then(res => {
         setIsAuthenticated(res.data.authenticated);
         setUser(res.data.user ?? null);

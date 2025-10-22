@@ -1,3 +1,5 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 import '../styles/auth.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -27,7 +29,7 @@ export default function Register() {
 
     try {
       const res = await axios.post(
-        'http://192.168.0.22:8080/auth/register',
+        `${API_BASE}/auth/register`,
         {
           employeeNumber: form.employeeNumber,
           name: form.name,

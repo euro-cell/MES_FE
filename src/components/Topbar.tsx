@@ -1,3 +1,5 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 import React from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +12,7 @@ const Topbar: React.FC = () => {
   // ✅ 로그아웃 처리
   const handleLogout = async () => {
     try {
-      await axios.post('http://192.168.0.22:8080/auth/logout', {}, { withCredentials: true });
+      await axios.post(`${API_BASE}/auth/logout`, {}, { withCredentials: true });
       navigate('/login', { replace: true });
       window.location.reload(); // 세션 초기화 후 새로고침
     } catch (err) {

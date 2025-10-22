@@ -1,3 +1,5 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 import React, { useEffect, useState } from 'react';
 import ProductionTable from './ProductionTable';
 import ProductionRegister from './ProductionRegister';
@@ -25,7 +27,7 @@ export default function ProductionList() {
 
   // ✅ 생산계획 목록 로드
   useEffect(() => {
-    fetch('http://192.168.0.22:8080/production') // ✅ 엔드포인트 수정 (백엔드에 맞게)
+    fetch(`${API_BASE}/production`) // ✅ 엔드포인트 수정 (백엔드에 맞게)
       .then(res => res.json())
       .then(setProductions)
       .catch(() => setProductions([]))
@@ -35,13 +37,13 @@ export default function ProductionList() {
   // ✅ 삭제 기능
   const handleDelete = async (id: number, name: string) => {
     if (!window.confirm(`${name} 생산계획을 삭제하시겠습니까?`)) return;
-    await fetch(`http://192.168.0.22:8080/production/${id}`, { method: 'DELETE' });
+    await fetch(`${API_BASE}/production/${id}`, { method: 'DELETE' });
     setProductions(prev => prev.filter(p => p.id !== id));
   };
 
   return (
     <div className='production-page'>
-      <h1>생산계획 관리</h1>
+      <h2>생산계획 관리</h2>
 
       {loading ? (
         <p>📡 로딩 중...</p>

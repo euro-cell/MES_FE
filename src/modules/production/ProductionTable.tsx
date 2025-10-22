@@ -25,7 +25,7 @@ export default function ProductionTable({ productions, onRegister, onView, onDel
       <thead>
         <tr>
           <th>ID</th>
-          <th>생산계획명</th>
+          <th>프로젝트명</th>
           <th>회사</th>
           <th>유형</th>
           <th>년도</th>
@@ -49,9 +49,15 @@ export default function ProductionTable({ productions, onRegister, onView, onDel
             <td>{p.batteryType}</td>
             <td>{p.capacity}</td>
             <td>
-              <button onClick={() => onRegister(p)}>등록</button>
-              <button onClick={() => onView(p)}>조회</button>
-              <button onClick={() => onDelete(p.id, p.name)}>삭제</button>
+              <button className='open-plan-modal' onClick={() => onRegister(p)}>
+                등록
+              </button>
+              <button className='open-view-modal' onClick={() => onView(p)}>
+                조회
+              </button>
+              <button className='delete-production' onClick={() => onDelete(p.id, p.name)}>
+                삭제
+              </button>
             </td>
           </tr>
         ))}

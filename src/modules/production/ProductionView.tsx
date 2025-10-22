@@ -1,3 +1,5 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 import React, { useEffect, useState } from 'react';
 import { buildScheduleTable } from './processUtils';
 import { exportHtmlTableToExcel } from './exportExcel';
@@ -6,7 +8,7 @@ export default function ProductionView({ production, onClose }: { production: an
   const [html, setHtml] = useState('<p>📡 데이터를 불러오는 중...</p>');
 
   useEffect(() => {
-    fetch(`http://192.168.0.22:8080/production/${production.id}/plan/search`)
+    fetch(`${API_BASE}/production/${production.id}/plan`)
       .then(res => res.json())
       .then(data => {
         if (!data.length) return setHtml('<p>등록된 일정이 없습니다.</p>');
