@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { getAllProductions } from './productionService';
 import type { Project } from './types';
 import ProductionForm from './ProductionForm';
+import ProductionView from './ProductionView'; // ✅ 조회용 컴포넌트
 
 export default function ProductionList() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
+  const [viewProjectId, setViewProjectId] = useState<number | null>(null);
 
   const fetchData = async () => {
     try {
@@ -26,8 +28,20 @@ export default function ProductionList() {
 
   if (loading) return <div>로딩 중...</div>;
 
+  // ✅ 조회 모드
+  if (viewProjectId) {
+    return (
+      <div className='production-temp-page'>
+        <button className='btn btn-secondary' onClick={() => setViewProjectId(null)}>
+          ← 목록으로
+        </button>
+        <ProductionView productionId={viewProjectId} />
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className='production-temp-page'>
       <table className='production-temp-table'>
         <thead>
           <tr>
@@ -55,9 +69,14 @@ export default function ProductionList() {
                 <td>{p.batteryType}</td>
                 <td>{p.capacity}</td>
                 <td>
-                  <button onClick={() => setSelectedProjectId(p.id)}>등록</button>
-                  <button>수정</button>
-                  <button>삭제</button>
+                  <button className='btn btn-info' onClick={() => setViewProjectId(p.id)}>
+                    조회
+                  </button>
+                  <button className='btn btn-primary' onClick={() => setSelectedProjectId(p.id)}>
+                    등록
+                  </button>
+                  <button className='btn btn-secondary'>수정</button>
+                  <button className='btn btn-danger'>삭제</button>
                 </td>
               </tr>
             ))
@@ -69,7 +88,6 @@ export default function ProductionList() {
         </tbody>
       </table>
 
-      {/* ✅ 등록버튼 클릭 시 폼 표시 */}
       {selectedProjectId && (
         <div>
           <h3 style={{ marginTop: '20px', color: '#1b263b' }}>프로젝트 #{selectedProjectId} 일정 등록</h3>
