@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../../styles/permission.css';
@@ -19,17 +20,23 @@ interface UserPermission {
 export default function UserPermission() {
   const [users, setUsers] = useState<UserPermission[]>([]);
   const [menus, setMenus] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  /** ✅ 사용자별 권한 전체 조회 */
   const fetchData = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/permission/user/all`, { withCredentials: true });
+      setLoading(true);
+      const res = await axios.get(`${API_BASE}/permission/user`, { withCredentials: true });
       setUsers(res.data.users);
       setMenus(res.data.menus);
     } catch (err) {
-      console.error('사용자별 권한 조회 실패:', err);
+      console.error('❌ 사용자별 권한 조회 실패:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
+  /** ✅ 체크박스 상태 토글 */
   const toggle = (userId: number, menu: string, field: keyof PermissionCell) => {
     setUsers(prev =>
       prev.map(u =>
@@ -49,12 +56,13 @@ export default function UserPermission() {
     );
   };
 
+  /** ✅ 변경사항 저장 */
   const handleSave = async () => {
     try {
-      await axios.put(`${API_BASE}/permission/user/all`, users, { withCredentials: true });
+      await axios.put(`${API_BASE}/permission/user`, users, { withCredentials: true });
       alert('✅ 사용자별 권한이 저장되었습니다.');
     } catch (err) {
-      console.error('사용자별 권한 저장 실패:', err);
+      console.error('❌ 사용자별 권한 저장 실패:', err);
       alert('❌ 저장 실패');
     }
   };
@@ -62,6 +70,10 @@ export default function UserPermission() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  if (loading) {
+    return <p>로딩 중...</p>;
+  }
 
   return (
     <>
@@ -79,12 +91,12 @@ export default function UserPermission() {
             ))}
           </tr>
           <tr>
-            {menus.map(() => (
-              <>
+            {menus.map((_, idx) => (
+              <React.Fragment key={`sub-${idx}`}>
                 <th>추가</th>
                 <th>수정</th>
                 <th>삭제</th>
-              </>
+              </React.Fragment>
             ))}
           </tr>
         </thead>
@@ -95,7 +107,7 @@ export default function UserPermission() {
               <td>{u.userId}</td>
               <td>{u.name}</td>
               {menus.map(m => (
-                <>
+                <React.Fragment key={`${u.userId}-${m}`}>
                   <td>
                     <input
                       type='checkbox'
@@ -117,7 +129,7 @@ export default function UserPermission() {
                       onChange={() => toggle(u.userId, m, 'canDelete')}
                     />
                   </td>
-                </>
+                </React.Fragment>
               ))}
             </tr>
           ))}
