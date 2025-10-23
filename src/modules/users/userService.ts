@@ -37,7 +37,7 @@ export const getUsers = async (): Promise<User[]> => {
 export const createUser = async (data: Omit<User, 'id' | 'createdAt'>) => {
   const payload = toBackend(data);
   delete payload.position;
-  const res = await axios.post(`${API_BASE}/auth/register`, payload, { withCredentials: true });
+  const res = await axios.post(`${API_BASE}/user`, payload, { withCredentials: true });
   return fromBackend(res.data);
 };
 
