@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import BaseLayout from './layouts/BaseLayout';
-import Dashboard from './modules/dashboard/Dashboard';
-import Production from './modules/production/ProductionList';
+import Dashboard from './modules/dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { useAuth } from './hooks/useAuth';
@@ -87,5 +86,4 @@ function App() {
     </Routes>
   );
 }
-
 export default App;
