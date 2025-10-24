@@ -274,11 +274,15 @@
   border-radius: 10px;
   overflow: hidden;
   position: relative;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .month-grid span {
   padding: 6px 0;
   border-right: 1px solid #e5e7eb;
+  box-sizing: border-box;
 }
 
 .month-grid span:last-child {
@@ -291,16 +295,17 @@
   align-items: center;
   position: relative;
   height: 34px;
-  border-radius: 20px;
+  border-radius: 10px;
   background: #eef2ff;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .timeline-track::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(to right, rgba(27, 38, 59, 0.12) 1px, transparent 1px);
+  background-image: linear-gradient(to right, #e5e7eb 1px, transparent 1px);
   background-size: calc(100% / 12) 100%;
   pointer-events: none;
 }
@@ -324,6 +329,29 @@
   transition: all 0.2s ease;
 }
 
+.schedule-row .project-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  white-space: normal;
+  word-break: keep-all;
+}
+
+.schedule-row .project-cell strong {
+  font-size: 15px;
+  color: #1b263b;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.schedule-row .date-range {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
 .schedule-body {
   display: flex;
   flex-direction: column;
@@ -336,4 +364,34 @@
   border-radius: 12px;
   padding: 12px 16px;
   box-shadow: 0 4px 10px rgba(27, 38, 59, 0.04);
+}
+
+.progress-cell {
+  text-align: right;
+}
+
+.progress-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 48px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #2563eb;
+}
+
+@media (max-width: 1200px) {
+  .schedule-grid {
+    grid-template-columns: minmax(200px, 1fr);
+    grid-template-rows: auto auto auto;
+  }
+
+  .schedule-grid .timeline-cell,
+  .schedule-grid .progress-cell {
+    grid-column: 1 / -1;
+  }
+
+  .progress-cell {
+    text-align: left;
+  }
 }
