@@ -192,7 +192,7 @@ export default function ProductionForm({ projectId, onClose }: ProductionFormPro
         <div className='process-table'>
           <h4>공정별 일정 입력</h4>
 
-          <table className='production-temp-table'>
+          <table className='production-table'>
             <thead>
               <tr>
                 <th colSpan={3}>Process</th>

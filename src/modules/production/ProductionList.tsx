@@ -1,73 +1,115 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
-import React, { useEffect, useState } from 'react';
-import ProductionTable from './ProductionTable';
-import ProductionRegister from './ProductionRegister';
+import { useEffect, useState } from 'react';
+import { deleteProduction, getAllProductions } from './productionService';
+import type { Project } from './types';
+import ProductionForm from './ProductionForm';
 import ProductionView from './ProductionView';
-import '../../styles/production.css'; // ✅ 파일명 변경
-
-interface Production {
-  id: number;
-  name: string;
-  company: string;
-  mode: string;
-  year: number;
-  month: number;
-  round: number;
-  batteryType: string;
-  capacity: number;
-}
 
 export default function ProductionList() {
-  const [productions, setProductions] = useState<Production[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProduction, setSelectedProduction] = useState<Production | null>(null);
-  const [showPlanModal, setShowPlanModal] = useState(false);
-  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [viewProjectId, setViewProjectId] = useState<number | null>(null);
 
-  // ✅ 생산계획 목록 로드
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllProductions();
+      setProjects(data);
+    } catch (err) {
+      console.error('생산계획 조회 실패:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number, name: string) => {
+    const confirmDelete = window.confirm(`'${name}' 프로젝트를 삭제하시겠습니까?`);
+    if (!confirmDelete) return;
+
+    try {
+      await deleteProduction(id);
+      alert('🗑️ 삭제 완료되었습니다.');
+      await fetchData(); // ✅ 목록 갱신
+    } catch (err) {
+      console.error('❌ 삭제 실패:', err);
+      alert('삭제 중 오류가 발생했습니다.');
+    }
+  };
+
   useEffect(() => {
-    fetch(`${API_BASE}/production`) // ✅ 엔드포인트 수정 (백엔드에 맞게)
-      .then(res => res.json())
-      .then(setProductions)
-      .catch(() => setProductions([]))
-      .finally(() => setLoading(false));
+    fetchData();
   }, []);
 
-  // ✅ 삭제 기능
-  const handleDelete = async (id: number, name: string) => {
-    if (!window.confirm(`${name} 생산계획을 삭제하시겠습니까?`)) return;
-    await fetch(`${API_BASE}/production/${id}`, { method: 'DELETE' });
-    setProductions(prev => prev.filter(p => p.id !== id));
-  };
+  if (loading) return <div>로딩 중...</div>;
+
+  if (viewProjectId) {
+    return (
+      <div className='production-page'>
+        <button className='btn btn-secondary' onClick={() => setViewProjectId(null)}>
+          ← 목록으로
+        </button>
+        <ProductionView productionId={viewProjectId} />
+      </div>
+    );
+  }
 
   return (
     <div className='production-page'>
-      <h2>생산계획 관리</h2>
+      <table className='production-table'>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>프로젝트명</th>
+            <th>회사</th>
+            <th>유형</th>
+            <th>년도</th>
+            <th>월</th>
+            <th>회차</th>
+            <th>전지 타입</th>
+            <th>용량</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody>
+          {projects.length > 0 ? (
+            projects.map(p => (
+              <tr key={p.id}>
+                <td>{p.id}</td>
+                <td>{p.name}</td>
+                <td>{p.company}</td>
+                <td>{p.mode}</td>
+                <td>{p.year}</td>
+                <td>{p.month}</td>
+                <td>{p.round}</td>
+                <td>{p.batteryType}</td>
+                <td>{p.capacity}</td>
+                <td>
+                  <button className='btn btn-info' onClick={() => setViewProjectId(p.id)}>
+                    조회
+                  </button>
+                  <button className='btn btn-primary' onClick={() => setSelectedProject(p)}>
+                    등록
+                  </button>
+                  {/* <button className='btn btn-secondary'>수정</button> */}
+                  <button className='btn btn-danger' onClick={() => handleDelete(p.id, p.name)}>
+                    삭제
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={10}>데이터가 없습니다.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
 
-      {loading ? (
-        <p>📡 로딩 중...</p>
-      ) : (
-        <ProductionTable
-          productions={productions}
-          onRegister={production => {
-            setSelectedProduction(production);
-            setShowPlanModal(true);
-          }}
-          onView={production => {
-            setSelectedProduction(production);
-            setShowViewModal(true);
-          }}
-          onDelete={handleDelete}
-        />
-      )}
-
-      {showPlanModal && selectedProduction && (
-        <ProductionRegister production={selectedProduction} onClose={() => setShowPlanModal(false)} />
-      )}
-
-      {showViewModal && selectedProduction && (
-        <ProductionView production={selectedProduction} onClose={() => setShowViewModal(false)} />
+      {selectedProject && (
+        <div className='production-form-container'>
+          <h3 style={{ marginTop: '20px', color: '#1b263b' }}>프로젝트 {selectedProject.name} 일정 등록</h3>
+          <ProductionForm projectId={selectedProject.id} onClose={() => setSelectedProject(null)} />
+        </div>
       )}
     </div>
   );
