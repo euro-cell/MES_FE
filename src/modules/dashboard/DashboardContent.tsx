@@ -1,23 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
-interface Project {
-  id: number;
-  name: string;
-}
-
-interface ProjectPlan {
-  startDate: string;
-  endDate?: string;
-}
+import { getAllProductions, getProductionPlan, createProduction } from './dashboardService';
+import type { Project, ProjectPlan } from './types';
+import { renderProcessChart } from './chartUtils';
 
 export default function DashboardContent() {
-  const navigate = useNavigate();
-
   const [projects, setProjects] = useState<Project[]>([]);
   const [plans, setPlans] = useState<{ project: Project; plan: ProjectPlan | null }[]>([]);
   const [chart, setChart] = useState<Chart | null>(null);
@@ -46,28 +33,19 @@ export default function DashboardContent() {
     'D 프로젝트': { 전극: 60, 조립: 30, 화성: 40 },
   };
 
-  // ✅ 입력값 변경 핸들러
+  /** ✅ 입력값 변경 핸들러 */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // ✅ 프로젝트 등록 핸들러
+  /** ✅ 프로젝트 등록 핸들러 */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${API_BASE}/production`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) throw new Error('등록 실패');
+      await createProduction(form);
       alert('프로젝트 등록 완료 ✅');
-
-      // ✅ 등록 후 목록 새로고침
       await fetchProjects();
       setForm({
         company: '',
@@ -84,11 +62,10 @@ export default function DashboardContent() {
     }
   };
 
-  // ✅ 프로젝트 목록 불러오기
+  /** ✅ 프로젝트 목록 불러오기 */
   const fetchProjects = async () => {
     try {
-      const res = await fetch(`${API_BASE}/production`, { credentials: 'include' });
-      const data = await res.json();
+      const data = await getAllProductions();
       setProjects(data);
     } catch (err) {
       console.error('프로젝트 목록 불러오기 실패:', err);
@@ -99,16 +76,13 @@ export default function DashboardContent() {
     fetchProjects();
   }, []);
 
-  // ✅ 프로젝트 플랜 불러오기
+  /** ✅ 프로젝트 플랜 불러오기 */
   useEffect(() => {
     const loadPlans = async () => {
       try {
         const results = await Promise.all(
           projects.map(async p => {
-            const res = await fetch(`${API_BASE}/production/${p.id}/plan`, { credentials: 'include' });
-            if (!res.ok) return { project: p, plan: null };
-            const plans = await res.json();
-            const plan = Array.isArray(plans) && plans.length ? plans[plans.length - 1] : null;
+            const plan = await getProductionPlan(p.id);
             return { project: p, plan };
           })
         );
@@ -121,53 +95,18 @@ export default function DashboardContent() {
     if (projects.length > 0) loadPlans();
   }, [projects]);
 
-  // ✅ Chart 렌더링
+  /** ✅ Chart 렌더링 */
   const renderChart = (projectName: string) => {
     const data = processData[projectName];
     if (!data) return;
-
-    const avg = Math.round((data.전극 + data.조립 + data.화성) / 3);
-    const ctx = document.getElementById('processChart') as HTMLCanvasElement;
     if (chart) chart.destroy();
 
-    const newChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['진행률', '남은'],
-        datasets: [
-          {
-            data: [avg, 100 - avg],
-            backgroundColor: ['#5dade2', '#e5e5e5'],
-          },
-        ],
-      },
-      options: {
-        plugins: {
-          legend: { display: false },
-          title: { display: true, text: `${projectName} 총 진행률 (${avg}%)` },
-          datalabels: {
-            color: '#000',
-            font: { weight: 'bold', size: 14 },
-            formatter: (value: number, context: any) => {
-              const label = context.chart.data.labels?.[context.dataIndex] as string;
-              return label === '남은' ? '' : value + '%';
-            },
-          },
-        },
-        cutout: '65%' as any,
-      } as any,
-      plugins: [ChartDataLabels],
-    });
-
+    const { newChart, progressData } = renderProcessChart('processChart', projectName, data);
     setChart(newChart);
-    setProgress({
-      electrode: `${data.전극}%`,
-      assembly: `${data.조립}%`,
-      formation: `${data.화성}%`,
-    });
+    setProgress(progressData);
   };
 
-  // ✅ 유틸 - 날짜 포맷
+  /** ✅ 유틸 - 날짜 포맷 */
   const formatDate = (d?: string) => {
     if (!d) return '-';
     const date = new Date(d);
@@ -175,7 +114,7 @@ export default function DashboardContent() {
     return `${date.getMonth() + 1}.${date.getDate()}`;
   };
 
-  // ✅ 유틸 - 월별 막대 위치 계산
+  /** ✅ 유틸 - 월별 막대 위치 계산 */
   const calculateTimelineBar = (startDate?: string, endDate?: string) => {
     if (!startDate) return { start: 1, span: 1 };
 
@@ -184,8 +123,6 @@ export default function DashboardContent() {
 
     const startMonth = Math.max(1, Math.min(12, start.getMonth() + 1));
     let endMonth = Math.max(1, Math.min(12, end.getMonth() + 1));
-
-    // 다른 해로 넘어가는 경우는 12월로 고정
     if (end.getFullYear() > start.getFullYear()) endMonth = 12;
 
     let span = endMonth - startMonth + 1;
