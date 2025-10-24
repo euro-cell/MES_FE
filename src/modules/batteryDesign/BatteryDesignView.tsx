@@ -12,9 +12,9 @@ export default function BatteryDesignView() {
         <button className={tab === 'form' ? 'active' : ''} onClick={() => setTab('form')}>
           설계 입력
         </button>
-        {/* <button className={tab === 'list' ? 'active' : ''} onClick={() => setTab('list')}>
+        <button className={tab === 'list' ? 'active' : ''} onClick={() => setTab('list')}>
           설계 리스트
-        </button> */}
+        </button>
       </div>
 
       {tab === 'form' ? <BatteryDesignForm /> : <BatteryDesignList />}
