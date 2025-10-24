@@ -133,7 +133,6 @@ export default function ProductionView({ productionId }: { productionId: number 
     }));
   };
 
-  /** 🔹 이어지는 날짜 병합 */
   const getMergedRanges = (value: string | undefined, year: number, weeks: { month: number; weeks: number[] }[]) => {
     if (!value) return [];
 
@@ -141,47 +140,79 @@ export default function ProductionView({ productionId }: { productionId: number 
     const s = new Date(startStr);
     const e = new Date(endStr);
 
-    const allCells: { month: number; week: number; text: string }[] = [];
-
-    weeks.forEach(m => {
-      m.weeks.forEach(w => {
+    // ✅ 모든 주를 평탄화
+    const allCells = weeks.flatMap(m =>
+      m.weeks.map(w => {
         const range = getWeekDateRange(year, m.month, w);
         const overlapStart = s > range.start ? s : range.start;
         const overlapEnd = e < range.end ? e : range.end;
+
         if (overlapStart <= overlapEnd) {
           const startDay = overlapStart.getDate().toString().padStart(2, '0');
           const endDay = overlapEnd.getDate().toString().padStart(2, '0');
-          const text = startDay === endDay ? startDay : `${startDay}~${endDay}`;
-          allCells.push({ month: m.month, week: w, text });
-        } else {
-          allCells.push({ month: m.month, week: w, text: '' });
+          return {
+            key: `${m.month}-${w}`,
+            month: m.month,
+            week: w,
+            text: startDay === endDay ? startDay : `${startDay}~${endDay}`,
+            rangeStart: overlapStart,
+            rangeEnd: overlapEnd,
+          };
         }
-      });
-    });
+        return {
+          key: `${m.month}-${w}`,
+          month: m.month,
+          week: w,
+          text: '',
+          rangeStart: null,
+          rangeEnd: null,
+        } as {
+          key: string;
+          month: number;
+          week: number;
+          text: string;
+          rangeStart: Date | null;
+          rangeEnd: Date | null;
+        };
+      })
+    );
 
-    // 🔹 이어지는 셀 병합 처리
+    // ✅ 병합 처리 (null 안전 + 타입 강제)
     const merged: { key: string; colSpan: number; text: string }[] = [];
     let i = 0;
+
     while (i < allCells.length) {
       const cur = allCells[i];
-      if (cur.text === '') {
-        merged.push({ key: `${cur.month}-${cur.week}`, colSpan: 1, text: '' });
+      if (!cur.rangeStart || !cur.rangeEnd) {
+        merged.push({ key: cur.key, colSpan: 1, text: '' });
         i++;
         continue;
       }
 
       let span = 1;
-      let endText = cur.text;
+      let startDate: Date = new Date(cur.rangeStart);
+      let endDate: Date = new Date(cur.rangeEnd);
+
+      // 🔹 다음 주 시작 날짜가 endDate 다음날이면 병합
       while (
         i + span < allCells.length &&
-        allCells[i + span].text !== '' &&
-        Number(endText.split('~')[1] || endText) + 1 === Number(allCells[i + span].text.split('~')[0])
+        allCells[i + span].rangeStart !== null &&
+        allCells[i + span].rangeEnd !== null &&
+        (allCells[i + span].rangeStart!.getTime() - endDate.getTime()) / (1000 * 60 * 60 * 24) <= 1
       ) {
-        endText = `${cur.text.split('~')[0]}~${allCells[i + span].text.split('~')[1]}`;
+        endDate = new Date(allCells[i + span].rangeEnd!);
         span++;
       }
 
-      merged.push({ key: `${cur.month}-${cur.week}`, colSpan: span, text: endText });
+      const startDay = startDate.getDate().toString().padStart(2, '0');
+      const endDay = endDate.getDate().toString().padStart(2, '0');
+
+      merged.push({
+        key: cur.key,
+        colSpan: span,
+        text: startDay === endDay ? startDay : `${startDay}~${endDay}`,
+      });
+
       i += span;
     }
 
@@ -194,6 +225,7 @@ export default function ProductionView({ productionId }: { productionId: number 
       try {
         const res = await axios.get(`${API_BASE}/production/${productionId}/plan`);
         const planData = res.data[0];
+        console.log('🚀 ~ planData:', planData);
         setPlan(planData);
         setWeeks(computeHeaderWeeks(planData.startDate, planData.endDate));
 
