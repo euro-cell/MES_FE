@@ -1,13 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import type { ReactElement } from 'react';
 import BaseLayout from './layouts/BaseLayout';
-import Dashboard from './modules/dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { useAuth } from './hooks/useAuth';
-import type { ReactElement } from 'react';
+import Dashboard from './modules/dashboard';
+import ProductionPage from './modules/production';
 import User from './modules/users';
 import Permission from './modules/permission';
-import ProductionPage from './modules/production';
 
 function ProtectedRoute({ children }: { children: ReactElement }) {
   const { isAuthenticated, loading } = useAuth();
