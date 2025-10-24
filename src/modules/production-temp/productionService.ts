@@ -33,7 +33,7 @@ export const getProductionPlan = async (projectId: number) => {
     const res = await axios.get(`${API_BASE}/production/${projectId}/plan`, {
       withCredentials: true,
     });
-    return res.data; // 👉 [{ ...planData }]
+    return res.data;
   } catch (err: any) {
     console.error('❌ 생산계획 조회 실패:', err);
     throw err.response?.data || err;

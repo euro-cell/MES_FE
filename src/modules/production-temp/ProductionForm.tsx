@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { saveProductionPlan } from './productionService';
 
-// 🔹 데이터 타입 정의
 interface ProcessRow {
   group: string;
   name: string;
@@ -10,7 +9,11 @@ interface ProcessRow {
   hasElectrode: boolean;
 }
 
-// 🔹 주차 계산 함수
+interface ProductionFormProps {
+  projectId: number;
+  onClose: () => void;
+}
+
 function getWeekOfMonth(date: Date): number {
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
   const firstDayOfWeek = firstDay.getDay();
@@ -18,13 +21,12 @@ function getWeekOfMonth(date: Date): number {
   return Math.ceil((dayOfMonth + firstDayOfWeek) / 7);
 }
 
-export default function ProductionForm({ projectId }: { projectId: number }) {
+export default function ProductionForm({ projectId, onClose }: ProductionFormProps) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [weekInfo, setWeekInfo] = useState('');
   const [processPlans, setProcessPlans] = useState<Record<string, { start: string; end: string }>>({});
 
-  // 🔹 공정 리스트
   const processList = [
     {
       group: 'Electrode',
@@ -55,7 +57,6 @@ export default function ProductionForm({ projectId }: { projectId: number }) {
     },
   ];
 
-  // 🔹 날짜 변경 시 주차 계산
   const handleChange = (field: 'start' | 'end', value: string) => {
     if (field === 'start') setStartDate(value);
     else setEndDate(value);
@@ -74,19 +75,9 @@ export default function ProductionForm({ projectId }: { projectId: number }) {
 
       const resultText = `${startMonth}월 ${startWeek}주차 ~ ${endMonth}월 ${endWeek}주차`;
       setWeekInfo(resultText);
-
-      console.log('📅 주차 계산 결과:', {
-        startDate: s,
-        endDate: e,
-        startMonth,
-        startWeek,
-        endMonth,
-        endWeek,
-      });
     }
   };
 
-  // 🔹 공정별 일정 변경
   const handleProcessChange = (key: string, field: 'start' | 'end', value: string) => {
     setProcessPlans(prev => ({
       ...prev,
@@ -94,7 +85,6 @@ export default function ProductionForm({ projectId }: { projectId: number }) {
     }));
   };
 
-  // 🔹 저장
   const handleSave = async () => {
     if (!startDate || !endDate) {
       alert('시작일과 종료일을 입력해주세요.');
@@ -103,17 +93,15 @@ export default function ProductionForm({ projectId }: { projectId: number }) {
 
     try {
       const payload = { startDate, endDate, weekInfo, processPlans };
-      console.log('📦 전송 데이터:', payload);
-
-      await saveProductionPlan(projectId, payload); // ✅ 서비스 함수 호출
+      await saveProductionPlan(projectId, payload);
       alert('✅ 일정이 성공적으로 저장되었습니다!');
+      onClose();
     } catch (err) {
       console.error('❌ 저장 오류:', err);
       alert('⚠️ 서버에 저장 중 오류가 발생했습니다.');
     }
   };
 
-  // ✅ 타입 명시한 flatMap
   const tableData: ProcessRow[] = processList.flatMap(group =>
     group.items.flatMap<ProcessRow>(item => {
       if (item.types.length === 0) {
@@ -139,7 +127,6 @@ export default function ProductionForm({ projectId }: { projectId: number }) {
     })
   );
 
-  // 🔹 병합 계산
   const getRowSpans = () => {
     const spans: Record<number, { groupSpan: number; nameSpan: number }> = {};
     let i = 0;
@@ -168,7 +155,21 @@ export default function ProductionForm({ projectId }: { projectId: number }) {
 
   return (
     <div className='production-form'>
-      <h3>📅 일정 등록</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3>📅 일정 등록</h3>
+        <button
+          onClick={onClose}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            fontSize: '20px',
+            cursor: 'pointer',
+            color: '#888',
+          }}
+        >
+          ✕
+        </button>
+      </div>
 
       <div className='date-inputs'>
         <label>
@@ -189,7 +190,7 @@ export default function ProductionForm({ projectId }: { projectId: number }) {
 
       {startDate && endDate && (
         <div className='process-table'>
-          <h4 style={{ marginTop: '25px', marginBottom: '10px' }}>공정별 일정 입력</h4>
+          <h4>공정별 일정 입력</h4>
 
           <table className='production-temp-table'>
             <thead>
@@ -203,20 +204,13 @@ export default function ProductionForm({ projectId }: { projectId: number }) {
                 const span = spans[index] || { groupSpan: 0, nameSpan: 0 };
                 return (
                   <tr key={row.key}>
-                    {/* 🔹 대공정 병합 */}
                     {span.groupSpan > 0 && <td rowSpan={span.groupSpan}>{row.group}</td>}
-
-                    {/* 🔹 공정명 병합 (전극 없는 경우 colSpan=2) */}
                     {row.hasElectrode ? (
                       span.nameSpan > 0 && <td rowSpan={span.nameSpan}>{row.name}</td>
                     ) : (
                       <td colSpan={2}>{row.name}</td>
                     )}
-
-                    {/* 🔹 전극 */}
                     {row.hasElectrode && <td>{row.type}</td>}
-
-                    {/* 🔹 일정 입력 */}
                     <td>
                       <input
                         type='date'

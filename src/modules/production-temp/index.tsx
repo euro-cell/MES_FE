@@ -1,4 +1,3 @@
-import React from 'react';
 import ProductionList from './ProductionList';
 import '../../styles/production-temp.css';
 

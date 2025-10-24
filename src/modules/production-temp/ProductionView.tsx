@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { getWeekOfMonth, getWeeksBetween } from './dateUtils';
+import { getWeekOfMonth } from './dateUtils';
+import { exportHtmlTableToExcel } from './exportExcel';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -8,6 +9,7 @@ interface ProductionPlan {
   id: number;
   startDate: string;
   endDate: string;
+  production?: { id: number; name: string; year: number };
   [key: string]: any;
 }
 
@@ -24,8 +26,9 @@ export default function ProductionView({ productionId }: { productionId: number 
   const [plan, setPlan] = useState<ProductionPlan | null>(null);
   const [processRows, setProcessRows] = useState<ProcessRow[]>([]);
   const [weeks, setWeeks] = useState<{ month: number; weeks: number[] }[]>([]);
+  const tableRef = useRef<HTMLTableElement>(null); // ✅ 테이블 참조
 
-  /** 🔹 공정 리스트 (등록 폼과 동일 구조) */
+  /** 🔹 공정 리스트 */
   const processList = [
     {
       group: 'Electrode',
@@ -55,37 +58,6 @@ export default function ProductionView({ productionId }: { productionId: number 
       ],
     },
   ];
-
-  /** 🔹 병합 데이터 계산용 */
-  const generateProcessTable = (planData: ProductionPlan): ProcessRow[] => {
-    const rows: ProcessRow[] = [];
-    processList.forEach(group => {
-      group.items.forEach(item => {
-        if (item.types.length === 0) {
-          rows.push({
-            group: group.group,
-            name: item.name,
-            type: null,
-            key: `${group.group}_${item.name}`,
-            hasElectrode: false,
-            value: planData[mapToField(group.group, item.name)],
-          });
-        } else {
-          item.types.forEach(type => {
-            rows.push({
-              group: group.group,
-              name: item.name,
-              type,
-              key: `${group.group}_${item.name}_${type}`,
-              hasElectrode: true,
-              value: planData[mapToField(group.group, item.name, type)],
-            });
-          });
-        }
-      });
-    });
-    return rows;
-  };
 
   /** 🔹 DB 필드명 매핑 */
   const mapToField = (group: string, name: string, type?: string | null): string => {
@@ -117,7 +89,7 @@ export default function ProductionView({ productionId }: { productionId: number 
     return '';
   };
 
-  /** 🔹 주차 계산 (일요일~토요일 기준) */
+  /** 🔹 주차 계산 */
   const getWeeksBetweenRange = (start: Date, end: Date) => {
     const result: { month: number; week: number }[] = [];
     const cur = new Date(start);
@@ -132,7 +104,20 @@ export default function ProductionView({ productionId }: { productionId: number 
     return result;
   };
 
-  /** 🔹 전체 주차 범위 계산 (테이블 헤더용) */
+  /** 🔹 주차별 날짜 계산 */
+  const getWeekDateRange = (year: number, month: number, week: number) => {
+    const firstDay = new Date(year, month - 1, 1);
+    const firstWeekday = firstDay.getDay();
+    const startDay = 1 + (week - 1) * 7 - firstWeekday;
+    const startDate = new Date(year, month - 1, startDay > 0 ? startDay : 1);
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 6);
+    const lastDayOfMonth = new Date(year, month, 0).getDate();
+    if (endDate.getDate() > lastDayOfMonth) endDate.setDate(lastDayOfMonth);
+    return { start: startDate, end: endDate };
+  };
+
+  /** 🔹 전체 주차 계산 (테이블 헤더용) */
   const computeHeaderWeeks = (start: string, end: string) => {
     const s = new Date(start);
     const e = new Date(end);
@@ -148,7 +133,62 @@ export default function ProductionView({ productionId }: { productionId: number 
     }));
   };
 
-  /** 🔹 API 데이터 불러오기 */
+  /** 🔹 이어지는 날짜 병합 */
+  const getMergedRanges = (value: string | undefined, year: number, weeks: { month: number; weeks: number[] }[]) => {
+    if (!value) return [];
+
+    const [startStr, endStr] = value.includes('~') ? value.split('~') : [value, value];
+    const s = new Date(startStr);
+    const e = new Date(endStr);
+
+    const allCells: { month: number; week: number; text: string }[] = [];
+
+    weeks.forEach(m => {
+      m.weeks.forEach(w => {
+        const range = getWeekDateRange(year, m.month, w);
+        const overlapStart = s > range.start ? s : range.start;
+        const overlapEnd = e < range.end ? e : range.end;
+        if (overlapStart <= overlapEnd) {
+          const startDay = overlapStart.getDate().toString().padStart(2, '0');
+          const endDay = overlapEnd.getDate().toString().padStart(2, '0');
+          const text = startDay === endDay ? startDay : `${startDay}~${endDay}`;
+          allCells.push({ month: m.month, week: w, text });
+        } else {
+          allCells.push({ month: m.month, week: w, text: '' });
+        }
+      });
+    });
+
+    // 🔹 이어지는 셀 병합 처리
+    const merged: { key: string; colSpan: number; text: string }[] = [];
+    let i = 0;
+    while (i < allCells.length) {
+      const cur = allCells[i];
+      if (cur.text === '') {
+        merged.push({ key: `${cur.month}-${cur.week}`, colSpan: 1, text: '' });
+        i++;
+        continue;
+      }
+
+      let span = 1;
+      let endText = cur.text;
+      while (
+        i + span < allCells.length &&
+        allCells[i + span].text !== '' &&
+        Number(endText.split('~')[1] || endText) + 1 === Number(allCells[i + span].text.split('~')[0])
+      ) {
+        endText = `${cur.text.split('~')[0]}~${allCells[i + span].text.split('~')[1]}`;
+        span++;
+      }
+
+      merged.push({ key: `${cur.month}-${cur.week}`, colSpan: span, text: endText });
+      i += span;
+    }
+
+    return merged;
+  };
+
+  /** 🔹 데이터 로드 */
   useEffect(() => {
     const fetchPlan = async () => {
       try {
@@ -156,42 +196,58 @@ export default function ProductionView({ productionId }: { productionId: number 
         const planData = res.data[0];
         setPlan(planData);
         setWeeks(computeHeaderWeeks(planData.startDate, planData.endDate));
-        setProcessRows(generateProcessTable(planData));
+
+        const rows: ProcessRow[] = [];
+        processList.forEach(g =>
+          g.items.forEach(item => {
+            if (item.types.length === 0) {
+              rows.push({
+                group: g.group,
+                name: item.name,
+                key: `${g.group}_${item.name}`,
+                hasElectrode: false,
+                value: planData[mapToField(g.group, item.name)],
+              });
+            } else {
+              item.types.forEach(type =>
+                rows.push({
+                  group: g.group,
+                  name: item.name,
+                  type,
+                  key: `${g.group}_${item.name}_${type}`,
+                  hasElectrode: true,
+                  value: planData[mapToField(g.group, item.name, type)],
+                })
+              );
+            }
+          })
+        );
+        setProcessRows(rows);
       } catch (err) {
-        console.error('📛 생산계획 조회 실패:', err);
+        console.error('❌ 조회 실패:', err);
       }
     };
     fetchPlan();
   }, [productionId]);
 
-  /** 🔹 각 셀 색상 계산용 (기간 내 주차 포함 여부 판단) */
-  const isInRange = (value: string | undefined, month: number, week: number) => {
-    if (!value) return false;
-    const [start, end] = value.includes('~') ? value.split('~') : [value, value];
-    const s = new Date(start);
-    const e = new Date(end);
-    const weeksInRange = getWeeksBetween(s, e);
-    return weeksInRange.some(r => r.month === month && r.week === week);
-  };
-
-  /** 🔹 병합 계산 (대공정 / 공정명 병합용) */
+  /** 🔹 그룹 병합 계산 */
   const getRowSpans = () => {
     const spans: Record<number, { groupSpan: number; nameSpan: number }> = {};
     let i = 0;
     while (i < processRows.length) {
-      const currentGroup = processRows[i].group;
-      const sameGroup = processRows.filter(r => r.group === currentGroup);
+      const group = processRows[i].group;
+      const sameGroup = processRows.filter(r => r.group === group);
       const groupCount = sameGroup.length;
       let j = 0;
       while (j < sameGroup.length) {
-        const currentName = sameGroup[j].name;
-        const sameName = sameGroup.filter(r => r.name === currentName);
+        const name = sameGroup[j].name;
+        const sameName = sameGroup.filter(r => r.name === name);
         const nameCount = sameName.length;
-        const startIndex = processRows.findIndex(
-          r => r.group === currentGroup && r.name === currentName && r.type === sameName[0].type
+        const startIdx = processRows.findIndex(
+          r => r.group === group && r.name === name && r.type === sameName[0].type
         );
-        spans[startIndex] = { groupSpan: 0, nameSpan: nameCount };
-        if (j === 0) spans[startIndex].groupSpan = groupCount;
+        spans[startIdx] = { groupSpan: 0, nameSpan: nameCount };
+        if (j === 0) spans[startIdx].groupSpan = groupCount;
         j += nameCount;
       }
       i += groupCount;
@@ -203,56 +259,65 @@ export default function ProductionView({ productionId }: { productionId: number 
 
   if (!plan) return <p>📦 데이터를 불러오는 중...</p>;
 
+  const handleExportExcel = () => {
+    if (!tableRef.current) return;
+    exportHtmlTableToExcel(tableRef.current.outerHTML, `${plan.production?.name || '생산계획'}`);
+  };
+
   return (
     <div className='production-view'>
-      <h3>📊 생산 일정 조회</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3>📊 생산 일정 조회 ({plan.production?.name || 'Unknown Project'})</h3>
+        <button
+          onClick={handleExportExcel}
+          style={{
+            backgroundColor: '#198754',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            padding: '6px 12px',
+            cursor: 'pointer',
+          }}
+        >
+          📥 엑셀 다운로드
+        </button>
+      </div>
 
-      <table className='production-temp-table'>
+      <table className='production-temp-table' ref={tableRef}>
         <thead>
           <tr>
-            <th colSpan={3}>Process</th>
+            <th rowSpan={2} colSpan={3}>
+              Process
+            </th>
             {weeks.map(m => (
               <th key={m.month} colSpan={m.weeks.length}>
                 {m.month}월
               </th>
             ))}
           </tr>
-          <tr>
-            <th>대공정</th>
-            <th>공정명</th>
-            <th>전극</th>
-            {weeks.flatMap(m => m.weeks.map(w => <th key={`${m.month}-${w}`}>{w}w</th>))}
-          </tr>
+          <tr>{weeks.flatMap(m => m.weeks.map(w => <th key={`${m.month}-${w}`}>{w}w</th>))}</tr>
         </thead>
+
         <tbody>
-          {processRows.map((row, index) => {
-            const span = spans[index] || { groupSpan: 0, nameSpan: 0 };
+          {processRows.map((row, idx) => {
+            const span = spans[idx] || { groupSpan: 0, nameSpan: 0 };
+            const merged = getMergedRanges(row.value, plan.production?.year || new Date().getFullYear(), weeks);
+
             return (
               <tr key={row.key}>
-                {/* 대공정 병합 */}
                 {span.groupSpan > 0 && <td rowSpan={span.groupSpan}>{row.group}</td>}
-
-                {/* 공정명 병합 */}
                 {row.hasElectrode ? (
                   span.nameSpan > 0 && <td rowSpan={span.nameSpan}>{row.name}</td>
                 ) : (
                   <td colSpan={2}>{row.name}</td>
                 )}
-
-                {/* 전극 */}
                 {row.hasElectrode && <td>{row.type}</td>}
 
-                {/* 주차 데이터 */}
-                {weeks.flatMap(m =>
-                  m.weeks.map(w => (
-                    <td
-                      key={`${row.key}-${m.month}-${w}`}
-                      className={isInRange(row.value, m.month, w) ? 'cell-active' : ''}
-                    >
-                      {isInRange(row.value, m.month, w) ? '■' : ''}
-                    </td>
-                  ))
-                )}
+                {merged.map(cell => (
+                  <td key={cell.key} colSpan={cell.colSpan} className={cell.text ? 'cell-active' : ''}>
+                    {cell.text}
+                  </td>
+                ))}
               </tr>
             );
           })}
