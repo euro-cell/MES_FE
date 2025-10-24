@@ -1,0 +1,34 @@
+.battery-design-page {
+  background: #f4f6f8;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 탭 버튼 */
+.tab-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.tab-buttons button {
+  padding: 10px 20px;
+  border: none;
+  background: #e0e6ef;
+  color: #333;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.tab-buttons button.active {
+  background: #2d72d9;
+  color: white;
+}
+
+.tab-buttons button:hover:not(.active) {
+  background: #cfd8e6;
+}

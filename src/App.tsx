@@ -8,6 +8,7 @@ import Dashboard from './modules/dashboard';
 import ProductionPage from './modules/production';
 import User from './modules/users';
 import Permission from './modules/permission';
+import BatteryDesignPage from './modules/batteryDesign';
 
 function ProtectedRoute({ children }: { children: ReactElement }) {
   const { isAuthenticated, loading } = useAuth();
@@ -54,6 +55,17 @@ function App() {
           <ProtectedRoute>
             <BaseLayout>
               <ProductionPage />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/battery-design'
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <BatteryDesignPage />
             </BaseLayout>
           </ProtectedRoute>
         }

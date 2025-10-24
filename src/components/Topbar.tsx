@@ -29,6 +29,7 @@ const Topbar: React.FC = () => {
     '/dashboard': '대시보드',
     '/users': '인원관리',
     '/production': '생산관리',
+    '/battery-design': '전지설계',
     '/process': '공정관리',
     '/material': '자재관리',
     '/quality': '품질관리',
@@ -44,7 +45,6 @@ const Topbar: React.FC = () => {
       <h2>{pageTitle}</h2>
 
       <div className='right'>
-        {/* ✅ 로그인 사용자 정보 표시 */}
         {user ? (
           <span className='user-info'>
             {user.name} ({displayRole})
@@ -60,5 +60,4 @@ const Topbar: React.FC = () => {
     </div>
   );
 };
-
 export default Topbar;

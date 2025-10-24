@@ -16,12 +16,12 @@ const Sidebar: React.FC = () => {
       <ul>
         <li onClick={() => navigate('/dashboard')}>대시보드</li>
         <li onClick={() => navigate('/production')}>생산계획</li>
+        <li onClick={() => navigate('/battery-design')}>전지설계</li>
         <li onClick={() => navigate('/users')}>인원관리</li>
         <li onClick={() => navigate('/permission')}>메뉴접근관리</li>
 
         {/*                     미구현 메뉴                     */}
-        <li>----------------</li>
-        <li onClick={() => handlePending('전지설계')}>전지설계</li>
+        <li>-- 🔽 미완성 🔽 --</li>
         <li onClick={() => handlePending('자재관리')}>자재관리</li>
         <li onClick={() => handlePending('공정관리')}>공정관리</li>
         <li onClick={() => handlePending('품질관리')}>품질관리</li>
