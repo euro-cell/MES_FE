@@ -5,6 +5,7 @@ export interface Project {
   mode: string;
   year: number;
   month: number;
+  round: number;
   batteryType: string;
   capacity: number;
 }
