@@ -8,14 +8,13 @@
   flex-direction: column;
 }
 
-/* 전체 레이아웃 */
 .container {
   display: flex;
   flex: 1;
 }
 
 /* ======================
-   메인 콘텐츠 및 대시보드 전용 섹션
+   메인 콘텐츠
 ======================== */
 #main-content {
   flex: 1;
@@ -26,16 +25,13 @@
   overflow-y: auto;
 }
 
-/* ======================
-   대시보드 콘텐츠
-======================== */
 .dashboard {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* ✅ 상단 3개 박스 균등 배치 및 높이 고정 */
+/* 상단 3개 카드 */
 .top-section {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -44,7 +40,6 @@
   align-items: stretch;
 }
 
-/* 카드 공통 */
 .box {
   background: white;
   border-radius: 10px;
@@ -105,8 +100,8 @@
 
 .chart-container {
   position: relative;
-  width: 220px;
-  height: 220px;
+  width: 160px;
+  height: 160px;
 }
 
 .chart-center-text {
@@ -114,27 +109,27 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 22px;
+  font-size: 35px;
   font-weight: 700;
   color: #1b263b;
   pointer-events: none;
 }
 
 .chart-title {
-  margin-top: 10px;
+  margin-top: 8px;
   font-size: 14px;
   font-weight: 600;
   color: #555;
   text-align: center;
 }
 
-/* ✅ 도넛 아래 공정 세로 표시 */
+/* ✅ 공정 세로 리스트 */
 .process-list.vertical {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .process-list.vertical .process-item {
@@ -157,47 +152,6 @@
   color: #1b263b;
 }
 
-/* ======================
-   검색 / 필터 / 프로젝트 등록
-======================== */
-.search {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.search-bar {
-  display: flex;
-  gap: 5px;
-  margin-bottom: 10px;
-}
-
-.search input {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.search button,
-.create-project-btn {
-  padding: 8px;
-  background: #1b263b;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.search button:hover,
-.create-project-btn:hover {
-  background: #34495e;
-}
-
-/* ======================
-   프로젝트 등록 폼 원래 형태 복원
-======================== */
 .project-form,
 .project-list-card {
   width: 100%;
@@ -252,8 +206,22 @@
   align-self: flex-start;
 }
 
+.create-project-btn {
+  padding: 8px;
+  background: #1b263b;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.create-project-btn:hover {
+  background: #34495e;
+}
+
 /* ======================
-   하단 테이블 (프로젝트 스케줄)
+   하단 스케줄
 ======================== */
 .bottom-section {
   display: flex;
@@ -296,7 +264,6 @@
   color: #111827;
 }
 
-/* ✅ 월 헤더 */
 .month-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -318,7 +285,6 @@
   border-right: none;
 }
 
-/* ✅ 타임라인 트랙 */
 .timeline-track {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -339,7 +305,6 @@
   pointer-events: none;
 }
 
-/* ✅ 타임라인 바 */
 .timeline-bar {
   position: absolute;
   top: 4px;
@@ -359,24 +324,10 @@
   transition: all 0.2s ease;
 }
 
-.bar-label {
-  font-variant-numeric: tabular-nums;
-}
-
 .schedule-body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.timeline-message {
-  padding: 20px 16px;
-  border: 1px dashed #d1d5db;
-  border-radius: 12px;
-  background: #f9fafb;
-  color: #6b7280;
-  font-size: 13px;
-  text-align: center;
 }
 
 .schedule-row {
@@ -385,50 +336,4 @@
   border-radius: 12px;
   padding: 12px 16px;
   box-shadow: 0 4px 10px rgba(27, 38, 59, 0.04);
-}
-
-.schedule-row .project-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.schedule-row .project-cell strong {
-  font-size: 15px;
-  color: #1b263b;
-}
-
-.schedule-row .date-range {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.progress-cell {
-  text-align: right;
-}
-
-.progress-value {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  min-width: 48px;
-  font-weight: 700;
-  font-size: 14px;
-  color: #2563eb;
-}
-
-@media (max-width: 1200px) {
-  .schedule-grid {
-    grid-template-columns: minmax(200px, 1fr);
-    grid-template-rows: auto auto auto;
-  }
-
-  .schedule-grid .timeline-cell,
-  .schedule-grid .progress-cell {
-    grid-column: 1 / -1;
-  }
-
-  .progress-cell {
-    text-align: left;
-  }
 }
