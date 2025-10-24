@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllProductions } from './productionService';
+import { deleteProduction, getAllProductions } from './productionService';
 import type { Project } from './types';
 import ProductionForm from './ProductionForm';
 import ProductionView from './ProductionView';
@@ -19,6 +19,20 @@ export default function ProductionList() {
       console.error('생산계획 조회 실패:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number, name: string) => {
+    const confirmDelete = window.confirm(`'${name}' 프로젝트를 삭제하시겠습니까?`);
+    if (!confirmDelete) return;
+
+    try {
+      await deleteProduction(id);
+      alert('🗑️ 삭제 완료되었습니다.');
+      await fetchData(); // ✅ 목록 갱신
+    } catch (err) {
+      console.error('❌ 삭제 실패:', err);
+      alert('삭제 중 오류가 발생했습니다.');
     }
   };
 
@@ -77,7 +91,9 @@ export default function ProductionList() {
                     등록
                   </button>
                   {/* <button className='btn btn-secondary'>수정</button> */}
-                  <button className='btn btn-danger'>삭제</button>
+                  <button className='btn btn-danger' onClick={() => handleDelete(p.id, p.name)}>
+                    삭제
+                  </button>
                 </td>
               </tr>
             ))

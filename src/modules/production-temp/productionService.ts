@@ -39,3 +39,12 @@ export const getProductionPlan = async (projectId: number) => {
     throw err.response?.data || err;
   }
 };
+
+export const deleteProduction = async (id: number): Promise<void> => {
+  try {
+    await axios.delete(`${API_BASE}/production/${id}`, { withCredentials: true });
+  } catch (err: any) {
+    console.error('❌ 프로젝트 삭제 실패:', err);
+    throw err.response?.data || err;
+  }
+};
