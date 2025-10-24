@@ -8,7 +8,7 @@ import { useAuth } from './hooks/useAuth';
 import type { ReactElement } from 'react';
 import User from './modules/users';
 import Permission from './modules/permission';
-import ProductionTempPage from './modules/production-temp';
+import ProductionPage from './modules/production';
 
 function ProtectedRoute({ children }: { children: ReactElement }) {
   const { isAuthenticated, loading } = useAuth();
@@ -54,18 +54,7 @@ function App() {
         element={
           <ProtectedRoute>
             <BaseLayout>
-              <Production />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path='/production-temp'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <ProductionTempPage />
+              <ProductionPage />
             </BaseLayout>
           </ProtectedRoute>
         }

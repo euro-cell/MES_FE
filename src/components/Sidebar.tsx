@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../styles/sidebar.css';
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +16,6 @@ const Sidebar: React.FC = () => {
       <ul>
         <li onClick={() => navigate('/dashboard')}>대시보드</li>
         <li onClick={() => navigate('/production')}>생산계획</li>
-        <li onClick={() => navigate('/production-temp')}>생산계획-임시</li>
         <li onClick={() => navigate('/users')}>인원관리</li>
         <li onClick={() => navigate('/permission')}>메뉴접근관리</li>
 

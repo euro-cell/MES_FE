@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import '../../styles/dashboard.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 

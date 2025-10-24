@@ -3,8 +3,9 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 import React from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth'; // ✅ 로그인 상태/유저 정보 가져오기
+import { useAuth } from '../hooks/useAuth';
 import { ROLE_LABELS } from '../modules/users/userRoleMap';
+import '../styles/topbar.css';
 
 const Topbar: React.FC = () => {
   const navigate = useNavigate();
