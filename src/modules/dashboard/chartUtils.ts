@@ -1,48 +1,49 @@
 import Chart from 'chart.js/auto';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-export const renderProcessChart = (
-  elementId: string,
-  projectName: string,
-  data: { 전극: number; 조립: number; 화성: number }
-) => {
+export function renderProcessChart(canvasId: string, projectName: string, data: any) {
+  const ctx = document.getElementById(canvasId) as HTMLCanvasElement;
+  if (!ctx) {
+    return {
+      newChart: null,
+      progressData: { electrode: '-', assembly: '-', formation: '-' },
+    };
+  }
+
   const avg = Math.round((data.전극 + data.조립 + data.화성) / 3);
-  const ctx = document.getElementById(elementId) as HTMLCanvasElement;
 
   const newChart = new Chart(ctx, {
-    type: 'doughnut',
+    type: 'pie',
     data: {
       labels: ['진행률', '남은'],
       datasets: [
         {
           data: [avg, 100 - avg],
           backgroundColor: ['#5dade2', '#e5e5e5'],
+          borderWidth: 0,
         },
       ],
     },
     options: {
+      maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        title: { display: true, text: `${projectName} 총 진행률 (${avg}%)` },
-        datalabels: {
-          color: '#000',
-          font: { weight: 'bold', size: 14 },
-          formatter: (value: number, context: any) => {
-            const label = context.chart.data.labels?.[context.dataIndex] as string;
-            return label === '남은' ? '' : value + '%';
-          },
-        },
+        title: { display: false },
       },
-      cutout: '65%' as any,
     } as any,
-    plugins: [ChartDataLabels],
   });
 
-  const progressData = {
-    electrode: `${data.전극}%`,
-    assembly: `${data.조립}%`,
-    formation: `${data.화성}%`,
-  };
+  const centerEl = document.getElementById('chart-center-text');
+  if (centerEl) centerEl.textContent = `${avg}%`;
 
-  return { newChart, progressData };
-};
+  const titleEl = document.getElementById('chart-title');
+  if (titleEl) titleEl.textContent = `${projectName} 총 진행률 (${avg}%)`;
+
+  return {
+    newChart,
+    progressData: {
+      electrode: `${data.전극}%`,
+      assembly: `${data.조립}%`,
+      formation: `${data.화성}%`,
+    },
+  };
+}

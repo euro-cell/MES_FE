@@ -85,7 +85,7 @@
 }
 
 /* ======================
-   프로젝트 진행률
+   프로젝트 진행률 (도넛 + 세로 공정)
 ======================== */
 .project-status {
   display: flex;
@@ -93,44 +93,72 @@
   justify-content: space-between;
 }
 
-.project-progress {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-.total-progress {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.process-list {
+.chart-wrapper.center-mode {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  font-size: 14px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 5px;
 }
 
-.process-item {
+.chart-container {
+  position: relative;
+  width: 220px;
+  height: 220px;
+}
+
+.chart-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 22px;
+  font-weight: 700;
+  color: #1b263b;
+  pointer-events: none;
+}
+
+.chart-title {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  text-align: center;
+}
+
+/* ✅ 도넛 아래 공정 세로 표시 */
+.process-list.vertical {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.process-list.vertical .process-item {
   background: #f4f6f8;
-  padding: 8px 14px;
+  padding: 6px 12px;
   border-radius: 8px;
   font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  width: 140px;
 }
 
-.process-item .value {
+.process-list.vertical .label {
+  font-weight: 500;
+  color: #333;
+}
+
+.process-list.vertical .value {
   font-weight: bold;
   color: #1b263b;
 }
 
 /* ======================
-   검색 / 필터
+   검색 / 필터 / 프로젝트 등록
 ======================== */
 .search {
   display: flex;
@@ -165,6 +193,63 @@
 .search button:hover,
 .create-project-btn:hover {
   background: #34495e;
+}
+
+/* ======================
+   프로젝트 등록 폼 원래 형태 복원
+======================== */
+.project-form,
+.project-list-card {
+  width: 100%;
+}
+
+.project-form input,
+.project-form select {
+  min-width: 140px;
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.project-form .form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.inline-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.inline-form .form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.inline-form label {
+  flex: 0 0 100px;
+  font-weight: 600;
+}
+
+.inline-form input,
+.inline-form select {
+  flex: 1;
+  min-width: 180px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.inline-form button {
+  margin-top: 10px;
+  align-self: flex-start;
 }
 
 /* ======================
@@ -211,7 +296,7 @@
   color: #111827;
 }
 
-/* ✅ 월 헤더 (정렬 완벽 개선) */
+/* ✅ 월 헤더 */
 .month-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -233,7 +318,7 @@
   border-right: none;
 }
 
-/* ✅ 타임라인 트랙 (월 기준 grid 정렬) */
+/* ✅ 타임라인 트랙 */
 .timeline-track {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -245,7 +330,6 @@
   overflow: hidden;
 }
 
-/* grid 각 칸 구분선 */
 .timeline-track::before {
   content: '';
   position: absolute;
@@ -347,101 +431,4 @@
   .progress-cell {
     text-align: left;
   }
-}
-
-/* ======================
-   프로젝트 페이지 공용
-======================== */
-.main-content {
-  padding: 20px;
-}
-
-.card {
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* ✅ 프로젝트 폼/테이블 수정 */
-.project-form,
-.project-list-card {
-  width: 100%;
-}
-
-.project-form input,
-.project-form select {
-  min-width: 140px;
-  font-size: 14px;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.project-form .form-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.btn-save {
-  background-color: #1b263b;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-
-.table-list {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  table-layout: auto;
-}
-
-.table-list th,
-.table-list td {
-  padding: 10px 12px;
-  white-space: nowrap;
-  text-align: center;
-}
-
-.table-list th {
-  background-color: #f4f6f8;
-}
-
-/* 프로젝트 등록 폼 - 라벨 옆 입력 */
-.inline-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.inline-form .form-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.inline-form label {
-  flex: 0 0 100px;
-  font-weight: 600;
-}
-
-.inline-form input,
-.inline-form select {
-  flex: 1;
-  min-width: 180px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.inline-form button {
-  margin-top: 10px;
-  align-self: flex-start;
 }
