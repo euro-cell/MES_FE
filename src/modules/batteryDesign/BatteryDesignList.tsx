@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../../styles/batteryDesign/list.css';
 import BatteryDesignForm from './BatteryDesignForm';
+import BatteryDesignView from './BatteryDesignView';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -13,7 +14,9 @@ interface Project {
 export default function BatteryDesignList() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false); // ✅ 등록폼 표시 여부 상태
+
+  const [mode, setMode] = useState<'list' | 'form' | 'view'>('list');
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   /** ✅ 프로젝트 리스트 불러오기 */
   const fetchProjects = async () => {
@@ -42,14 +45,22 @@ export default function BatteryDesignList() {
     }
   };
 
-  /** ✅ 등록 버튼 클릭 시 */
+  /** ✅ 등록 버튼 클릭 */
   const handleRegisterClick = () => {
-    setShowForm(true);
+    setSelectedProject(null);
+    setMode('form');
   };
 
-  /** ✅ 등록 폼 닫기 (뒤로가기) */
+  /** ✅ 조회 버튼 클릭 */
+  const handleViewClick = (project: Project) => {
+    setSelectedProject(project);
+    setMode('view');
+  };
+
+  /** ✅ 목록으로 돌아가기 */
   const handleBackToList = () => {
-    setShowForm(false);
+    setSelectedProject(null);
+    setMode('list');
   };
 
   useEffect(() => {
@@ -58,8 +69,10 @@ export default function BatteryDesignList() {
 
   if (loading) return <p>로딩 중...</p>;
 
-  // ✅ 등록 화면일 때
-  if (showForm) {
+  /** =========================
+   *  🔹 등록 화면
+   ========================== */
+  if (mode === 'form') {
     return (
       <div className='battery-design-form-container'>
         <button className='back-btn' onClick={handleBackToList}>
@@ -70,7 +83,23 @@ export default function BatteryDesignList() {
     );
   }
 
-  // ✅ 기본 리스트 화면
+  /** =========================
+   *  🔹 조회 화면
+   ========================== */
+  if (mode === 'view' && selectedProject) {
+    return (
+      <div className='battery-design-view-container'>
+        <button className='back-btn' onClick={handleBackToList}>
+          ← 목록으로
+        </button>
+        <BatteryDesignView project={selectedProject} />
+      </div>
+    );
+  }
+
+  /** =========================
+   *  🔹 기본 리스트 화면
+   ========================== */
   return (
     <div className='battery-design-list'>
       <table>
@@ -88,7 +117,9 @@ export default function BatteryDesignList() {
                 <td>{p.id}</td>
                 <td>{p.name}</td>
                 <td className='actions'>
-                  <button className='view-btn'>조회</button>
+                  <button className='view-btn' onClick={() => handleViewClick(p)}>
+                    조회
+                  </button>
                   <button className='register-btn' onClick={handleRegisterClick}>
                     등록
                   </button>

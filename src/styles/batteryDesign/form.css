@@ -9,9 +9,9 @@
 .design-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  /* table-layout: fixed; */
   font-size: 14px;
-  min-width: 900px;
+  /* min-width: 900px; */
 }
 
 .design-table th,
@@ -126,18 +126,12 @@
 }
 
 @media (max-width: 1400px) {
-  .design-table {
-    font-size: 13px;
-  }
   .design-table input {
     width: 80%;
   }
 }
 
 @media (max-width: 1024px) {
-  .design-table {
-    font-size: 12px;
-  }
   .design-table input {
     width: 100%;
   }
