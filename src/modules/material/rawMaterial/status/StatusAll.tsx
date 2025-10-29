@@ -49,13 +49,21 @@ export default function StatusAll() {
             <tr>
               <th>No.</th>
               <th>공정</th>
-              <th>자재(중분류)</th>
-              <th>종류(소분류)</th>
+              <th>
+                자재
+                <br />
+                (중분류)
+              </th>
+              <th>
+                종류
+                <br />
+                (소분류)
+              </th>
               <th>용도</th>
               <th>제품명</th>
               <th>Lot No.</th>
               <th>제조/공급처</th>
-              <th>국내/해외</th>
+              <th>국내/외</th>
               <th>단위</th>
               <th>가격</th>
               <th>비고</th>
