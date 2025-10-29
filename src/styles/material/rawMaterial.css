@@ -211,3 +211,20 @@
     padding: 15px;
   }
 }
+/* ✅ 테이블 헤더 줄바꿈 제어 */
+.raw-detail-table th {
+  white-space: nowrap; /* 기본적으로 한 줄 유지 */
+}
+
+/* ✅ 헤더 글씨 가독성 보정 */
+.raw-detail-table th {
+  vertical-align: middle;
+  text-align: center;
+  font-size: 13.5px;
+}
+
+.raw-detail-table td:nth-child(2),
+.raw-detail-table td:nth-child(5) {
+  white-space: nowrap;
+  line-height: 1.2;
+}
