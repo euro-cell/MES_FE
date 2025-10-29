@@ -76,7 +76,7 @@ export default function BatteryDesignList() {
         <button className='back-btn' onClick={handleBackToList}>
           ← 목록으로
         </button>
-        <BatteryDesignForm productionId={selectedProject.id} />
+        <BatteryDesignForm productionId={selectedProject.id} projectName={selectedProject.name} />
       </div>
     );
   }

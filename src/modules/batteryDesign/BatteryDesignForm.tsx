@@ -4,7 +4,12 @@ import { batteryDesignService } from './BatteryDesignService';
 import type { BatteryDesignFormData } from './BatteryDesignTypes';
 import { CathodeSection, AnodeSection, AssemblySection, CellSection } from './BatteryDesignComponents';
 
-export default function BatteryDesignForm({ productionId }: { productionId: number }) {
+interface BatteryDesignFormProps {
+  productionId: number;
+  projectName: string;
+}
+
+export default function BatteryDesignForm({ productionId, projectName }: BatteryDesignFormProps) {
   const [formData, setFormData] = useState<BatteryDesignFormData>({
     cathode: {
       activeMaterial1: { value: '', remark: '' },
@@ -92,7 +97,7 @@ export default function BatteryDesignForm({ productionId }: { productionId: numb
 
   return (
     <div className='battery-design-form'>
-      <h2>전지 설계 입력</h2>
+      <h2>{projectName} 전지 설계 등록</h2>
 
       <table className='design-table'>
         <thead>
