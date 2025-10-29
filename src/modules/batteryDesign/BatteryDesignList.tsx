@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import '../../styles/batteryDesign/list.css';
 import BatteryDesignForm from './BatteryDesignForm';
 import BatteryDesignView from './BatteryDesignView';
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+import { batteryDesignService } from './BatteryDesignService';
 
 interface Project {
   id: number;
@@ -22,10 +20,10 @@ export default function BatteryDesignList() {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_BASE}/production`, { withCredentials: true });
-      setProjects(res.data);
+      const data = await batteryDesignService.fetchProjects();
+      setProjects(data);
     } catch (err) {
-      console.error('프로젝트 목록 불러오기 실패:', err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -33,12 +31,12 @@ export default function BatteryDesignList() {
 
   /** ✅ 삭제 버튼 클릭 시 */
   const handleDelete = async (id: number) => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+    if (!window.confirm('해당 프로젝트의 전지 설계를 삭제하시겠습니까?')) return;
 
     try {
-      await axios.delete(`${API_BASE}/production/${id}`, { withCredentials: true });
-      alert('삭제되었습니다.');
-      fetchProjects(); // 리스트 갱신
+      await batteryDesignService.deleteDesign(id);
+      alert('✅ 전지 설계가 삭제되었습니다.');
+      fetchProjects();
     } catch (err) {
       console.error('삭제 실패:', err);
       alert('삭제 중 오류가 발생했습니다.');

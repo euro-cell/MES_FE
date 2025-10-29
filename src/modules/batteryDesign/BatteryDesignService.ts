@@ -16,28 +16,26 @@ export const batteryDesignService = {
     }
   },
 
-  /** 🔹 전체 설계 리스트 조회 */
-  async getAll() {
-    return axios.get(`${API_BASE}/battery-design`, { withCredentials: true });
+  async fetchProjects() {
+    try {
+      const res = await axios.get(`${API_BASE}/production`, { withCredentials: true });
+      return res.data;
+    } catch (err) {
+      console.error('❌ 프로젝트 목록 불러오기 실패:', err);
+      throw err;
+    }
   },
 
-  /** 🔹 설계 등록 */
-  async create(data: any) {
-    return axios.post(`${API_BASE}/battery-design`, data, { withCredentials: true });
-  },
-
-  /** 🔹 설계 상세 조회 */
-  async getById(id: number) {
-    return axios.get(`${API_BASE}/battery-design/${id}`, { withCredentials: true });
-  },
-
-  /** 🔹 설계 수정 */
-  async update(id: number, data: any) {
-    return axios.put(`${API_BASE}/battery-design/${id}`, data, { withCredentials: true });
-  },
-
-  /** 🔹 설계 삭제 */
-  async remove(id: number) {
-    return axios.delete(`${API_BASE}/battery-design/${id}`, { withCredentials: true });
+  async deleteDesign(productionId: number) {
+    try {
+      const res = await axios.delete(`${API_BASE}/specification/${productionId}`, {
+        withCredentials: true,
+      });
+      console.log('🗑️ 전지 설계 삭제 완료:', res.data);
+      return res.data;
+    } catch (err) {
+      console.error('❌ 전지 설계 삭제 실패:', err);
+      throw err;
+    }
   },
 };
