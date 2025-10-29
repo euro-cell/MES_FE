@@ -3,7 +3,6 @@
 ========================================================== */
 .raw-material-page {
   background: #fff;
-  padding: 20px 24px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   display: flex;
@@ -15,7 +14,6 @@
   font-size: 20px;
   font-weight: 600;
   color: #222;
-  margin-bottom: 5px;
 }
 
 /* ==========================================================
