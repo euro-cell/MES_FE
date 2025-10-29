@@ -99,35 +99,6 @@
   font-weight: 600;
 }
 
-.material-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-  font-size: 14px;
-  border: 1px solid #e0e4eb;
-}
-
-.material-table thead tr {
-  background: #f3f6fa;
-}
-
-.material-table th {
-  padding: 10px;
-  border: 1px solid #d9e1eb;
-  font-weight: 600;
-  color: #333;
-}
-
-.material-table td {
-  padding: 8px;
-  border: 1px solid #e2e8f0;
-  color: #444;
-}
-
-.material-table tr:nth-child(even) {
-  background: #fafbfc;
-}
-
 /* ==========================================================
    ⚡ 전극 / 🔧 조립 상세 테이블 (StatusElectrode / StatusAssembly)
 ========================================================== */
@@ -151,6 +122,7 @@
   text-align: center;
   font-size: 14px;
   border: 1px solid #e0e4eb;
+  table-layout: fixed;
 }
 
 .raw-detail-table thead tr {
@@ -163,6 +135,14 @@
   font-weight: 600;
   color: #333;
   vertical-align: middle;
+  white-space: nowrap;
+  font-size: 13.5px;
+}
+
+.raw-detail-table th:nth-child(2),
+.raw-detail-table th:nth-child(3) {
+  white-space: normal;
+  line-height: 1.2;
 }
 
 .raw-detail-table td {
@@ -170,17 +150,42 @@
   border: 1px solid #e2e8f0;
   color: #444;
   vertical-align: middle;
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+
+.raw-detail-table td:nth-child(12) {
+  word-break: break-word;
+}
+
+.raw-detail-table td:nth-child(11),
+.raw-detail-table td:nth-child(12) {
+  white-space: normal;
+  line-height: 1.4;
 }
 
 .raw-detail-table tr:nth-child(even) {
   background: #fafbfc;
 }
 
+.raw-detail-table {
+  table-layout: auto;
+  max-width: 100%;
+}
+
+.raw-detail-table td,
+.raw-detail-table th {
+  max-width: 250px;
+  word-break: keep-all;
+}
+
 /* ==========================================================
    📱 반응형 스타일
 ========================================================== */
 @media (max-width: 1024px) {
-  .material-table,
   .raw-detail-table {
     font-size: 13px;
   }
@@ -193,13 +198,10 @@
 }
 
 @media (max-width: 768px) {
-  .material-table,
   .raw-detail-table {
     font-size: 12px;
   }
 
-  .material-table th,
-  .material-table td,
   .raw-detail-table th,
   .raw-detail-table td {
     padding: 6px;
@@ -208,21 +210,4 @@
   .raw-material-page {
     padding: 15px;
   }
-}
-/* ✅ 테이블 헤더 줄바꿈 제어 */
-.raw-detail-table th {
-  white-space: nowrap; /* 기본적으로 한 줄 유지 */
-}
-
-/* ✅ 헤더 글씨 가독성 보정 */
-.raw-detail-table th {
-  vertical-align: middle;
-  text-align: center;
-  font-size: 13.5px;
-}
-
-.raw-detail-table td:nth-child(2),
-.raw-detail-table td:nth-child(5) {
-  white-space: nowrap;
-  line-height: 1.2;
 }

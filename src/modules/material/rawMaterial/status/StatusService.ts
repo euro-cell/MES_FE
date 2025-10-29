@@ -11,3 +11,8 @@ export async function fetchElectrodeMaterials() {
   const res = await axios.get(`${API_BASE}/material/electrode`, { withCredentials: true });
   return res.data;
 }
+
+export async function fetchAssemblyMaterials() {
+  const res = await axios.get(`${API_BASE}/material/assembly`, { withCredentials: true });
+  return res.data;
+}

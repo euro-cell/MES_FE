@@ -88,7 +88,7 @@ export default function StatusElectrode() {
               ))
             ) : (
               <tr>
-                <td colSpan={13}>등록된 전극 자재가 없습니다.</td>
+                <td colSpan={12}>등록된 전극 자재가 없습니다.</td>
               </tr>
             )}
           </tbody>
