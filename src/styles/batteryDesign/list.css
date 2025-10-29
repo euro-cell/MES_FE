@@ -1,46 +1,64 @@
 .battery-design-list {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.battery-design-list h2 {
-  font-size: 20px;
-  margin-bottom: 15px;
-  font-weight: 600;
-}
-
-.design-table {
+.battery-design-list table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
-  background: white;
-  font-size: 14px;
-}
-
-.design-table th,
-.design-table td {
-  border: 1px solid #ccc;
-  padding: 8px 10px;
   text-align: center;
+  font-size: 15px;
 }
 
-.design-table th {
-  background: #e9f0f7;
+.battery-design-list th {
+  background-color: #f3f6fa;
+  padding: 12px;
+  border-bottom: 2px solid #e2e8f0;
   font-weight: 600;
+  color: #333;
 }
 
-.no-data {
-  text-align: center;
-  color: #888;
-  padding: 12px 0;
+.battery-design-list td {
+  padding: 10px;
+  border-bottom: 1px solid #eaeaea;
 }
 
-@media (max-width: 1024px) {
-  .design-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+.view-btn {
+  background-color: #2d72d9 !important;
+}
+.view-btn:hover {
+  background-color: #1e5bb8 !important;
+}
+
+.register-btn {
+  background-color: #2db86c !important;
+}
+.register-btn:hover {
+  background-color: #25a35e !important;
+}
+
+.delete-btn {
+  background-color: #e74c3c !important;
+}
+.delete-btn:hover {
+  background-color: #d63c2c !important;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .battery-design-list table {
+    font-size: 13px;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .actions button {
+    width: 100%;
+    padding: 8px;
   }
 }

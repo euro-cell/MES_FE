@@ -78,7 +78,7 @@
 .design-table td span {
   display: block;
   text-align: center;
-  padding: 5px 0;
+  /* padding: 5px 0; */
   color: #222;
   font-weight: 500;
 }
@@ -88,4 +88,11 @@
   display: flex;
   justify-content: center;
   gap: 6px;
+}
+
+.back-btn {
+  background-color: #6c757d;
+}
+.back-btn:hover {
+  background-color: #5a6268;
 }
