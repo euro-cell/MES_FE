@@ -6,3 +6,8 @@ export const fetchAllMaterials = async () => {
   const res = await axios.get(`${API_BASE}/material`, { withCredentials: true });
   return res.data;
 };
+
+export async function fetchElectrodeMaterials() {
+  const res = await axios.get(`${API_BASE}/material/electrode`, { withCredentials: true });
+  return res.data;
+}

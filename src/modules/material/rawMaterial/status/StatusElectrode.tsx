@@ -1,99 +1,99 @@
+import { useEffect, useState } from 'react';
 import '../../../../styles/material/rawMaterial.css';
+import { fetchElectrodeMaterials } from './StatusService';
+
+interface Material {
+  id: number;
+  category: string;
+  type: string;
+  purpose: string;
+  name: string;
+  lotNo: string | null;
+  company: string | null;
+  origin: string;
+  unit: string;
+  price: number | null;
+  note: string | null;
+  stock: number | null;
+}
 
 export default function StatusElectrode() {
-  const data = [
-    {
-      no: 1,
-      category: '양극재',
-      type: 'NCM622',
-      purpose: '생산',
-      productName: 'NCM622',
-      lotNo: 'L240101',
-      company: 'Easpring',
-      origin: '해외',
-      unit: 'Kg',
-      price: '45,000',
-      note: '',
-      stock: 320,
-    },
-    {
-      no: 2,
-      category: '도전재',
-      type: 'Super-P Li',
-      purpose: '개발',
-      productName: 'Super-P Li',
-      lotNo: 'S240305',
-      company: 'Imerys',
-      origin: '해외',
-      unit: 'Kg',
-      price: '12,000',
-      note: '',
-      stock: 150,
-    },
-    {
-      no: 3,
-      category: '바인더',
-      type: 'Solef5130',
-      purpose: '생산',
-      productName: 'Solef5130',
-      lotNo: 'B240201',
-      company: 'Solvay',
-      origin: '해외',
-      unit: 'Kg',
-      price: '30,000',
-      note: '',
-      stock: 80,
-    },
-  ];
+  const [materials, setMaterials] = useState<Material[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchElectrodeMaterials();
+        setMaterials(data);
+      } catch (err) {
+        console.error('⚠️ 전극 자재 불러오기 실패:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
 
   return (
     <div className='status-electrode'>
       <h4>⚡ 전극 자재 현황</h4>
 
-      <table className='raw-detail-table'>
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>
-              자재
-              <br />
-              (중분류)
-            </th>
-            <th>
-              종류
-              <br />
-              (소분류)
-            </th>
-            <th>용도</th>
-            <th>제품명</th>
-            <th>Lot No.</th>
-            <th>제조/공급처</th>
-            <th>국내/해외</th>
-            <th>단위</th>
-            <th>가격</th>
-            <th>비고</th>
-            <th>재고</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map(row => (
-            <tr key={row.no}>
-              <td>{row.no}</td>
-              <td>{row.category}</td>
-              <td>{row.type}</td>
-              <td>{row.purpose}</td>
-              <td>{row.productName}</td>
-              <td>{row.lotNo}</td>
-              <td>{row.company}</td>
-              <td>{row.origin}</td>
-              <td>{row.unit}</td>
-              <td>{row.price}</td>
-              <td>{row.note}</td>
-              <td>{row.stock}</td>
+      {loading ? (
+        <p>로딩 중...</p>
+      ) : (
+        <table className='raw-detail-table'>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>
+                자재
+                <br />
+                (중분류)
+              </th>
+              <th>
+                종류
+                <br />
+                (소분류)
+              </th>
+              <th>용도</th>
+              <th>제품명</th>
+              <th>Lot No.</th>
+              <th>제조/공급처</th>
+              <th>국내/해외</th>
+              <th>단위</th>
+              <th>가격</th>
+              <th>비고</th>
+              <th>재고</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {materials.length > 0 ? (
+              materials.map((row, i) => (
+                <tr key={row.id}>
+                  <td>{i + 1}</td>
+                  <td>{row.category}</td>
+                  <td>{row.type}</td>
+                  <td>{row.purpose}</td>
+                  <td>{row.name}</td>
+                  <td>{row.lotNo || '-'}</td>
+                  <td>{row.company || '-'}</td>
+                  <td>{row.origin}</td>
+                  <td>{row.unit}</td>
+                  <td>{row.price != null ? `₩ ${Math.floor(Number(row.price)).toLocaleString()}` : '-'}</td>
+                  <td>{row.note || '-'}</td>
+                  <td>{row.stock ?? '-'}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={13}>등록된 전극 자재가 없습니다.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
