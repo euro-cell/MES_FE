@@ -61,7 +61,7 @@ function App() {
       />
 
       <Route
-        path='/battery-design'
+        path='/specification'
         element={
           <ProtectedRoute>
             <BaseLayout>

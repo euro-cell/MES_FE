@@ -29,7 +29,7 @@ const Topbar: React.FC = () => {
     '/dashboard': '대시보드',
     '/users': '인원관리',
     '/production': '생산관리',
-    '/battery-design': '전지설계',
+    '/specification': '전지설계',
     '/process': '공정관리',
     '/material': '자재관리',
     '/quality': '품질관리',
