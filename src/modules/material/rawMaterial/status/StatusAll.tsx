@@ -75,7 +75,7 @@ export default function StatusAll() {
                   <td>{row.lotNo || '-'}</td>
                   <td>{row.company || '-'}</td>
                   <td>{row.origin}</td>
-                  <td>{row.unit}</td>
+                  <td>{row.unit.toUpperCase()}</td>
                   <td>{row.price != null ? `₩ ${Math.floor(Number(row.price)).toLocaleString()}` : '-'}</td>
                   <td>{row.note || '-'}</td>
                   <td>{row.stock ?? '-'}</td>
