@@ -59,31 +59,29 @@ export default function BatteryDesignForm({ productionId }: { productionId: numb
   };
 
   /** ✅ 숫자 변환 */
-  const convertValuesToNumbers = (data: any): any => {
-    if (Array.isArray(data)) return data.map(convertValuesToNumbers);
-    if (data && typeof data === 'object') {
-      const result: any = {};
-      for (const [key, val] of Object.entries(data)) {
-        if (val && typeof val === 'object' && 'value' in val) {
-          result[key] = {
-            ...val,
-            value: val.value === '' || isNaN(Number(val.value)) ? 0 : Number(val.value),
-          };
-        } else {
-          result[key] = convertValuesToNumbers(val);
-        }
+  const convertValuesToNumbers = (obj: any): any => {
+    if (typeof obj === 'object' && obj !== null) {
+      const result: any = Array.isArray(obj) ? [] : {};
+      for (const key in obj) {
+        result[key] = convertValuesToNumbers(obj[key]);
       }
       return result;
+    } else if (typeof obj === 'string') {
+      const trimmed = obj.trim();
+
+      if (trimmed === '') return null;
+
+      const num = Number(trimmed);
+      return isNaN(num) ? trimmed : num;
     }
-    return data;
+
+    return obj;
   };
 
   const handleSubmit = async () => {
     try {
       const converted = convertValuesToNumbers(formData);
       console.log('📦 전송 데이터:', converted);
-
-      // ✅ productionId를 URL 파람으로 보냄
       await batteryDesignService.saveDesign(productionId, converted);
       alert('✅ 전지 설계가 저장되었습니다.');
     } catch (err) {

@@ -32,3 +32,60 @@
 .tab-buttons button:hover:not(.active) {
   background: #cfd8e6;
 }
+
+/* ==============================
+   🔹 전지 설계 조회 테이블
+============================== */
+.battery-design-view {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.battery-design-view h2 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.design-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 14px;
+}
+
+.design-table th,
+.design-table td {
+  border: 1px solid #d0d7de;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.design-table thead th {
+  background: #eaf0f8;
+  font-weight: 600;
+}
+
+.group-cell {
+  background: #f5f8fb;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ✅ 조회 모드에서 값 표시 */
+.design-table td span {
+  display: block;
+  text-align: center;
+  padding: 5px 0;
+  color: #222;
+  font-weight: 500;
+}
+
+/* ✅ Stack no. 구분 칸 예쁘게 정렬 */
+.multi-value {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
