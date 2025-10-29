@@ -4,36 +4,36 @@ import { batteryDesignService } from './BatteryDesignService';
 import type { BatteryDesignFormData } from './BatteryDesignTypes';
 import { CathodeSection, AnodeSection, AssemblySection, CellSection } from './BatteryDesignComponents';
 
-export default function BatteryDesignForm() {
+export default function BatteryDesignForm({ productionId }: { productionId: number }) {
   const [formData, setFormData] = useState<BatteryDesignFormData>({
     cathode: {
-      active_material_1: { value: '', remark: '' },
-      active_material_2: { value: '', remark: '' },
+      activeMaterial1: { value: '', remark: '' },
+      activeMaterial2: { value: '', remark: '' },
       conductor: { value: '', remark: '' },
       binder: { value: '', remark: '' },
-      loading_level: { value: '', remark: '' },
+      loadingLevel: { value: '', remark: '' },
       thickness: { value: '', remark: '' },
-      electrode_density: { value: '', remark: '' },
+      electrodeDensity: { value: '', remark: '' },
     },
     anode: {
-      active_material: { value: '', remark: '' },
+      activeMaterial: { value: '', remark: '' },
       conductor: { value: '', remark: '' },
       binder: { value: '', remark: '' },
-      loading_level: { value: '', remark: '' },
+      loadingLevel: { value: '', remark: '' },
       thickness: { value: '', remark: '' },
-      electrode_density: { value: '', remark: '' },
+      electrodeDensity: { value: '', remark: '' },
     },
     assembly: {
-      stack_no: { value1: '', value2: '', remark: '' },
+      stackNo: { value1: '', value2: '', remark: '' },
       separator: { value: '', remark: '' },
       electrolyte: { value: '', remark: '' },
     },
     cell: {
-      np_ratio: { value: '', remark: '' },
-      nominal_capacity: { value: '', remark: '' },
+      npRatio: { value: '', remark: '' },
+      nominalCapacity: { value: '', remark: '' },
       weight: { value: '', remark: '' },
       thickness: { value: '', remark: '' },
-      energy_density: {
+      energyDensity: {
         gravimetric: { value: '', remark: '' },
         volumetric: { value: '', remark: '' },
       },
@@ -58,11 +58,34 @@ export default function BatteryDesignForm() {
     });
   };
 
+  /** ✅ 숫자 변환 */
+  const convertValuesToNumbers = (data: any): any => {
+    if (Array.isArray(data)) return data.map(convertValuesToNumbers);
+    if (data && typeof data === 'object') {
+      const result: any = {};
+      for (const [key, val] of Object.entries(data)) {
+        if (val && typeof val === 'object' && 'value' in val) {
+          result[key] = {
+            ...val,
+            value: val.value === '' || isNaN(Number(val.value)) ? 0 : Number(val.value),
+          };
+        } else {
+          result[key] = convertValuesToNumbers(val);
+        }
+      }
+      return result;
+    }
+    return data;
+  };
+
   const handleSubmit = async () => {
     try {
-      await batteryDesignService.saveDesign(formData);
+      const converted = convertValuesToNumbers(formData);
+      console.log('📦 전송 데이터:', converted);
+
+      // ✅ productionId를 URL 파람으로 보냄
+      await batteryDesignService.saveDesign(productionId, converted);
       alert('✅ 전지 설계가 저장되었습니다.');
-      console.log('📦 전송 데이터:', formData);
     } catch (err) {
       console.error(err);
       alert('❌ 저장 실패');

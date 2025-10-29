@@ -46,8 +46,8 @@ export default function BatteryDesignList() {
   };
 
   /** ✅ 등록 버튼 클릭 */
-  const handleRegisterClick = () => {
-    setSelectedProject(null);
+  const handleRegisterClick = (project: Project) => {
+    setSelectedProject(project);
     setMode('form');
   };
 
@@ -72,13 +72,13 @@ export default function BatteryDesignList() {
   /** =========================
    *  🔹 등록 화면
    ========================== */
-  if (mode === 'form') {
+  if (mode === 'form' && selectedProject) {
     return (
       <div className='battery-design-form-container'>
         <button className='back-btn' onClick={handleBackToList}>
           ← 목록으로
         </button>
-        <BatteryDesignForm />
+        <BatteryDesignForm productionId={selectedProject.id} />
       </div>
     );
   }
@@ -120,7 +120,7 @@ export default function BatteryDesignList() {
                   <button className='view-btn' onClick={() => handleViewClick(p)}>
                     조회
                   </button>
-                  <button className='register-btn' onClick={handleRegisterClick}>
+                  <button className='register-btn' onClick={() => handleRegisterClick(p)}>
                     등록
                   </button>
                   <button className='delete-btn' onClick={() => handleDelete(p.id)}>
