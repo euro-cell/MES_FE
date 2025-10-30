@@ -3,6 +3,7 @@ import '../../../styles/material/rawMaterial.css';
 import StatusAll from './status/StatusAll';
 import StatusElectrode from './status/StatusElectrode';
 import StatusAssembly from './status/StatusAssembly';
+import ProductionList from './production/ProductionList';
 
 export default function RawMaterialList() {
   const [subTab, setSubTab] = useState<'status' | 'project'>('status');
@@ -42,7 +43,7 @@ export default function RawMaterialList() {
         {subTab === 'status' && statusTab === 'all' && <StatusAll />}
         {subTab === 'status' && statusTab === 'electrode' && <StatusElectrode />}
         {subTab === 'status' && statusTab === 'assembly' && <StatusAssembly />}
-        {subTab === 'project' && <p>프로젝트 자재 관리 표시</p>}
+        {subTab === 'project' && <ProductionList />}
       </div>
     </div>
   );
