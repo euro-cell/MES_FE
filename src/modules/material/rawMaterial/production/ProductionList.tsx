@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ProductionService } from './ProductionService';
+import ProductionMaterialForm from './ProductionMaterialForm';
 import '../../../../styles/material/production.css';
 
 interface Production {
@@ -13,12 +14,13 @@ export default function ProductionList() {
   const [productions, setProductions] = useState<Production[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedProductionId, setSelectedProductionId] = useState<number | null>(null);
+  const [showForm, setShowForm] = useState(false);
 
   const fetchProductions = async () => {
     try {
       setLoading(true);
       const data = await ProductionService.getProductions();
-      console.log('🚀 ~ data:', data);
       setProductions(data);
     } catch (err) {
       console.error('❌ 프로덕트 리스트 조회 실패:', err);
@@ -35,6 +37,11 @@ export default function ProductionList() {
     if (code === 'c') return '각형';
     if (code === 'r') return '원통형';
     return '-';
+  };
+
+  const handleRegisterClick = (id: number) => {
+    setSelectedProductionId(id);
+    setShowForm(true);
   };
 
   useEffect(() => {
@@ -72,7 +79,7 @@ export default function ProductionList() {
                   <button className='view-btn' disabled={!p.hasMaterials} onClick={() => alert(`조회: ${p.name}`)}>
                     조회
                   </button>
-                  <button className='register-btn' onClick={() => alert(`등록: ${p.name}`)}>
+                  <button className='register-btn' onClick={() => handleRegisterClick(p.id)}>
                     등록
                   </button>
                   <button className='delete-btn' disabled={!p.hasMaterials} onClick={() => alert(`삭제: ${p.name}`)}>
@@ -83,6 +90,17 @@ export default function ProductionList() {
             ))}
           </tbody>
         </table>
+      )}
+
+      {showForm && selectedProductionId && (
+        <ProductionMaterialForm
+          productionId={selectedProductionId}
+          onClose={() => setShowForm(false)}
+          onSuccess={() => {
+            fetchProductions();
+            setShowForm(false);
+          }}
+        />
       )}
     </div>
   );
