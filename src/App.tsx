@@ -10,6 +10,7 @@ import User from './modules/users';
 import Permission from './modules/permission';
 import BatteryDesignPage from './modules/batteryDesign';
 import MaterialPage from './modules/material';
+import StatusPage from './modules/status';
 
 function ProtectedRoute({ children }: { children: ReactElement }) {
   const { isAuthenticated, loading } = useAuth();
@@ -78,6 +79,17 @@ function App() {
           <ProtectedRoute>
             <BaseLayout>
               <MaterialPage />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/status'
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <StatusPage />
             </BaseLayout>
           </ProtectedRoute>
         }
