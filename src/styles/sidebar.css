@@ -2,15 +2,14 @@
    사이드바
 ======================== */
 .sidebar {
-  /* ✅ 폭을 글씨 길이에 맞게 자동 조정 */
   width: fit-content;
-  min-width: 160px;
+  min-width: 180px;
   background: #1b263b;
   color: white;
   padding: 20px 16px;
   display: flex;
   flex-direction: column;
-  white-space: nowrap; /* 줄바꿈 방지 */
+  white-space: nowrap;
 }
 
 .sidebar h1 {
@@ -26,18 +25,51 @@
 }
 
 .sidebar li {
+  font-size: 15px;
+}
+
+/* 상위 메뉴 */
+.menu-title {
   padding: 10px 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
-  font-size: 15px;
+  font-weight: 600;
 }
 
-.sidebar li:hover {
+.menu-title:hover {
+  background: #415a77;
+}
+
+/* 하위 메뉴 */
+.submenu {
+  margin-left: 10px;
+  margin-top: 5px;
+  list-style: none;
+  padding-left: 10px;
+  border-left: 2px solid #415a77;
+}
+
+.submenu li {
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 14px;
+  color: #d1d5db;
+}
+
+.submenu li:hover {
+  background: #778da9;
+  color: #fff;
+}
+
+/* 기존 메뉴 hover 효과 유지 */
+.sidebar ul > li:not(.menu-title):hover {
   background: #778da9;
 }
 
-/* ✅ 반응형 개선 */
+/* 반응형 */
 @media (max-width: 1024px) {
   .sidebar {
     min-width: 140px;
@@ -48,7 +80,7 @@
     font-size: 18px;
   }
 
-  .sidebar li {
+  .menu-title {
     font-size: 14px;
   }
 }

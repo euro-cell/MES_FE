@@ -4,6 +4,9 @@ import BaseLayout from './layouts/BaseLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { useAuth } from './hooks/useAuth';
+import { MENU_CONFIG } from './modules/menuConfig'; // ✅ 중앙 메뉴 설정 import
+
+// ✅ 기존 모듈
 import Dashboard from './modules/dashboard';
 import ProductionPage from './modules/production';
 import User from './modules/users';
@@ -11,6 +14,14 @@ import Permission from './modules/permission';
 import BatteryDesignPage from './modules/batteryDesign';
 import MaterialPage from './modules/material';
 import StatusPage from './modules/status';
+
+// ✅ 신규 모듈 (modules-new)
+import ProductionNew from './modules/new/production';
+import StockNew from './modules/new/stock';
+import QualityNew from './modules/new/quality';
+import PlantNew from './modules/new/plant';
+import DrawNew from './modules/new/draw';
+import EtcNew from './modules/new/etc';
 
 function ProtectedRoute({ children }: { children: ReactElement }) {
   const { isAuthenticated, loading } = useAuth();
@@ -24,11 +35,11 @@ function ProtectedRoute({ children }: { children: ReactElement }) {
 function App() {
   return (
     <Routes>
-      {/* 로그인 & 회원가입은 레이아웃 없이 표시 */}
+      {/* ✅ 로그인 & 회원가입은 레이아웃 없이 표시 */}
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
 
-      {/* 보호된 라우트 (로그인 필요) */}
+      {/* ✅ 보호된 라우트 (로그인 필요) */}
       <Route
         path='/'
         element={
@@ -40,6 +51,7 @@ function App() {
         }
       />
 
+      {/* ✅ 기존 메뉴 라우팅 */}
       <Route
         path='/dashboard'
         element={
@@ -117,7 +129,85 @@ function App() {
         }
       />
 
-      {/* 잘못된 경로 → 대시보드로 리다이렉트 */}
+      {/* ✅ 신규 메뉴 (modules-new) - MENU_CONFIG 사용 */}
+      <Route
+        path={MENU_CONFIG.dashboard.path}
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <Dashboard />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={MENU_CONFIG.production.path}
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <ProductionNew />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={MENU_CONFIG.stock.path}
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <StockNew />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={MENU_CONFIG.quality.path}
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <QualityNew />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={MENU_CONFIG.plant.path}
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <PlantNew />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={MENU_CONFIG.draw.path}
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <DrawNew />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={MENU_CONFIG.etc.path}
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <EtcNew />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ✅ 잘못된 경로 → 대시보드로 리다이렉트 */}
       <Route path='*' element={<Navigate to='/dashboard' replace />} />
     </Routes>
   );

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { ROLE_LABELS } from '../modules/users/userRoleMap';
+import { MENU_CONFIG } from '../modules/menuConfig';
 import '../styles/topbar.css';
 
 const Topbar: React.FC = () => {
@@ -25,20 +26,24 @@ const Topbar: React.FC = () => {
 
   const displayRole = user?.role ? ROLE_LABELS[user.role] || user.role : '';
 
-  const pathTitleMap: Record<string, string> = {
-    '/dashboard': '대시보드',
-    '/users': '인원관리',
-    '/production': '생산관리',
-    '/specification': '전지설계',
-    '/material': '자재관리',
-    '/process': '공정관리',
-    '/quality': '품질관리',
-    '/status': '설비현황',
-    '/permission': '메뉴접근관리',
-  };
+  // ✅ MENU_CONFIG에서 경로와 제목 자동 매칭
+  const allMenus = Object.values(MENU_CONFIG);
+  const currentMenu = allMenus.find(menu => location.pathname.startsWith(menu.path)) || null;
 
-  const currentPath = Object.keys(pathTitleMap).find(key => location.pathname.startsWith(key));
-  const pageTitle = currentPath ? pathTitleMap[currentPath] : '유로셀 MES';
+  // ✅ 기본 페이지명
+  const pageTitle =
+    currentMenu?.title ||
+    (() => {
+      // 기존 modules용 라우트도 표시 가능하게 보완
+      if (location.pathname.startsWith('/dashboard')) return '대시보드';
+      if (location.pathname.startsWith('/users')) return '인원관리';
+      if (location.pathname.startsWith('/production')) return '생산관리';
+      if (location.pathname.startsWith('/specification')) return '전지설계';
+      if (location.pathname.startsWith('/material')) return '자재관리';
+      if (location.pathname.startsWith('/status')) return '공정현황';
+      if (location.pathname.startsWith('/permission')) return '메뉴접근관리';
+      return '유로셀 MES';
+    })();
 
   return (
     <div className='top-bar'>
@@ -60,4 +65,5 @@ const Topbar: React.FC = () => {
     </div>
   );
 };
+
 export default Topbar;

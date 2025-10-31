@@ -1,0 +1,36 @@
+.module-page {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.submenu-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.submenu-bar button {
+  background: #e2e8f0;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.submenu-bar button:hover {
+  background: #cbd5e1;
+}
+
+.module-content {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  padding: 30px;
+  text-align: center;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 15px;
+}
