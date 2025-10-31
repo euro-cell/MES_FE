@@ -8,6 +8,7 @@ interface FormState {
   round: number;
   batteryType: string;
   capacity: string | number;
+  targetQuantity: number;
 }
 
 interface Props {
@@ -37,6 +38,7 @@ export default function DashboardRegister({ form, setForm, onSubmit, refreshProj
         round: 1,
         batteryType: '',
         capacity: '',
+        targetQuantity: 0,
       });
     } catch (err) {
       console.error('등록 실패:', err);
@@ -92,6 +94,19 @@ export default function DashboardRegister({ form, setForm, onSubmit, refreshProj
           <label>용량</label>
           <input type='number' name='capacity' value={form.capacity} onChange={handleChange} placeholder='예: 38' />
         </div>
+        <div className='form-row'>
+          <label>목표 수량</label>
+          <input
+            type='number'
+            name='targetQuantity'
+            value={form.targetQuantity || ''}
+            onChange={handleChange}
+            placeholder='예: 1000'
+            required
+          />
+        </div>
+
+        {/* ✅ 등록 버튼 (기존 그대로 유지) */}
         <button type='submit' className='create-project-btn'>
           등록하기
         </button>

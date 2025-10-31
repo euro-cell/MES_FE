@@ -201,6 +201,12 @@
   border-radius: 6px;
 }
 
+.inline-form .form-row label[for='targetQuantity'],
+.inline-form .form-row label:has(+ input[name='targetQuantity']) {
+  font-weight: 700;
+  color: #1b263b;
+}
+
 .inline-form button {
   margin-top: 10px;
   align-self: flex-start;
