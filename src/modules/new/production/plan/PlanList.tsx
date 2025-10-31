@@ -54,11 +54,11 @@ export default function PlanList() {
               <td>{item.targetQuantity}</td>
               <td>
                 <div className='action-buttons'>
-                  <button disabled={!item.isPlan} className={item.isPlan ? 'view-btn' : 'view-btn disabled'}>
-                    조회
-                  </button>
                   <button onClick={() => navigate('register', { state: { project: item } })} className='register-btn'>
                     등록
+                  </button>
+                  <button disabled={!item.isPlan} className={item.isPlan ? 'view-btn' : 'view-btn disabled'}>
+                    조회
                   </button>
                   <button
                     onClick={() => {
