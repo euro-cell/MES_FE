@@ -1,22 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import '../../styles/moduleIndex.css';
+import '../../../styles/moduleIndex.css';
+import { MENU_CONFIG } from '../../menuConfig';
 
 export default function ProductionIndex() {
   const navigate = useNavigate();
-
-  const subMenus = [
-    { title: '생산계획', path: '/prod/plan' },
-    { title: '설계 및 자재 소요량', path: '/prod/spec' },
-    { title: '작업 일지', path: '/prod/log' },
-    { title: '생산 현황 (수율)', path: '/prod/status' },
-    { title: 'Lot 관리', path: '/prod/lot' },
-  ];
+  const { title, sub } = MENU_CONFIG.production;
 
   return (
     <div className='module-page'>
+      <h2>{title}</h2>
       <div className='submenu-bar'>
-        {subMenus.map(menu => (
-          <button key={menu.title} onClick={() => navigate(menu.path)}>
+        {sub.map(menu => (
+          <button key={menu.path} onClick={() => navigate(menu.path)} className='submenu-button'>
             {menu.title}
           </button>
         ))}

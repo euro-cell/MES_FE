@@ -1,19 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import '../../styles/moduleIndex.css';
+import '../../../styles/moduleIndex.css';
+import { MENU_CONFIG } from '../../menuConfig';
 
 export default function PlantIndex() {
   const navigate = useNavigate();
-
-  const subMenus = [
-    { title: '설비 이력 카드', path: '/plant/history' },
-    { title: '설비 관리 대장', path: '/plant/list' },
-  ];
+  const { title, sub } = MENU_CONFIG.plant;
 
   return (
     <div className='module-page'>
+      <h2>{title}</h2>
       <div className='submenu-bar'>
-        {subMenus.map(menu => (
-          <button key={menu.title} onClick={() => navigate(menu.path)}>
+        {sub.map(menu => (
+          <button key={menu.path} onClick={() => navigate(menu.path)} className='submenu-button'>
             {menu.title}
           </button>
         ))}

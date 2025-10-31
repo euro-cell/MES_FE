@@ -1,16 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import '../../styles/moduleIndex.css';
+import '../../../styles/moduleIndex.css';
+import { MENU_CONFIG } from '../../menuConfig';
 
 export default function DrawIndex() {
   const navigate = useNavigate();
-
-  const subMenus = [{ title: '도면 관리 대장', path: '/draw/list' }];
+  const { title, sub } = MENU_CONFIG.draw;
 
   return (
     <div className='module-page'>
+      <h2>{title}</h2>
       <div className='submenu-bar'>
-        {subMenus.map(menu => (
-          <button key={menu.title} onClick={() => navigate(menu.path)}>
+        {sub.map(menu => (
+          <button key={menu.path} onClick={() => navigate(menu.path)} className='submenu-button'>
             {menu.title}
           </button>
         ))}

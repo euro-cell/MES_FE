@@ -1,20 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import '../../styles/moduleIndex.css';
+import '../../../styles/moduleIndex.css';
+import { MENU_CONFIG } from '../../menuConfig';
 
 export default function QualityIndex() {
   const navigate = useNavigate();
-
-  const subMenus = [
-    { title: 'IQC', path: '/quality-new/iqc' },
-    { title: 'LQC', path: '/quality-new/lqc' },
-    { title: 'OQC', path: '/quality-new/oqc' },
-  ];
+  const { title, sub } = MENU_CONFIG.quality;
 
   return (
     <div className='module-page'>
+      <h2>{title}</h2>
       <div className='submenu-bar'>
-        {subMenus.map(menu => (
-          <button key={menu.title} onClick={() => navigate(menu.path)}>
+        {sub.map(menu => (
+          <button key={menu.path} onClick={() => navigate(menu.path)} className='submenu-button'>
             {menu.title}
           </button>
         ))}

@@ -6,7 +6,7 @@ export const MENU_CONFIG = {
     path: '/prod',
     sub: [
       { title: '생산계획', path: '/prod/plan' },
-      { title: '설계 및 자재 소요량', path: '/specification' },
+      { title: '설계 및 자재 소요량', path: '/prod/spec' },
       { title: '작업 일지', path: '/prod/log' },
       { title: '생산 현황 (수율)', path: '/prod/status' },
       { title: 'Lot 관리', path: '/prod/lot' },

@@ -1,19 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import '../../styles/moduleIndex.css';
+import '../../../styles/moduleIndex.css';
+import { MENU_CONFIG } from '../../menuConfig';
 
 export default function StockIndex() {
   const navigate = useNavigate();
-
-  const subMenus = [
-    { title: '원자재 관리', path: '/stock/material' },
-    { title: '셀 관리', path: '/stock/cell' },
-  ];
+  const { title, sub } = MENU_CONFIG.stock;
 
   return (
     <div className='module-page'>
+      <h2>{title}</h2>
       <div className='submenu-bar'>
-        {subMenus.map(menu => (
-          <button key={menu.title} onClick={() => navigate(menu.path)}>
+        {sub.map(menu => (
+          <button key={menu.path} onClick={() => navigate(menu.path)} className='submenu-button'>
             {menu.title}
           </button>
         ))}
