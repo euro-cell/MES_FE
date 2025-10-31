@@ -58,15 +58,15 @@
 
 /* 조회 버튼 */
 .view-btn {
-  background: #2563eb;
+  background-color: #2563eb;
 }
 .view-btn:hover {
-  background: #1e40af;
+  background-color: #1e40af;
 }
 
-/* 조회 비활성화 상태 */
+/* 🔧 비활성화 상태 */
 .view-btn.disabled {
-  background: #94a3b8;
+  background-color: #f3e8c8;
   cursor: not-allowed;
 }
 
@@ -76,6 +76,18 @@
 }
 .register-btn:hover {
   background: #15803d;
+}
+
+/* 수정 버튼 */
+.edit-btn {
+  background-color: #f59e0b;
+}
+.edit-btn:hover {
+  background-color: #d97706;
+}
+.edit-btn.disabled {
+  background-color: #f3e8c8;
+  cursor: not-allowed;
 }
 
 /* 삭제 버튼 */

@@ -57,9 +57,23 @@ export default function PlanList() {
                   <button onClick={() => navigate('register', { state: { project: item } })} className='register-btn'>
                     등록
                   </button>
-                  <button disabled={!item.isPlan} className={item.isPlan ? 'view-btn' : 'view-btn disabled'}>
+
+                  <button
+                    disabled={!item.isPlan}
+                    onClick={() => item.isPlan && navigate('view', { state: { project: item } })}
+                    className={item.isPlan ? 'view-btn' : 'view-btn disabled'}
+                  >
                     조회
                   </button>
+
+                  <button
+                    disabled={!item.isPlan}
+                    onClick={() => navigate('register', { state: { project: item, edit: true } })}
+                    className={item.isPlan ? 'edit-btn' : 'edit-btn disabled'}
+                  >
+                    수정
+                  </button>
+
                   <button
                     onClick={() => {
                       if (confirm('삭제하시겠습니까?')) deleteProject(item.id).then(loadData);
