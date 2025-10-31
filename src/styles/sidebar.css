@@ -33,35 +33,30 @@
   padding: 10px 12px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
   font-weight: 600;
+  color: #f8fafc;
 }
 
 .menu-title:hover {
   background: #415a77;
 }
 
-/* 하위 메뉴 */
-.submenu {
-  margin-left: 10px;
-  margin-top: 5px;
-  list-style: none;
-  padding-left: 10px;
-  border-left: 2px solid #415a77;
+/* ✅ 현재 위치한 최상단 메뉴 강조 */
+.menu-title.active-top {
+  background: #2d72d9;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 0 6px rgba(45, 114, 217, 0.4);
 }
 
-.submenu li {
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s;
-  font-size: 14px;
-  color: #d1d5db;
-}
-
-.submenu li:hover {
-  background: #778da9;
-  color: #fff;
+/* ======================
+   구분선
+====================== */
+/* 구분선 */
+.sidebar hr {
+  margin: 15px 0;
+  border: 0.5px solid #415a77;
 }
 
 /* 기존 메뉴 hover 효과 유지 */

@@ -1,38 +1,43 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/sidebar.css';
-import { MENU_CONFIG } from '../modules/menuConfig'; // ✅ 중앙 메뉴 설정 import
+import { MENU_CONFIG } from '../modules/menuConfig';
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // 아직 준비되지 않은 메뉴용
-  const handlePending = (name: string) => {
-    alert(`${name} 페이지는 준비 중입니다.`);
+  const NEW_MENUS = Object.values(MENU_CONFIG);
+
+  const getActiveMenuPath = () => {
+    for (const menu of NEW_MENUS) {
+      if (location.pathname.startsWith(menu.path)) {
+        return menu.path;
+      }
+    }
+    return '';
   };
 
-  // ✅ 중앙에서 관리되는 메뉴 불러오기
-  const NEW_MENUS = Object.values(MENU_CONFIG);
+  const activeMenuPath = getActiveMenuPath();
 
   return (
     <aside className='sidebar'>
       <h1>유로셀 MES</h1>
 
       <ul>
-        {/* =========================
-            🔹 신규 메뉴 영역
-        ========================= */}
         {NEW_MENUS.map(menu => (
-          <li key={menu.title} className='menu-title' onClick={() => navigate(menu.path)}>
+          <li
+            key={menu.title}
+            className={`menu-title ${activeMenuPath === menu.path ? 'active-top' : ''}`} // ✅ 현재 메뉴면 강조
+            onClick={() => navigate(menu.path)}
+          >
             {menu.title}
           </li>
         ))}
 
-        <hr style={{ margin: '15px 0', border: '0.5px solid #415a77' }} />
+        <hr />
 
-        {/* =========================
-            🔹 기존 메뉴 영역 (원본 유지)
-        ========================= */}
+        {/* ✅ 기존 메뉴 (임시 유지) */}
         <li onClick={() => navigate('/dashboard')}>대시보드</li>
         <li onClick={() => navigate('/production')}>생산계획</li>
         <li onClick={() => navigate('/specification')}>전지설계</li>
@@ -42,10 +47,6 @@ const Sidebar: React.FC = () => {
         <li></li>
         <li onClick={() => navigate('/users')}>인원관리</li>
         <li onClick={() => navigate('/permission')}>메뉴접근관리</li>
-
-        <li>-- 🔽 미완성 🔽 --</li>
-        <li onClick={() => handlePending('공정관리')}>공정관리</li>
-        <li onClick={() => handlePending('품질관리')}>품질관리</li>
       </ul>
     </aside>
   );

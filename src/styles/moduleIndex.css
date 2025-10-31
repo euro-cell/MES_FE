@@ -9,6 +9,7 @@
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  padding-left: 15px;
 }
 
 .submenu-button {
