@@ -18,7 +18,7 @@ export default function ProductionIndex() {
 
       <div className='module-content'>
         <Routes>
-          <Route path='plan' element={<PlanPage />} />
+          <Route path='plan/*' element={<PlanPage />} />
           {/* <Route path="spec" element={<SpecPage />} />
           <Route path="log" element={<LogPage />} />
           <Route path="status" element={<StatusPage />} />
