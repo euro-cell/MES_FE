@@ -11,18 +11,27 @@
   flex-wrap: wrap;
 }
 
-.submenu-bar button {
+.submenu-button {
   background: #e2e8f0;
   border: none;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: 0.2s;
+  transition: all 0.2s;
+  color: #334155;
 }
 
-.submenu-bar button:hover {
+.submenu-button:hover {
   background: #cbd5e1;
+}
+
+/* ✅ 활성화된 버튼 */
+.submenu-button.active {
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
 }
 
 .module-content {

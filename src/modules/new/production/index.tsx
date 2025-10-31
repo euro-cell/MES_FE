@@ -1,23 +1,29 @@
-import { useNavigate } from 'react-router-dom';
-import '../../../styles/moduleIndex.css';
+import { Routes, Route } from 'react-router-dom';
 import { MENU_CONFIG } from '../../menuConfig';
+import SubmenuBar from '../../../components/SubmenuBar';
+import '../../../styles/moduleIndex.css';
+
+import PlanPage from './plan';
+// import SpecPage from './spec';
+// import LogPage from './log';
+// import StatusPage from './status';
+// import LotPage from './lot';
 
 export default function ProductionIndex() {
-  const navigate = useNavigate();
-  const { title, sub } = MENU_CONFIG.production;
+  const { sub } = MENU_CONFIG.production;
 
   return (
     <div className='module-page'>
-      <h2>{title}</h2>
-      <div className='submenu-bar'>
-        {sub.map(menu => (
-          <button key={menu.path} onClick={() => navigate(menu.path)} className='submenu-button'>
-            {menu.title}
-          </button>
-        ))}
-      </div>
+      <SubmenuBar menus={sub} />
+
       <div className='module-content'>
-        <p>아직 선택된 메뉴가 없습니다.</p>
+        <Routes>
+          <Route path='plan' element={<PlanPage />} />
+          {/* <Route path="spec" element={<SpecPage />} />
+          <Route path="log" element={<LogPage />} />
+          <Route path="status" element={<StatusPage />} />
+          <Route path="lot" element={<LotPage />} /> */}
+        </Routes>
       </div>
     </div>
   );
