@@ -142,7 +142,7 @@ function App() {
       />
 
       <Route
-        path={MENU_CONFIG.production.path}
+        path={`${MENU_CONFIG.production.path}/*`}
         element={
           <ProtectedRoute>
             <BaseLayout>
@@ -153,7 +153,7 @@ function App() {
       />
 
       <Route
-        path={MENU_CONFIG.stock.path}
+        path={`${MENU_CONFIG.stock.path}/*`}
         element={
           <ProtectedRoute>
             <BaseLayout>
@@ -164,7 +164,7 @@ function App() {
       />
 
       <Route
-        path={MENU_CONFIG.quality.path}
+        path={`${MENU_CONFIG.quality.path}/*`}
         element={
           <ProtectedRoute>
             <BaseLayout>
@@ -175,7 +175,7 @@ function App() {
       />
 
       <Route
-        path={MENU_CONFIG.plant.path}
+        path={`${MENU_CONFIG.plant.path}/*`}
         element={
           <ProtectedRoute>
             <BaseLayout>
@@ -186,7 +186,7 @@ function App() {
       />
 
       <Route
-        path={MENU_CONFIG.draw.path}
+        path={`${MENU_CONFIG.draw.path}/*`}
         element={
           <ProtectedRoute>
             <BaseLayout>
@@ -197,7 +197,7 @@ function App() {
       />
 
       <Route
-        path={MENU_CONFIG.etc.path}
+        path={`${MENU_CONFIG.etc.path}/*`}
         element={
           <ProtectedRoute>
             <BaseLayout>
