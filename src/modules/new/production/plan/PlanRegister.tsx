@@ -167,8 +167,8 @@ export default function PlanRegister() {
     <div className='plan-register-page'>
       <div className='header'>
         <h3>📅 생산계획 등록 - {project?.name}</h3>
-        <button onClick={() => navigate('/prod/plan')} className='close-btn'>
-          ✕
+        <button className='back-btn' onClick={() => navigate(-1)}>
+          ← 돌아가기
         </button>
       </div>
 
@@ -232,7 +232,7 @@ export default function PlanRegister() {
 
             <div className='save-area'>
               <button onClick={handleSave} className='save-btn'>
-                저장
+                💾 저장
               </button>
             </div>
           </div>
