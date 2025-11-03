@@ -16,6 +16,7 @@ import MaterialPage from './modules/material';
 import StatusPage from './modules/status';
 
 // ✅ 신규 모듈 (modules-new)
+import DashboardNew from './modules/new/dashboard';
 import ProductionNew from './modules/new/production';
 import StockNew from './modules/new/stock';
 import QualityNew from './modules/new/quality';
@@ -135,7 +136,7 @@ function App() {
         element={
           <ProtectedRoute>
             <BaseLayout>
-              <Dashboard />
+              <DashboardNew />
             </BaseLayout>
           </ProtectedRoute>
         }
