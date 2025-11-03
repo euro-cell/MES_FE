@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from '../../../../styles/production/plan/PlanList.module.css';
 import { getPlanProjects, deleteProject } from './PlanService';
 import type { PlanProject } from './PlanTypes';
+import TooltipButton from '../../../../components/TooltipButton';
 
 export default function PlanList() {
   const [data, setData] = useState<PlanProject[]>([]);
@@ -54,38 +55,37 @@ export default function PlanList() {
               <td>{item.targetQuantity}</td>
               <td>
                 <div className={styles.actionButtons}>
-                  <button
+                  <TooltipButton
+                    label='등록'
+                    variant='register'
                     disabled={item.isPlan}
+                    tooltip='이미 계획이 등록되어 있습니다.'
                     onClick={() => !item.isPlan && navigate('register', { state: { project: item } })}
-                    className={item.isPlan ? `${styles.registerBtn} ${styles.disabled}` : styles.registerBtn}
-                  >
-                    등록
-                  </button>
+                  />
 
-                  <button
+                  <TooltipButton
+                    label='조회'
+                    variant='view'
                     disabled={!item.isPlan}
+                    tooltip='계획이 등록되어 있지 않습니다.'
                     onClick={() => item.isPlan && navigate('view', { state: { project: item } })}
-                    className={item.isPlan ? styles.viewBtn : `${styles.viewBtn} ${styles.disabled}`}
-                  >
-                    조회
-                  </button>
+                  />
 
-                  <button
+                  <TooltipButton
+                    label='수정'
+                    variant='edit'
                     disabled={!item.isPlan}
+                    tooltip='계획이 등록되어 있지 않습니다.'
                     onClick={() => navigate('register', { state: { project: item, edit: true } })}
-                    className={item.isPlan ? styles.editBtn : `${styles.editBtn} ${styles.disabled}`}
-                  >
-                    수정
-                  </button>
+                  />
 
-                  <button
+                  <TooltipButton
+                    label='삭제'
+                    variant='delete'
                     onClick={() => {
                       if (confirm('삭제하시겠습니까?')) deleteProject(item.id).then(loadData);
                     }}
-                    className={styles.deleteBtn}
-                  >
-                    삭제
-                  </button>
+                  />
                 </div>
               </td>
             </tr>
