@@ -1,4 +1,5 @@
 import type { DashboardProject, DashboardProcessRaw } from './types';
+import '../../../styles/dashboard/summary.css';
 
 interface Props {
   processData: Record<string, DashboardProcessRaw>;
@@ -18,9 +19,6 @@ export default function DashboardSummary({ processData, projects, onSelectProjec
           </li>
         ))}
       </ul>
-
-      <hr />
-
       <ul className='summary-list registered-list'>
         {projects.length > 0 ? (
           projects.map(p => <li key={p.id}>{p.name}</li>)
