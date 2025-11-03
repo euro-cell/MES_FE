@@ -4,11 +4,17 @@ import { renderProcessChart } from './chartUtils';
 import { getAllProductions } from './dashboardService';
 import type { DashboardProject, DashboardProcessRaw, DashboardProgressData } from './types';
 import DashboardSummary from './DashboardSummary';
+import DashboardProgress from './DashboardProgress';
 
 export default function DashboardContent() {
   const [projects, setProjects] = useState<DashboardProject[]>([]);
   const [chart, setChart] = useState<Chart | null>(null);
-  const [progress, setProgress] = useState<DashboardProgressData>({ electrode: '-', assembly: '-', formation: '-' });
+  const [progress, setProgress] = useState<DashboardProgressData>({
+    electrode: '-',
+    assembly: '-',
+    formation: '-',
+  });
+
   const processData: Record<string, DashboardProcessRaw> = {
     'A 프로젝트': { 전극: 50, 조립: 20, 화성: 80 },
     'B 프로젝트': { 전극: 70, 조립: 40, 화성: 50 },
@@ -40,11 +46,10 @@ export default function DashboardContent() {
 
   return (
     <div className='dashboard-content'>
-      {' '}
       <div className='dashboard-top'>
-        {' '}
-        <DashboardSummary processData={processData} projects={projects} onSelectProject={renderChart} />{' '}
-      </div>{' '}
+        <DashboardSummary processData={processData} projects={projects} onSelectProject={renderChart} />
+        <DashboardProgress progress={progress} />
+      </div>
     </div>
   );
 }
