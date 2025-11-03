@@ -2,7 +2,6 @@
    대시보드 전용
 ======================== */
 .dashboard-page {
-  background: #f4f6f8;
   height: 100vh;
   display: flex;
   flex-direction: column;

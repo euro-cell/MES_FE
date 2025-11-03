@@ -9,13 +9,11 @@ interface BaseLayoutProps {
 
 const BaseLayout: React.FC<BaseLayoutProps> = ({ children }) => {
   return (
-    <div className='dashboard-page'>
-      <div className='container'>
-        <Sidebar />
-        <div className='main'>
-          <Topbar />
-          <div className='content'>{children}</div>
-        </div>
+    <div className='container'>
+      <Sidebar />
+      <div className='main'>
+        <Topbar />
+        <div className='content'>{children}</div>
       </div>
     </div>
   );
