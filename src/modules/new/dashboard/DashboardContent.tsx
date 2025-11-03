@@ -81,6 +81,7 @@ export default function DashboardContent() {
           setForm={setForm}
           onSubmit={createProduction}
           refreshProjects={fetchProjectsAndPlans}
+          projects={projects}
         />
       </div>
 

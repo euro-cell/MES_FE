@@ -1,5 +1,7 @@
-import React from 'react';
-import type { DashboardFormState } from './types';
+import React, { useState } from 'react';
+import type { DashboardFormState, DashboardProject } from './types';
+import DashboardEditModal from './DashboardEditModal';
+import DashboardDeleteModal from './DashboardDeleteModal';
 import '../../../styles/dashboard/manager.css';
 
 interface Props {
@@ -7,14 +9,20 @@ interface Props {
   setForm: React.Dispatch<React.SetStateAction<DashboardFormState>>;
   onSubmit: (data: DashboardFormState) => Promise<void>;
   refreshProjects: () => Promise<void>;
+  projects: DashboardProject[];
 }
 
-export default function DashboardProjectManager({ form, setForm, onSubmit, refreshProjects }: Props) {
+export default function DashboardProjectManager({ form, setForm, onSubmit, refreshProjects, projects }: Props) {
+  const [showEdit, setShowEdit] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+
+  /** ✅ 입력 변경 */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm((prev: DashboardFormState) => ({ ...prev, [name]: value }));
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
+  /** ✅ 등록 */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -39,7 +47,20 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
 
   return (
     <div className='dashboard-project-manager box'>
-      <h3>프로젝트 관리</h3>
+      {/* ✅ 제목 + 버튼 */}
+      <div className='manager-header'>
+        <h3>프로젝트 관리</h3>
+        <div className='manager-header-actions'>
+          <button type='button' className='edit-open-btn' onClick={() => setShowEdit(true)}>
+            수정
+          </button>
+          <button type='button' className='delete-open-btn' onClick={() => setShowDelete(true)}>
+            삭제
+          </button>
+        </div>
+      </div>
+
+      {/* ✅ 등록 폼 */}
       <form onSubmit={handleSubmit} className='manager-form'>
         <div className='form-row'>
           <label>회사 약어</label>
@@ -107,6 +128,18 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
           등록하기
         </button>
       </form>
+
+      {/* ✅ 모달 */}
+      {showEdit && (
+        <DashboardEditModal projects={projects} onClose={() => setShowEdit(false)} refreshProjects={refreshProjects} />
+      )}
+      {showDelete && (
+        <DashboardDeleteModal
+          projects={projects}
+          onClose={() => setShowDelete(false)}
+          refreshProjects={refreshProjects}
+        />
+      )}
     </div>
   );
 }

@@ -20,13 +20,16 @@ export const getProductionPlan = async (id: number): Promise<DashboardProjectPla
 };
 
 export const createProduction = async (form: any) => {
-  const res = await axios.post(`${API_BASE}/production`, form, {
-    withCredentials: true,
-  });
+  const res = await axios.post(`${API_BASE}/production`, form, { withCredentials: true });
   return res.data;
 };
 
-export const getDashboardProjects = async (): Promise<DashboardProject[]> => {
-  const res = await axios.get(`${API_BASE}/production`, { withCredentials: true });
+export const updateProduction = async (id: number, form: any) => {
+  const res = await axios.patch(`${API_BASE}/production/${id}`, form, { withCredentials: true });
+  return res.data;
+};
+
+export const deleteProduction = async (id: number) => {
+  const res = await axios.delete(`${API_BASE}/production/${id}`, { withCredentials: true });
   return res.data;
 };
