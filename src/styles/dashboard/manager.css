@@ -1,0 +1,48 @@
+.dashboard-project-manager {
+  display: flex;
+  flex-direction: column;
+}
+
+.manager-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-row label {
+  flex: 0 0 100px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-row input,
+.form-row select {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.manager-btn {
+  align-self: flex-start;
+  padding: 8px 14px;
+  background: #1b263b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.manager-btn:hover {
+  background: #34495e;
+}

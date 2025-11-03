@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import Chart from 'chart.js/auto';
 import { renderProcessChart } from './chartUtils';
-import { getAllProductions } from './dashboardService';
-import type { DashboardProject, DashboardProcessRaw, DashboardProgressData } from './types';
+import { getAllProductions, createProduction } from './dashboardService';
+import type { DashboardProject, DashboardProcessRaw, DashboardProgressData, DashboardFormState } from './types';
 import DashboardSummary from './DashboardSummary';
 import DashboardProgress from './DashboardProgress';
+import DashboardProjectManager from './DashboardProjectManager';
 
 export default function DashboardContent() {
   const [projects, setProjects] = useState<DashboardProject[]>([]);
@@ -13,6 +14,17 @@ export default function DashboardContent() {
     electrode: '-',
     assembly: '-',
     formation: '-',
+  });
+
+  const [form, setForm] = useState<DashboardFormState>({
+    company: '',
+    mode: '',
+    year: new Date().getFullYear(),
+    month: 1,
+    round: 1,
+    batteryType: '',
+    capacity: '',
+    targetQuantity: 0,
   });
 
   const processData: Record<string, DashboardProcessRaw> = {
@@ -49,6 +61,12 @@ export default function DashboardContent() {
       <div className='dashboard-top'>
         <DashboardSummary processData={processData} projects={projects} onSelectProject={renderChart} />
         <DashboardProgress progress={progress} />
+        <DashboardProjectManager
+          form={form}
+          setForm={setForm}
+          onSubmit={createProduction}
+          refreshProjects={fetchProjects}
+        />
       </div>
     </div>
   );
