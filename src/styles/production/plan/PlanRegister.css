@@ -1,7 +1,7 @@
 .plan-register-page {
   background: #fff;
   border-radius: 8px;
-  padding: 25px 30px;
+  padding: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -45,7 +45,6 @@
   background: #f8fafc;
   padding: 10px 14px;
   border-radius: 6px;
-  margin: 10px 0 20px 0;
   font-weight: 600;
   color: #334155;
 }
@@ -53,8 +52,6 @@
 .process-table {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  padding: 20px;
 }
 
 /* ✅ 테이블 세로선/가로선 모두 표시 */
