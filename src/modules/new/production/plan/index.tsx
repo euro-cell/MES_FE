@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import PlanList from './PlanList';
 import PlanRegister from './PlanRegister';
+import PlanView from './PlanView';
 
 export default function PlanPage() {
   return (
@@ -8,6 +9,7 @@ export default function PlanPage() {
       <Routes>
         <Route path='/' element={<PlanList />} />
         <Route path='register' element={<PlanRegister />} />
+        <Route path='/view' element={<PlanView />} />
       </Routes>
     </div>
   );

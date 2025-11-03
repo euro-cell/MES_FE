@@ -22,3 +22,16 @@ export const savePlan = async (projectId: number, payload: PlanPayload) => {
 export const deleteProject = async (id: number): Promise<void> => {
   await axios.delete(`${API_BASE}/production/${id}`, { withCredentials: true });
 };
+
+/** 생산계획 조회 */
+export const getProductionPlan = async (projectId: number) => {
+  try {
+    const res = await axios.get(`${API_BASE}/production/${projectId}/plan`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err: any) {
+    console.error('❌ 생산계획 조회 실패:', err);
+    throw err.response?.data || err;
+  }
+};
