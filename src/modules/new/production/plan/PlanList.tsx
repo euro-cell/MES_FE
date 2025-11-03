@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../../../styles/production/plan/PlanList.css';
+import styles from '../../../../styles/production/plan/PlanList.module.css';
 import { getPlanProjects, deleteProject } from './PlanService';
 import type { PlanProject } from './PlanTypes';
 
@@ -22,8 +22,8 @@ export default function PlanList() {
   if (loading) return <p>⏳ 데이터를 불러오는 중...</p>;
 
   return (
-    <div className='plan-list'>
-      <table className='plan-table'>
+    <div className={styles.planList}>
+      <table className={styles.planTable}>
         <thead>
           <tr>
             <th>ID</th>
@@ -53,15 +53,19 @@ export default function PlanList() {
               <td>{item.capacity}</td>
               <td>{item.targetQuantity}</td>
               <td>
-                <div className='action-buttons'>
-                  <button onClick={() => navigate('register', { state: { project: item } })} className='register-btn'>
+                <div className={styles.actionButtons}>
+                  <button
+                    disabled={item.isPlan}
+                    onClick={() => !item.isPlan && navigate('register', { state: { project: item } })}
+                    className={item.isPlan ? `${styles.registerBtn} ${styles.disabled}` : styles.registerBtn}
+                  >
                     등록
                   </button>
 
                   <button
                     disabled={!item.isPlan}
                     onClick={() => item.isPlan && navigate('view', { state: { project: item } })}
-                    className={item.isPlan ? 'view-btn' : 'view-btn disabled'}
+                    className={item.isPlan ? styles.viewBtn : `${styles.viewBtn} ${styles.disabled}`}
                   >
                     조회
                   </button>
@@ -69,7 +73,7 @@ export default function PlanList() {
                   <button
                     disabled={!item.isPlan}
                     onClick={() => navigate('register', { state: { project: item, edit: true } })}
-                    className={item.isPlan ? 'edit-btn' : 'edit-btn disabled'}
+                    className={item.isPlan ? styles.editBtn : `${styles.editBtn} ${styles.disabled}`}
                   >
                     수정
                   </button>
@@ -78,7 +82,7 @@ export default function PlanList() {
                     onClick={() => {
                       if (confirm('삭제하시겠습니까?')) deleteProject(item.id).then(loadData);
                     }}
-                    className='delete-btn'
+                    className={styles.deleteBtn}
                   >
                     삭제
                   </button>

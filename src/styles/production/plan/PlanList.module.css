@@ -1,14 +1,14 @@
 /* ======================
   생산계획 리스트 테이블
 ====================== */
-.plan-list {
+.planList {
   background: #fff;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.plan-table {
+.planTable {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
@@ -17,7 +17,7 @@
   overflow: hidden;
 }
 
-.plan-table th {
+.planTable th {
   background: #f1f5f9;
   padding: 10px;
   border-bottom: 2px solid #e2e8f0;
@@ -26,27 +26,27 @@
   color: #334155;
 }
 
-.plan-table td {
+.planTable td {
   padding: 8px 10px;
   text-align: center;
   border-bottom: 1px solid #e2e8f0;
   color: #475569;
 }
 
-.plan-table tr:hover td {
+.planTable tr:hover td {
   background: #f8fafc;
 }
 
 /* ======================
   관리 버튼들
 ====================== */
-.action-buttons {
+.actionButtons {
   display: flex;
   justify-content: center;
   gap: 6px;
 }
 
-.action-buttons button {
+.actionButtons button {
   padding: 4px 8px;
   border: none;
   border-radius: 4px;
@@ -56,44 +56,53 @@
   transition: background 0.2s;
 }
 
-/* 조회 버튼 */
-.view-btn {
-  background-color: #2563eb;
-}
-.view-btn:hover {
-  background-color: #1e40af;
-}
-
-/* 🔧 비활성화 상태 */
-.view-btn.disabled {
-  background-color: #f3e8c8;
-  cursor: not-allowed;
-}
-
 /* 등록 버튼 */
-.register-btn {
+.registerBtn {
   background: #22c55e;
 }
-.register-btn:hover {
+.registerBtn:hover {
   background: #15803d;
+}
+.registerBtn.disabled,
+.registerBtn:disabled {
+  background-color: #72ca93;
+  color: #f8fafc;
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
+/* 조회 버튼 */
+.viewBtn {
+  background-color: #2563eb;
+}
+.viewBtn:hover {
+  background-color: #1e40af;
+}
+.viewBtn.disabled,
+.viewBtn:disabled {
+  background-color: #87b6f0;
+  color: #f8fafc;
+  cursor: not-allowed;
+  opacity: 0.9;
 }
 
 /* 수정 버튼 */
-.edit-btn {
+.editBtn {
   background-color: #f59e0b;
 }
-.edit-btn:hover {
+.editBtn:hover {
   background-color: #d97706;
 }
-.edit-btn.disabled {
+.editBtn.disabled,
+.editBtn:disabled {
   background-color: #f3e8c8;
   cursor: not-allowed;
 }
 
 /* 삭제 버튼 */
-.delete-btn {
+.deleteBtn {
   background: #ef4444;
 }
-.delete-btn:hover {
+.deleteBtn:hover {
   background: #b91c1c;
 }
