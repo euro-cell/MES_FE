@@ -1,14 +1,22 @@
 import { useEffect, useState } from 'react';
 import Chart from 'chart.js/auto';
 import { renderProcessChart } from './chartUtils';
-import { getAllProductions, createProduction } from './dashboardService';
-import type { DashboardProject, DashboardProcessRaw, DashboardProgressData, DashboardFormState } from './types';
+import { getAllProductions, getProductionPlan, createProduction } from './dashboardService';
+import type {
+  DashboardProject,
+  DashboardProcessRaw,
+  DashboardProgressData,
+  DashboardFormState,
+  DashboardProjectPlan,
+} from './types';
 import DashboardSummary from './DashboardSummary';
 import DashboardProgress from './DashboardProgress';
 import DashboardProjectManager from './DashboardProjectManager';
+import DashboardSchedule from './DashboardSchedule';
 
 export default function DashboardContent() {
   const [projects, setProjects] = useState<DashboardProject[]>([]);
+  const [plans, setPlans] = useState<{ project: DashboardProject; plan: DashboardProjectPlan | null }[]>([]);
   const [chart, setChart] = useState<Chart | null>(null);
   const [progress, setProgress] = useState<DashboardProgressData>({
     electrode: '-',
@@ -43,17 +51,24 @@ export default function DashboardContent() {
     setProgress(progressData);
   };
 
-  const fetchProjects = async () => {
+  const fetchProjectsAndPlans = async () => {
     try {
-      const data = await getAllProductions();
-      setProjects(data);
+      const prods = await getAllProductions();
+      const planData = await Promise.all(
+        prods.map(async p => {
+          const plan = await getProductionPlan(p.id);
+          return { project: p, plan };
+        })
+      );
+      setProjects(prods);
+      setPlans(planData);
     } catch (err) {
-      console.error('프로젝트 목록 불러오기 실패:', err);
+      console.error('프로젝트 및 계획 로드 실패:', err);
     }
   };
 
   useEffect(() => {
-    fetchProjects();
+    fetchProjectsAndPlans();
   }, []);
 
   return (
@@ -65,8 +80,12 @@ export default function DashboardContent() {
           form={form}
           setForm={setForm}
           onSubmit={createProduction}
-          refreshProjects={fetchProjects}
+          refreshProjects={fetchProjectsAndPlans}
         />
+      </div>
+
+      <div className='dashboard-bottom'>
+        <DashboardSchedule plans={plans} />
       </div>
     </div>
   );

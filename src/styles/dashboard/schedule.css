@@ -1,0 +1,124 @@
+.dashboard-bottom {
+  display: flex;
+  gap: 20px;
+}
+
+.schedule {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.schedule-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 240px) 1fr 100px;
+  align-items: center;
+  gap: 16px;
+}
+
+.schedule-header {
+  font-weight: 600;
+  color: #1b263b;
+}
+
+.schedule-header .timeline-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.year-label {
+  font-size: 13px;
+  color: #111827;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+  background: #f3f4f6;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.month-grid span {
+  padding: 6px 0;
+  border-right: 1px solid #e5e7eb;
+}
+
+.month-grid span:last-child {
+  border-right: none;
+}
+
+.timeline-track {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: center;
+  position: relative;
+  height: 34px;
+  border-radius: 10px;
+  background: #eef2ff;
+  overflow: hidden;
+}
+
+.timeline-track::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, #e5e7eb 1px, transparent 1px);
+  background-size: calc(100% / 12) 100%;
+}
+
+.timeline-bar {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: calc((var(--start) - 1) * (100% / 12));
+  width: calc(var(--span) * (100% / 12));
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+}
+
+.schedule-row .project-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: normal;
+}
+
+.schedule-row .project-cell strong {
+  font-size: 15px;
+  color: #1b263b;
+}
+
+.schedule-row .date-range {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.progress-cell {
+  text-align: right;
+}
+
+.progress-value {
+  font-weight: 700;
+  font-size: 14px;
+  color: #2563eb;
+}
