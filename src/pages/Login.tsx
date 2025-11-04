@@ -49,6 +49,7 @@ export default function Login() {
             value={employeeNumber}
             onChange={e => setEmployeeNumber(e.target.value)}
             required
+            autoComplete='username'
           />
           <input
             type='password'
@@ -56,6 +57,7 @@ export default function Login() {
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
+            autoComplete='current-password'
           />
           {error && <p className='error-text'>{error}</p>}
           <button type='submit'>로그인</button>

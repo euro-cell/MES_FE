@@ -52,7 +52,7 @@ export default function Register() {
     <div className='auth-page'>
       <div className='auth-container'>
         <h2>유로셀 MES 회원가입</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete='on'>
           <input
             type='text'
             name='employeeNumber'
@@ -60,8 +60,19 @@ export default function Register() {
             value={form.employeeNumber}
             onChange={handleChange}
             required
+            autoComplete='username'
           />
-          <input type='text' name='name' placeholder='이름' value={form.name} onChange={handleChange} required />
+
+          <input
+            type='text'
+            name='name'
+            placeholder='이름'
+            value={form.name}
+            onChange={handleChange}
+            required
+            autoComplete='name'
+          />
+
           <input
             type='password'
             name='password'
@@ -69,6 +80,7 @@ export default function Register() {
             value={form.password}
             onChange={handleChange}
             required
+            autoComplete='new-password'
           />
 
           {error && <p className='error-text'>{error}</p>}
