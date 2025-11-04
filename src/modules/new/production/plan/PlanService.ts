@@ -6,7 +6,6 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 /** 전체 프로젝트 조회 */
 export const getPlanProjects = async (): Promise<PlanProject[]> => {
   const res = await axios.get(`${API_BASE}/production`, { withCredentials: true });
-  console.log('🚀 ~ res:', res.data);
   return res.data;
 };
 
