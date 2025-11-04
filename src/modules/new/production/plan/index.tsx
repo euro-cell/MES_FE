@@ -7,9 +7,9 @@ export default function PlanPage() {
   return (
     <div className='module-page'>
       <Routes>
-        <Route path='/' element={<PlanList />} />
+        <Route path='' element={<PlanList />} />
         <Route path='register' element={<PlanRegister />} />
-        <Route path='/view' element={<PlanView />} />
+        <Route path='view' element={<PlanView />} />
       </Routes>
     </div>
   );
