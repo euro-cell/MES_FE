@@ -71,8 +71,6 @@ export default function PlanView() {
           weekHeaders: data.weekHeaders.flat(),
         };
       }
-
-      console.log('📊 Plan Data:', data);
       setPlanData(data);
     });
   }, [productionId]);
