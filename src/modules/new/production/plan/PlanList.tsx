@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../../styles/production/plan/PlanList.module.css';
-import { getPlanProjects, deleteProject } from './PlanService';
+import { getPlanProjects, deleteProductionPlan } from './PlanService';
 import type { PlanProject } from './PlanTypes';
 import TooltipButton from '../../../../components/TooltipButton';
 
@@ -83,7 +83,9 @@ export default function PlanList() {
                     label='삭제'
                     variant='delete'
                     onClick={() => {
-                      if (confirm('삭제하시겠습니까?')) deleteProject(item.id).then(loadData);
+                      if (confirm('생산 계획을 삭제하시겠습니까?')) {
+                        deleteProductionPlan(item.id).then(loadData);
+                      }
                     }}
                   />
                 </div>

@@ -45,3 +45,16 @@ export const updateProductionPlan = async (projectId: number, payload: any) => {
     throw err.response?.data || err;
   }
 };
+
+/** 생산계획 삭제 */
+export const deleteProductionPlan = async (projectId: number): Promise<void> => {
+  try {
+    await axios.delete(`${API_BASE}/production/${projectId}/plan`, {
+      withCredentials: true,
+    });
+    alert('✅ 생산 계획이 삭제되었습니다.');
+  } catch (err: any) {
+    console.error('❌ 생산계획 삭제 실패:', err);
+    alert('❌ 생산 계획 삭제 중 오류가 발생했습니다.');
+  }
+};
