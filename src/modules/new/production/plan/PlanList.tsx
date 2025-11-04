@@ -76,7 +76,7 @@ export default function PlanList() {
                     variant='edit'
                     disabled={!item.isPlan}
                     tooltip='계획이 등록되어 있지 않습니다.'
-                    onClick={() => navigate('register', { state: { project: item, edit: true } })}
+                    onClick={() => navigate('edit', { state: { project: item } })}
                   />
 
                   <TooltipButton

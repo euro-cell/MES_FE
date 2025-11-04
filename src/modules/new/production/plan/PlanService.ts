@@ -34,3 +34,14 @@ export const getProductionPlan = async (projectId: number) => {
     throw err.response?.data || err;
   }
 };
+
+/** 생산계획 수정 */
+export const updateProductionPlan = async (projectId: number, payload: any) => {
+  try {
+    const res = await axios.patch(`${API_BASE}/production/${projectId}/plan`, payload, { withCredentials: true });
+    return res.data;
+  } catch (err: any) {
+    console.error('❌ 생산계획 수정 실패:', err);
+    throw err.response?.data || err;
+  }
+};
