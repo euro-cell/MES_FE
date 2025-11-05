@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { createSpecification } from './SpecService';
 import styles from '../../../../styles/production/spec/specNew.module.css';
 
@@ -6,6 +7,7 @@ interface Field {
   value: string;
   remark: string;
 }
+
 interface SpecForm {
   cathode: {
     activeMaterial: Field[];
@@ -40,12 +42,12 @@ interface SpecForm {
   };
 }
 
-interface Props {
-  projectName: string;
-  productionId: number;
-}
+export default function SpecNew() {
+  const location = useLocation();
+  const { projectName, productionId } = location.state || {};
 
-export default function SpecNew({ projectName, productionId }: Props) {
+  if (!projectName || !productionId) return <p style={{ color: 'red' }}>⚠️ 프로젝트 정보가 없습니다.</p>;
+
   const [form, setForm] = useState<SpecForm>({
     cathode: {
       activeMaterial: [{ value: '', remark: '' }],
@@ -80,7 +82,6 @@ export default function SpecNew({ projectName, productionId }: Props) {
     },
   });
 
-  /** 🔹 값 변경 */
   const handleChange = (section: string, field: string, index: number, key: string, value: string) => {
     setForm(prev => {
       const copy = structuredClone(prev);
@@ -93,7 +94,6 @@ export default function SpecNew({ projectName, productionId }: Props) {
     });
   };
 
-  /** 🔹 + / - 버튼 동작 */
   const addRow = (section: string, field: string) => {
     setForm(prev => {
       const copy = structuredClone(prev);
@@ -110,24 +110,6 @@ export default function SpecNew({ projectName, productionId }: Props) {
     });
   };
 
-  /** 🔹 Remark + 버튼 렌더 */
-  const renderRemarkInput = (section: string, field: string, i: number, remark: string) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-      <input value={remark} onChange={e => handleChange(section, field, i, 'remark', e.target.value)} />
-      <div style={{ display: 'flex', gap: '2px' }}>
-        <button type='button' className={styles.addBtn} onClick={() => addRow(section, field)}>
-          +
-        </button>
-        {i > 0 && (
-          <button type='button' className={styles.removeBtn} onClick={() => removeRow(section, field, i)}>
-            −
-          </button>
-        )}
-      </div>
-    </div>
-  );
-
-  /** 🔹 저장 */
   const handleSubmit = async () => {
     try {
       await createSpecification(productionId, form);
@@ -172,7 +154,7 @@ export default function SpecNew({ projectName, productionId }: Props) {
                         onChange={e => handleChange('cathode', 'activeMaterial', i, 'value', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td className={styles.remarkCell}>
                       <div className={styles.inputWithButtons}>
                         <input
                           value={item.remark}
@@ -209,7 +191,7 @@ export default function SpecNew({ projectName, productionId }: Props) {
                         onChange={e => handleChange('cathode', 'conductor', i, 'value', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td className={styles.remarkCell}>
                       <div className={styles.inputWithButtons}>
                         <input
                           value={item.remark}
@@ -246,7 +228,7 @@ export default function SpecNew({ projectName, productionId }: Props) {
                         onChange={e => handleChange('cathode', 'binder', i, 'value', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td className={styles.remarkCell}>
                       <div className={styles.inputWithButtons}>
                         <input
                           value={item.remark}
@@ -270,8 +252,6 @@ export default function SpecNew({ projectName, productionId }: Props) {
                     </td>
                   </tr>
                 ))}
-
-                {/* 고정 항목 */}
                 {['loadingLevel', 'thickness', 'electrodeDensity'].map(field => (
                   <tr key={`cathode-${field}`}>
                     <td colSpan={2}>
@@ -320,7 +300,7 @@ export default function SpecNew({ projectName, productionId }: Props) {
                         onChange={e => handleChange('anode', 'activeMaterial', i, 'value', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td className={styles.remarkCell}>
                       <div className={styles.inputWithButtons}>
                         <input
                           value={item.remark}
@@ -357,7 +337,7 @@ export default function SpecNew({ projectName, productionId }: Props) {
                         onChange={e => handleChange('anode', 'conductor', i, 'value', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td className={styles.remarkCell}>
                       <div className={styles.inputWithButtons}>
                         <input
                           value={item.remark}
@@ -390,7 +370,7 @@ export default function SpecNew({ projectName, productionId }: Props) {
                         onChange={e => handleChange('anode', 'binder', i, 'value', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td className={styles.remarkCell}>
                       <div className={styles.inputWithButtons}>
                         <input
                           value={item.remark}
@@ -414,7 +394,6 @@ export default function SpecNew({ projectName, productionId }: Props) {
                     </td>
                   </tr>
                 ))}
-
                 {['loadingLevel', 'thickness', 'electrodeDensity'].map(field => (
                   <tr key={`anode-${field}`}>
                     <td colSpan={2}>

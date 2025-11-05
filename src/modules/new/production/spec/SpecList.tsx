@@ -15,6 +15,7 @@ export default function SpecList() {
   const [list, setList] = useState<SpecItem[]>([]);
   const navigate = useNavigate();
 
+  /** 🔹 스펙 리스트 불러오기 */
   const loadData = async () => {
     try {
       const data = await getSpecificationSummary();
@@ -45,6 +46,7 @@ export default function SpecList() {
             <tr key={item.id}>
               <td>{item.name}</td>
 
+              {/* 🔹 조회 */}
               <td>
                 <div className={styles.actionButtons}>
                   <TooltipButton
@@ -59,6 +61,7 @@ export default function SpecList() {
                 </div>
               </td>
 
+              {/* 🔹 설계 관리 */}
               <td>
                 <div className={styles.actionButtons}>
                   <TooltipButton
@@ -66,7 +69,15 @@ export default function SpecList() {
                     variant='register'
                     disabled={item.specStatus}
                     tooltip='이미 설계가 등록되어 있습니다.'
-                    onClick={() => !item.specStatus && navigate('new', { state: { project: item } })}
+                    onClick={() =>
+                      !item.specStatus &&
+                      navigate('new', {
+                        state: {
+                          projectName: item.name,
+                          productionId: item.id,
+                        },
+                      })
+                    }
                   />
 
                   <TooltipButton
@@ -74,7 +85,15 @@ export default function SpecList() {
                     variant='edit'
                     disabled={!item.specStatus}
                     tooltip='등록된 설계가 없습니다.'
-                    onClick={() => item.specStatus && navigate('edit', { state: { project: item } })}
+                    onClick={() =>
+                      item.specStatus &&
+                      navigate('edit', {
+                        state: {
+                          projectName: item.name,
+                          productionId: item.id,
+                        },
+                      })
+                    }
                   />
 
                   <TooltipButton
@@ -92,6 +111,7 @@ export default function SpecList() {
                 </div>
               </td>
 
+              {/* 🔹 자재 관리 */}
               <td>
                 <div className={styles.actionButtons}>
                   <TooltipButton
@@ -99,7 +119,15 @@ export default function SpecList() {
                     variant='register'
                     disabled={item.materialStatus}
                     tooltip='이미 자재가 등록되어 있습니다.'
-                    onClick={() => !item.materialStatus && navigate('material/register', { state: { project: item } })}
+                    onClick={() =>
+                      !item.materialStatus &&
+                      navigate('material/new', {
+                        state: {
+                          projectName: item.name,
+                          productionId: item.id,
+                        },
+                      })
+                    }
                   />
 
                   <TooltipButton
@@ -107,7 +135,15 @@ export default function SpecList() {
                     variant='edit'
                     disabled={!item.materialStatus}
                     tooltip='등록된 자재가 없습니다.'
-                    onClick={() => item.materialStatus && navigate('material/edit', { state: { project: item } })}
+                    onClick={() =>
+                      item.materialStatus &&
+                      navigate('material/edit', {
+                        state: {
+                          projectName: item.name,
+                          productionId: item.id,
+                        },
+                      })
+                    }
                   />
 
                   <TooltipButton
