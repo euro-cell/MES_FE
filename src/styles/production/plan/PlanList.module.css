@@ -55,35 +55,3 @@
   font-size: 13px;
   transition: background 0.2s;
 }
-
-/* 등록 버튼 */
-.registerBtn {
-  background: #22c55e;
-}
-.registerBtn:hover {
-  background: #15803d;
-}
-
-/* 조회 버튼 */
-.viewBtn {
-  background-color: #2563eb;
-}
-.viewBtn:hover {
-  background-color: #1e40af;
-}
-
-/* 수정 버튼 */
-.editBtn {
-  background-color: #f59e0b;
-}
-.editBtn:hover {
-  background-color: #d97706;
-}
-
-/* 삭제 버튼 */
-.deleteBtn {
-  background: #ef4444;
-}
-.deleteBtn:hover {
-  background: #b91c1c;
-}
