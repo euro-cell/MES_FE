@@ -1,0 +1,164 @@
+/* ==============================
+   📘 SpecNew 전용 스타일
+   (기존 batteryDesign 폼 기반)
+============================== */
+
+.specNew {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+/* ==============================
+   🔹 표 스타일
+============================== */
+.specNewTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.specNewTable th,
+.specNewTable td {
+  border: 1px solid #888;
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+.specNewTable th {
+  text-align: center;
+  font-weight: bold;
+  background: #dce6f2;
+}
+
+/* 분류 그룹 셀 */
+.specNewGroupCell {
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  background: #f4f6fa;
+  width: 90px;
+}
+
+/* ==============================
+   🔹 입력창 + 버튼 정렬
+============================== */
+.inputWithButtons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.inputWithButtons input {
+  flex: 1;
+  height: 26px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 2px 6px;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+
+/* 버튼 그룹 */
+.buttonGroup {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.addBtn,
+.removeBtn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+  line-height: 24px;
+  text-align: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.addBtn {
+  background: #2db86c;
+  transition: background 0.2s;
+}
+.addBtn:hover {
+  background: #25a35e;
+}
+
+.removeBtn {
+  background: #e74c3c;
+  transition: background 0.2s;
+}
+.removeBtn:hover {
+  background: #d13b2d;
+}
+
+/* ==============================
+   🔹 인풋 공통 스타일
+============================== */
+.specNewTable input {
+  width: 100%;
+  height: 26px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 2px 6px;
+  box-sizing: border-box;
+  font-size: 13px;
+  text-align: center;
+  background: #fff;
+}
+
+.specNewTable tr:hover {
+  background: #f9fafc;
+}
+
+/* ==============================
+   🔹 버튼 영역
+============================== */
+.saveWrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.saveBtn {
+  background: #1a73e8;
+  color: #fff;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+.saveBtn:hover {
+  background: #155bc1;
+}
+
+/* ==============================
+   🔹 반응형
+============================== */
+@media (max-width: 1400px) {
+  .specNewTable input {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .specNewTable {
+    font-size: 12px;
+  }
+  .specNewGroupCell {
+    width: 70px;
+  }
+}

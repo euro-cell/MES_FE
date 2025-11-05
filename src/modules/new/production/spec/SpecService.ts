@@ -6,3 +6,10 @@ export const getSpecificationSummary = async () => {
   const res = await axios.get(`${API_BASE}/production/specification`, { withCredentials: true });
   return res.data;
 };
+
+export async function createSpecification(productionId: number, specData: any) {
+  const res = await axios.post(`${API_BASE}/specification/${productionId}`, specData, {
+    withCredentials: true,
+  });
+  return res.data;
+}

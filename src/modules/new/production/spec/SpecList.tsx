@@ -66,7 +66,7 @@ export default function SpecList() {
                     variant='register'
                     disabled={item.specStatus}
                     tooltip='이미 설계가 등록되어 있습니다.'
-                    onClick={() => !item.specStatus && navigate('register', { state: { project: item } })}
+                    onClick={() => !item.specStatus && navigate('new', { state: { project: item } })}
                   />
 
                   <TooltipButton
