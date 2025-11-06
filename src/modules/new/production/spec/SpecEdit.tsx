@@ -1,4 +1,3 @@
-// src/modules/new/production/spec/SpecEdit.tsx
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getSpecificationByProject, updateSpecification } from './SpecService';
@@ -27,14 +26,12 @@ export default function SpecEdit() {
     const fetchData = async () => {
       try {
         const data = await getSpecificationByProject(productionId);
-
         const safeData: SpecForm = {
           cathode: data.cathode ?? initialSpecForm.cathode,
           anode: data.anode ?? initialSpecForm.anode,
           assembly: data.assembly ?? initialSpecForm.assembly,
           cell: data.cell ?? initialSpecForm.cell,
         };
-
         setForm(safeData);
       } catch (err) {
         console.error('❌ 설계 불러오기 실패:', err);
@@ -84,7 +81,9 @@ export default function SpecEdit() {
     try {
       await updateSpecification(productionId, form);
       alert('✅ 설계 정보가 수정되었습니다.');
-      navigate(-1);
+      navigate('../view', {
+        state: { project: { id: productionId, name: projectName } },
+      });
     } catch (err: any) {
       console.error('❌ 설계 수정 실패:', err);
       if (err.response) {
@@ -100,6 +99,11 @@ export default function SpecEdit() {
 
   return (
     <div className={styles.specNew}>
+      {/* ← 목록으로 버튼 */}
+      <button className={styles.backBtn} onClick={() => navigate(-1)}>
+        ← 목록으로
+      </button>
+
       <h2>{projectName} 전지 설계 수정</h2>
 
       <table className={styles.specNewTable}>
