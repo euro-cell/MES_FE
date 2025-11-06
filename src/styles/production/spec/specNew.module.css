@@ -1,8 +1,3 @@
-/* ==============================
-   📘 SpecNew 전용 스타일
-   (기존 batteryDesign 폼 기반)
-============================== */
-
 .specNew {
   background: #fff;
   padding: 25px;
@@ -11,12 +6,10 @@
   overflow-x: auto;
 }
 
-/* ==============================
-   🔹 표 스타일
-============================== */
 .specNewTable {
   width: 100%;
   border-collapse: collapse;
+  text-align: center;
   font-size: 14px;
 }
 
@@ -24,7 +17,7 @@
 .specNewTable td {
   border: 1px solid #888;
   padding: 6px 8px;
-  text-align: left;
+  text-align: center;
   vertical-align: middle;
   word-break: keep-all;
   white-space: nowrap;
@@ -36,7 +29,6 @@
   background: #dce6f2;
 }
 
-/* 분류 그룹 셀 */
 .specNewGroupCell {
   font-weight: bold;
   text-align: center;
@@ -45,9 +37,6 @@
   width: 90px;
 }
 
-/* ==============================
-   🔹 입력창 + 버튼 정렬
-============================== */
 .inputWithButtons {
   display: flex;
   align-items: center;
@@ -66,7 +55,6 @@
   font-size: 13px;
 }
 
-/* 버튼 그룹 */
 .buttonGroup {
   display: flex;
   align-items: center;
@@ -103,9 +91,6 @@
   background: #d13b2d;
 }
 
-/* ==============================
-   🔹 인풋 공통 스타일
-============================== */
 .specNewTable input {
   width: 100%;
   height: 26px;
@@ -122,9 +107,24 @@
   background: #f9fafc;
 }
 
-/* ==============================
-   🔹 버튼 영역
-============================== */
+.stackInputGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.stackInputGroup input {
+  width: 48%;
+  height: 26px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
 .saveWrap {
   display: flex;
   justify-content: flex-end;
@@ -145,9 +145,6 @@
   background: #155bc1;
 }
 
-/* ==============================
-   🔹 반응형
-============================== */
 @media (max-width: 1400px) {
   .specNewTable input {
     font-size: 12px;
