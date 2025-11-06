@@ -20,14 +20,16 @@ export default function SpecNew() {
   const handleChange = (section: string, field: string, index: number, key: string, value: string) => {
     setForm(prev => {
       const copy = structuredClone(prev);
+      if (section === 'cell' && field === 'energyDensity') {
+        const [targetKey, targetField] = key.split('.');
+        (copy as any).cell.energyDensity[targetKey][targetField] = value;
+        return copy;
+      }
       if (Array.isArray((copy as any)[section][field])) {
         (copy as any)[section][field][index][key] = value;
-      } else if (section.includes('cell.energyDensity')) {
-        const [, energyField] = section.split('.');
-        (copy as any).cell.energyDensity[energyField][key] = value;
-      } else {
-        (copy as any)[section][field][key] = value;
+        return copy;
       }
+      (copy as any)[section][field][key] = value;
       return copy;
     });
   };

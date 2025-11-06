@@ -82,13 +82,13 @@ export default function SpecSectionCell({ form, handleChange, styles }: Props) {
         <td>
           <input
             value={form.cell.energyDensity.gravimetric.value}
-            onChange={e => handleChange('cell.energyDensity', 'gravimetric', 0, 'value', e.target.value)}
+            onChange={e => handleChange('cell', 'energyDensity', 0, 'gravimetric.value', e.target.value)}
           />
         </td>
         <td>
           <input
             value={form.cell.energyDensity.gravimetric.remark}
-            onChange={e => handleChange('cell.energyDensity', 'gravimetric', 0, 'remark', e.target.value)}
+            onChange={e => handleChange('cell', 'energyDensity', 0, 'gravimetric.remark', e.target.value)}
           />
         </td>
       </tr>
@@ -98,13 +98,13 @@ export default function SpecSectionCell({ form, handleChange, styles }: Props) {
         <td>
           <input
             value={form.cell.energyDensity.volumetric.value}
-            onChange={e => handleChange('cell.energyDensity', 'volumetric', 0, 'value', e.target.value)}
+            onChange={e => handleChange('cell', 'energyDensity', 0, 'volumetric.value', e.target.value)}
           />
         </td>
         <td>
           <input
             value={form.cell.energyDensity.volumetric.remark}
-            onChange={e => handleChange('cell.energyDensity', 'volumetric', 0, 'remark', e.target.value)}
+            onChange={e => handleChange('cell', 'energyDensity', 0, 'volumetric.remark', e.target.value)}
           />
         </td>
       </tr>
