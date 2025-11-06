@@ -10,6 +10,8 @@ interface Props {
 
 export default function SpecSectionAnode({ form, handleChange, addRow, removeRow, styles }: Props) {
   const rowSpan = form.anode.activeMaterial.length + form.anode.conductor.length + form.anode.binder.length + 3;
+  const getLabel = (arrLength: number, i: number, base: string) =>
+    arrLength === 1 ? `${base} (%)` : `${base} ${i + 1} (%)`;
 
   return (
     <>
@@ -20,7 +22,7 @@ export default function SpecSectionAnode({ form, handleChange, addRow, removeRow
               Anode
             </td>
           )}
-          <td colSpan={2}>Active material {i + 1} (%)</td>
+          <td colSpan={2}>{getLabel(form.anode.activeMaterial.length, i, 'Active material')}</td>
           <td>
             <input
               value={item.value}
@@ -54,7 +56,7 @@ export default function SpecSectionAnode({ form, handleChange, addRow, removeRow
 
       {form.anode.conductor.map((item, i) => (
         <tr key={`anode-conductor-${i}`}>
-          <td colSpan={2}>Conductor {i + 1} (%)</td>
+          <td colSpan={2}>{getLabel(form.anode.conductor.length, i, 'Conductor')}</td>
           <td>
             <input value={item.value} onChange={e => handleChange('anode', 'conductor', i, 'value', e.target.value)} />
           </td>
@@ -81,7 +83,7 @@ export default function SpecSectionAnode({ form, handleChange, addRow, removeRow
 
       {form.anode.binder.map((item, i) => (
         <tr key={`anode-binder-${i}`}>
-          <td colSpan={2}>Binder {i + 1} (%)</td>
+          <td colSpan={2}>{getLabel(form.anode.binder.length, i, 'Binder')}</td>
           <td>
             <input value={item.value} onChange={e => handleChange('anode', 'binder', i, 'value', e.target.value)} />
           </td>

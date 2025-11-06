@@ -10,6 +10,8 @@ interface Props {
 
 export default function SpecSectionCathode({ form, handleChange, addRow, removeRow, styles }: Props) {
   const rowSpan = form.cathode.activeMaterial.length + form.cathode.conductor.length + form.cathode.binder.length + 3;
+  const getLabel = (arrLength: number, i: number, base: string) =>
+    arrLength === 1 ? `${base} (%)` : `${base} ${i + 1} (%)`;
 
   return (
     <>
@@ -20,7 +22,7 @@ export default function SpecSectionCathode({ form, handleChange, addRow, removeR
               Cathode
             </td>
           )}
-          <td colSpan={2}>Active material {i + 1} (%)</td>
+          <td colSpan={2}>{getLabel(form.cathode.activeMaterial.length, i, 'Active material')}</td>
           <td>
             <input
               value={item.value}
@@ -54,7 +56,7 @@ export default function SpecSectionCathode({ form, handleChange, addRow, removeR
 
       {form.cathode.conductor.map((item, i) => (
         <tr key={`cathode-conductor-${i}`}>
-          <td colSpan={2}>Conductor {i + 1} (%)</td>
+          <td colSpan={2}>{getLabel(form.cathode.conductor.length, i, 'Conductor')}</td>
           <td>
             <input
               value={item.value}
@@ -88,7 +90,7 @@ export default function SpecSectionCathode({ form, handleChange, addRow, removeR
 
       {form.cathode.binder.map((item, i) => (
         <tr key={`cathode-binder-${i}`}>
-          <td colSpan={2}>Binder {i + 1} (%)</td>
+          <td colSpan={2}>{getLabel(form.cathode.binder.length, i, 'Binder')}</td>
           <td>
             <input value={item.value} onChange={e => handleChange('cathode', 'binder', i, 'value', e.target.value)} />
           </td>
