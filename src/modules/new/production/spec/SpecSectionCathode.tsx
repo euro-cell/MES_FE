@@ -20,7 +20,7 @@ export default function SpecSectionCathode({ form, handleChange, addRow, removeR
               Cathode
             </td>
           )}
-          <td colSpan={2}>Active material (%)</td>
+          <td colSpan={2}>Active material {i + 1} (%)</td>
           <td>
             <input
               value={item.value}
@@ -54,7 +54,7 @@ export default function SpecSectionCathode({ form, handleChange, addRow, removeR
 
       {form.cathode.conductor.map((item, i) => (
         <tr key={`cathode-conductor-${i}`}>
-          <td colSpan={2}>Conductor (%)</td>
+          <td colSpan={2}>Conductor {i + 1} (%)</td>
           <td>
             <input
               value={item.value}
@@ -88,7 +88,7 @@ export default function SpecSectionCathode({ form, handleChange, addRow, removeR
 
       {form.cathode.binder.map((item, i) => (
         <tr key={`cathode-binder-${i}`}>
-          <td colSpan={2}>Binder (%)</td>
+          <td colSpan={2}>Binder {i + 1} (%)</td>
           <td>
             <input value={item.value} onChange={e => handleChange('cathode', 'binder', i, 'value', e.target.value)} />
           </td>
