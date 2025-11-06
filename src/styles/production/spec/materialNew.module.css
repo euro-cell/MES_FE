@@ -1,0 +1,110 @@
+.materialNewContainer {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.backBtn {
+  background: #1a73e8;
+  color: #fff;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+  margin-bottom: 14px;
+}
+
+.backBtn:hover {
+  background: #155bc1;
+}
+
+.materialNewTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.materialNewTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.materialNewTable th {
+  background: #f3f6fa;
+  padding: 10px;
+  border-bottom: 2px solid #e2e8f0;
+  font-weight: 600;
+}
+
+.materialNewTable td {
+  padding: 8px;
+  border-bottom: 1px solid #eaeaea;
+  vertical-align: middle;
+}
+
+.materialNewTable select,
+.materialNewTable input {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.actionCell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.addBtn {
+  background: #f59e0b;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.addBtn:hover {
+  background: #d97706;
+}
+
+.deleteBtn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.deleteBtn:hover {
+  background: #b91c1c;
+}
+
+.saveWrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.saveBtn {
+  background: #22c55e;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.saveBtn:hover {
+  background: #15803d;
+}

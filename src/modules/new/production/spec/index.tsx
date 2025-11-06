@@ -3,6 +3,7 @@ import SpecList from './SpecList';
 import SpecNew from './SpecNew';
 import SpecView from './SpecView';
 import SpecEdit from './SpecEdit';
+import MaterialNew from './MaterialNew';
 
 export default function SpecPage() {
   return (
@@ -12,6 +13,7 @@ export default function SpecPage() {
         <Route path='new' element={<SpecNew />} />
         <Route path='view' element={<SpecView />} />
         <Route path='edit' element={<SpecEdit />} />
+        <Route path='material/new' element={<MaterialNew />} />
       </Routes>
     </div>
   );
