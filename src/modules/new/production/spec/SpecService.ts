@@ -13,3 +13,8 @@ export async function createSpecification(productionId: number, specData: any) {
   });
   return res.data;
 }
+
+export async function getSpecificationByProject(productionId: number) {
+  const res = await axios.get(`${API_BASE}/production/${productionId}/specification`);
+  return res.data;
+}
