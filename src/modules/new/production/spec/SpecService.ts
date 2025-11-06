@@ -18,3 +18,8 @@ export async function getSpecificationByProject(productionId: number) {
   const res = await axios.get(`${API_BASE}/production/${productionId}/specification`);
   return res.data;
 }
+
+export async function updateSpecification(productionId: number, form: any) {
+  const res = await axios.patch(`${API_BASE}/production/${productionId}/specification`, form);
+  return res.data;
+}

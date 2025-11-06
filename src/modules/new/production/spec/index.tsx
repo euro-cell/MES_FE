@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import SpecList from './SpecList';
 import SpecNew from './SpecNew';
 import SpecView from './SpecView';
+import SpecEdit from './SpecEdit';
 
 export default function SpecPage() {
   return (
@@ -10,6 +11,7 @@ export default function SpecPage() {
         <Route path='' element={<SpecList />} />
         <Route path='new' element={<SpecNew />} />
         <Route path='view' element={<SpecView />} />
+        <Route path='edit' element={<SpecEdit />} />
       </Routes>
     </div>
   );
