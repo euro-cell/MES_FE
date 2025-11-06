@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSpecificationSummary } from './SpecService';
+import { deleteSpecification, getSpecificationSummary } from './SpecService';
 import TooltipButton from '../../../../components/TooltipButton';
 import styles from '../../../../styles/production/spec/specList.module.css';
 
@@ -22,6 +22,24 @@ export default function SpecList() {
       setList(data);
     } catch (err) {
       console.error('❌ 스펙 리스트 조회 실패:', err);
+    }
+  };
+
+  const handleDelete = async (projectId: number, projectName: string) => {
+    if (!confirm(`🗑 ${projectName} 설계 정보를 삭제하시겠습니까?`)) return;
+
+    try {
+      await deleteSpecification(projectId);
+      alert('✅ 설계 정보가 삭제되었습니다.');
+      loadData();
+    } catch (err: any) {
+      console.error('❌ 설계 삭제 실패:', err);
+      if (err.response) {
+        const { error, message, statusCode } = err.response.data;
+        alert(`${error}(${statusCode}): ${message}`);
+        return;
+      }
+      alert('삭제 중 오류가 발생했습니다.');
     }
   };
 
@@ -101,12 +119,7 @@ export default function SpecList() {
                     variant='delete'
                     disabled={!item.specStatus}
                     tooltip='등록된 설계가 없습니다.'
-                    onClick={() => {
-                      if (!item.specStatus) return;
-                      if (confirm('설계 정보를 삭제하시겠습니까?')) {
-                        console.log('🗑 설계 삭제:', item.id);
-                      }
-                    }}
+                    onClick={() => item.specStatus && handleDelete(item.id, item.name)}
                   />
                 </div>
               </td>

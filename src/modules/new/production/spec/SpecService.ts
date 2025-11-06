@@ -23,3 +23,8 @@ export async function updateSpecification(productionId: number, form: any) {
   const res = await axios.patch(`${API_BASE}/production/${productionId}/specification`, form);
   return res.data;
 }
+
+export async function deleteSpecification(projectId: number) {
+  const res = await axios.delete(`${API_BASE}/production/${projectId}/specification`);
+  return res.data;
+}

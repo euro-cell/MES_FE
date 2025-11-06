@@ -65,6 +65,14 @@ button {
   opacity: 0.9;
 }
 
+.deleteBtn.disabled,
+.deleteBtn:disabled {
+  background-color: #f5a3a3;
+  color: #ffffff;
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
 .tooltip {
   position: absolute;
   bottom: 125%;
