@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { createSpecification } from './SpecService';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
@@ -10,6 +10,7 @@ import SpecSectionCell from './SpecSectionCell';
 import styles from '../../../../styles/production/spec/specNew.module.css';
 
 export default function SpecNew() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { projectName, productionId } = location.state || {};
 
@@ -54,6 +55,7 @@ export default function SpecNew() {
     try {
       await createSpecification(productionId, form);
       alert('✅ 설계 정보가 저장되었습니다.');
+      navigate(-1);
     } catch (err: any) {
       console.error('❌ 설계 저장 실패:', err);
       if (err.response) {
@@ -67,7 +69,13 @@ export default function SpecNew() {
 
   return (
     <div className={styles.specNew}>
+      {/* ← 목록으로 버튼 추가 */}
+      <button className={styles.backBtn} onClick={() => navigate(-1)}>
+        ← 목록으로
+      </button>
+
       <h2>{projectName} 전지 설계 등록</h2>
+
       <table className={styles.specNewTable}>
         <thead>
           <tr>

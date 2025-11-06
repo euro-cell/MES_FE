@@ -99,7 +99,6 @@ export default function SpecEdit() {
 
   return (
     <div className={styles.specNew}>
-      {/* ← 목록으로 버튼 */}
       <button className={styles.backBtn} onClick={() => navigate(-1)}>
         ← 목록으로
       </button>
