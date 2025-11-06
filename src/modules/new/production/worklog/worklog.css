@@ -1,0 +1,24 @@
+.worklog-page {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.excel-table-wrapper {
+  overflow-x: auto;
+}
+
+.excel-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+  text-align: center;
+}
+
+.excel-table td {
+  border: 1px solid #ccc;
+  padding: 4px 6px;
+  white-space: pre-wrap;
+  vertical-align: middle;
+}

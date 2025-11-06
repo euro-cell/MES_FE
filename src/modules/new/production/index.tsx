@@ -5,7 +5,7 @@ import '../../../styles/moduleIndex.css';
 
 import PlanPage from './plan';
 import SpecPage from './spec';
-// import LogPage from './log';
+import WorklogPage from './worklog';
 // import StatusPage from './status';
 // import LotPage from './lot';
 
@@ -20,7 +20,7 @@ export default function ProductionIndex() {
         <Routes>
           <Route path='plan/*' element={<PlanPage />} />
           <Route path='spec/*' element={<SpecPage />} />
-          {/* <Route path="log" element={<LogPage />} /> */}
+          <Route path='log' element={<WorklogPage />} />
           {/* <Route path="status" element={<StatusPage />} /> */}
           {/* <Route path="lot" element={<LotPage />} /> */}
         </Routes>

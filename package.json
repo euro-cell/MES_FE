@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@handsontable/react": "^16.1.1",
     "axios": "^1.12.2",
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "date-fns": "^4.1.0",
     "file-saver": "^2.0.5",
+    "handsontable": "^16.1.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.4",
