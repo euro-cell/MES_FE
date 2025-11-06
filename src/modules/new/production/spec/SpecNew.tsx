@@ -54,8 +54,13 @@ export default function SpecNew() {
     try {
       await createSpecification(productionId, form);
       alert('✅ 설계 정보가 저장되었습니다.');
-    } catch (err) {
+    } catch (err: any) {
       console.error('❌ 설계 저장 실패:', err);
+      if (err.response) {
+        const { error, message, statusCode } = err.response.data;
+        alert(`${error}(${statusCode}): ${message}`);
+        return;
+      }
       alert('저장 중 오류가 발생했습니다.');
     }
   };
