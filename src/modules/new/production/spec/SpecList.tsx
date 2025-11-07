@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { deleteSpecification, getSpecificationSummary } from './SpecService';
+import { deleteSpecification, getSpecificationSummary } from './specification/SpecService';
 import TooltipButton from '../../../../components/TooltipButton';
 import styles from '../../../../styles/production/spec/specList.module.css';
 
@@ -15,7 +15,6 @@ export default function SpecList() {
   const [list, setList] = useState<SpecItem[]>([]);
   const navigate = useNavigate();
 
-  /** 🔹 스펙 리스트 불러오기 */
   const loadData = async () => {
     try {
       const data = await getSpecificationSummary();
@@ -64,7 +63,6 @@ export default function SpecList() {
             <tr key={item.id}>
               <td>{item.name}</td>
 
-              {/* 🔹 조회 */}
               <td>
                 <div className={styles.actionButtons}>
                   <TooltipButton
@@ -79,7 +77,6 @@ export default function SpecList() {
                 </div>
               </td>
 
-              {/* 🔹 설계 관리 */}
               <td>
                 <div className={styles.actionButtons}>
                   <TooltipButton
@@ -124,7 +121,6 @@ export default function SpecList() {
                 </div>
               </td>
 
-              {/* 🔹 자재 관리 */}
               <td>
                 <div className={styles.actionButtons}>
                   <TooltipButton

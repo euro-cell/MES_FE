@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getSpecificationByProject } from './SpecService';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
-import styles from '../../../../styles/production/spec/specView.module.css';
+import styles from '../../../../../styles/production/spec/specView.module.css';
 
 export default function SpecView() {
   const navigate = useNavigate();

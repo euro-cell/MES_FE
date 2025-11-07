@@ -3,11 +3,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { createSpecification } from './SpecService';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
-import SpecSectionCathode from './SpecSectionCathode';
-import SpecSectionAnode from './SpecSectionAnode';
-import SpecSectionAssembly from './SpecSectionAssembly';
-import SpecSectionCell from './SpecSectionCell';
-import styles from '../../../../styles/production/spec/specNew.module.css';
+import SpecSectionCathode from './sections/SpecSectionCathode';
+import SpecSectionAnode from './sections/SpecSectionAnode';
+import SpecSectionAssembly from './sections/SpecSectionAssembly';
+import SpecSectionCell from './sections/SpecSectionCell';
+import styles from '../../../../../styles/production/spec/specNew.module.css';
 
 export default function SpecNew() {
   const navigate = useNavigate();
@@ -69,7 +69,6 @@ export default function SpecNew() {
 
   return (
     <div className={styles.specNew}>
-      {/* ← 목록으로 버튼 추가 */}
       <button className={styles.backBtn} onClick={() => navigate(-1)}>
         ← 목록으로
       </button>

@@ -3,11 +3,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getSpecificationByProject, updateSpecification } from './SpecService';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
-import SpecSectionCathode from './SpecSectionCathode';
-import SpecSectionAnode from './SpecSectionAnode';
-import SpecSectionAssembly from './SpecSectionAssembly';
-import SpecSectionCell from './SpecSectionCell';
-import styles from '../../../../styles/production/spec/specNew.module.css';
+import SpecSectionCathode from './sections/SpecSectionCathode';
+import SpecSectionAnode from './sections/SpecSectionAnode';
+import SpecSectionAssembly from './sections/SpecSectionAssembly';
+import SpecSectionCell from './sections/SpecSectionCell';
+import styles from '../../../../../styles/production/spec/specNew.module.css';
 
 export default function SpecEdit() {
   const navigate = useNavigate();

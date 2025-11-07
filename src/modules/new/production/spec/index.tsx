@@ -1,9 +1,9 @@
 import { Route, Routes } from 'react-router-dom';
 import SpecList from './SpecList';
-import SpecNew from './SpecNew';
-import SpecView from './SpecView';
-import SpecEdit from './SpecEdit';
-import MaterialNew from './MaterialNew';
+import SpecNew from './specification/SpecNew';
+import SpecView from './specification/SpecView';
+import SpecEdit from './specification/SpecEdit';
+import MaterialNew from './material/MaterialNew';
 
 export default function SpecPage() {
   return (

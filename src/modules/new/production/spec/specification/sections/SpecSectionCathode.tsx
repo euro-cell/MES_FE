@@ -1,4 +1,4 @@
-import type { SpecForm } from './SpecTypes';
+import type { SpecForm } from '../SpecTypes';
 
 interface Props {
   form: SpecForm;
