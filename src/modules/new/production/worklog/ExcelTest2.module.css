@@ -1,0 +1,55 @@
+.excelUpload {
+  width: 90%;
+  padding: 20px;
+}
+
+.previewArea {
+  margin-top: 20px;
+}
+
+.sheetBlock {
+  margin-bottom: 40px;
+}
+
+.table {
+  border-collapse: collapse;
+  width: auto;
+  text-align: center;
+  background-color: #fff;
+  border: 1px solid #d1d5db;
+  table-layout: fixed;
+}
+
+.table td {
+  border: 1px solid #ccc;
+  padding: 0;
+  height: 22px;
+  line-height: 22px;
+  min-width: 64px;
+  overflow: hidden;
+  white-space: pre-wrap;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 13px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.table td[colspan='12'],
+.leftMerge {
+  text-align: left !important;
+  padding-left: 6px;
+}
+
+.table th {
+  background-color: #f3f6fa;
+  border: 1px solid #bbb;
+  font-weight: 600;
+  height: 24px;
+  line-height: 24px;
+}
+
+.sheetBlock h3 {
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: #333;
+}
