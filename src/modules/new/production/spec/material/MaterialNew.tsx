@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import styles from '../../../../styles/production/spec/materialNew.module.css';
+import styles from '../../../../../styles/production/spec/materialNew.module.css';
 import { initialIds, initialRows } from './MaterialInitialRows';
 import { getMaterialCategories, getMaterialsByCategory, postMaterialRequirements } from './MaterialService';
 
