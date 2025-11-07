@@ -16,3 +16,8 @@ export async function postMaterialRequirements(productionId: number, payload: an
   const res = await axios.post(`${API_BASE}/production/${productionId}/material`, payload);
   return res.data;
 }
+
+export const getMaterialsByProduction = async (productionId: number) => {
+  const res = await axios.get(`${API_BASE}/production/${productionId}/material`);
+  return res.data;
+};

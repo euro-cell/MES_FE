@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getSpecificationByProject } from './SpecService';
+import { getMaterialsByProduction } from '../material/MaterialService';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
 import styles from '../../../../../styles/production/spec/specView.module.css';
@@ -10,6 +11,7 @@ export default function SpecView() {
   const location = useLocation();
   const { project } = (location.state as { project: any }) || {};
   const [form, setForm] = useState<SpecForm>(initialSpecForm);
+  const [materials, setMaterials] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,22 +23,23 @@ export default function SpecView() {
 
     const fetchData = async () => {
       try {
-        const data = await getSpecificationByProject(project.id);
-        const safeData: SpecForm = {
-          cathode: data.cathode ?? initialSpecForm.cathode,
-          anode: data.anode ?? initialSpecForm.anode,
-          assembly: data.assembly ?? initialSpecForm.assembly,
-          cell: data.cell ?? initialSpecForm.cell,
+        const [specData, materialData] = await Promise.all([
+          getSpecificationByProject(project.id),
+          getMaterialsByProduction(project.id),
+        ]);
+        console.log('🚀 ~ specData:', specData);
+
+        const safeSpec: SpecForm = {
+          cathode: specData.cathode ?? initialSpecForm.cathode,
+          anode: specData.anode ?? initialSpecForm.anode,
+          assembly: specData.assembly ?? initialSpecForm.assembly,
+          cell: specData.cell ?? initialSpecForm.cell,
         };
-        setForm(safeData);
+        setForm(safeSpec);
+        setMaterials(materialData.materials || {});
       } catch (err: any) {
-        console.error('❌ 설계 조회 실패:', err);
-        if (err.response) {
-          const { error, message, statusCode } = err.response.data;
-          alert(`${error}(${statusCode}): ${message}`);
-          return;
-        }
-        alert('설계 정보를 불러오지 못했습니다.');
+        console.error('❌ 조회 실패:', err);
+        alert('데이터를 불러오는 중 오류가 발생했습니다.');
       } finally {
         setLoading(false);
       }
@@ -208,6 +211,44 @@ export default function SpecView() {
           </tr>
         </tbody>
       </table>
+
+      <div className={styles.materialSection}>
+        <h3>자재 소요량</h3>
+
+        {Object.keys(materials).length === 0 ? (
+          <p>등록된 자재 정보가 없습니다.</p>
+        ) : (
+          Object.entries(materials).map(([classification, list]) => (
+            <div key={classification} className={styles.materialGroup}>
+              <h4>{classification}</h4>
+              <table className={styles.materialTable}>
+                <thead>
+                  <tr>
+                    <th>분류</th>
+                    <th>Material</th>
+                    <th>Model</th>
+                    <th>Company</th>
+                    <th>단위</th>
+                    <th>소요량</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {list.map((item, idx) => (
+                    <tr key={`${classification}-${idx}`}>
+                      <td>{item.category}</td>
+                      <td>{item.material}</td>
+                      <td>{item.model}</td>
+                      <td>{item.company}</td>
+                      <td>{item.unit}</td>
+                      <td>{item.requiredAmount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
