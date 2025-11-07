@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import styles from '../../../../styles/production/spec/materialNew.module.css';
 import { initialIds, initialRows } from './MaterialInitialRows';
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+import { getMaterialCategories, getMaterialsByCategory, postMaterialRequirements } from './MaterialService';
 
 export interface Row {
   id: number;
@@ -41,8 +39,8 @@ export default function MaterialNew() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/material/categories`);
-        setCategories(res.data);
+        const data = await getMaterialCategories();
+        setCategories(data);
       } catch (err) {
         console.error('❌ 분류 목록 불러오기 실패:', err);
       }
@@ -55,8 +53,8 @@ export default function MaterialNew() {
       for (const row of rows) {
         if (row.category) {
           try {
-            const res = await axios.get(`${API_BASE}/material?category=${encodeURIComponent(row.category)}`);
-            setMaterialsMap(prev => ({ ...prev, [row.id]: res.data }));
+            const data = await getMaterialsByCategory(row.category);
+            setMaterialsMap(prev => ({ ...prev, [row.id]: data }));
           } catch (err) {
             console.error(`❌ 초기 자재 목록 로드 실패 (${row.category}):`, err);
           }
@@ -74,8 +72,8 @@ export default function MaterialNew() {
     );
 
     try {
-      const res = await axios.get(`${API_BASE}/material?category=${encodeURIComponent(category)}`);
-      setMaterialsMap(prev => ({ ...prev, [rowId]: res.data }));
+      const data = await getMaterialsByCategory(category);
+      setMaterialsMap(prev => ({ ...prev, [rowId]: data }));
     } catch (err) {
       console.error('❌ 자재 목록 조회 실패:', err);
     }
@@ -157,17 +155,12 @@ export default function MaterialNew() {
           quantity: parseFloat(r.quantity),
         })),
       };
-      await axios.post(`${API_BASE}/production/${productionId}/materials`, payload);
+      await postMaterialRequirements(productionId, payload);
       alert('✅ 자재 소요량이 등록되었습니다.');
       navigate(-1);
     } catch (err: any) {
       console.error('❌ 자재 등록 실패:', err);
-      if (err.response) {
-        const { error, message, statusCode } = err.response.data;
-        alert(`${error}(${statusCode}): ${message}`);
-      } else {
-        alert('등록 중 오류가 발생했습니다.');
-      }
+      alert('등록 중 오류가 발생했습니다.');
     }
   };
 
