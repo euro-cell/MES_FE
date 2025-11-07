@@ -63,7 +63,7 @@
 }
 
 .addBtn {
-  background: #f59e0b;
+  background: #22c55e;
   color: white;
   border: none;
   padding: 4px 8px;
@@ -71,21 +71,19 @@
   cursor: pointer;
   font-size: 13px;
 }
-
 .addBtn:hover {
-  background: #d97706;
+  background: #15803d;
 }
 
 .deleteBtn {
   background: #ef4444;
-  color: #fff;
+  color: white;
   border: none;
-  border-radius: 4px;
   padding: 4px 8px;
+  border-radius: 4px;
   cursor: pointer;
   font-size: 13px;
 }
-
 .deleteBtn:hover {
   background: #b91c1c;
 }
@@ -97,7 +95,7 @@
 }
 
 .saveBtn {
-  background: #22c55e;
+  background: #1a73e8;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -106,5 +104,5 @@
 }
 
 .saveBtn:hover {
-  background: #15803d;
+  background: #155bc1;
 }

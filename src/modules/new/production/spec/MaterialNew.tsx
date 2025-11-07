@@ -2,19 +2,11 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../../../styles/production/spec/materialNew.module.css';
+import { initialIds, initialRows } from './MaterialInitialRows';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-interface Material {
-  id: number;
-  category: string;
-  type: string;
-  name: string;
-  company: string;
-  unit: string;
-}
-
-interface Row {
+export interface Row {
   id: number;
   classification: 'Cathode' | 'Anode' | 'Assembly';
   category: string;
@@ -26,6 +18,15 @@ interface Row {
   materialId?: number;
 }
 
+interface Material {
+  id: number;
+  category: string;
+  type: string;
+  name: string;
+  company: string;
+  unit: string;
+}
+
 export default function MaterialNew() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,32 +35,9 @@ export default function MaterialNew() {
   if (!projectName || !productionId) return <p style={{ color: 'red' }}>⚠️ 프로젝트 정보가 없습니다.</p>;
 
   const [categories, setCategories] = useState<string[]>([]);
-  const [materials, setMaterials] = useState<Material[]>([]);
-  const [rows, setRows] = useState<Row[]>([
-    {
-      id: 1,
-      classification: 'Cathode',
-      category: '',
-      materialType: '',
-      model: '',
-      company: '',
-      unit: '',
-      quantity: '',
-    },
-    { id: 2, classification: 'Anode', category: '', materialType: '', model: '', company: '', unit: '', quantity: '' },
-    {
-      id: 3,
-      classification: 'Assembly',
-      category: '',
-      materialType: '',
-      model: '',
-      company: '',
-      unit: '',
-      quantity: '',
-    },
-  ]);
+  const [materialsMap, setMaterialsMap] = useState<Record<number, Material[]>>({});
+  const [rows, setRows] = useState<Row[]>(initialRows);
 
-  /** 분류 목록 조회 */
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -72,7 +50,22 @@ export default function MaterialNew() {
     fetchCategories();
   }, []);
 
-  /** category 선택 시 해당 자재 목록 불러오기 */
+  useEffect(() => {
+    const initCategoryMaterials = async () => {
+      for (const row of rows) {
+        if (row.category) {
+          try {
+            const res = await axios.get(`${API_BASE}/material?category=${encodeURIComponent(row.category)}`);
+            setMaterialsMap(prev => ({ ...prev, [row.id]: res.data }));
+          } catch (err) {
+            console.error(`❌ 초기 자재 목록 로드 실패 (${row.category}):`, err);
+          }
+        }
+      }
+    };
+    if (categories.length > 0) initCategoryMaterials();
+  }, [categories]);
+
   const handleCategoryChange = async (rowId: number, category: string) => {
     setRows(prev =>
       prev.map(row =>
@@ -82,22 +75,21 @@ export default function MaterialNew() {
 
     try {
       const res = await axios.get(`${API_BASE}/material?category=${encodeURIComponent(category)}`);
-      setMaterials(res.data);
+      setMaterialsMap(prev => ({ ...prev, [rowId]: res.data }));
     } catch (err) {
       console.error('❌ 자재 목록 조회 실패:', err);
     }
   };
 
-  /** Material(type) 선택 시 */
   const handleMaterialChange = (rowId: number, type: string) => {
     setRows(prev =>
       prev.map(row => (row.id === rowId ? { ...row, materialType: type, model: '', company: '', unit: '' } : row))
     );
   };
 
-  /** Model(name) 선택 시 */
   const handleModelChange = (rowId: number, model: string) => {
-    const target = materials.find(m => m.name === model);
+    const rowMaterials = materialsMap[rowId] || [];
+    const target = rowMaterials.find(m => m.name === model);
     setRows(prev =>
       prev.map(row =>
         row.id === rowId
@@ -113,17 +105,14 @@ export default function MaterialNew() {
     );
   };
 
-  /** Company 선택 */
   const handleCompanyChange = (rowId: number, company: string) => {
     setRows(prev => prev.map(row => (row.id === rowId ? { ...row, company } : row)));
   };
 
-  /** 소요량 입력 */
   const handleQuantityChange = (rowId: number, value: string) => {
     setRows(prev => prev.map(row => (row.id === rowId ? { ...row, quantity: value } : row)));
   };
 
-  /** 행 추가 */
   const handleAddRow = (classification: Row['classification']) => {
     const newRow: Row = {
       id: Date.now(),
@@ -135,9 +124,7 @@ export default function MaterialNew() {
       unit: '',
       quantity: '',
     };
-
     setRows(prev => {
-      // ✅ findLastIndex 대신 안전한 방식
       const indices = prev.map((r, i) => (r.classification === classification ? i : -1));
       const lastIndex = Math.max(...indices);
       const copy = [...prev];
@@ -147,12 +134,15 @@ export default function MaterialNew() {
     });
   };
 
-  /** 행 삭제 */
   const handleRemoveRow = (rowId: number) => {
     setRows(prev => prev.filter(r => r.id !== rowId));
+    setMaterialsMap(prev => {
+      const copy = { ...prev };
+      delete copy[rowId];
+      return copy;
+    });
   };
 
-  /** 저장 */
   const handleSubmit = async () => {
     try {
       const payload = {
@@ -167,7 +157,6 @@ export default function MaterialNew() {
           quantity: parseFloat(r.quantity),
         })),
       };
-
       await axios.post(`${API_BASE}/production/${productionId}/materials`, payload);
       alert('✅ 자재 소요량이 등록되었습니다.');
       navigate(-1);
@@ -176,13 +165,12 @@ export default function MaterialNew() {
       if (err.response) {
         const { error, message, statusCode } = err.response.data;
         alert(`${error}(${statusCode}): ${message}`);
-        return;
+      } else {
+        alert('등록 중 오류가 발생했습니다.');
       }
-      alert('등록 중 오류가 발생했습니다.');
     }
   };
 
-  /** Classification별 그룹화 */
   const grouped = ['Cathode', 'Anode', 'Assembly'].map(c => rows.filter(r => r.classification === c));
 
   return (
@@ -202,35 +190,30 @@ export default function MaterialNew() {
             <th>Model</th>
             <th>Company</th>
             <th>단위</th>
-            <th>소요량 / 추가</th>
+            <th>소요량</th>
           </tr>
         </thead>
         <tbody>
-          {grouped.map(group => {
-            return group.map((row, idx) => {
-              const filteredMaterials = materials.filter(m => m.category === row.category);
-              const filteredTypes = [...new Set(filteredMaterials.map(m => m.type))];
-
+          {grouped.map(group =>
+            group.map((row, idx) => {
+              const rowMaterials = materialsMap[row.id] || [];
+              const filteredTypes = [...new Set(rowMaterials.map(m => m.type))];
               const filteredModels = [
-                ...new Map(filteredMaterials.filter(m => m.type === row.materialType).map(m => [m.name, m])).values(),
+                ...new Map(rowMaterials.filter(m => m.type === row.materialType).map(m => [m.name, m])).values(),
               ];
-
               const filteredCompanies = [
                 ...new Set(
-                  filteredMaterials.filter(m => m.type === row.materialType && m.name === row.model).map(m => m.company)
+                  rowMaterials.filter(m => m.type === row.materialType && m.name === row.model).map(m => m.company)
                 ),
               ];
 
               return (
                 <tr key={row.id}>
-                  {/* ✅ Classification 병합 */}
                   {idx === 0 && (
                     <td rowSpan={group.length} className={styles.classificationCell}>
                       {row.classification}
                     </td>
                   )}
-
-                  {/* 분류(category) */}
                   <td>
                     <select value={row.category} onChange={e => handleCategoryChange(row.id, e.target.value)}>
                       <option value=''>선택</option>
@@ -241,8 +224,6 @@ export default function MaterialNew() {
                       ))}
                     </select>
                   </td>
-
-                  {/* Material */}
                   <td>
                     <select value={row.materialType} onChange={e => handleMaterialChange(row.id, e.target.value)}>
                       <option value=''>선택</option>
@@ -253,8 +234,6 @@ export default function MaterialNew() {
                       ))}
                     </select>
                   </td>
-
-                  {/* Model */}
                   <td>
                     <select value={row.model} onChange={e => handleModelChange(row.id, e.target.value)}>
                       <option value=''>선택</option>
@@ -265,8 +244,6 @@ export default function MaterialNew() {
                       ))}
                     </select>
                   </td>
-
-                  {/* Company */}
                   <td>
                     <select value={row.company} onChange={e => handleCompanyChange(row.id, e.target.value)}>
                       <option value=''>선택</option>
@@ -277,11 +254,7 @@ export default function MaterialNew() {
                       ))}
                     </select>
                   </td>
-
-                  {/* 단위 */}
                   <td>{row.unit?.toUpperCase()}</td>
-
-                  {/* 소요량 + 버튼 */}
                   <td>
                     <div className={styles.actionCell}>
                       <input
@@ -291,18 +264,21 @@ export default function MaterialNew() {
                         step='0.1'
                         placeholder='0.0'
                       />
-                      <button className={styles.addBtn} onClick={() => handleAddRow(row.classification)}>
-                        ＋
-                      </button>
-                      <button className={styles.deleteBtn} onClick={() => handleRemoveRow(row.id)}>
-                        🗑
-                      </button>
+                      {initialIds.includes(row.id) ? (
+                        <button className={styles.addBtn} onClick={() => handleAddRow(row.classification)}>
+                          ＋
+                        </button>
+                      ) : (
+                        <button className={styles.deleteBtn} onClick={() => handleRemoveRow(row.id)}>
+                          -
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
               );
-            });
-          })}
+            })
+          )}
         </tbody>
       </table>
 
