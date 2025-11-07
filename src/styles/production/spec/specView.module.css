@@ -55,6 +55,39 @@
   background: #155bc1;
 }
 
+.materialSection {
+  margin-top: 40px;
+}
+
+.materialSection h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.materialGroup {
+  margin-bottom: 25px;
+}
+
+.materialTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  background-color: #fff;
+}
+
+.materialTable th {
+  background-color: #f3f6fa;
+  padding: 10px;
+  border-bottom: 2px solid #e2e8f0;
+  font-weight: 600;
+}
+
+.materialTable td {
+  padding: 8px;
+  border-bottom: 1px solid #eaeaea;
+}
+
 @media (max-width: 1400px) {
   .specViewTable {
     font-size: 12px;
