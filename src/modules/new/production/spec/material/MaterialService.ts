@@ -13,6 +13,6 @@ export async function getMaterialsByCategory(category: string) {
 }
 
 export async function postMaterialRequirements(productionId: number, payload: any) {
-  const res = await axios.post(`${API_BASE}/production/${productionId}/materials`, payload);
+  const res = await axios.post(`${API_BASE}/production/${productionId}/material`, payload);
   return res.data;
 }
