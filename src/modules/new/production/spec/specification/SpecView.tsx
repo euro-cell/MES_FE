@@ -23,12 +23,7 @@ export default function SpecView() {
 
     const fetchData = async () => {
       try {
-        const [specData, materialData] = await Promise.all([
-          getSpecificationByProject(project.id),
-          getMaterialsByProduction(project.id),
-        ]);
-        console.log('🚀 ~ specData:', specData);
-
+        const specData = await getSpecificationByProject(project.id);
         const safeSpec: SpecForm = {
           cathode: specData.cathode ?? initialSpecForm.cathode,
           anode: specData.anode ?? initialSpecForm.anode,
@@ -36,10 +31,13 @@ export default function SpecView() {
           cell: specData.cell ?? initialSpecForm.cell,
         };
         setForm(safeSpec);
-        setMaterials(materialData.materials || {});
+
+        const materialData = await getMaterialsByProduction(project.id);
+        console.log('🚀 ~ materialData:', materialData);
+        setMaterials(materialData.materials ?? {});
       } catch (err: any) {
         console.error('❌ 조회 실패:', err);
-        alert('데이터를 불러오는 중 오류가 발생했습니다.');
+        alert('설계 또는 자재 정보를 불러오는 중 오류가 발생했습니다.');
       } finally {
         setLoading(false);
       }
@@ -218,35 +216,52 @@ export default function SpecView() {
         {Object.keys(materials).length === 0 ? (
           <p>등록된 자재 정보가 없습니다.</p>
         ) : (
-          Object.entries(materials).map(([classification, list]) => (
-            <div key={classification} className={styles.materialGroup}>
-              <h4>{classification}</h4>
-              <table className={styles.materialTable}>
-                <thead>
-                  <tr>
-                    <th>분류</th>
-                    <th>Material</th>
-                    <th>Model</th>
-                    <th>Company</th>
-                    <th>단위</th>
-                    <th>소요량</th>
+          <table className={styles.materialNewTable}>
+            <thead>
+              <tr>
+                <th>Classification</th>
+                <th>분류</th>
+                <th>Material</th>
+                <th>Model</th>
+                <th>Company</th>
+                <th>단위</th>
+                <th>소요량</th>
+                <th>가용재고</th>
+                <th>상태</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(materials).map(([classification, list]) =>
+                list.map((item, idx) => (
+                  <tr key={`${classification}-${idx}`}>
+                    {idx === 0 && (
+                      <td rowSpan={list.length} className={styles.classificationCell}>
+                        {classification}
+                      </td>
+                    )}
+                    <td>{item.category}</td>
+                    <td>{item.material}</td>
+                    <td>{item.model}</td>
+                    <td>{item.company}</td>
+                    <td>{item.unit}</td>
+                    <td>{item.requiredAmount}</td>
+                    <td>{item.availableStock}</td>
+                    <td
+                      className={
+                        item.shortage < 0
+                          ? styles.shortageCell
+                          : item.shortage === 0
+                          ? styles.shortageNeutral
+                          : styles.shortageOk
+                      }
+                    >
+                      {item.shortage < 0 ? `부족` : item.shortage === 0 ? `적정` : `충분`}
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {list.map((item, idx) => (
-                    <tr key={`${classification}-${idx}`}>
-                      <td>{item.category}</td>
-                      <td>{item.material}</td>
-                      <td>{item.model}</td>
-                      <td>{item.company}</td>
-                      <td>{item.unit}</td>
-                      <td>{item.requiredAmount}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))
+                ))
+              )}
+            </tbody>
+          </table>
         )}
       </div>
     </div>
