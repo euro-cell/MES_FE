@@ -4,6 +4,7 @@ import SpecNew from './specification/SpecNew';
 import SpecView from './specification/SpecView';
 import SpecEdit from './specification/SpecEdit';
 import MaterialNew from './material/MaterialNew';
+import MaterialEdit from './material/MaterialEdit';
 
 export default function SpecPage() {
   return (
@@ -14,6 +15,7 @@ export default function SpecPage() {
         <Route path='view' element={<SpecView />} />
         <Route path='edit' element={<SpecEdit />} />
         <Route path='material/new' element={<MaterialNew />} />
+        <Route path='material/edit' element={<MaterialEdit />} />
       </Routes>
     </div>
   );
