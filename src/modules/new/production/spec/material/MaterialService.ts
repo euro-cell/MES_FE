@@ -42,3 +42,13 @@ export async function updateProductionMaterial(productionId: number, materials: 
     throw err;
   }
 }
+
+export async function deleteProductionMaterial(productionId: number) {
+  try {
+    const res = await axios.delete(`${API_BASE}/production/${productionId}/material`);
+    return res.data;
+  } catch (err: any) {
+    console.error('❌ 자재 소요량 삭제 실패:', err.response?.data || err.message);
+    throw err;
+  }
+}

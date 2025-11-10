@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { deleteSpecification, getSpecificationSummary } from './specification/SpecService';
 import TooltipButton from '../../../../components/TooltipButton';
 import styles from '../../../../styles/production/spec/specList.module.css';
+import { deleteProductionMaterial } from './material/MaterialService';
 
 interface SpecItem {
   id: number;
@@ -33,6 +34,24 @@ export default function SpecList() {
       loadData();
     } catch (err: any) {
       console.error('❌ 설계 삭제 실패:', err);
+      if (err.response) {
+        const { error, message, statusCode } = err.response.data;
+        alert(`${error}(${statusCode}): ${message}`);
+        return;
+      }
+      alert('삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleMaterialDelete = async (productionId: number, projectName: string) => {
+    if (!confirm(`🗑 ${projectName} 자재 정보를 삭제하시겠습니까?`)) return;
+
+    try {
+      await deleteProductionMaterial(productionId);
+      alert('✅ 자재 소요량 정보가 삭제되었습니다.');
+      loadData(); // 리스트 새로고침
+    } catch (err: any) {
+      console.error('❌ 자재 삭제 실패:', err);
       if (err.response) {
         const { error, message, statusCode } = err.response.data;
         alert(`${error}(${statusCode}): ${message}`);
@@ -160,12 +179,7 @@ export default function SpecList() {
                     variant='delete'
                     disabled={!item.materialStatus}
                     tooltip='등록된 자재가 없습니다.'
-                    onClick={() => {
-                      if (!item.materialStatus) return;
-                      if (confirm('자재 정보를 삭제하시겠습니까?')) {
-                        console.log('🗑 자재 삭제:', item.id);
-                      }
-                    }}
+                    onClick={() => item.materialStatus && handleMaterialDelete(item.id, item.name)}
                   />
                 </div>
               </td>
