@@ -9,7 +9,13 @@ export function useActiveSubmenu(subMenus: SubmenuItem[]) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const activePath = subMenus.find(m => location.pathname === m.path)?.path;
+  const fullPath = location.pathname + location.search;
+  const activePath = subMenus.find(m => {
+    if (m.path.includes('?')) {
+      return fullPath === m.path;
+    }
+    return location.pathname === m.path || location.pathname.startsWith(m.path + '/');
+  })?.path;
 
   const handleNavigate = (path: string) => {
     navigate(path);
