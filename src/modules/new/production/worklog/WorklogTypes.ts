@@ -23,10 +23,7 @@ export interface WorklogEntry {
   processId: string;
   workDate: string;
   round: number;
-  quantity: number;
-  yield: number;
   createdBy: string;
-  updatedBy: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -46,10 +46,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           <tr>
             <th>작업일</th>
             <th>회차</th>
-            <th>수량</th>
-            <th>수율(%)</th>
             <th>작성자</th>
-            <th>수정자</th>
             <th>관리</th>
           </tr>
         </thead>
@@ -63,10 +60,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
               <tr key={log.id}>
                 <td>{log.workDate}</td>
                 <td>{log.round}</td>
-                <td>{log.quantity}</td>
-                <td>{log.yield}%</td>
                 <td>{log.createdBy}</td>
-                <td>{log.updatedBy}</td>
                 <td>
                   <div className={styles.actionButtons}>
                     <TooltipButton label='조회' variant='view' onClick={() => console.log('조회:', log.id)} />
@@ -92,10 +86,7 @@ function getMockWorklogs(projectId: number, processId: string): WorklogEntry[] {
       processId,
       workDate: '2025-12-01',
       round: 1,
-      quantity: 1000,
-      yield: 98.5,
       createdBy: '홍길동',
-      updatedBy: '홍길동',
       createdAt: '2025-12-01T08:00:00Z',
       updatedAt: '2025-12-01T17:00:00Z',
     },
@@ -105,10 +96,7 @@ function getMockWorklogs(projectId: number, processId: string): WorklogEntry[] {
       processId,
       workDate: '2025-12-02',
       round: 2,
-      quantity: 950,
-      yield: 97.2,
       createdBy: '김철수',
-      updatedBy: '이영희',
       createdAt: '2025-12-02T20:00:00Z',
       updatedAt: '2025-12-03T05:00:00Z',
     },
@@ -118,10 +106,7 @@ function getMockWorklogs(projectId: number, processId: string): WorklogEntry[] {
       processId,
       workDate: '2025-12-03',
       round: 3,
-      quantity: 1050,
-      yield: 99.1,
       createdBy: '박민수',
-      updatedBy: '박민수',
       createdAt: '2025-12-03T08:00:00Z',
       updatedAt: '2025-12-03T17:00:00Z',
     },
