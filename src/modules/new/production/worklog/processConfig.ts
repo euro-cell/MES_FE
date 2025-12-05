@@ -1,21 +1,33 @@
 import type { ProcessInfo } from './WorklogTypes';
 
 export const PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
-  All: [
-    { id: 'Binder', category: 'All', title: 'Binder' },
-    { id: 'SlurryMixing', category: 'All', title: 'Slurry Mixing' },
-    { id: 'Coating', category: 'All', title: 'Coating' },
-    { id: 'Press', category: 'All', title: 'Press' },
-    { id: 'Notching', category: 'All', title: 'Notching' },
-    { id: 'Forming', category: 'All', title: 'Forming' },
-    { id: 'VacuumDrying', category: 'All', title: 'Vacuum Drying' },
-    { id: 'Stack', category: 'All', title: 'Stack' },
-    { id: 'Welding', category: 'All', title: 'Welding' },
-    { id: 'Sealing', category: 'All', title: 'Sealing' },
-    { id: 'Formation', category: 'All', title: 'Formation' },
-    { id: 'Grading', category: 'All', title: 'Grading' },
+  Electrode: [
+    { id: 'Binder', category: 'Electrode', title: 'Binder' },
+    { id: 'SlurryMixing', category: 'Electrode', title: 'Slurry Mixing' },
+    { id: 'Coating', category: 'Electrode', title: 'Coating' },
+    { id: 'Press', category: 'Electrode', title: 'Press' },
+    { id: 'Slitting', category: 'Electrode', title: 'Slitting' },
+    { id: 'Notching', category: 'Electrode', title: 'Notching' },
+  ],
+  Assembly: [
+    { id: 'Forming', category: 'Assembly', title: 'Forming' },
+    { id: 'VacuumDrying', category: 'Assembly', title: 'Vacuum Drying' },
+    { id: 'Stack', category: 'Assembly', title: 'Stack' },
+    { id: 'Welding', category: 'Assembly', title: 'Welding' },
+    { id: 'Sealing', category: 'Assembly', title: 'Sealing' },
+    { id: 'ELFilling', category: 'Assembly', title: 'E/L Filling' },
+  ],
+  Formation: [
+    { id: 'Formation', category: 'Formation', title: 'Formation' },
+    { id: 'Grading', category: 'Formation', title: 'Grading' },
   ],
 };
+
+export const CATEGORIES = [
+  { id: 'Electrode', title: '전극 공정' },
+  { id: 'Assembly', title: '조립 공정' },
+  { id: 'Formation', title: '화성 공정' },
+];
 
 export const ALL_PROCESSES: ProcessInfo[] = Object.values(PROCESS_CONFIG).flat();
 
@@ -23,9 +35,21 @@ export const getProcessById = (processId: string): ProcessInfo | undefined => {
   return ALL_PROCESSES.find(p => p.id === processId);
 };
 
-export const createProcessMenus = (projectId: number) => {
-  return ALL_PROCESSES.map(process => ({
+export const getProcessesByCategory = (category: string): ProcessInfo[] => {
+  return PROCESS_CONFIG[category] || [];
+};
+
+export const createCategoryMenus = (projectId: number) => {
+  return CATEGORIES.map(category => ({
+    title: category.title,
+    path: `/prod/log/${projectId}?category=${category.id}`,
+  }));
+};
+
+export const createProcessMenus = (projectId: number, category: string) => {
+  const processes = getProcessesByCategory(category);
+  return processes.map(process => ({
     title: process.title,
-    path: `/prod/log/${projectId}?process=${process.id}`,
+    path: `/prod/log/${projectId}?category=${category}&process=${process.id}`,
   }));
 };
