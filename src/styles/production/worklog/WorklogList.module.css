@@ -1,0 +1,67 @@
+.worklogList {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.header h3 {
+  margin: 0;
+  color: #334155;
+  font-size: 18px;
+}
+
+.worklogTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.worklogTable th {
+  background: #f1f5f9;
+  padding: 10px;
+  border-bottom: 2px solid #e2e8f0;
+  text-align: center;
+  font-weight: 600;
+  color: #334155;
+}
+
+.worklogTable td {
+  padding: 8px 10px;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.worklogTable tr:hover td {
+  background: #f8fafc;
+}
+
+/* ======================
+  관리 버튼들
+====================== */
+.actionButtons {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.actionButtons button {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s;
+}
