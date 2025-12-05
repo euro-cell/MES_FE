@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../../styles/production/worklog/WorklogProjectList.module.css';
-import { getPlanProjects } from '../plan/PlanService';
-import type { PlanProject } from '../plan/PlanTypes';
+import { getProjects } from './WorklogService';
+import type { WorklogProject } from './WorklogTypes';
 
 export default function WorklogProjectList() {
-  const [projects, setProjects] = useState<PlanProject[]>([]);
+  const [projects, setProjects] = useState<WorklogProject[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const loadProjects = async () => {
     try {
-      const data = await getPlanProjects();
+      const data = await getProjects();
       setProjects(data);
     } catch (err) {
       console.error('프로젝트 목록 조회 실패:', err);
