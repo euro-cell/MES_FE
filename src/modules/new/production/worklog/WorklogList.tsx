@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../../../../styles/production/worklog/WorklogList.module.css';
 import TooltipButton from '../../../../components/TooltipButton';
 import { getWorklogs } from './WorklogService';
@@ -11,6 +12,7 @@ interface WorklogListProps {
 }
 
 export default function WorklogList({ projectId, processId, processTitle }: WorklogListProps) {
+  const navigate = useNavigate();
   const [worklogs, setWorklogs] = useState<WorklogEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +40,11 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
     <div className={styles.worklogList}>
       <div className={styles.header}>
         <h3>{processTitle} 작업일지</h3>
-        <TooltipButton label='등록' variant='register' onClick={() => console.log('등록')} />
+        <TooltipButton
+          label='등록'
+          variant='register'
+          onClick={() => navigate(`/prod/log/${projectId}/${processId.toLowerCase()}/register`)}
+        />
       </div>
 
       <table className={styles.worklogTable}>
@@ -63,8 +69,16 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
                 <td>{log.createdBy}</td>
                 <td>
                   <div className={styles.actionButtons}>
-                    <TooltipButton label='조회' variant='view' onClick={() => console.log('조회:', log.id)} />
-                    <TooltipButton label='수정' variant='edit' onClick={() => console.log('수정:', log.id)} />
+                    <TooltipButton
+                      label='조회'
+                      variant='view'
+                      onClick={() => navigate(`/prod/log/${projectId}/${processId.toLowerCase()}/view/${log.id}`)}
+                    />
+                    <TooltipButton
+                      label='수정'
+                      variant='edit'
+                      onClick={() => navigate(`/prod/log/${projectId}/${processId.toLowerCase()}/edit/${log.id}`)}
+                    />
                     <TooltipButton label='삭제' variant='delete' onClick={() => console.log('삭제:', log.id)} />
                   </div>
                 </td>
