@@ -4,7 +4,7 @@ export interface BinderWorklog {
   processId: string;
   workDate: string;
   round: number;
-  createdBy: string;
+  writer: string;
   createdAt: string;
   updatedAt: string;
 
@@ -71,4 +71,4 @@ export interface BinderWorklog {
   stabilizationEndTime?: string;
 }
 
-export interface BinderWorklogPayload extends Omit<BinderWorklog, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'> {}
+export interface BinderWorklogPayload extends Omit<BinderWorklog, 'id' | 'createdAt' | 'updatedAt' | 'writer'> {}

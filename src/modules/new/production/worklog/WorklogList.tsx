@@ -4,6 +4,7 @@ import styles from '../../../../styles/production/worklog/WorklogList.module.css
 import TooltipButton from '../../../../components/TooltipButton';
 import { getWorklogs } from './WorklogService';
 import type { WorklogEntry } from './WorklogTypes';
+import { getBinderWorklogs } from './processes/binder/BinderService';
 
 interface WorklogListProps {
   projectId: number;
@@ -19,7 +20,24 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
   const loadWorklogs = async () => {
     setLoading(true);
     try {
-      const data = await getWorklogs(projectId, processId);
+      let data: WorklogEntry[];
+
+      if (processId === 'Binder') {
+        const binderData = await getBinderWorklogs(projectId);
+        data = binderData.map(worklog => ({
+          id: worklog.id,
+          projectId: worklog.projectId,
+          processId: worklog.processId,
+          workDate: worklog.workDate,
+          round: worklog.round,
+          createdBy: worklog.writer,
+          createdAt: worklog.createdAt,
+          updatedAt: worklog.updatedAt,
+        }));
+      } else {
+        data = await getWorklogs(projectId, processId);
+      }
+
       setWorklogs(data);
     } catch (err) {
       console.error('작업일지 조회 실패:', err);
