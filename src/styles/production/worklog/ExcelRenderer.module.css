@@ -1,0 +1,78 @@
+.excelContainer {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  max-width: 100%;
+}
+
+.table {
+  border-collapse: collapse;
+  font-size: 14px;
+  table-layout: auto;
+  min-width: 100%;
+}
+
+.table td {
+  border: 1px solid #cbd5e0;
+  padding: 4px 8px;
+  min-width: 64px;
+  height: 32px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.editableCell {
+  background-color: #f0f9ff;
+  padding: 0;
+}
+
+.cellInput {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  padding: 4px 8px;
+  font-size: 14px;
+  outline: none;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.cellInput:focus {
+  background: #fff;
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+
+.cellInput::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.cellTextarea {
+  width: 100%;
+  min-height: 60px;
+  border: none;
+  border-radius: 0;
+  padding: 4px 8px;
+  font-size: 14px;
+  outline: none;
+  background: transparent;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.cellTextarea:focus {
+  background: #fff;
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+
+.cellTextarea::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
