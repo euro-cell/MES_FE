@@ -218,6 +218,8 @@ export default function ExcelRenderer({
                           placeholder={cellValue || '입력...'}
                         />
                       )
+                    ) : isMultiline ? (
+                      <div style={{ whiteSpace: 'pre-wrap' }}>{cellValue}</div>
                     ) : (
                       cellValue
                     )}
