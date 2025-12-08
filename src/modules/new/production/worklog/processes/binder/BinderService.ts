@@ -44,22 +44,16 @@ export const createBinderWorklog = async (
 
 /**
  * GET /production/{productionId}/worklog/{worklogId}/binder - 특정 작업일지 조회
- * TODO: 백엔드 구현 대기
  */
 export const getBinderWorklog = async (
   productionId: number,
   worklogId: number
 ): Promise<BinderWorklog> => {
-  // const res = await axios.get(
-  //   `${API_BASE}/production/${productionId}/worklog/${worklogId}/binder`,
-  //   { withCredentials: true }
-  // );
-  // return res.data;
-
-  console.log('🔍 [MOCK] Get Binder worklog:', { productionId, worklogId });
-  throw new Error(
-    'API not implemented - GET /production/{productionId}/worklog/{worklogId}/binder'
+  const res = await axios.get(
+    `${API_BASE}/production/${productionId}/worklog/${worklogId}/binder`,
+    { withCredentials: true }
   );
+  return res.data;
 };
 
 /**

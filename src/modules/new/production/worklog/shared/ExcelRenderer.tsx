@@ -23,6 +23,7 @@ interface ExcelRendererProps {
   onCellChange?: (rangeName: string, value: any) => void;
   className?: string;
   multilineFields?: string[];
+  timeFields?: string[];
 }
 
 function decodeAddress(addr: string) {
@@ -47,6 +48,7 @@ export default function ExcelRenderer({
   onCellChange,
   className = '',
   multilineFields = [],
+  timeFields = [],
 }: ExcelRendererProps) {
   const sheetData = useMemo((): SheetData | null => {
     if (!workbook) return null;
@@ -118,12 +120,39 @@ export default function ExcelRenderer({
     return rangeName ? editableRanges.includes(rangeName) : false;
   };
 
+  // 시간 값을 HH:mm 형식으로 포맷팅
+  const formatTimeValue = (value: any): string => {
+    if (!value) return '';
+    const timeStr = String(value);
+
+    // 이미 HH:mm 형식이면 그대로 반환
+    if (/^\d{2}:\d{2}$/.test(timeStr)) {
+      return timeStr;
+    }
+
+    // HH:mm:ss 형식이면 초 제거
+    if (/^\d{2}:\d{2}:\d{2}$/.test(timeStr)) {
+      return timeStr.substring(0, 5);
+    }
+
+    return timeStr;
+  };
+
   // 셀 값 가져오기 (cellValues에 있으면 사용, 없으면 원본 사용)
   const getCellValue = (rowIdx: number, colIdx: number, cell: CellData): string => {
     const rangeName = getNamedRangeForCell(rowIdx, colIdx);
 
     if (rangeName && cellValues[rangeName] !== undefined) {
+      // 시간 필드인 경우 HH:mm 형식으로 포맷팅
+      if (timeFields.includes(rangeName)) {
+        return formatTimeValue(cellValues[rangeName]);
+      }
       return formatCellValue(cellValues[rangeName], cell.numFmt);
+    }
+
+    // 시간 필드인 경우 원본 값도 포맷팅
+    if (rangeName && timeFields.includes(rangeName)) {
+      return formatTimeValue(cell.value);
     }
 
     return formatCellValue(cell.value, cell.numFmt);
@@ -171,6 +200,14 @@ export default function ExcelRenderer({
                           onChange={e => handleInputChange(rangeName, e.target.value)}
                           placeholder={cellValue || '입력...'}
                           rows={3}
+                        />
+                      ) : timeFields.includes(rangeName) ? (
+                        <input
+                          type='time'
+                          className={styles.cellInput}
+                          value={cellValues[rangeName] ?? ''}
+                          onChange={e => handleInputChange(rangeName, e.target.value)}
+                          placeholder={cellValue || '입력...'}
                         />
                       ) : (
                         <input

@@ -102,6 +102,20 @@ export default function BinderRegister() {
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
+          timeFields={[
+            'nmpWeightStartTime',
+            'nmpWeightEndTime',
+            'binderWeightStartTime',
+            'binderWeightEndTime',
+            'mixing1StartTime',
+            'mixing1EndTime',
+            'scrappingStartTime',
+            'scrappingEndTime',
+            'mixing2StartTime',
+            'mixing2EndTime',
+            'stabilizationStartTime',
+            'stabilizationEndTime',
+          ]}
         />
       </div>
 

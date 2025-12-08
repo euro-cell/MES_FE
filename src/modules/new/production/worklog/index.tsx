@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import WorklogProjectList from './WorklogProjectList';
 import WorklogPage from './WorklogPage';
 import BinderRegister from './processes/binder/BinderRegister';
+import BinderView from './processes/binder/BinderView';
 
 export default function WorklogIndex() {
   return (
@@ -11,6 +12,7 @@ export default function WorklogIndex() {
 
       {/* Binder routes */}
       <Route path=':projectId/binder/register' element={<BinderRegister />} />
+      <Route path=':projectId/binder/view/:worklogId' element={<BinderView />} />
     </Routes>
   );
 }
