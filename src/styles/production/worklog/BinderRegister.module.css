@@ -37,19 +37,21 @@
 .cancelButton {
   background: #f3f4f6;
   color: #374151;
+  border: 1px solid #9ca3af;
 }
 
 .cancelButton:hover:not(:disabled) {
   background: #e5e7eb;
+  color: #1f2937;
 }
 
 .saveButton {
-  background: #3b82f6;
+  background: #2563eb;
   color: white;
 }
 
 .saveButton:hover:not(:disabled) {
-  background: #2563eb;
+  background: #1d4ed8;
 }
 
 .cancelButton:disabled,
