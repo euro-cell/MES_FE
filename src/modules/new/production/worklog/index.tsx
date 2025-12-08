@@ -3,6 +3,7 @@ import WorklogProjectList from './WorklogProjectList';
 import WorklogPage from './WorklogPage';
 import BinderRegister from './processes/binder/BinderRegister';
 import BinderView from './processes/binder/BinderView';
+import BinderEdit from './processes/binder/BinderEdit';
 
 export default function WorklogIndex() {
   return (
@@ -13,6 +14,7 @@ export default function WorklogIndex() {
       {/* Binder routes */}
       <Route path=':projectId/binder/register' element={<BinderRegister />} />
       <Route path=':projectId/binder/view/:worklogId' element={<BinderView />} />
+      <Route path=':projectId/binder/edit/:worklogId' element={<BinderEdit />} />
     </Routes>
   );
 }
