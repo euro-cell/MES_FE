@@ -4,7 +4,7 @@ import styles from '../../../../styles/production/worklog/WorklogList.module.css
 import TooltipButton from '../../../../components/TooltipButton';
 import { getWorklogs } from './WorklogService';
 import type { WorklogEntry } from './WorklogTypes';
-import { getBinderWorklogs } from './processes/binder/BinderService';
+import { getBinderWorklogs, deleteBinderWorklog } from './processes/binder/BinderService';
 
 interface WorklogListProps {
   projectId: number;
@@ -52,6 +52,27 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
     loadWorklogs();
   }, [projectId, processId]);
 
+  const handleDelete = async (worklogId: number) => {
+    if (!confirm('작업일지를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      if (processId === 'Binder') {
+        await deleteBinderWorklog(projectId, worklogId);
+      } else {
+        // 다른 공정은 범용 삭제 API 사용 (미구현)
+        throw new Error('삭제 기능이 구현되지 않았습니다.');
+      }
+
+      alert('작업일지가 삭제되었습니다.');
+      loadWorklogs(); // 목록 새로고침
+    } catch (err) {
+      console.error('삭제 실패:', err);
+      alert('삭제 실패: ' + err);
+    }
+  };
+
   if (loading) return <p>작업일지를 불러오는 중...</p>;
 
   return (
@@ -97,7 +118,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
                       variant='edit'
                       onClick={() => navigate(`/prod/log/${projectId}/${processId.toLowerCase()}/edit/${log.id}`)}
                     />
-                    <TooltipButton label='삭제' variant='delete' onClick={() => console.log('삭제:', log.id)} />
+                    <TooltipButton label='삭제' variant='delete' onClick={() => handleDelete(log.id)} />
                   </div>
                 </td>
               </tr>

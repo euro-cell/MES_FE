@@ -61,14 +61,9 @@ export const updateBinderWorklog = async (
 
 /**
  * DELETE /production/{productionId}/worklog/{worklogId}/binder - 작업일지 삭제
- * TODO: 백엔드 구현 대기
  */
 export const deleteBinderWorklog = async (productionId: number, worklogId: number): Promise<void> => {
-  // await axios.delete(
-  //   `${API_BASE}/production/${productionId}/worklog/${worklogId}/binder`,
-  //   { withCredentials: true }
-  // );
-
-  console.log('🗑️ [MOCK] Delete Binder worklog:', { productionId, worklogId });
-  throw new Error('API not implemented - DELETE /production/{productionId}/worklog/{worklogId}/binder');
+  await axios.delete(`${API_BASE}/production/${productionId}/worklog/${worklogId}/binder`, {
+    withCredentials: true,
+  });
 };
