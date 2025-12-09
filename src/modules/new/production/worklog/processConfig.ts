@@ -3,7 +3,7 @@ import type { ProcessInfo } from './WorklogTypes';
 export const PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
   Electrode: [
     { id: 'Binder', category: 'Electrode', title: 'Binder' },
-    { id: 'SlurryMixing', category: 'Electrode', title: 'Slurry Mixing' },
+    { id: 'Slurry', category: 'Electrode', title: 'Slurry Mixing' },
     { id: 'Coating', category: 'Electrode', title: 'Coating' },
     { id: 'Press', category: 'Electrode', title: 'Press' },
     { id: 'Slitting', category: 'Electrode', title: 'Slitting' },
