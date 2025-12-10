@@ -7,6 +7,8 @@ import { mapFormToPayload } from '../../shared/excelUtils';
 import { createSlurryWorklog } from './SlurryService';
 import type { SlurryWorklogPayload } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS } from './slurryConstants';
+import { getProject } from '../../WorklogService';
+import type { WorklogProject } from '../../WorklogTypes';
 import styles from '../../../../../../styles/production/worklog/SlurryRegister.module.css';
 
 export default function SlurryRegister() {
@@ -16,18 +18,36 @@ export default function SlurryRegister() {
   const { workbook, loading: templateLoading, error: templateError } = useExcelTemplate('slurry');
   const { namedRanges } = useNamedRanges(workbook);
 
+  const [project, setProject] = useState<WorklogProject | null>(null);
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const loadProject = async () => {
+      if (!projectId) return;
+      try {
+        const projectData = await getProject(Number(projectId));
+        setProject(projectData);
+      } catch (err) {
+        console.error('프로젝트 조회 실패:', err);
+      }
+    };
+    loadProject();
+  }, [projectId]);
 
   useEffect(() => {
     if (Object.keys(namedRanges).length > 0) {
       const initialValues: Record<string, any> = {};
       Object.keys(namedRanges).forEach(rangeName => {
-        initialValues[rangeName] = '';
+        if (rangeName === 'productionId' && project) {
+          initialValues[rangeName] = project.name;
+        } else {
+          initialValues[rangeName] = '';
+        }
       });
       setFormValues(initialValues);
     }
-  }, [namedRanges]);
+  }, [namedRanges, project]);
 
   const handleCellChange = (rangeName: string, value: any) => {
     setFormValues(prev => ({
@@ -84,7 +104,10 @@ export default function SlurryRegister() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Slurry Mixing 작업일지 등록</h2>
+        <div>
+          <h2>Slurry Mixing 작업일지 등록</h2>
+          {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
+        </div>
         <div className={styles.actions}>
           <button onClick={handleCancel} className={styles.cancelButton} disabled={saving}>
             취소

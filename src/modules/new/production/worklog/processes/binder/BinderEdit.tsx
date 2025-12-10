@@ -6,6 +6,8 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { getBinderWorklog, updateBinderWorklog } from './BinderService';
 import type { BinderWorklog, BinderWorklogPayload } from './BinderTypes';
+import { getProject } from '../../WorklogService';
+import type { WorklogProject } from '../../WorklogTypes';
 import styles from '../../../../../../styles/production/worklog/BinderEdit.module.css';
 
 export default function BinderEdit() {
@@ -15,10 +17,24 @@ export default function BinderEdit() {
   const { workbook, loading: templateLoading, error: templateError } = useExcelTemplate('binder');
   const { namedRanges } = useNamedRanges(workbook);
 
+  const [project, setProject] = useState<WorklogProject | null>(null);
   const [worklogData, setWorklogData] = useState<BinderWorklog | null>(null);
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const loadProject = async () => {
+      if (!projectId) return;
+      try {
+        const projectData = await getProject(Number(projectId));
+        setProject(projectData);
+      } catch (err) {
+        console.error('프로젝트 조회 실패:', err);
+      }
+    };
+    loadProject();
+  }, [projectId]);
 
   useEffect(() => {
     const loadWorklog = async () => {
@@ -32,7 +48,11 @@ export default function BinderEdit() {
         // BinderWorklog 데이터를 Named Range에 맞춰 formValues로 변환
         const values: Record<string, any> = {};
         Object.keys(namedRanges).forEach(rangeName => {
-          values[rangeName] = (data as any)[rangeName] ?? '';
+          if (rangeName === 'productionId' && project) {
+            values[rangeName] = project.name;
+          } else {
+            values[rangeName] = (data as any)[rangeName] ?? '';
+          }
         });
         setFormValues(values);
       } catch (err) {
@@ -103,7 +123,10 @@ export default function BinderEdit() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Binder 작업일지 수정</h2>
+        <div>
+          <h2>Binder 작업일지 수정</h2>
+          {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
+        </div>
         <div className={styles.actions}>
           <button onClick={handleCancel} className={styles.cancelButton} disabled={saving}>
             취소

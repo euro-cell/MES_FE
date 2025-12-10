@@ -7,6 +7,8 @@ import { mapFormToPayload } from '../../shared/excelUtils';
 import { getSlurryWorklog, updateSlurryWorklog } from './SlurryService';
 import type { SlurryWorklog, SlurryWorklogPayload } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS } from './slurryConstants';
+import { getProject } from '../../WorklogService';
+import type { WorklogProject } from '../../WorklogTypes';
 import styles from '../../../../../../styles/production/worklog/SlurryEdit.module.css';
 
 export default function SlurryEdit() {
@@ -16,10 +18,24 @@ export default function SlurryEdit() {
   const { workbook, loading: templateLoading, error: templateError } = useExcelTemplate('slurry');
   const { namedRanges } = useNamedRanges(workbook);
 
+  const [project, setProject] = useState<WorklogProject | null>(null);
   const [worklogData, setWorklogData] = useState<SlurryWorklog | null>(null);
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const loadProject = async () => {
+      if (!projectId) return;
+      try {
+        const projectData = await getProject(Number(projectId));
+        setProject(projectData);
+      } catch (err) {
+        console.error('프로젝트 조회 실패:', err);
+      }
+    };
+    loadProject();
+  }, [projectId]);
 
   useEffect(() => {
     const loadWorklog = async () => {
@@ -33,7 +49,11 @@ export default function SlurryEdit() {
         // SlurryWorklog 데이터를 Named Range에 맞춰 formValues로 변환
         const values: Record<string, any> = {};
         Object.keys(namedRanges).forEach(rangeName => {
-          values[rangeName] = (data as any)[rangeName] ?? '';
+          if (rangeName === 'productionId' && project) {
+            values[rangeName] = project.name;
+          } else {
+            values[rangeName] = (data as any)[rangeName] ?? '';
+          }
         });
         setFormValues(values);
       } catch (err) {
@@ -104,7 +124,10 @@ export default function SlurryEdit() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Slurry 작업일지 수정</h2>
+        <div>
+          <h2>Slurry 작업일지 수정</h2>
+          {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
+        </div>
         <div className={styles.actions}>
           <button onClick={handleCancel} className={styles.cancelButton} disabled={saving}>
             취소

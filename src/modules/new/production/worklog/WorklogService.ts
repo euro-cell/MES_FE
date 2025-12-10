@@ -9,6 +9,12 @@ export const getProjects = async (): Promise<WorklogProject[]> => {
   return res.data;
 };
 
+/** 특정 프로젝트 조회 (전체 목록에서 필터링) */
+export const getProject = async (projectId: number): Promise<WorklogProject | null> => {
+  const projects = await getProjects();
+  return projects.find(p => p.id === projectId) || null;
+};
+
 export const getWorklogProjects = async (): Promise<WorklogProject[]> => {
   // TODO: 백엔드 API 구현 시 활성화
   // const res = await axios.get(`${API_BASE}/worklog/projects`, { withCredentials: true });
