@@ -7,6 +7,9 @@ import BinderEdit from './processes/binder/BinderEdit';
 import SlurryRegister from './processes/slurry/SlurryRegister';
 import SlurryView from './processes/slurry/SlurryView';
 import SlurryEdit from './processes/slurry/SlurryEdit';
+import CoatingRegister from './processes/coating/CoatingRegister';
+import CoatingView from './processes/coating/CoatingView';
+import CoatingEdit from './processes/coating/CoatingEdit';
 
 export default function WorklogIndex() {
   return (
@@ -23,6 +26,11 @@ export default function WorklogIndex() {
       <Route path=':projectId/slurry/register' element={<SlurryRegister />} />
       <Route path=':projectId/slurry/view/:worklogId' element={<SlurryView />} />
       <Route path=':projectId/slurry/edit/:worklogId' element={<SlurryEdit />} />
+
+      {/* Coating routes */}
+      <Route path=':projectId/coating/register' element={<CoatingRegister />} />
+      <Route path=':projectId/coating/view/:worklogId' element={<CoatingView />} />
+      <Route path=':projectId/coating/edit/:worklogId' element={<CoatingEdit />} />
     </Routes>
   );
 }

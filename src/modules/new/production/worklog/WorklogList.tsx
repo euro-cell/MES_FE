@@ -6,6 +6,7 @@ import { getWorklogs } from './WorklogService';
 import type { WorklogEntry } from './WorklogTypes';
 import { getBinderWorklogs, deleteBinderWorklog } from './processes/binder/BinderService';
 import { getSlurryWorklogs, deleteSlurryWorklog } from './processes/slurry/SlurryService';
+import { getCoatingWorklogs, deleteCoatingWorklog } from './processes/coating/CoatingService';
 
 interface WorklogListProps {
   projectId: number;
@@ -47,6 +48,18 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
         }));
+      } else if (processId === 'Coating') {
+        const coatingData = await getCoatingWorklogs(projectId);
+        data = coatingData.map(worklog => ({
+          id: worklog.id,
+          projectId: worklog.projectId,
+          processId: worklog.processId,
+          workDate: worklog.workDate,
+          round: worklog.round,
+          createdBy: worklog.writer,
+          createdAt: worklog.createdAt,
+          updatedAt: worklog.updatedAt,
+        }));
       } else {
         data = await getWorklogs(projectId, processId);
       }
@@ -75,6 +88,8 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
         await deleteBinderWorklog(projectId, worklogId);
       } else if (processId === 'Slurry') {
         await deleteSlurryWorklog(projectId, worklogId);
+      } else if (processId === 'Coating') {
+        await deleteCoatingWorklog(projectId, worklogId);
       } else {
         // 다른 공정은 범용 삭제 API 사용 (미구현)
         throw new Error('삭제 기능이 구현되지 않았습니다.');
