@@ -22,7 +22,7 @@ export const getFormingWorklogs = async (projectId: number): Promise<FormingWork
 
 // Forming 작업일지 단건 조회
 export const getFormingWorklog = async (projectId: number, worklogId: number): Promise<FormingWorklog> => {
-  const res = await axios.get(`${API_BASE}/production/${projectId}/worklog/forming/${worklogId}`, {
+  const res = await axios.get(`${API_BASE}/production/${projectId}/worklog/${worklogId}/forming`, {
     withCredentials: true,
   });
   return res.data;
@@ -45,7 +45,7 @@ export const updateFormingWorklog = async (
   worklogId: number,
   payload: FormingWorklogPayload
 ): Promise<FormingWorklog> => {
-  const res = await axios.patch(`${API_BASE}/production/${productionId}/worklog/forming/${worklogId}`, payload, {
+  const res = await axios.patch(`${API_BASE}/production/${productionId}/worklog/${worklogId}/forming`, payload, {
     withCredentials: true,
   });
   return res.data;
@@ -53,7 +53,7 @@ export const updateFormingWorklog = async (
 
 // Forming 작업일지 삭제
 export const deleteFormingWorklog = async (projectId: number, worklogId: number): Promise<void> => {
-  await axios.delete(`${API_BASE}/production/${projectId}/worklog/forming/${worklogId}`, {
+  await axios.delete(`${API_BASE}/production/${projectId}/worklog/${worklogId}/forming`, {
     withCredentials: true,
   });
 };

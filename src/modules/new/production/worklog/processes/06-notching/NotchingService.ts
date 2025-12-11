@@ -22,7 +22,7 @@ export const getNotchingWorklogs = async (projectId: number): Promise<NotchingWo
 
 // Notching 작업일지 단건 조회
 export const getNotchingWorklog = async (projectId: number, worklogId: number): Promise<NotchingWorklog> => {
-  const res = await axios.get(`${API_BASE}/production/${projectId}/worklog/notching/${worklogId}`, {
+  const res = await axios.get(`${API_BASE}/production/${projectId}/worklog/${worklogId}/notching`, {
     withCredentials: true,
   });
   return res.data;
@@ -45,7 +45,7 @@ export const updateNotchingWorklog = async (
   worklogId: number,
   payload: NotchingWorklogPayload
 ): Promise<NotchingWorklog> => {
-  const res = await axios.patch(`${API_BASE}/production/${productionId}/worklog/notching/${worklogId}`, payload, {
+  const res = await axios.patch(`${API_BASE}/production/${productionId}/worklog/${worklogId}/notching`, payload, {
     withCredentials: true,
   });
   return res.data;
@@ -53,7 +53,7 @@ export const updateNotchingWorklog = async (
 
 // Notching 작업일지 삭제
 export const deleteNotchingWorklog = async (projectId: number, worklogId: number): Promise<void> => {
-  await axios.delete(`${API_BASE}/production/${projectId}/worklog/notching/${worklogId}`, {
+  await axios.delete(`${API_BASE}/production/${projectId}/worklog/${worklogId}/notching`, {
     withCredentials: true,
   });
 };

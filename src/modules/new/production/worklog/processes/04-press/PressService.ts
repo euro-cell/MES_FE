@@ -22,17 +22,14 @@ export const getPressWorklogs = async (projectId: number): Promise<PressWorklog[
 
 // Press 작업일지 단건 조회
 export const getPressWorklog = async (projectId: number, worklogId: number): Promise<PressWorklog> => {
-  const res = await axios.get(`${API_BASE}/production/${projectId}/worklog/press/${worklogId}`, {
+  const res = await axios.get(`${API_BASE}/production/${projectId}/worklog/${worklogId}/press`, {
     withCredentials: true,
   });
   return res.data;
 };
 
 // Press 작업일지 등록
-export const createPressWorklog = async (
-  productionId: number,
-  payload: PressWorklogPayload
-): Promise<PressWorklog> => {
+export const createPressWorklog = async (productionId: number, payload: PressWorklogPayload): Promise<PressWorklog> => {
   const res = await axios.post(`${API_BASE}/production/${productionId}/worklog/press`, payload, {
     withCredentials: true,
   });
@@ -45,7 +42,7 @@ export const updatePressWorklog = async (
   worklogId: number,
   payload: PressWorklogPayload
 ): Promise<PressWorklog> => {
-  const res = await axios.patch(`${API_BASE}/production/${productionId}/worklog/press/${worklogId}`, payload, {
+  const res = await axios.patch(`${API_BASE}/production/${productionId}/worklog/${worklogId}/press`, payload, {
     withCredentials: true,
   });
   return res.data;
@@ -53,7 +50,7 @@ export const updatePressWorklog = async (
 
 // Press 작업일지 삭제
 export const deletePressWorklog = async (projectId: number, worklogId: number): Promise<void> => {
-  await axios.delete(`${API_BASE}/production/${projectId}/worklog/press/${worklogId}`, {
+  await axios.delete(`${API_BASE}/production/${projectId}/worklog/${worklogId}/press`, {
     withCredentials: true,
   });
 };

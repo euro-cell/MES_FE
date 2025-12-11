@@ -22,17 +22,14 @@ export const getVdWorklogs = async (projectId: number): Promise<VdWorklog[]> => 
 
 // VD 작업일지 단건 조회
 export const getVdWorklog = async (projectId: number, worklogId: number): Promise<VdWorklog> => {
-  const res = await axios.get(`${API_BASE}/production/${projectId}/worklog/vd/${worklogId}`, {
+  const res = await axios.get(`${API_BASE}/production/${projectId}/worklog/${worklogId}/vd`, {
     withCredentials: true,
   });
   return res.data;
 };
 
 // VD 작업일지 등록
-export const createVdWorklog = async (
-  productionId: number,
-  payload: VdWorklogPayload
-): Promise<VdWorklog> => {
+export const createVdWorklog = async (productionId: number, payload: VdWorklogPayload): Promise<VdWorklog> => {
   const res = await axios.post(`${API_BASE}/production/${productionId}/worklog/vd`, payload, {
     withCredentials: true,
   });
@@ -45,7 +42,7 @@ export const updateVdWorklog = async (
   worklogId: number,
   payload: VdWorklogPayload
 ): Promise<VdWorklog> => {
-  const res = await axios.patch(`${API_BASE}/production/${productionId}/worklog/vd/${worklogId}`, payload, {
+  const res = await axios.patch(`${API_BASE}/production/${productionId}/worklog/${worklogId}/vd`, payload, {
     withCredentials: true,
   });
   return res.data;
@@ -53,7 +50,7 @@ export const updateVdWorklog = async (
 
 // VD 작업일지 삭제
 export const deleteVdWorklog = async (projectId: number, worklogId: number): Promise<void> => {
-  await axios.delete(`${API_BASE}/production/${projectId}/worklog/vd/${worklogId}`, {
+  await axios.delete(`${API_BASE}/production/${projectId}/worklog/${worklogId}/vd`, {
     withCredentials: true,
   });
 };
