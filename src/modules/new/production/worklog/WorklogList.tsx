@@ -4,13 +4,13 @@ import styles from '../../../../styles/production/worklog/WorklogList.module.css
 import TooltipButton from '../../../../components/TooltipButton';
 import { getWorklogs } from './WorklogService';
 import type { WorklogEntry } from './WorklogTypes';
-import { getBinderWorklogs, deleteBinderWorklog } from './processes/binder/BinderService';
-import { getSlurryWorklogs, deleteSlurryWorklog } from './processes/slurry/SlurryService';
-import { getCoatingWorklogs, deleteCoatingWorklog } from './processes/coating/CoatingService';
-import { getPressWorklogs, deletePressWorklog } from './processes/press/PressService';
-import { getNotchingWorklogs, deleteNotchingWorklog } from './processes/notching/NotchingService';
-import { getVdWorklogs, deleteVdWorklog } from './processes/vd/VdService';
-import { getFormingWorklogs, deleteFormingWorklog } from './processes/forming/FormingService';
+import { getBinderWorklogs, deleteBinderWorklog } from './processes/01-binder/BinderService';
+import { getSlurryWorklogs, deleteSlurryWorklog } from './processes/02-slurry/SlurryService';
+import { getCoatingWorklogs, deleteCoatingWorklog } from './processes/03-coating/CoatingService';
+import { getPressWorklogs, deletePressWorklog } from './processes/04-press/PressService';
+import { getNotchingWorklogs, deleteNotchingWorklog } from './processes/06-notching/NotchingService';
+import { getVdWorklogs, deleteVdWorklog } from './processes/07-vd/VdService';
+import { getFormingWorklogs, deleteFormingWorklog } from './processes/08-forming/FormingService';
 
 interface WorklogListProps {
   projectId: number;
