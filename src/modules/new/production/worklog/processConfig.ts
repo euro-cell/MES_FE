@@ -15,7 +15,7 @@ export const PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
     { id: 'Stacking', category: 'Assembly', title: 'Stacking' },
     { id: 'Welding', category: 'Assembly', title: 'Welding' },
     { id: 'Sealing', category: 'Assembly', title: 'Sealing' },
-    { id: 'ELFilling', category: 'Assembly', title: 'E/L Filling' },
+    { id: 'Filling', category: 'Assembly', title: 'E/L Filling' },
   ],
   Formation: [
     { id: 'Formation', category: 'Formation', title: 'Formation' },

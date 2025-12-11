@@ -31,6 +31,9 @@ import WeldingEdit from './processes/10-welding/WeldingEdit';
 import SealingRegister from './processes/11-sealing/SealingRegister';
 import SealingView from './processes/11-sealing/SealingView';
 import SealingEdit from './processes/11-sealing/SealingEdit';
+import FillingRegister from './processes/12-filling/FillingRegister';
+import FillingView from './processes/12-filling/FillingView';
+import FillingEdit from './processes/12-filling/FillingEdit';
 
 export default function WorklogIndex() {
   return (
@@ -87,6 +90,11 @@ export default function WorklogIndex() {
       <Route path=':projectId/sealing/register' element={<SealingRegister />} />
       <Route path=':projectId/sealing/view/:worklogId' element={<SealingView />} />
       <Route path=':projectId/sealing/edit/:worklogId' element={<SealingEdit />} />
+
+      {/* Filling routes */}
+      <Route path=':projectId/filling/register' element={<FillingRegister />} />
+      <Route path=':projectId/filling/view/:worklogId' element={<FillingView />} />
+      <Route path=':projectId/filling/edit/:worklogId' element={<FillingEdit />} />
     </Routes>
   );
 }
