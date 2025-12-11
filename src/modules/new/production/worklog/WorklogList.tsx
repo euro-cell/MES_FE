@@ -11,6 +11,7 @@ import { getPressWorklogs, deletePressWorklog } from './processes/04-press/Press
 import { getNotchingWorklogs, deleteNotchingWorklog } from './processes/06-notching/NotchingService';
 import { getVdWorklogs, deleteVdWorklog } from './processes/07-vd/VdService';
 import { getFormingWorklogs, deleteFormingWorklog } from './processes/08-forming/FormingService';
+import { getStackingWorklogs, deleteStackingWorklog } from './processes/09-stacking/StackingService';
 
 interface WorklogListProps {
   projectId: number;
@@ -88,7 +89,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
         }));
-      } else if (processId === 'Vd') {
+      } else if (processId === 'VD') {
         const vdData = await getVdWorklogs(projectId);
         data = vdData.map(worklog => ({
           id: worklog.id,
@@ -103,6 +104,18 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
       } else if (processId === 'Forming') {
         const formingData = await getFormingWorklogs(projectId);
         data = formingData.map(worklog => ({
+          id: worklog.id,
+          projectId: worklog.projectId,
+          processId: worklog.processId,
+          workDate: worklog.workDate,
+          round: worklog.round,
+          createdBy: worklog.writer,
+          createdAt: worklog.createdAt,
+          updatedAt: worklog.updatedAt,
+        }));
+      } else if (processId === 'Stacking') {
+        const stackData = await getStackingWorklogs(projectId);
+        data = stackData.map(worklog => ({
           id: worklog.id,
           projectId: worklog.projectId,
           processId: worklog.processId,
@@ -146,10 +159,12 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
         await deletePressWorklog(projectId, worklogId);
       } else if (processId === 'Notching') {
         await deleteNotchingWorklog(projectId, worklogId);
-      } else if (processId === 'Vd') {
+      } else if (processId === 'VD') {
         await deleteVdWorklog(projectId, worklogId);
       } else if (processId === 'Forming') {
         await deleteFormingWorklog(projectId, worklogId);
+      } else if (processId === 'Stacking') {
+        await deleteStackingWorklog(projectId, worklogId);
       } else {
         // 다른 공정은 범용 삭제 API 사용 (미구현)
         throw new Error('삭제 기능이 구현되지 않았습니다.');

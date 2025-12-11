@@ -22,6 +22,9 @@ import VdEdit from './processes/07-vd/VdEdit';
 import FormingRegister from './processes/08-forming/FormingRegister';
 import FormingView from './processes/08-forming/FormingView';
 import FormingEdit from './processes/08-forming/FormingEdit';
+import StackRegister from './processes/09-stacking/StackingRegister';
+import StackView from './processes/09-stacking/StackingView';
+import StackEdit from './processes/09-stacking/StackingEdit';
 
 export default function WorklogIndex() {
   return (
@@ -63,6 +66,11 @@ export default function WorklogIndex() {
       <Route path=':projectId/forming/register' element={<FormingRegister />} />
       <Route path=':projectId/forming/view/:worklogId' element={<FormingView />} />
       <Route path=':projectId/forming/edit/:worklogId' element={<FormingEdit />} />
+
+      {/* Stack routes */}
+      <Route path=':projectId/stacking/register' element={<StackRegister />} />
+      <Route path=':projectId/stacking/view/:worklogId' element={<StackView />} />
+      <Route path=':projectId/stacking/edit/:worklogId' element={<StackEdit />} />
     </Routes>
   );
 }
