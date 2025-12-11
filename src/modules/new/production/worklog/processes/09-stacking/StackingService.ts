@@ -38,7 +38,7 @@ export const createStackingWorklog = async (
 export const updateStackingWorklog = async (
   productionId: number,
   worklogId: number,
-  payload: StackingWorklogPayload
+  payload: Partial<StackingWorklogPayload>
 ): Promise<StackingWorklog> => {
   const res = await axios.patch(`${API_BASE}/production/${productionId}/worklog/${worklogId}/Stacking`, payload, {
     withCredentials: true,

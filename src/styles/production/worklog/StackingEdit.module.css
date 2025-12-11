@@ -5,6 +5,9 @@
 }
 
 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 
@@ -21,20 +24,14 @@
   margin: 4px 0 0 0;
 }
 
-.excelRenderer {
-  margin-bottom: 20px;
-}
-
 .actions {
   display: flex;
-  justify-content: flex-end;
   gap: 10px;
-  padding: 16px 0;
 }
 
-.btnCancel,
-.btnSubmit {
-  padding: 10px 24px;
+.cancelButton,
+.saveButton {
+  padding: 10px 20px;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
@@ -43,26 +40,51 @@
   border: none;
 }
 
-.btnCancel {
+.cancelButton {
   background: #f3f4f6;
   color: #374151;
-  border: 1px solid #d1d5db;
+  border: 1px solid #9ca3af;
 }
 
-.btnCancel:hover:not(:disabled) {
+.cancelButton:hover:not(:disabled) {
   background: #e5e7eb;
+  color: #1f2937;
 }
 
-.btnSubmit {
+.saveButton {
   background: #2563eb;
   color: white;
 }
 
-.btnSubmit:hover:not(:disabled) {
+.saveButton:hover:not(:disabled) {
   background: #1d4ed8;
 }
 
-.btnSubmit:disabled {
+.cancelButton:disabled,
+.saveButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.excelWrapper {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.footer {
+  margin-top: 16px;
+}
+
+.hint {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 14px;
 }
