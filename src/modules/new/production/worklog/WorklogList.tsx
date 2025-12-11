@@ -13,6 +13,7 @@ import { getVdWorklogs, deleteVdWorklog } from './processes/07-vd/VdService';
 import { getFormingWorklogs, deleteFormingWorklog } from './processes/08-forming/FormingService';
 import { getStackingWorklogs, deleteStackingWorklog } from './processes/09-stacking/StackingService';
 import { getWeldingWorklogs, deleteWeldingWorklog } from './processes/10-welding/WeldingService';
+import { getSealingWorklogs, deleteSealingWorklog } from './processes/11-sealing/SealingService';
 
 interface WorklogListProps {
   projectId: number;
@@ -138,6 +139,18 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
         }));
+      } else if (processId === 'Sealing') {
+        const sealingData = await getSealingWorklogs(projectId);
+        data = sealingData.map(worklog => ({
+          id: worklog.id,
+          projectId: worklog.projectId,
+          processId: worklog.processId,
+          workDate: worklog.workDate,
+          round: worklog.round,
+          createdBy: worklog.writer,
+          createdAt: worklog.createdAt,
+          updatedAt: worklog.updatedAt,
+        }));
       } else {
         data = await getWorklogs(projectId, processId);
       }
@@ -180,6 +193,8 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
         await deleteStackingWorklog(projectId, worklogId);
       } else if (processId === 'Welding') {
         await deleteWeldingWorklog(projectId, worklogId);
+      } else if (processId === 'Sealing') {
+        await deleteSealingWorklog(projectId, worklogId);
       } else {
         // 다른 공정은 범용 삭제 API 사용 (미구현)
         throw new Error('삭제 기능이 구현되지 않았습니다.');
