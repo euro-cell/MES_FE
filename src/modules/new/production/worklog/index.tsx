@@ -10,6 +10,9 @@ import SlurryEdit from './processes/slurry/SlurryEdit';
 import CoatingRegister from './processes/coating/CoatingRegister';
 import CoatingView from './processes/coating/CoatingView';
 import CoatingEdit from './processes/coating/CoatingEdit';
+import PressRegister from './processes/press/PressRegister';
+import PressView from './processes/press/PressView';
+import PressEdit from './processes/press/PressEdit';
 
 export default function WorklogIndex() {
   return (
@@ -31,6 +34,11 @@ export default function WorklogIndex() {
       <Route path=':projectId/coating/register' element={<CoatingRegister />} />
       <Route path=':projectId/coating/view/:worklogId' element={<CoatingView />} />
       <Route path=':projectId/coating/edit/:worklogId' element={<CoatingEdit />} />
+
+      {/* Press routes */}
+      <Route path=':projectId/press/register' element={<PressRegister />} />
+      <Route path=':projectId/press/view/:worklogId' element={<PressView />} />
+      <Route path=':projectId/press/edit/:worklogId' element={<PressEdit />} />
     </Routes>
   );
 }
