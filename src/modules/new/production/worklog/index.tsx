@@ -19,6 +19,9 @@ import NotchingEdit from './processes/notching/NotchingEdit';
 import VdRegister from './processes/vd/VdRegister';
 import VdView from './processes/vd/VdView';
 import VdEdit from './processes/vd/VdEdit';
+import FormingRegister from './processes/forming/FormingRegister';
+import FormingView from './processes/forming/FormingView';
+import FormingEdit from './processes/forming/FormingEdit';
 
 export default function WorklogIndex() {
   return (
@@ -55,6 +58,11 @@ export default function WorklogIndex() {
       <Route path=':projectId/vd/register' element={<VdRegister />} />
       <Route path=':projectId/vd/view/:worklogId' element={<VdView />} />
       <Route path=':projectId/vd/edit/:worklogId' element={<VdEdit />} />
+
+      {/* Forming routes */}
+      <Route path=':projectId/forming/register' element={<FormingRegister />} />
+      <Route path=':projectId/forming/view/:worklogId' element={<FormingView />} />
+      <Route path=':projectId/forming/edit/:worklogId' element={<FormingEdit />} />
     </Routes>
   );
 }
