@@ -13,6 +13,9 @@ import CoatingEdit from './processes/coating/CoatingEdit';
 import PressRegister from './processes/press/PressRegister';
 import PressView from './processes/press/PressView';
 import PressEdit from './processes/press/PressEdit';
+import NotchingRegister from './processes/notching/NotchingRegister';
+import NotchingView from './processes/notching/NotchingView';
+import NotchingEdit from './processes/notching/NotchingEdit';
 
 export default function WorklogIndex() {
   return (
@@ -39,6 +42,11 @@ export default function WorklogIndex() {
       <Route path=':projectId/press/register' element={<PressRegister />} />
       <Route path=':projectId/press/view/:worklogId' element={<PressView />} />
       <Route path=':projectId/press/edit/:worklogId' element={<PressEdit />} />
+
+      {/* Notching routes */}
+      <Route path=':projectId/notching/register' element={<NotchingRegister />} />
+      <Route path=':projectId/notching/view/:worklogId' element={<NotchingView />} />
+      <Route path=':projectId/notching/edit/:worklogId' element={<NotchingEdit />} />
     </Routes>
   );
 }
