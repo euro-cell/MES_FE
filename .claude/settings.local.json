@@ -4,7 +4,15 @@
       "Bash(find:*)",
       "Bash(cat:*)",
       "Bash(mkdir:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(for file in SlurryRegister.module.css SlurryEdit.module.css)",
+      "Bash(do sed -i '/^\\.header h2 {$/,/^}$/a \\\\n.projectName {\\n  font-size: 14px;\\n  color: #6b7280;\\n  margin: 4px 0 0 0;\\n}' \"$file\")",
+      "Bash(done)",
+      "Bash(npm run dev:*)",
+      "Bash(if [ -d \"09-stack\" ])",
+      "Bash(then mv \"09-stack\" \"09-stacking\")",
+      "Bash(else echo \"09-stack folder not found\")",
+      "Bash(fi)"
     ],
     "deny": [],
     "ask": []
