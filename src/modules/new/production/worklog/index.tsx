@@ -16,6 +16,9 @@ import PressEdit from './processes/press/PressEdit';
 import NotchingRegister from './processes/notching/NotchingRegister';
 import NotchingView from './processes/notching/NotchingView';
 import NotchingEdit from './processes/notching/NotchingEdit';
+import VdRegister from './processes/vd/VdRegister';
+import VdView from './processes/vd/VdView';
+import VdEdit from './processes/vd/VdEdit';
 
 export default function WorklogIndex() {
   return (
@@ -47,6 +50,11 @@ export default function WorklogIndex() {
       <Route path=':projectId/notching/register' element={<NotchingRegister />} />
       <Route path=':projectId/notching/view/:worklogId' element={<NotchingView />} />
       <Route path=':projectId/notching/edit/:worklogId' element={<NotchingEdit />} />
+
+      {/* VD routes */}
+      <Route path=':projectId/vd/register' element={<VdRegister />} />
+      <Route path=':projectId/vd/view/:worklogId' element={<VdView />} />
+      <Route path=':projectId/vd/edit/:worklogId' element={<VdEdit />} />
     </Routes>
   );
 }
