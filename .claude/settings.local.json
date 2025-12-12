@@ -12,7 +12,10 @@
       "Bash(if [ -d \"09-stack\" ])",
       "Bash(then mv \"09-stack\" \"09-stacking\")",
       "Bash(else echo \"09-stack folder not found\")",
-      "Bash(fi)"
+      "Bash(fi)",
+      "Bash(ls:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []
