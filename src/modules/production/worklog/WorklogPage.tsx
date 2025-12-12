@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import WorklogList from './WorklogList';
 import { createCategoryMenus, createProcessMenus, getProcessById } from './processConfig';
 import { getPlanProjects } from '../plan/PlanService';
 import type { PlanProject } from '../plan/PlanTypes';
+import styles from '../../../styles/production/worklog/WorklogPage.module.css';
 
 export default function WorklogPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [project, setProject] = useState<PlanProject | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,8 +47,11 @@ export default function WorklogPage() {
   return (
     <div>
       {/* 프로젝트 정보 헤더 */}
-      <div style={{ background: '#f8fafc', marginBottom: '16px', borderRadius: '8px' }}>
+      <div className={styles.projectHeader}>
         <h2>프로젝트: {project.name}</h2>
+        <button className={styles.backButton} onClick={() => navigate('/prod/log')}>
+          ← 프로젝트 목록으로
+        </button>
       </div>
 
       {/* 카테고리 탭 메뉴 (1단계) */}
