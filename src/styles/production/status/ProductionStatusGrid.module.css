@@ -105,6 +105,18 @@
   color: #1f2937;
 }
 
+/* 토요일 (파란색) */
+.saturday {
+  color: #2563eb !important;
+  font-weight: 600;
+}
+
+/* 일요일 (빨간색) */
+.sunday {
+  color: #ef4444 !important;
+  font-weight: 600;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 1200px) {
   .statusTable {
