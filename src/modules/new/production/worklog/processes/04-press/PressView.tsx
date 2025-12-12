@@ -184,7 +184,7 @@ export default function PressView() {
       />
 
       <div className={styles.actions}>
-        <button className={styles.btnBack} onClick={() => navigate(`/prod/log/${projectId}`)}>
+        <button className={styles.btnBack} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Press`)}>
           목록으로
         </button>
       </div>

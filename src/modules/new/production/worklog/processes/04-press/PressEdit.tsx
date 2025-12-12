@@ -300,7 +300,7 @@ export default function PressEdit() {
     try {
       await updatePressWorklog(Number(projectId), Number(worklogId), payload);
       alert('Press 작업일지가 수정되었습니다.');
-      navigate(`/prod/log/${projectId}`);
+      navigate(`/prod/log/${projectId}?category=Electrode&process=Press`);
     } catch (err) {
       console.error('수정 실패:', err);
       alert('수정 실패: ' + err);
@@ -318,8 +318,18 @@ export default function PressEdit() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Press 작업일지 수정</h2>
-        {project && <div className={styles.projectName}>{project.name}</div>}
+        <div>
+          <h2>Press 작업일지 수정</h2>
+          {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
+        </div>
+        <div className={styles.actions}>
+          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Press`)}>
+            취소
+          </button>
+          <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>
+            {submitting ? '수정 중...' : '수정'}
+          </button>
+        </div>
       </div>
 
       <ExcelRenderer
@@ -330,15 +340,6 @@ export default function PressEdit() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
       />
-
-      <div className={styles.actions}>
-        <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}`)}>
-          취소
-        </button>
-        <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>
-          {submitting ? '수정 중...' : '수정'}
-        </button>
-      </div>
     </div>
   );
 }

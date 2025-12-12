@@ -116,7 +116,7 @@ export default function FormingView() {
       />
 
       <div className={styles.actions}>
-        <button className={styles.btnBack} onClick={() => navigate(`/prod/log/${projectId}`)}>
+        <button className={styles.btnBack} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Forming`)}>
           목록으로
         </button>
       </div>

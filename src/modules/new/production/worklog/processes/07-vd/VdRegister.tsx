@@ -151,7 +151,7 @@ export default function VdRegister() {
     try {
       await createVdWorklog(Number(projectId), payload);
       alert('VD 작업일지가 등록되었습니다.');
-      navigate(`/prod/log/${projectId}`);
+      navigate(`/prod/log/${projectId}?category=Electrode&process=VD`);
     } catch (err) {
       console.error('등록 실패:', err);
       alert('등록 실패: ' + err);
@@ -169,8 +169,18 @@ export default function VdRegister() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>VD 작업일지 등록</h2>
-        {project && <div className={styles.projectName}>{project.name}</div>}
+        <div>
+          <h2>VD 작업일지 등록</h2>
+          {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
+        </div>
+        <div className={styles.actions}>
+          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=VD`)}>
+            취소
+          </button>
+          <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>
+            {submitting ? '등록 중...' : '등록'}
+          </button>
+        </div>
       </div>
 
       <ExcelRenderer
@@ -181,15 +191,6 @@ export default function VdRegister() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
       />
-
-      <div className={styles.actions}>
-        <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}`)}>
-          취소
-        </button>
-        <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>
-          {submitting ? '등록 중...' : '등록'}
-        </button>
-      </div>
     </div>
   );
 }

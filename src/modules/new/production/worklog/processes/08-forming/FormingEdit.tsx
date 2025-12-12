@@ -170,7 +170,7 @@ export default function FormingEdit() {
     try {
       await updateFormingWorklog(Number(projectId), Number(worklogId), payload);
       alert('Forming 작업일지가 수정되었습니다.');
-      navigate(`/prod/log/${projectId}`);
+      navigate(`/prod/log/${projectId}?category=Electrode&process=Forming`);
     } catch (err) {
       console.error('수정 실패:', err);
       alert('수정 실패: ' + err);
@@ -188,8 +188,18 @@ export default function FormingEdit() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Forming 작업일지 수정</h2>
-        {project && <div className={styles.projectName}>{project.name}</div>}
+        <div>
+          <h2>Forming 작업일지 수정</h2>
+          {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
+        </div>
+        <div className={styles.actions}>
+          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Forming`)}>
+            취소
+          </button>
+          <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>
+            {submitting ? '수정 중...' : '수정'}
+          </button>
+        </div>
       </div>
 
       <ExcelRenderer
@@ -200,15 +210,6 @@ export default function FormingEdit() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
       />
-
-      <div className={styles.actions}>
-        <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}`)}>
-          취소
-        </button>
-        <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>
-          {submitting ? '수정 중...' : '수정'}
-        </button>
-      </div>
     </div>
   );
 }
