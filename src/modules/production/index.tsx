@@ -6,7 +6,7 @@ import '../../styles/moduleIndex.css';
 import PlanPage from './plan';
 import SpecPage from './spec';
 import WorklogPage from './worklog';
-// import StatusPage from './status';
+import StatusIndex from './status';
 // import LotPage from './lot';
 
 export default function ProductionIndex() {
@@ -21,7 +21,7 @@ export default function ProductionIndex() {
           <Route path='plan/*' element={<PlanPage />} />
           <Route path='spec/*' element={<SpecPage />} />
           <Route path='log/*' element={<WorklogPage />} />
-          {/* <Route path="status" element={<StatusPage />} /> */}
+          <Route path='status/*' element={<StatusIndex />} />
           {/* <Route path="lot" element={<LotPage />} /> */}
         </Routes>
       </div>

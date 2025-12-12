@@ -1,0 +1,118 @@
+.gridContainer {
+  overflow-x: auto;
+  margin: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+}
+
+.statusTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 1400px;
+}
+
+.statusTable th,
+.statusTable td {
+  border: 1px solid #e5e7eb;
+  padding: 8px;
+  text-align: center;
+}
+
+.statusTable th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.processColumn {
+  position: sticky;
+  left: 0;
+  background: #f3f4f6;
+  min-width: 80px;
+  width: 80px;
+  font-weight: bold;
+  z-index: 20;
+  padding: 8px 4px;
+}
+
+.dataColumn {
+  position: sticky;
+  left: 80px;
+  background: #f9fafb;
+  min-width: 90px;
+  width: 90px;
+  font-weight: 600;
+  z-index: 20;
+  padding: 8px 4px;
+}
+
+.processHeader {
+  background: #f3f4f6;
+  font-weight: bold;
+  vertical-align: middle;
+  position: sticky;
+  left: 0;
+  z-index: 15;
+  min-width: 80px;
+  width: 80px;
+  padding: 8px 4px;
+  font-size: 13px;
+  border-bottom: 2px solid #9ca3af !important;
+}
+
+.rowLabel {
+  background: #fafafa;
+  text-align: left;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  position: sticky;
+  left: 80px;
+  z-index: 15;
+  min-width: 90px;
+  width: 90px;
+}
+
+.ngCell {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.yieldCell {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.yieldRow td {
+  border-bottom: 2px solid #9ca3af !important;
+}
+
+.totalRow {
+  background: #f9fafb;
+  font-weight: bold;
+  border-top: 2px solid #9ca3af;
+}
+
+.totalRow td {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .statusTable {
+    font-size: 12px;
+  }
+
+  .statusTable th,
+  .statusTable td {
+    padding: 6px;
+  }
+}
