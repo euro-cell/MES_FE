@@ -34,6 +34,9 @@ import SealingEdit from './processes/11-sealing/SealingEdit';
 import FillingRegister from './processes/12-filling/FillingRegister';
 import FillingView from './processes/12-filling/FillingView';
 import FillingEdit from './processes/12-filling/FillingEdit';
+import FormationRegister from './processes/13-formation/FormationRegister';
+import FormationView from './processes/13-formation/FormationView';
+import FormationEdit from './processes/13-formation/FormationEdit';
 
 export default function WorklogIndex() {
   return (
@@ -95,6 +98,11 @@ export default function WorklogIndex() {
       <Route path=':projectId/filling/register' element={<FillingRegister />} />
       <Route path=':projectId/filling/view/:worklogId' element={<FillingView />} />
       <Route path=':projectId/filling/edit/:worklogId' element={<FillingEdit />} />
+
+      {/* Formation routes */}
+      <Route path=':projectId/formation/register' element={<FormationRegister />} />
+      <Route path=':projectId/formation/view/:worklogId' element={<FormationView />} />
+      <Route path=':projectId/formation/edit/:worklogId' element={<FormationEdit />} />
     </Routes>
   );
 }
