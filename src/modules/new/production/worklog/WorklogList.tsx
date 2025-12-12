@@ -16,6 +16,7 @@ import { getWeldingWorklogs, deleteWeldingWorklog } from './processes/10-welding
 import { getSealingWorklogs, deleteSealingWorklog } from './processes/11-sealing/SealingService';
 import { getFillingWorklogs, deleteFillingWorklog } from './processes/12-filling/FillingService';
 import { getFormationWorklogs, deleteFormationWorklog } from './processes/13-formation/FormationService';
+import { getGradingWorklogs, deleteGradingWorklog } from './processes/14-grading/GradingService';
 
 interface WorklogListProps {
   projectId: number;
@@ -177,6 +178,18 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
         }));
+      } else if (processId === 'Grading') {
+        const gradingData = await getGradingWorklogs(projectId);
+        data = gradingData.map(worklog => ({
+          id: worklog.id,
+          projectId: worklog.projectId,
+          processId: worklog.processId,
+          workDate: worklog.workDate,
+          round: worklog.round,
+          createdBy: worklog.writer,
+          createdAt: worklog.createdAt,
+          updatedAt: worklog.updatedAt,
+        }));
       } else {
         data = await getWorklogs(projectId, processId);
       }
@@ -225,6 +238,8 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
         await deleteFillingWorklog(projectId, worklogId);
       } else if (processId === 'Formation') {
         await deleteFormationWorklog(projectId, worklogId);
+      } else if (processId === 'Grading') {
+        await deleteGradingWorklog(projectId, worklogId);
       } else {
         // 다른 공정은 범용 삭제 API 사용 (미구현)
         throw new Error('삭제 기능이 구현되지 않았습니다.');
