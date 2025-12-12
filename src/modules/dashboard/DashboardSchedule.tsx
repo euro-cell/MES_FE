@@ -1,8 +1,9 @@
 import React from 'react';
-import type { Project, ProjectPlan } from './types';
+import type { DashboardProject, DashboardProjectPlan } from './types';
+import '../../styles/dashboard/schedule.css';
 
 interface Props {
-  plans: { project: Project; plan: ProjectPlan | null }[];
+  plans: { project: DashboardProject; plan: DashboardProjectPlan | null }[];
 }
 
 export default function DashboardSchedule({ plans }: Props) {
@@ -30,14 +31,14 @@ export default function DashboardSchedule({ plans }: Props) {
   };
 
   return (
-    <div className='bottom-section'>
+    <div className='dashboard-bottom'>
       <div className='schedule box'>
         <h3>프로젝트 스케줄</h3>
         <div className='schedule-timeline'>
           <div className='schedule-grid schedule-header'>
             <div className='project-cell'>프로젝트</div>
             <div className='timeline-cell'>
-              <div className='year-label'>2025</div>
+              <div className='year-label'>{new Date().getFullYear()}</div>
               <div className='month-grid'>
                 {[...Array(12)].map((_, i) => (
                   <span key={i}>{i + 1}월</span>

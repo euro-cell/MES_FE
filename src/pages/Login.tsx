@@ -19,7 +19,7 @@ export default function Login() {
       const res = await axios.post(`${API_BASE}/auth/login`, { employeeNumber, password }, { withCredentials: true });
 
       if (res.status === 200 || res.status === 201) {
-        navigate('/dashboard', { replace: true });
+        navigate('/main', { replace: true });
       } else {
         console.warn('로그인 응답 상태:', res.status);
       }

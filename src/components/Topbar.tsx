@@ -4,7 +4,7 @@ import React from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { ROLE_LABELS } from '../modules/users/userRoleMap';
+import { ROLE_LABELS } from '../modules/old/users/userRoleMap';
 import { MENU_CONFIG } from '../modules/menuConfig';
 import '../styles/topbar.css';
 

@@ -38,9 +38,6 @@ const Sidebar: React.FC = () => {
         <hr />
 
         {/* ✅ 기존 메뉴 (임시 유지) */}
-        <li onClick={() => navigate('/dashboard')}>대시보드</li>
-        <li onClick={() => navigate('/production')}>생산계획</li>
-        <li onClick={() => navigate('/specification')}>전지설계</li>
         <li onClick={() => navigate('/material')}>자재관리</li>
         <li></li>
         <li onClick={() => navigate('/status')}>공정현황</li>

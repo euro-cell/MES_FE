@@ -6,23 +6,20 @@ import Register from './pages/Register';
 import { useAuth } from './hooks/useAuth';
 import { MENU_CONFIG } from './modules/menuConfig'; // ✅ 중앙 메뉴 설정 import
 
-// ✅ 기존 모듈
+// ✅ 현재 모듈
 import Dashboard from './modules/dashboard';
-import ProductionPage from './modules/production';
-import User from './modules/users';
-import Permission from './modules/permission';
-import BatteryDesignPage from './modules/batteryDesign';
-import MaterialPage from './modules/material';
-import StatusPage from './modules/status';
+import Production from './modules/production';
+import Stock from './modules/stock';
+import Quality from './modules/quality';
+import Plant from './modules/plant';
+import Draw from './modules/draw';
+import Etc from './modules/etc';
 
-// ✅ 신규 모듈 (modules-new)
-import DashboardNew from './modules/new/dashboard';
-import ProductionNew from './modules/new/production';
-import StockNew from './modules/new/stock';
-import QualityNew from './modules/new/quality';
-import PlantNew from './modules/new/plant';
-import DrawNew from './modules/new/draw';
-import EtcNew from './modules/new/etc';
+// ✅ Old 모듈 (임시 유지)
+import MaterialOld from './modules/old/material';
+import StatusOld from './modules/old/status';
+import UsersOld from './modules/old/users';
+import PermissionOld from './modules/old/permission';
 
 function ProtectedRoute({ children }: { children: ReactElement }) {
   const { isAuthenticated, loading } = useAuth();
@@ -52,9 +49,9 @@ function App() {
         }
       />
 
-      {/* ✅ 기존 메뉴 라우팅 */}
+      {/* ✅ 현재 메뉴 라우팅 - MENU_CONFIG 사용 */}
       <Route
-        path='/dashboard'
+        path={MENU_CONFIG.dashboard.path}
         element={
           <ProtectedRoute>
             <BaseLayout>
@@ -65,89 +62,11 @@ function App() {
       />
 
       <Route
-        path='/production'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <ProductionPage />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path='/specification'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <BatteryDesignPage />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path='/material'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <MaterialPage />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path='/status'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <StatusPage />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path='/users'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <User />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path='/permission'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <Permission />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      {/* ✅ 신규 메뉴 (modules-new) - MENU_CONFIG 사용 */}
-      <Route
-        path={MENU_CONFIG.dashboard.path}
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <DashboardNew />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
         path={`${MENU_CONFIG.production.path}/*`}
         element={
           <ProtectedRoute>
             <BaseLayout>
-              <ProductionNew />
+              <Production />
             </BaseLayout>
           </ProtectedRoute>
         }
@@ -158,7 +77,7 @@ function App() {
         element={
           <ProtectedRoute>
             <BaseLayout>
-              <StockNew />
+              <Stock />
             </BaseLayout>
           </ProtectedRoute>
         }
@@ -169,7 +88,7 @@ function App() {
         element={
           <ProtectedRoute>
             <BaseLayout>
-              <QualityNew />
+              <Quality />
             </BaseLayout>
           </ProtectedRoute>
         }
@@ -180,7 +99,7 @@ function App() {
         element={
           <ProtectedRoute>
             <BaseLayout>
-              <PlantNew />
+              <Plant />
             </BaseLayout>
           </ProtectedRoute>
         }
@@ -191,7 +110,7 @@ function App() {
         element={
           <ProtectedRoute>
             <BaseLayout>
-              <DrawNew />
+              <Draw />
             </BaseLayout>
           </ProtectedRoute>
         }
@@ -202,14 +121,59 @@ function App() {
         element={
           <ProtectedRoute>
             <BaseLayout>
-              <EtcNew />
+              <Etc />
             </BaseLayout>
           </ProtectedRoute>
         }
       />
 
-      {/* ✅ 잘못된 경로 → 대시보드로 리다이렉트 */}
-      <Route path='*' element={<Navigate to='/dashboard' replace />} />
+      {/* ✅ Old 메뉴 라우팅 (임시 유지) */}
+      <Route
+        path='/material/*'
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <MaterialOld />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/status/*'
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <StatusOld />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/users/*'
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <UsersOld />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/permission/*'
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <PermissionOld />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ✅ 잘못된 경로 → 메인으로 리다이렉트 */}
+      <Route path='*' element={<Navigate to='/main' replace />} />
     </Routes>
   );
 }
