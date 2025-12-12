@@ -5,7 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { getGradingWorklog } from './GradingService';
 import type { GradingWorklog } from './GradingTypes';
-import styles from '../../../../../../styles/production/worklog/GradingView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function GradingView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

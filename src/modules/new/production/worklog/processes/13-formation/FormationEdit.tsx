@@ -8,7 +8,7 @@ import { getFormationWorklog, updateFormationWorklog } from './FormationService'
 import type { FormationWorklog, FormationWorklogPayload } from './FormationTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/FormationEdit.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function FormationEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

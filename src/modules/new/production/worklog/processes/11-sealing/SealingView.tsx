@@ -5,7 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { getSealingWorklog } from './SealingService';
 import type { SealingWorklog } from './SealingTypes';
-import styles from '../../../../../../styles/production/worklog/SealingView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function SealingView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

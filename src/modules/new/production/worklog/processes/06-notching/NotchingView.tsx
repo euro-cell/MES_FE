@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ExcelJS from 'exceljs';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { extractNamedRanges } from '../../shared/excelUtils';
 import { getNotchingWorklog } from './NotchingService';
 import type { NotchingWorklog } from './NotchingTypes';
-import styles from '../../../../../../styles/production/worklog/NotchingView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function NotchingView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

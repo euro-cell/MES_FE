@@ -8,7 +8,7 @@ import { createStackingWorklog } from './StackingService';
 import type { StackingWorklogPayload } from './StackingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/StackingRegister.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function StackingRegister() {
   const { projectId } = useParams<{ projectId: string }>();

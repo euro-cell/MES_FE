@@ -8,7 +8,7 @@ import { getGradingWorklog, updateGradingWorklog } from './GradingService';
 import type { GradingWorklog, GradingWorklogPayload } from './GradingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/GradingEdit.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function GradingEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

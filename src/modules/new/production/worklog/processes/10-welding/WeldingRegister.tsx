@@ -8,7 +8,7 @@ import { createWeldingWorklog } from './WeldingService';
 import type { WeldingWorklogPayload } from './WeldingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/WeldingRegister.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function WeldingRegister() {
   const { projectId } = useParams<{ projectId: string }>();

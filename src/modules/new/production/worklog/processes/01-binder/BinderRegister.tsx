@@ -8,7 +8,7 @@ import { createBinderWorklog } from './BinderService';
 import type { BinderWorklogPayload } from './BinderTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/BinderRegister.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function BinderRegister() {
   const { projectId } = useParams<{ projectId: string }>();

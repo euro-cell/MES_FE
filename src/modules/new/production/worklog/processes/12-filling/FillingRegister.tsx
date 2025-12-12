@@ -8,7 +8,7 @@ import { createFillingWorklog } from './FillingService';
 import type { FillingWorklogPayload } from './FillingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/FillingRegister.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function FillingRegister() {
   const { projectId } = useParams<{ projectId: string }>();

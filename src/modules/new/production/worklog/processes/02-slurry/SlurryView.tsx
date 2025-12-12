@@ -6,7 +6,7 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { getSlurryWorklog } from './SlurryService';
 import type { SlurryWorklog } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS } from './slurryConstants';
-import styles from '../../../../../../styles/production/worklog/SlurryView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function SlurryView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

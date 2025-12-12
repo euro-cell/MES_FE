@@ -8,7 +8,7 @@ import { createFormationWorklog } from './FormationService';
 import type { FormationWorklogPayload } from './FormationTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/FormationRegister.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function FormationRegister() {
   const { projectId } = useParams<{ projectId: string }>();

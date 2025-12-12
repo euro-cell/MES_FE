@@ -8,7 +8,7 @@ import { getCoatingWorklog, updateCoatingWorklog } from './CoatingService';
 import type { CoatingWorklog, CoatingWorklogPayload } from './CoatingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/CoatingEdit.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function CoatingEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

@@ -9,7 +9,7 @@ import type { SlurryWorklog, SlurryWorklogPayload } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS } from './slurryConstants';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/SlurryEdit.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function SlurryEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

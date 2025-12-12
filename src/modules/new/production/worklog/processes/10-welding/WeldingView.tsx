@@ -5,7 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { getWeldingWorklog } from './WeldingService';
 import type { WeldingWorklog } from './WeldingTypes';
-import styles from '../../../../../../styles/production/worklog/WeldingView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function WeldingView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

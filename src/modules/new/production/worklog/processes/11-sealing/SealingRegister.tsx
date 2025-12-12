@@ -8,7 +8,7 @@ import { createSealingWorklog } from './SealingService';
 import type { SealingWorklogPayload } from './SealingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/SealingRegister.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function SealingRegister() {
   const { projectId } = useParams<{ projectId: string }>();

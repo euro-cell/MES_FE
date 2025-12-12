@@ -5,7 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { getStackingWorklog } from './StackingService';
 import type { StackingWorklog } from './StackingTypes';
-import styles from '../../../../../../styles/production/worklog/StackingView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function StackingView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

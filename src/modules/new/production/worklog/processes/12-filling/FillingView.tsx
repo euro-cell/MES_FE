@@ -5,7 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { getFillingWorklog } from './FillingService';
 import type { FillingWorklog } from './FillingTypes';
-import styles from '../../../../../../styles/production/worklog/FillingView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function FillingView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

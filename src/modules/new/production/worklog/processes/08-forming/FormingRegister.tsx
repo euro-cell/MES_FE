@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ExcelJS from 'exceljs';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { extractNamedRanges } from '../../shared/excelUtils';
 import { createFormingWorklog } from './FormingService';
 import type { FormingWorklogPayload } from './FormingTypes';
-import styles from '../../../../../../styles/production/worklog/FormingRegister.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 

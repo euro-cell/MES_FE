@@ -5,7 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { getBinderWorklog } from './BinderService';
 import type { BinderWorklog } from './BinderTypes';
-import styles from '../../../../../../styles/production/worklog/BinderView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function BinderView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

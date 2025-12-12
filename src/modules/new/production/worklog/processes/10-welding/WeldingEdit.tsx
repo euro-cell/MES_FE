@@ -8,7 +8,7 @@ import { getWeldingWorklog, updateWeldingWorklog } from './WeldingService';
 import type { WeldingWorklog, WeldingWorklogPayload } from './WeldingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/WeldingEdit.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function WeldingEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

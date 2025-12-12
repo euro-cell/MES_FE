@@ -8,7 +8,7 @@ import { getBinderWorklog, updateBinderWorklog } from './BinderService';
 import type { BinderWorklog, BinderWorklogPayload } from './BinderTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/BinderEdit.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function BinderEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

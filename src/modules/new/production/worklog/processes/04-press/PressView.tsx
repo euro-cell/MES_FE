@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ExcelJS from 'exceljs';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { extractNamedRanges } from '../../shared/excelUtils';
 import { getPressWorklog } from './PressService';
 import type { PressWorklog } from './PressTypes';
-import styles from '../../../../../../styles/production/worklog/PressView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function PressView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

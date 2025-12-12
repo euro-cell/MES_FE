@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ExcelJS from 'exceljs';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { extractNamedRanges } from '../../shared/excelUtils';
 import { createPressWorklog } from './PressService';
 import type { PressWorklogPayload } from './PressTypes';
-import styles from '../../../../../../styles/production/worklog/PressRegister.module.css';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function PressRegister() {
   const { projectId } = useParams<{ projectId: string }>();

@@ -7,7 +7,7 @@ import { getCoatingWorklog } from './CoatingService';
 import type { CoatingWorklog } from './CoatingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/CoatingView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function CoatingView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

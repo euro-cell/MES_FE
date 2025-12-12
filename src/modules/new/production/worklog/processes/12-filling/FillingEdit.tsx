@@ -8,7 +8,7 @@ import { getFillingWorklog, updateFillingWorklog } from './FillingService';
 import type { FillingWorklog, FillingWorklogPayload } from './FillingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import styles from '../../../../../../styles/production/worklog/FillingEdit.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function FillingEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();

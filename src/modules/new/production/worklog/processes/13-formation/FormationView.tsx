@@ -5,7 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { getFormationWorklog } from './FormationService';
 import type { FormationWorklog } from './FormationTypes';
-import styles from '../../../../../../styles/production/worklog/FormationView.module.css';
+import styles from '../../../../../../styles/production/worklog/common.module.css';
 
 export default function FormationView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
