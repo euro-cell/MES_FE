@@ -349,7 +349,8 @@ export default function ExcelRenderer({
                   ...fontStyle,
                 };
 
-                if (backgroundColor) {
+                // 편집 가능한 셀이 아닌 경우에만 배경색 적용
+                if (backgroundColor && !isEditable) {
                   cellStyle.backgroundColor = backgroundColor;
                 }
 
