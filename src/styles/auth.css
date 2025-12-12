@@ -11,17 +11,22 @@
   justify-content: center;
   align-items: center;
   background: #f4f6f8;
+  background-image: url('http://www.eurocell.co.kr/images/company_img.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   z-index: 1000;
 }
 
 /* 로그인 박스 */
 .auth-container {
   width: 340px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   padding: 40px 35px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   text-align: center;
+  backdrop-filter: blur(10px);
 }
 
 /* 제목 */
