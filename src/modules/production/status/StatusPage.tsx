@@ -3,9 +3,9 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import ProductionStatusGrid from './components/ProductionStatusGrid';
 import { createCategoryMenus, createMonthMenus, createElectrodeTypeMenus } from './statusConfig';
-import { getStatusProjects, getMonthlyStatusData } from './StatusService';
+import { getMonthlyStatusData, getProductionStatusInfo } from './StatusService';
 import { parseMonthParam } from './utils/dateUtils';
-import type { StatusProject, MonthlyStatusData } from './StatusTypes';
+import type { MonthlyStatusData, ProductionStatusInfo } from './StatusTypes';
 import styles from '../../../styles/production/status/StatusPage.module.css';
 
 export default function StatusPage() {
@@ -13,7 +13,7 @@ export default function StatusPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [project, setProject] = useState<StatusProject | null>(null);
+  const [statusInfo, setStatusInfo] = useState<ProductionStatusInfo | null>(null);
   const [monthlyData, setMonthlyData] = useState<MonthlyStatusData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -22,24 +22,23 @@ export default function StatusPage() {
   const electrodeType = searchParams.get('type'); // 'cathode' or 'anode'
   const monthParam = searchParams.get('month'); // "2025-01"
 
-  // 프로젝트 정보 로드
+  // 프로젝트 정보 (name, startDate, endDate) 로드
   useEffect(() => {
-    const loadProject = async () => {
+    const loadStatusInfo = async () => {
       if (!projectId) return;
 
       try {
-        const projects = await getStatusProjects();
-        const found = projects.find(p => p.id === Number(projectId));
-        console.log('🚀 ~ found:', found);
-        setProject(found || null);
+        const info = await getProductionStatusInfo(Number(projectId));
+        console.log('🚀 ~ statusInfo:', info);
+        setStatusInfo(info);
       } catch (err) {
-        console.error('프로젝트 정보 조회 실패:', err);
+        console.error('생산 현황 정보 조회 실패:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadProject();
+    loadStatusInfo();
   }, [projectId]);
 
   // 월간 데이터 로드
@@ -63,11 +62,21 @@ export default function StatusPage() {
   }, [projectId, category, electrodeType, monthParam]);
 
   if (loading) return <p>데이터를 불러오는 중...</p>;
-  if (!project) return <p>프로젝트를 찾을 수 없습니다.</p>;
+  if (!statusInfo) return <p>프로젝트를 찾을 수 없습니다.</p>;
+
+  // statusInfo를 project 형태로 변환 (createMonthMenus에서 사용)
+  const projectData = {
+    id: Number(projectId),
+    name: statusInfo.name,
+    plan: {
+      startDate: statusInfo.startDate,
+      endDate: statusInfo.endDate,
+    },
+  };
 
   // 메뉴 생성
   const categoryMenus = createCategoryMenus(Number(projectId));
-  const monthMenus = category ? createMonthMenus(Number(projectId), category, project) : [];
+  const monthMenus = category ? createMonthMenus(Number(projectId), category, projectData) : [];
   const electrodeTypeMenus =
     category === 'Electrode' && monthParam ? createElectrodeTypeMenus(Number(projectId), monthParam) : [];
 
@@ -75,7 +84,7 @@ export default function StatusPage() {
     <div>
       {/* 프로젝트 헤더 */}
       <div className={styles.projectHeader}>
-        <h2>프로젝트: {project.name}</h2>
+        <h2>프로젝트: {statusInfo.name}</h2>
         <button className={styles.backButton} onClick={() => navigate('/prod/status')}>
           ← 프로젝트 목록으로
         </button>

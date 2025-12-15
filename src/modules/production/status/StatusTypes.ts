@@ -51,4 +51,13 @@ export interface MonthlyStatusData {
   processes: ProcessMonthlyData[];
   overallTotal: number; // 전체 합계
   overallProgress: number; // 전체 진행률
+  startDate?: string; // 시작일 (YYYY-MM-DD)
+  endDate?: string; // 종료일 (YYYY-MM-DD)
+}
+
+// 생산 현황 기본 정보 (startDate, endDate, name 조회용)
+export interface ProductionStatusInfo {
+  name: string; // 프로젝트 이름
+  startDate: string; // YYYY-MM-DD
+  endDate: string; // YYYY-MM-DD
 }

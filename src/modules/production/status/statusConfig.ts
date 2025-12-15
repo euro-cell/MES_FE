@@ -1,5 +1,4 @@
 import { getMonthsBetween, formatMonthLabel } from './utils/dateUtils';
-import type { StatusProject } from './StatusTypes';
 
 // 작업일지 설정 재사용
 export { PROCESS_CONFIG, CATEGORIES, getProcessesByCategory } from '../worklog/processConfig';
@@ -24,8 +23,16 @@ export function createCategoryMenus(projectId: number) {
   }));
 }
 
+// 월 메뉴 생성에 필요한 프로젝트 정보 타입
+interface ProjectForMonthMenu {
+  plan?: {
+    startDate: string;
+    endDate?: string;
+  };
+}
+
 // 월 메뉴 생성
-export function createMonthMenus(projectId: number, category: string, project: StatusProject | null) {
+export function createMonthMenus(projectId: number, category: string, project: ProjectForMonthMenu | null) {
   console.log('🔍 createMonthMenus 호출:', { projectId, category, project, plan: project?.plan });
 
   if (!project?.plan?.startDate) {

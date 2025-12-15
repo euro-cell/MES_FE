@@ -1,6 +1,9 @@
+import axios from 'axios';
 import { getPlanProjects, getProductionPlan } from '../plan/PlanService';
 import { getProcessesByCategory } from './statusConfig';
-import type { StatusProject, MonthlyStatusData, ElectrodeType } from './StatusTypes';
+import type { StatusProject, MonthlyStatusData, ElectrodeType, ProductionStatusInfo } from './StatusTypes';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 // 프로젝트 목록 조회 (기존 API 재사용)
 export async function getStatusProjects(): Promise<StatusProject[]> {
@@ -27,6 +30,19 @@ export async function getStatusProjects(): Promise<StatusProject[]> {
   } catch (error) {
     console.error('프로젝트 목록 조회 실패:', error);
     return [];
+  }
+}
+
+// 생산 현황 기본 정보 조회 (startDate, endDate)
+export async function getProductionStatusInfo(productionId: number): Promise<ProductionStatusInfo> {
+  try {
+    const response = await axios.get(`${API_BASE}/production/${productionId}/status`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('생산 현황 정보 조회 실패:', error);
+    throw error;
   }
 }
 
