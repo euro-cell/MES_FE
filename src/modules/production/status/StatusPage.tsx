@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import ProductionStatusGrid from './components/ProductionStatusGrid';
+import RealDataGrid from './components/RealDataGrid';
 import { createCategoryMenus, createMonthMenus, createElectrodeTypeMenus } from './statusConfig';
-import { getMonthlyStatusData, getProductionStatusInfo } from './StatusService';
+import { getMonthlyStatusData, getRealMonthlyData, getProductionStatusInfo } from './StatusService';
 import { parseMonthParam } from './utils/dateUtils';
 import type { MonthlyStatusData, ProductionStatusInfo } from './StatusTypes';
 import styles from '../../../styles/production/status/StatusPage.module.css';
@@ -15,6 +16,7 @@ export default function StatusPage() {
 
   const [statusInfo, setStatusInfo] = useState<ProductionStatusInfo | null>(null);
   const [monthlyData, setMonthlyData] = useState<MonthlyStatusData | null>(null);
+  const [realData, setRealData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const searchParams = new URLSearchParams(location.search);
@@ -41,7 +43,7 @@ export default function StatusPage() {
     loadStatusInfo();
   }, [projectId]);
 
-  // 월간 데이터 로드
+  // 월간 데이터 로드 (목 데이터)
   useEffect(() => {
     const loadData = async () => {
       if (!category || !monthParam || !projectId) return;
@@ -59,6 +61,26 @@ export default function StatusPage() {
     };
 
     loadData();
+  }, [projectId, category, electrodeType, monthParam]);
+
+  // 실제 데이터 로드
+  useEffect(() => {
+    const loadRealData = async () => {
+      if (!category || !monthParam || !projectId) return;
+
+      // 전극 공정인 경우 electrodeType 필수 체크
+      if (category === 'Electrode' && !electrodeType) return;
+
+      try {
+        const { year, month } = parseMonthParam(monthParam);
+        const data = await getRealMonthlyData(Number(projectId), category, electrodeType, year, month);
+        setRealData(data);
+      } catch (err) {
+        console.error('실제 데이터 조회 실패:', err);
+      }
+    };
+
+    loadRealData();
   }, [projectId, category, electrodeType, monthParam]);
 
   if (loading) return <p>데이터를 불러오는 중...</p>;
@@ -110,7 +132,10 @@ export default function StatusPage() {
       {/* 생산 현황 그리드 */}
       <div style={{ marginTop: '20px' }}>
         {monthlyData ? (
-          <ProductionStatusGrid data={monthlyData} />
+          <>
+            <h3 style={{ marginBottom: '10px', fontSize: '16px', fontWeight: 600 }}>목 데이터 (Mock Data)</h3>
+            <ProductionStatusGrid data={monthlyData} />
+          </>
         ) : (
           <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
             {!category && <p>공정 카테고리를 선택하세요.</p>}
@@ -119,6 +144,13 @@ export default function StatusPage() {
           </div>
         )}
       </div>
+
+      {/* 실제 데이터 표시 (Mixing만) */}
+      {realData && category === 'Electrode' && monthlyData && (
+        <div style={{ marginTop: '40px' }}>
+          <RealDataGrid data={realData} year={monthlyData.year} month={monthlyData.month} />
+        </div>
+      )}
     </div>
   );
 }
