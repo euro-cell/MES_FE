@@ -1,7 +1,44 @@
 import { getMonthsBetween, formatMonthLabel } from './utils/dateUtils';
+import type { ProcessInfo } from '../worklog/WorklogTypes';
 
-// 작업일지 설정 재사용
-export { PROCESS_CONFIG, CATEGORIES, getProcessesByCategory } from '../worklog/processConfig';
+// 생산 현황 페이지 전용 공정 설정
+export const STATUS_PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
+  Electrode: [
+    { id: 'Mixing', category: 'Electrode', title: 'Mixing' },
+    { id: 'CoatingSingle', category: 'Electrode', title: 'Coating Single' },
+    { id: 'CoatingDouble', category: 'Electrode', title: 'Coating Double' },
+    { id: 'Press', category: 'Electrode', title: 'Press' },
+    { id: 'Slitting', category: 'Electrode', title: 'Slitting' },
+    { id: 'Notching', category: 'Electrode', title: 'Notching' },
+  ],
+  Assembly: [
+    { id: 'VD', category: 'Assembly', title: 'V/D' },
+    { id: 'Forming', category: 'Assembly', title: 'Forming' },
+    { id: 'Stack', category: 'Assembly', title: 'Stack' },
+    { id: 'PreWelding', category: 'Assembly', title: 'Pre Welding' },
+    { id: 'MainWelding', category: 'Assembly', title: 'Main Welding' },
+    { id: 'Sealing', category: 'Assembly', title: 'Sealing' },
+    { id: 'Filling', category: 'Assembly', title: 'E/L Filling' },
+  ],
+  Formation: [
+    { id: 'PreFormation', category: 'Formation', title: 'Pre Formation' },
+    { id: 'Degass', category: 'Formation', title: 'Degass' },
+    { id: 'MainFormation', category: 'Formation', title: 'Main Formation OCV/IR_1' },
+    { id: 'Aging', category: 'Formation', title: 'Aging OCV/IR_2' },
+    { id: 'Grading', category: 'Formation', title: 'Grading OCV/IR_3' },
+    { id: 'Inspection', category: 'Formation', title: '외관검사' },
+  ],
+};
+
+export const CATEGORIES = [
+  { id: 'Electrode', title: '전극 공정' },
+  { id: 'Assembly', title: '조립 공정' },
+  { id: 'Formation', title: '화성 공정' },
+];
+
+export const getProcessesByCategory = (category: string): ProcessInfo[] => {
+  return STATUS_PROCESS_CONFIG[category] || [];
+};
 
 // 양극/음극 선택 메뉴 (전극 공정 전용)
 export const ELECTRODE_TYPES = [
