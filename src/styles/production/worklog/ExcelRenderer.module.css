@@ -61,8 +61,10 @@
   outline: none;
   background: transparent;
   box-sizing: border-box;
-  resize: vertical;
+  resize: none;
   font-family: inherit;
+  overflow: hidden;
+  line-height: 1.5;
 }
 
 .cellTextarea:focus {

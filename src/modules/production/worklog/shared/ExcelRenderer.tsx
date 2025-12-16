@@ -1,7 +1,45 @@
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import ExcelJS from 'exceljs';
 import { formatCellValue, isCellInMerge, type MergeRange, type NamedRangeInfo } from './excelUtils';
 import styles from '../../../../styles/production/worklog/ExcelRenderer.module.css';
+
+// 자동 크기 조절 textarea 컴포넌트
+function AutoResizeTextarea({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+}) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${Math.max(60, textarea.scrollHeight)}px`;
+    }
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange(e.target.value);
+    const textarea = e.target;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${Math.max(60, textarea.scrollHeight)}px`;
+  };
+
+  return (
+    <textarea
+      ref={textareaRef}
+      className={styles.cellTextarea}
+      value={value}
+      onChange={handleChange}
+      placeholder={placeholder}
+    />
+  );
+}
 
 interface CellData {
   value: any;
@@ -375,12 +413,10 @@ export default function ExcelRenderer({
                   >
                     {isEditable && rangeName ? (
                       isMultiline ? (
-                        <textarea
-                          className={styles.cellTextarea}
+                        <AutoResizeTextarea
                           value={cellValues[rangeName] ?? ''}
-                          onChange={e => handleInputChange(rangeName, e.target.value)}
+                          onChange={(value) => handleInputChange(rangeName, value)}
                           placeholder={cellValue || '입력...'}
-                          rows={3}
                         />
                       ) : timeFields.includes(rangeName) ? (
                         <input
