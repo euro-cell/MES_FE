@@ -45,7 +45,7 @@ export default function StackingView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Cell&process=Stacking`);
+    navigate(`/prod/log/${projectId}?category=Assembly&process=Stacking`);
   };
 
   const handleEdit = () => {

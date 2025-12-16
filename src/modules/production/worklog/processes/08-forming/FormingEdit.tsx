@@ -170,7 +170,7 @@ export default function FormingEdit() {
     try {
       await updateFormingWorklog(Number(projectId), Number(worklogId), payload);
       alert('Forming 작업일지가 수정되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Electrode&process=Forming`);
+      navigate(`/prod/log/${projectId}?category=Assembly&process=Forming`);
     } catch (err) {
       console.error('수정 실패:', err);
       alert('수정 실패: ' + err);
@@ -193,7 +193,7 @@ export default function FormingEdit() {
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
         </div>
         <div className={styles.actions}>
-          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Forming`)}>
+          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Assembly&process=Forming`)}>
             취소
           </button>
           <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>

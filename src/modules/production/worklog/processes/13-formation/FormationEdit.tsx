@@ -82,7 +82,7 @@ export default function FormationEdit() {
       const payload = mapFormToPayload(formValues, namedRanges, FORMATION_NUMERIC_FIELDS) as Partial<FormationWorklogPayload>;
       await updateFormationWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Cell&process=Formation`);
+      navigate(`/prod/log/${projectId}?category=Formation&process=Formation`);
     } catch (err) {
       alert('수정 실패: ' + err);
       console.error('Update error:', err);
@@ -93,7 +93,7 @@ export default function FormationEdit() {
 
   const handleCancel = () => {
     if (confirm('수정한 내용이 사라집니다. 취소하시겠습니까?')) {
-      navigate(`/prod/log/${projectId}?category=Cell&process=Formation`);
+      navigate(`/prod/log/${projectId}?category=Formation&process=Formation`);
     }
   };
 

@@ -45,7 +45,7 @@ export default function FillingView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Cell&process=Filling`);
+    navigate(`/prod/log/${projectId}?category=Assembly&process=Filling`);
   };
 
   const handleEdit = () => {

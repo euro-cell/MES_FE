@@ -45,7 +45,7 @@ export default function SealingView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Cell&process=Sealing`);
+    navigate(`/prod/log/${projectId}?category=Assembly&process=Sealing`);
   };
 
   const handleEdit = () => {

@@ -45,7 +45,7 @@ export default function GradingView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Cell&process=Grading`);
+    navigate(`/prod/log/${projectId}?category=Formation&process=Grading`);
   };
 
   const handleEdit = () => {

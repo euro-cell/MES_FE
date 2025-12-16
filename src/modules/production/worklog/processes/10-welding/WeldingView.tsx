@@ -45,7 +45,7 @@ export default function WeldingView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Cell&process=Welding`);
+    navigate(`/prod/log/${projectId}?category=Assembly&process=Welding`);
   };
 
   const handleEdit = () => {

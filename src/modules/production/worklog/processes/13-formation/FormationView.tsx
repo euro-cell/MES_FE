@@ -45,7 +45,7 @@ export default function FormationView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Cell&process=Formation`);
+    navigate(`/prod/log/${projectId}?category=Formation&process=Formation`);
   };
 
   const handleEdit = () => {

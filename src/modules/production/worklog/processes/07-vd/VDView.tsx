@@ -144,7 +144,7 @@ export default function VdView() {
       />
 
       <div className={styles.actions}>
-        <button className={styles.btnBack} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=VD`)}>
+        <button className={styles.btnBack} onClick={() => navigate(`/prod/log/${projectId}?category=Assembly&process=VD`)}>
           목록으로
         </button>
       </div>
