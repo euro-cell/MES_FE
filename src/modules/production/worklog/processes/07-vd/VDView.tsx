@@ -121,6 +121,14 @@ export default function VdView() {
     loadWorklog();
   }, [projectId, worklogId]);
 
+  const handleBack = () => {
+    navigate(`/prod/log/${projectId}?category=Assembly&process=VD`);
+  };
+
+  const handleEdit = () => {
+    navigate(`/prod/log/${projectId}/vd/edit/${worklogId}`);
+  };
+
   if (templateLoading || loading) return <p>데이터를 불러오는 중...</p>;
   if (templateError) return <p>템플릿 로드 실패: {templateError.message}</p>;
   if (!workbook || !worklog) return <p>데이터를 불러올 수 없습니다.</p>;
@@ -129,24 +137,23 @@ export default function VdView() {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>VD 작업일지 조회</h2>
-        <div className={styles.info}>
-          <span>작성자: {worklog.writer}</span>
-          <span>작성일: {new Date(worklog.createdAt).toLocaleString()}</span>
+        <div className={styles.actions}>
+          <button onClick={handleBack} className={styles.backButton}>
+            목록
+          </button>
+          <button onClick={handleEdit} className={styles.editButton}>
+            수정
+          </button>
         </div>
       </div>
 
-      <ExcelRenderer
-        workbook={workbook}
-        editableRanges={[]}
-        cellValues={cellValues}
-        namedRanges={namedRanges}
-        className={styles.excelRenderer}
-      />
-
-      <div className={styles.actions}>
-        <button className={styles.btnBack} onClick={() => navigate(`/prod/log/${projectId}?category=Assembly&process=VD`)}>
-          목록으로
-        </button>
+      <div className={styles.excelWrapper}>
+        <ExcelRenderer
+          workbook={workbook}
+          editableRanges={[]}
+          cellValues={cellValues}
+          namedRanges={namedRanges}
+        />
       </div>
     </div>
   );
