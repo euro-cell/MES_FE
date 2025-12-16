@@ -104,6 +104,16 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
     notching: 'Notching',
   };
 
+  // 공정별 생산량 단위 매핑
+  const processUnitMap: Record<string, string> = {
+    mixing: 'KG',
+    coatingSingle: 'M',
+    coatingDouble: 'M',
+    press: 'M',
+    slitting: 'M',
+    notching: 'ea',
+  };
+
   // 렌더링할 공정 목록 (데이터가 있는 공정만)
   const processesToRender = Object.entries(data.processes).filter(([_, processData]) => processData !== undefined);
 
@@ -145,6 +155,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
               });
 
               const processName = processNameMap[processKey] || processKey;
+              const processUnit = processUnitMap[processKey] || 'ea';
 
               // NG와 수율 합계 계산
               const totalNG = processData.data.reduce((sum, item) => sum + (item.ng || 0), 0);
@@ -163,7 +174,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                     <td rowSpan={3} className={styles.processHeader}>
                       {processName}
                     </td>
-                    <td className={styles.rowLabel}>생산량(ea)</td>
+                    <td className={styles.rowLabel}>생산량({processUnit})</td>
                     {Array.from({ length: daysInMonth }, (_, i) => {
                       const day = i + 1;
                       const dayData = dailyDataMap[day];

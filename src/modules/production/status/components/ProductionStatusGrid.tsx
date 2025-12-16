@@ -137,6 +137,15 @@ function ProcessRows({ process, daysInMonth }: ProcessRowsProps) {
   const averageYield = totalProduction > 0 ? ((totalProduction - totalNG) / totalProduction) * 100 : 0;
   const progressRate = process.targetQuantity ? ((totalProduction / process.targetQuantity) * 100).toFixed(1) : '0';
 
+  // 공정별 생산량 단위 결정
+  const getProcessUnit = (processTitle: string): string => {
+    if (processTitle.toLowerCase().includes('mixing')) return 'KG';
+    if (processTitle.toLowerCase().includes('notching')) return 'ea';
+    // Coating Single, Coating Double, Press, Slitting은 M
+    return 'M';
+  };
+  const processUnit = getProcessUnit(process.processTitle);
+
   return (
     <>
       {/* 생산량 행 */}
@@ -144,7 +153,7 @@ function ProcessRows({ process, daysInMonth }: ProcessRowsProps) {
         <td rowSpan={3} className={styles.processHeader}>
           {process.processTitle}
         </td>
-        <td className={styles.rowLabel}>생산량(ea)</td>
+        <td className={styles.rowLabel}>생산량({processUnit})</td>
         {Array.from({ length: daysInMonth }, (_, day) => {
           const dayData = process.subItems[0]?.dailyData[day + 1];
           return <td key={day}>{dayData?.productionQuantity || ''}</td>;
