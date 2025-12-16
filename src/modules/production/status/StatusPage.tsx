@@ -145,8 +145,8 @@ export default function StatusPage() {
         )}
       </div>
 
-      {/* 실제 데이터 표시 (Mixing만) */}
-      {realData && category === 'Electrode' && monthlyData && (
+      {/* 실제 데이터 표시 */}
+      {realData && monthlyData && (
         <div style={{ marginTop: '40px' }}>
           <RealDataGrid data={realData} year={monthlyData.year} month={monthlyData.month} />
         </div>
