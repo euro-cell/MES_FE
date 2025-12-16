@@ -10,6 +10,36 @@ interface DayData {
   yield: number | null;
 }
 
+// Forming 서브타입 일별 데이터 (yield 없음)
+interface FormingSubTypeDayData {
+  day: number;
+  output: number;
+  ng: number | null;
+}
+
+// Forming 수율 일별 데이터
+interface FormingYieldDayData {
+  day: number;
+  yield: number | null;
+}
+
+// Forming 서브타입 데이터 (yield 없음)
+interface FormingSubTypeData {
+  data: FormingSubTypeDayData[];
+  total: {
+    totalOutput: number;
+    targetQuantity: number | null;
+    progress: number | null;
+    totalNg?: number | null;
+  };
+}
+
+// Forming 수율 데이터
+interface FormingYieldData {
+  data: FormingYieldDayData[];
+  total: number | null;
+}
+
 // 일반 공정 데이터
 interface ProcessData {
   data: DayData[];
@@ -17,6 +47,8 @@ interface ProcessData {
     totalOutput: number;
     targetQuantity: number | null;
     progress: number | null;
+    totalNg?: number | null;
+    totalYield?: number | null;
   };
 }
 
@@ -55,6 +87,26 @@ interface VDProcessData {
   total: VDTotal;
 }
 
+// Forming 공정 데이터 (4개 서브타입 + 별도 yield + 최상위 targetQuantity, progress)
+interface FormingProcessData {
+  cutting: FormingSubTypeData;
+  forming: FormingSubTypeData;
+  folding: FormingSubTypeData;
+  topCutting: FormingSubTypeData;
+  yield: FormingYieldData;
+  targetQuantity: number | null;
+  progress: number | null;
+}
+
+// Forming 서브타입 키 배열
+const FORMING_SUBTYPES = ['cutting', 'forming', 'folding', 'topCutting'] as const;
+const FORMING_SUBTYPE_LABELS: Record<string, string> = {
+  cutting: 'Cutting',
+  forming: 'Forming',
+  folding: 'Folding',
+  topCutting: 'Top Cutting',
+};
+
 interface RealDataResponse {
   category: string;
   type?: string;
@@ -69,7 +121,7 @@ interface RealDataResponse {
     notching?: ProcessData;
     // 조립 공정 (Assembly)
     vd?: VDProcessData;
-    forming?: ProcessData;
+    forming?: FormingProcessData;
     stacking?: ProcessData;
     preWelding?: ProcessData;
     mainWelding?: ProcessData;
@@ -82,7 +134,7 @@ interface RealDataResponse {
     aging?: ProcessData;
     grading?: ProcessData;
     inspection?: ProcessData;
-    [key: string]: ProcessData | VDProcessData | undefined;
+    [key: string]: ProcessData | VDProcessData | FormingProcessData | undefined;
   };
 }
 
@@ -203,9 +255,21 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
   // VD 공정인지 확인
   const isVDProcess = (key: string): boolean => key === 'vd';
 
+  // Forming 공정인지 확인
+  const isFormingProcess = (key: string): boolean => key === 'forming';
+
   // VD 데이터인지 타입 체크
-  const isVDProcessData = (processData: ProcessData | VDProcessData): processData is VDProcessData => {
-    return 'data' in processData && processData.data.length > 0 && 'cathodeOutput' in processData.data[0];
+  const isVDProcessData = (
+    processData: ProcessData | VDProcessData | FormingProcessData
+  ): processData is VDProcessData => {
+    return 'data' in processData && Array.isArray(processData.data) && processData.data.length > 0 && 'cathodeOutput' in processData.data[0];
+  };
+
+  // Forming 데이터인지 타입 체크
+  const isFormingProcessData = (
+    processData: ProcessData | VDProcessData | FormingProcessData
+  ): processData is FormingProcessData => {
+    return 'cutting' in processData && 'forming' in processData && 'folding' in processData && 'topCutting' in processData;
   };
 
   // 렌더링할 공정 목록 (데이터가 있는 공정만, null이 아닌 것만)
@@ -217,8 +281,8 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
     return null;
   }
 
-  // VD 공정이 있는지 확인 (헤더 colSpan 결정용)
-  const hasVDProcess = processesToRender.some(([key]) => isVDProcess(key));
+  // 서브타입이 있는 공정이 있는지 확인 (헤더 colSpan 결정용)
+  const hasSubTypeProcess = processesToRender.some(([key]) => isVDProcess(key) || isFormingProcess(key));
 
   return (
     <>
@@ -227,7 +291,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
         <table className={styles.statusTable}>
           <thead>
             <tr>
-              <th className={styles.processColumn} colSpan={hasVDProcess ? 3 : 2}>
+              <th className={styles.processColumn} colSpan={hasSubTypeProcess ? 3 : 2}>
                 제조일자
               </th>
               {Array.from({ length: daysInMonth }, (_, i) => {
@@ -275,11 +339,15 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                         return <td key={day}>{dayData?.cathodeOutput || ''}</td>;
                       })}
                       <td>{vdData.total.cathode.totalOutput}</td>
-                      <td rowSpan={2}>
-                        {vdData.total.cathode.progress !== null ? `${vdData.total.cathode.progress}%` : ''}
+                      {/* VD 진행률 - Cathode (3행 차지) */}
+                      <td rowSpan={3}>
+                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
+                        <div>{vdData.total.cathode.progress !== null ? `${vdData.total.cathode.progress}%` : ''}</div>
                       </td>
-                      <td rowSpan={2}>
-                        {vdData.total.cathode.targetQuantity !== null ? vdData.total.cathode.targetQuantity : ''}
+                      {/* VD 목표수량 - Cathode (3행 차지) */}
+                      <td rowSpan={3}>
+                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
+                        <div>{vdData.total.cathode.targetQuantity !== null ? vdData.total.cathode.targetQuantity.toLocaleString() : ''}</div>
                       </td>
                     </tr>
                     {/* 생산량 - Anode */}
@@ -311,8 +379,6 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       <td style={{ color: '#ef4444', fontWeight: 500 }}>
                         {vdData.total.cathode.totalNg !== null ? vdData.total.cathode.totalNg : ''}
                       </td>
-                      <td rowSpan={2}></td>
-                      <td rowSpan={2}></td>
                     </tr>
                     {/* NG - Anode */}
                     <tr>
@@ -329,11 +395,21 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       <td style={{ color: '#ef4444', fontWeight: 500 }}>
                         {vdData.total.anode.totalNg !== null ? vdData.total.anode.totalNg : ''}
                       </td>
+                      {/* VD 진행률 - Anode (3행 차지) */}
+                      <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Anode</div>
+                        <div>{vdData.total.anode.progress !== null ? `${vdData.total.anode.progress}%` : ''}</div>
+                      </td>
+                      {/* VD 목표수량 - Anode (3행 차지) */}
+                      <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Anode</div>
+                        <div>{vdData.total.anode.targetQuantity !== null ? vdData.total.anode.targetQuantity.toLocaleString() : ''}</div>
+                      </td>
                     </tr>
 
                     {/* 수율 - Cathode */}
                     <tr>
-                      <td rowSpan={2} className={styles.rowLabel}>
+                      <td rowSpan={2} className={styles.rowLabel} style={{ borderBottom: '2px solid #9ca3af' }}>
                         수율(%)
                       </td>
                       <td className={styles.subTypeLabel}>Cathode</td>
@@ -351,8 +427,6 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       <td style={{ color: '#10b981', fontWeight: 600 }}>
                         {vdData.total.cathode.totalYield !== null ? `${vdData.total.cathode.totalYield}%` : ''}
                       </td>
-                      <td rowSpan={2}></td>
-                      <td rowSpan={2}></td>
                     </tr>
                     {/* 수율 - Anode */}
                     <tr>
@@ -372,6 +446,151 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       })}
                       <td style={{ color: '#10b981', fontWeight: 600, borderBottom: '2px solid #9ca3af' }}>
                         {vdData.total.anode.totalYield !== null ? `${vdData.total.anode.totalYield}%` : ''}
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                );
+              }
+
+              // Forming 공정은 특별하게 렌더링 (Cutting, Forming, Folding, Top Cutting 분리 - 9행: 생산량4 + NG4 + 수율1)
+              if (isFormingProcess(processKey) && isFormingProcessData(processData)) {
+                const formingData = processData as FormingProcessData;
+
+                // yield 데이터 매핑
+                const yieldDataMap: Record<number, number | null> = {};
+                formingData.yield.data.forEach(item => {
+                  yieldDataMap[item.day] = item.yield;
+                });
+
+                return (
+                  <React.Fragment key={processKey}>
+                    {/* 생산량 - 4개 서브타입 */}
+                    {FORMING_SUBTYPES.map((subType, idx) => {
+                      const subData = formingData[subType];
+                      const subDailyDataMap: Record<number, FormingSubTypeDayData> = {};
+                      subData.data.forEach(item => {
+                        subDailyDataMap[item.day] = item;
+                      });
+
+                      if (idx === 0) {
+                        // 첫 번째 서브타입 (Cutting) - 진행률과 목표수량은 1칸씩
+                        return (
+                          <tr key={`${processKey}-output-${subType}`}>
+                            <td rowSpan={9} className={styles.processHeader}>
+                              {processName}
+                            </td>
+                            <td rowSpan={4} className={styles.rowLabel}>
+                              생산량({processUnit})
+                            </td>
+                            <td className={styles.subTypeLabel}>{FORMING_SUBTYPE_LABELS[subType]}</td>
+                            {Array.from({ length: daysInMonth }, (_, i) => {
+                              const day = i + 1;
+                              const dayData = subDailyDataMap[day];
+                              return <td key={day}>{dayData?.output || ''}</td>;
+                            })}
+                            <td>{subData.total.totalOutput}</td>
+                            <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
+                              {formingData.progress !== null ? `${formingData.progress}%` : ''}
+                            </td>
+                            <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
+                              {formingData.targetQuantity !== null ? formingData.targetQuantity.toLocaleString() : ''}
+                            </td>
+                          </tr>
+                        );
+                      }
+                      return (
+                        <tr key={`${processKey}-output-${subType}`}>
+                          <td className={styles.subTypeLabel}>{FORMING_SUBTYPE_LABELS[subType]}</td>
+                          {Array.from({ length: daysInMonth }, (_, i) => {
+                            const day = i + 1;
+                            const dayData = subDailyDataMap[day];
+                            return <td key={day}>{dayData?.output || ''}</td>;
+                          })}
+                          <td>{subData.total.totalOutput}</td>
+                        </tr>
+                      );
+                    })}
+
+                    {/* NG - 4개 서브타입 */}
+                    {FORMING_SUBTYPES.map((subType, idx) => {
+                      const subData = formingData[subType];
+                      const subDailyDataMap: Record<number, FormingSubTypeDayData> = {};
+                      subData.data.forEach(item => {
+                        subDailyDataMap[item.day] = item;
+                      });
+
+                      if (idx === 0) {
+                        return (
+                          <tr key={`${processKey}-ng-${subType}`}>
+                            <td rowSpan={4} className={styles.rowLabel}>
+                              NG
+                            </td>
+                            <td className={styles.subTypeLabel}>{FORMING_SUBTYPE_LABELS[subType]}</td>
+                            {Array.from({ length: daysInMonth }, (_, i) => {
+                              const day = i + 1;
+                              const dayData = subDailyDataMap[day];
+                              return (
+                                <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                                  {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
+                                </td>
+                              );
+                            })}
+                            <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                              {subData.total.totalNg !== null ? subData.total.totalNg : ''}
+                            </td>
+                          </tr>
+                        );
+                      }
+                      return (
+                        <tr key={`${processKey}-ng-${subType}`}>
+                          <td className={styles.subTypeLabel}>{FORMING_SUBTYPE_LABELS[subType]}</td>
+                          {Array.from({ length: daysInMonth }, (_, i) => {
+                            const day = i + 1;
+                            const dayData = subDailyDataMap[day];
+                            return (
+                              <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                                {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
+                              </td>
+                            );
+                          })}
+                          <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                            {subData.total.totalNg !== null ? subData.total.totalNg : ''}
+                          </td>
+                        </tr>
+                      );
+                    })}
+
+                    {/* 수율 - 단일 행 (별도 yield 데이터 사용) */}
+                    <tr key={`${processKey}-yield`}>
+                      <td className={styles.rowLabel} colSpan={2} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        수율(%)
+                      </td>
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const day = i + 1;
+                        const yieldValue = yieldDataMap[day];
+                        return (
+                          <td
+                            key={day}
+                            style={{
+                              color: '#10b981',
+                              fontWeight: 600,
+                              borderBottom: '2px solid #9ca3af',
+                            }}
+                          >
+                            {yieldValue !== null && yieldValue !== undefined
+                              ? `${yieldValue.toFixed(1)}%`
+                              : ''}
+                          </td>
+                        );
+                      })}
+                      <td
+                        style={{
+                          color: '#10b981',
+                          fontWeight: 600,
+                          borderBottom: '2px solid #9ca3af',
+                        }}
+                      >
+                        {formingData.yield.total !== null ? `${formingData.yield.total}%` : ''}
                       </td>
                     </tr>
                   </React.Fragment>
@@ -402,7 +621,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                     <td rowSpan={3} className={styles.processHeader}>
                       {processName}
                     </td>
-                    <td className={styles.rowLabel} colSpan={hasVDProcess ? 2 : 1}>
+                    <td className={styles.rowLabel} colSpan={hasSubTypeProcess ? 2 : 1}>
                       생산량({processUnit})
                     </td>
                     {Array.from({ length: daysInMonth }, (_, i) => {
@@ -411,17 +630,17 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       return <td key={day}>{dayData?.output || ''}</td>;
                     })}
                     <td>{normalProcessData.total.totalOutput}</td>
-                    <td rowSpan={3}>
+                    <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
                       {normalProcessData.total.progress !== null ? `${normalProcessData.total.progress}%` : ''}
                     </td>
-                    <td rowSpan={3}>
-                      {normalProcessData.total.targetQuantity !== null ? normalProcessData.total.targetQuantity : ''}
+                    <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
+                      {normalProcessData.total.targetQuantity !== null ? normalProcessData.total.targetQuantity.toLocaleString() : ''}
                     </td>
                   </tr>
 
                   {/* NG 행 */}
                   <tr>
-                    <td className={styles.rowLabel} colSpan={hasVDProcess ? 2 : 1}>
+                    <td className={styles.rowLabel} colSpan={hasSubTypeProcess ? 2 : 1}>
                       NG
                     </td>
                     {Array.from({ length: daysInMonth }, (_, i) => {
@@ -449,7 +668,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                   <tr>
                     <td
                       className={styles.rowLabel}
-                      colSpan={hasVDProcess ? 2 : 1}
+                      colSpan={hasSubTypeProcess ? 2 : 1}
                       style={{ borderBottom: '2px solid #9ca3af' }}
                     >
                       수율(%)
@@ -496,14 +715,19 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
 
             {/* 전체 합계 행 */}
             <tr className={styles.totalRow}>
-              <td colSpan={daysInMonth + (hasVDProcess ? 3 : 2)}>합계</td>
+              <td colSpan={daysInMonth + (hasSubTypeProcess ? 3 : 2)}>합계</td>
               <td className={styles.yieldCell}>
                 {(() => {
+                  // 전체 수율 계산 (전체 생산량 - 전체 NG) / 전체 생산량 * 100
                   const totalOutput = processesToRender.reduce((sum, [key, processData]) => {
                     if (!processData) return sum;
                     if (isVDProcess(key) && isVDProcessData(processData)) {
                       const vd = processData as VDProcessData;
                       return sum + vd.total.cathode.totalOutput + vd.total.anode.totalOutput;
+                    }
+                    if (isFormingProcess(key) && isFormingProcessData(processData)) {
+                      const forming = processData as FormingProcessData;
+                      return sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0);
                     }
                     return sum + ((processData as ProcessData).total.totalOutput || 0);
                   }, 0);
@@ -513,7 +737,11 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       const vd = processData as VDProcessData;
                       return sum + (vd.total.cathode.totalNg || 0) + (vd.total.anode.totalNg || 0);
                     }
-                    return sum + ((processData as ProcessData).data.reduce((s: number, item: DayData) => s + (item.ng || 0), 0) || 0);
+                    if (isFormingProcess(key) && isFormingProcessData(processData)) {
+                      const forming = processData as FormingProcessData;
+                      return sum + FORMING_SUBTYPES.reduce((s, subType) => s + (forming[subType].total.totalNg || 0), 0);
+                    }
+                    return sum + ((processData as ProcessData).total.totalNg || 0);
                   }, 0);
                   const overallYield = totalOutput > 0 ? ((totalOutput - totalNG) / totalOutput) * 100 : 0;
                   return `${overallYield.toFixed(1)}%`;
@@ -521,11 +749,16 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
               </td>
               <td>
                 {(() => {
+                  // 전체 진행률 계산
                   const totalOutput = processesToRender.reduce((sum, [key, processData]) => {
                     if (!processData) return sum;
                     if (isVDProcess(key) && isVDProcessData(processData)) {
                       const vd = processData as VDProcessData;
                       return sum + vd.total.cathode.totalOutput + vd.total.anode.totalOutput;
+                    }
+                    if (isFormingProcess(key) && isFormingProcessData(processData)) {
+                      const forming = processData as FormingProcessData;
+                      return sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0);
                     }
                     return sum + ((processData as ProcessData).total.totalOutput || 0);
                   }, 0);
@@ -534,6 +767,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                     if (isVDProcess(key) && isVDProcessData(processData)) {
                       const vd = processData as VDProcessData;
                       return sum + (vd.total.cathode.targetQuantity || 0) + (vd.total.anode.targetQuantity || 0);
+                    }
+                    if (isFormingProcess(key) && isFormingProcessData(processData)) {
+                      const forming = processData as FormingProcessData;
+                      return sum + (forming.targetQuantity || 0);
                     }
                     return sum + ((processData as ProcessData).total.targetQuantity || 0);
                   }, 0);
