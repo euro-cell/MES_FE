@@ -41,7 +41,9 @@ export default function WeldingRegister() {
         if (rangeName === 'productionId' && project) {
           initialValues[rangeName] = project.name;
         } else {
-          initialValues[rangeName] = '';
+          // 엑셀 템플릿의 기본값 사용 (비고란 등)
+          const defaultValue = namedRanges[rangeName]?.value;
+          initialValues[rangeName] = defaultValue ?? '';
         }
       });
       setFormValues(initialValues);
