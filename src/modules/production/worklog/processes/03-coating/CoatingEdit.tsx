@@ -8,6 +8,7 @@ import { getCoatingWorklog, updateCoatingWorklog } from './CoatingService';
 import type { CoatingWorklog, CoatingWorklogPayload } from './CoatingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { COATING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function CoatingEdit() {
@@ -77,7 +78,7 @@ export default function CoatingEdit() {
 
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as Partial<CoatingWorklogPayload>;
+      const payload = mapFormToPayload(formValues, namedRanges, COATING_NUMERIC_FIELDS) as Partial<CoatingWorklogPayload>;
       await updateCoatingWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
       navigate(`/prod/log/${projectId}?category=Electrode&process=Coating`);
@@ -145,6 +146,7 @@ export default function CoatingEdit() {
           onCellChange={handleCellChange}
           multilineFields={[]}
           timeFields={[]}
+          numericFields={COATING_NUMERIC_FIELDS}
         />
       </div>
 

@@ -8,6 +8,7 @@ import { getGradingWorklog, updateGradingWorklog } from './GradingService';
 import type { GradingWorklog, GradingWorklogPayload } from './GradingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { GRADING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function GradingEdit() {
@@ -78,7 +79,7 @@ export default function GradingEdit() {
 
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as Partial<GradingWorklogPayload>;
+      const payload = mapFormToPayload(formValues, namedRanges, GRADING_NUMERIC_FIELDS) as Partial<GradingWorklogPayload>;
       await updateGradingWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
       navigate(`/prod/log/${projectId}?category=Cell&process=Grading`);
@@ -145,6 +146,7 @@ export default function GradingEdit() {
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
+          numericFields={GRADING_NUMERIC_FIELDS}
         />
       </div>
 

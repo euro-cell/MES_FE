@@ -8,6 +8,7 @@ import { getFormationWorklog, updateFormationWorklog } from './FormationService'
 import type { FormationWorklog, FormationWorklogPayload } from './FormationTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { FORMATION_NUMERIC_FIELDS } from '../../shared/numericFields';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function FormationEdit() {
@@ -78,7 +79,7 @@ export default function FormationEdit() {
 
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as Partial<FormationWorklogPayload>;
+      const payload = mapFormToPayload(formValues, namedRanges, FORMATION_NUMERIC_FIELDS) as Partial<FormationWorklogPayload>;
       await updateFormationWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
       navigate(`/prod/log/${projectId}?category=Cell&process=Formation`);
@@ -145,6 +146,7 @@ export default function FormationEdit() {
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
+          numericFields={FORMATION_NUMERIC_FIELDS}
         />
       </div>
 

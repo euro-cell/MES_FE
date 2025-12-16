@@ -8,6 +8,7 @@ import type { PressWorklog, PressWorklogPayload } from './PressTypes';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { PRESS_NUMERIC_FIELDS } from '../../shared/numericFields';
 
 export default function PressEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -338,6 +339,7 @@ export default function PressEdit() {
         namedRanges={namedRanges}
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
+        numericFields={PRESS_NUMERIC_FIELDS}
       />
     </div>
   );

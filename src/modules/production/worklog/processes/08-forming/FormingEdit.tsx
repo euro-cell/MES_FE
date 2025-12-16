@@ -8,6 +8,7 @@ import type { FormingWorklog, FormingWorklogPayload } from './FormingTypes';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { FORMING_NUMERIC_FIELDS } from '../../shared/numericFields';
 
 export default function FormingEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -208,6 +209,7 @@ export default function FormingEdit() {
         namedRanges={namedRanges}
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
+        numericFields={FORMING_NUMERIC_FIELDS}
       />
     </div>
   );

@@ -8,6 +8,7 @@ import { getFillingWorklog, updateFillingWorklog } from './FillingService';
 import type { FillingWorklog, FillingWorklogPayload } from './FillingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { FILLING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function FillingEdit() {
@@ -78,7 +79,7 @@ export default function FillingEdit() {
 
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as Partial<FillingWorklogPayload>;
+      const payload = mapFormToPayload(formValues, namedRanges, FILLING_NUMERIC_FIELDS) as Partial<FillingWorklogPayload>;
       await updateFillingWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
       navigate(`/prod/log/${projectId}?category=Cell&process=Filling`);
@@ -145,6 +146,7 @@ export default function FillingEdit() {
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
+          numericFields={FILLING_NUMERIC_FIELDS}
         />
       </div>
 

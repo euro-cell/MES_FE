@@ -161,7 +161,8 @@ export const isCellInMerge = (row: number, col: number, merges: MergeRange[]): M
  */
 export const mapFormToPayload = (
   formValues: Record<string, any>,
-  namedRanges: Record<string, NamedRangeInfo>
+  namedRanges: Record<string, NamedRangeInfo>,
+  numericFields?: string[]
 ): Record<string, any> => {
   const payload: Record<string, any> = {};
 
@@ -171,6 +172,10 @@ export const mapFormToPayload = (
     // 빈 값은 null로 변환
     if (value === undefined || value === '') {
       payload[rangeName] = null;
+    } else if (numericFields?.includes(rangeName)) {
+      // 숫자 필드는 숫자로 변환 (문자열이든 숫자든 처리)
+      const numValue = typeof value === 'number' ? value : parseFloat(value);
+      payload[rangeName] = isNaN(numValue) ? null : numValue;
     } else {
       payload[rangeName] = value;
     }

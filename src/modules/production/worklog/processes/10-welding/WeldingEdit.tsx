@@ -8,6 +8,7 @@ import { getWeldingWorklog, updateWeldingWorklog } from './WeldingService';
 import type { WeldingWorklog, WeldingWorklogPayload } from './WeldingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { WELDING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function WeldingEdit() {
@@ -78,7 +79,7 @@ export default function WeldingEdit() {
 
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as Partial<WeldingWorklogPayload>;
+      const payload = mapFormToPayload(formValues, namedRanges, WELDING_NUMERIC_FIELDS) as Partial<WeldingWorklogPayload>;
       await updateWeldingWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
       navigate(`/prod/log/${projectId}?category=Cell&process=Welding`);
@@ -145,6 +146,7 @@ export default function WeldingEdit() {
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
+          numericFields={WELDING_NUMERIC_FIELDS}
         />
       </div>
 

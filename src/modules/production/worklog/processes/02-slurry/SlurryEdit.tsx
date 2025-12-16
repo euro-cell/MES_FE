@@ -9,6 +9,7 @@ import type { SlurryWorklog, SlurryWorklogPayload } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS } from './slurryConstants';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { SLURRY_NUMERIC_FIELDS } from '../../shared/numericFields';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function SlurryEdit() {
@@ -79,7 +80,7 @@ export default function SlurryEdit() {
 
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as Partial<SlurryWorklogPayload>;
+      const payload = mapFormToPayload(formValues, namedRanges, SLURRY_NUMERIC_FIELDS) as Partial<SlurryWorklogPayload>;
       await updateSlurryWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
       navigate(`/prod/log/${projectId}?category=Electrode&process=Slurry`);
@@ -147,6 +148,7 @@ export default function SlurryEdit() {
           onCellChange={handleCellChange}
           multilineFields={SLURRY_MULTILINE_FIELDS}
           timeFields={SLURRY_TIME_FIELDS}
+          numericFields={SLURRY_NUMERIC_FIELDS}
         />
       </div>
 

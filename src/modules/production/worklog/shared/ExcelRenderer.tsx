@@ -27,6 +27,7 @@ interface ExcelRendererProps {
   className?: string;
   multilineFields?: string[];
   timeFields?: string[];
+  numericFields?: string[];
 }
 
 function decodeAddress(addr: string) {
@@ -196,6 +197,7 @@ export default function ExcelRenderer({
   className = '',
   multilineFields = [],
   timeFields = [],
+  numericFields = [],
 }: ExcelRendererProps) {
   const sheetData = useMemo((): SheetData | null => {
     if (!workbook) return null;
@@ -312,7 +314,7 @@ export default function ExcelRenderer({
     return formatCellValue(cell.value, cell.numFmt);
   };
 
-  const handleInputChange = (rangeName: string, value: string) => {
+  const handleInputChange = (rangeName: string, value: string | number) => {
     if (onCellChange) {
       onCellChange(rangeName, value);
     }
@@ -387,6 +389,15 @@ export default function ExcelRenderer({
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => handleInputChange(rangeName, e.target.value)}
                           placeholder={cellValue || '입력...'}
+                        />
+                      ) : numericFields.includes(rangeName) ? (
+                        <input
+                          type='number'
+                          className={styles.cellInput}
+                          value={cellValues[rangeName] ?? ''}
+                          onChange={e => handleInputChange(rangeName, e.target.value === '' ? '' : Number(e.target.value))}
+                          placeholder={cellValue || '입력...'}
+                          step='any'
                         />
                       ) : (
                         <input

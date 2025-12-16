@@ -8,6 +8,7 @@ import { getBinderWorklog, updateBinderWorklog } from './BinderService';
 import type { BinderWorklog, BinderWorklogPayload } from './BinderTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function BinderEdit() {
@@ -78,7 +79,7 @@ export default function BinderEdit() {
 
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as Partial<BinderWorklogPayload>;
+      const payload = mapFormToPayload(formValues, namedRanges, BINDER_NUMERIC_FIELDS) as Partial<BinderWorklogPayload>;
       await updateBinderWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
       navigate(`/prod/log/${projectId}?category=Electrode&process=Binder`);
@@ -159,6 +160,7 @@ export default function BinderEdit() {
             'stabilizationStartTime',
             'stabilizationEndTime',
           ]}
+          numericFields={BINDER_NUMERIC_FIELDS}
         />
       </div>
 

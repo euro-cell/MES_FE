@@ -8,6 +8,7 @@ import type { VdWorklog, VdWorklogPayload } from './VdTypes';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { VD_NUMERIC_FIELDS } from '../../shared/numericFields';
 
 export default function VdEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -260,6 +261,7 @@ export default function VdEdit() {
         namedRanges={namedRanges}
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
+        numericFields={VD_NUMERIC_FIELDS}
       />
     </div>
   );

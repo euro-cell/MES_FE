@@ -8,6 +8,7 @@ import type { NotchingWorklog, NotchingWorklogPayload } from './NotchingTypes';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { NOTCHING_NUMERIC_FIELDS } from '../../shared/numericFields';
 
 export default function NotchingEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -304,6 +305,7 @@ export default function NotchingEdit() {
         namedRanges={namedRanges}
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
+        numericFields={NOTCHING_NUMERIC_FIELDS}
       />
     </div>
   );

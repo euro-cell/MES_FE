@@ -8,6 +8,7 @@ import { getStackingWorklog, updateStackingWorklog } from './StackingService';
 import type { StackingWorklog, StackingWorklogPayload } from './StackingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { STACKING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function StackingEdit() {
@@ -78,7 +79,7 @@ export default function StackingEdit() {
 
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as Partial<StackingWorklogPayload>;
+      const payload = mapFormToPayload(formValues, namedRanges, STACKING_NUMERIC_FIELDS) as Partial<StackingWorklogPayload>;
       await updateStackingWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
       navigate(`/prod/log/${projectId}?category=Cell&process=Stacking`);
@@ -146,6 +147,7 @@ export default function StackingEdit() {
           onCellChange={handleCellChange}
           multilineFields={['remark']}
           timeFields={['jr1WorkTime', 'jr2WorkTime', 'jr3WorkTime', 'jr4WorkTime']}
+          numericFields={STACKING_NUMERIC_FIELDS}
         />
       </div>
 
