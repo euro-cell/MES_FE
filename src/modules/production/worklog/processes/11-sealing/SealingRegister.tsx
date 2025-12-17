@@ -8,6 +8,7 @@ import { createSealingWorklog } from './SealingService';
 import type { SealingWorklogPayload } from './SealingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { SEALING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function SealingRegister() {
@@ -60,7 +61,7 @@ export default function SealingRegister() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as SealingWorklogPayload;
+      const payload = mapFormToPayload(formValues, namedRanges, SEALING_NUMERIC_FIELDS) as SealingWorklogPayload;
       await createSealingWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/prod/log/${projectId}?category=Assembly&process=Sealing`);
@@ -127,6 +128,7 @@ export default function SealingRegister() {
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['topChecklist', 'sideChecklist', 'bottomChecklist', 'remark']}
+          numericFields={SEALING_NUMERIC_FIELDS}
         />
       </div>
 
