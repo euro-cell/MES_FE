@@ -40,6 +40,9 @@ import FormationEdit from './processes/13-formation/FormationEdit';
 import GradingRegister from './processes/14-grading/GradingRegister';
 import GradingView from './processes/14-grading/GradingView';
 import GradingEdit from './processes/14-grading/GradingEdit';
+import InspectionRegister from './processes/15-inspection/InspectionRegister';
+import InspectionView from './processes/15-inspection/InspectionView';
+import InspectionEdit from './processes/15-inspection/InspectionEdit';
 
 export default function WorklogIndex() {
   return (
@@ -111,6 +114,11 @@ export default function WorklogIndex() {
       <Route path=':projectId/grading/register' element={<GradingRegister />} />
       <Route path=':projectId/grading/view/:worklogId' element={<GradingView />} />
       <Route path=':projectId/grading/edit/:worklogId' element={<GradingEdit />} />
+
+      {/* Inspection routes */}
+      <Route path=':projectId/inspection/register' element={<InspectionRegister />} />
+      <Route path=':projectId/inspection/view/:worklogId' element={<InspectionView />} />
+      <Route path=':projectId/inspection/edit/:worklogId' element={<InspectionEdit />} />
     </Routes>
   );
 }

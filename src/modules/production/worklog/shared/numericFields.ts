@@ -525,3 +525,45 @@ export const GRADING_NUMERIC_FIELDS = [
   'hipotTestTime',
   'hipotLeakageCurrent',
 ];
+
+// Inspection 숫자 필드
+export const INSPECTION_NUMERIC_FIELDS = [
+  // 셀 입력
+  'cellInputQuantity',
+  // 가스 발생
+  'gasInputQuantity',
+  'gasGoodQuantity',
+  'gasDefectQuantity',
+  'gasDiscardQuantity',
+  'gasDefectRate',
+  // 이물질 외관
+  'foreignMatterInputQuantity',
+  'foreignMatterGoodQuantity',
+  'foreignMatterDefectQuantity',
+  'foreignMatterDiscardQuantity',
+  'foreignMatterDefectRate',
+  // 긁힘
+  'scratchInputQuantity',
+  'scratchGoodQuantity',
+  'scratchDefectQuantity',
+  'scratchDiscardQuantity',
+  'scratchDefectRate',
+  // 찍힘
+  'dentInputQuantity',
+  'dentGoodQuantity',
+  'dentDefectQuantity',
+  'dentDiscardQuantity',
+  'dentDefectRate',
+  // 누액 및 부식
+  'leakCorrosionInputQuantity',
+  'leakCorrosionGoodQuantity',
+  'leakCorrosionDefectQuantity',
+  'leakCorrosionDiscardQuantity',
+  'leakCorrosionDefectRate',
+  // 전지 크기
+  'cellSizeInputQuantity',
+  'cellSizeGoodQuantity',
+  'cellSizeDefectQuantity',
+  'cellSizeDiscardQuantity',
+  'cellSizeDefectRate',
+];

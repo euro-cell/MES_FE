@@ -20,6 +20,7 @@ export const PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
   Formation: [
     { id: 'Formation', category: 'Formation', title: 'Formation' },
     { id: 'Grading', category: 'Formation', title: 'Grading' },
+    { id: 'Inspection', category: 'Formation', title: '외관검사' },
   ],
 };
 

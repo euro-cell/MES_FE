@@ -17,6 +17,7 @@ import { getSealingWorklogs, deleteSealingWorklog } from './processes/11-sealing
 import { getFillingWorklogs, deleteFillingWorklog } from './processes/12-filling/FillingService';
 import { getFormationWorklogs, deleteFormationWorklog } from './processes/13-formation/FormationService';
 import { getGradingWorklogs, deleteGradingWorklog } from './processes/14-grading/GradingService';
+import { getInspectionWorklogs, deleteInspectionWorklog } from './processes/15-inspection/InspectionService';
 
 interface WorklogListProps {
   projectId: number;
@@ -190,6 +191,18 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
         }));
+      } else if (processId === 'Inspection') {
+        const inspectionData = await getInspectionWorklogs(projectId);
+        data = inspectionData.map(worklog => ({
+          id: worklog.id,
+          projectId: worklog.projectId,
+          processId: worklog.processId,
+          workDate: worklog.workDate,
+          round: worklog.round,
+          createdBy: worklog.writer,
+          createdAt: worklog.createdAt,
+          updatedAt: worklog.updatedAt,
+        }));
       } else {
         data = await getWorklogs(projectId, processId);
       }
@@ -197,8 +210,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
       setWorklogs(data);
     } catch (err) {
       console.error('작업일지 조회 실패:', err);
-      // 목 데이터 사용
-      setWorklogs(getMockWorklogs(projectId, processId));
+      setWorklogs([]);
     } finally {
       setLoading(false);
     }
@@ -240,6 +252,8 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
         await deleteFormationWorklog(projectId, worklogId);
       } else if (processId === 'Grading') {
         await deleteGradingWorklog(projectId, worklogId);
+      } else if (processId === 'Inspection') {
+        await deleteInspectionWorklog(projectId, worklogId);
       } else {
         // 다른 공정은 범용 삭제 API 사용 (미구현)
         throw new Error('삭제 기능이 구현되지 않았습니다.');
@@ -308,40 +322,4 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
       </table>
     </div>
   );
-}
-
-// 목 데이터 (백엔드 미구현 시)
-function getMockWorklogs(projectId: number, processId: string): WorklogEntry[] {
-  return [
-    {
-      id: 1,
-      projectId,
-      processId,
-      workDate: '2025-12-01',
-      round: 1,
-      createdBy: '홍길동',
-      createdAt: '2025-12-01T08:00:00Z',
-      updatedAt: '2025-12-01T17:00:00Z',
-    },
-    {
-      id: 2,
-      projectId,
-      processId,
-      workDate: '2025-12-02',
-      round: 2,
-      createdBy: '김철수',
-      createdAt: '2025-12-02T20:00:00Z',
-      updatedAt: '2025-12-03T05:00:00Z',
-    },
-    {
-      id: 3,
-      projectId,
-      processId,
-      workDate: '2025-12-03',
-      round: 3,
-      createdBy: '박민수',
-      createdAt: '2025-12-03T08:00:00Z',
-      updatedAt: '2025-12-03T17:00:00Z',
-    },
-  ];
 }
