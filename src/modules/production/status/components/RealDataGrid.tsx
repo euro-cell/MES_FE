@@ -116,6 +116,24 @@ const STACKING_NCR_SUBTYPE_LABELS: Record<string, string> = {
   alignment: 'Alignment',
 };
 
+// PreWelding NCR 서브타입 키 배열
+const PRE_WELDING_NCR_SUBTYPES = ['burning', 'align', 'etc'] as const;
+const PRE_WELDING_NCR_SUBTYPE_LABELS: Record<string, string> = {
+  burning: '소착',
+  align: 'Align',
+  etc: '기타',
+};
+
+// MainWelding NCR 서브타입 키 배열
+const MAIN_WELDING_NCR_SUBTYPES = ['hiPot', 'burning', 'align', 'taping', 'etc'] as const;
+const MAIN_WELDING_NCR_SUBTYPE_LABELS: Record<string, string> = {
+  hiPot: 'Hi pot',
+  burning: '소착',
+  align: 'Align',
+  taping: 'Taping',
+  etc: '기타',
+};
+
 // Stacking 일별 데이터
 interface StackingDayData {
   day: number;
@@ -147,6 +165,27 @@ interface StackingProcessData {
   };
 }
 
+// Welding 공정 일별 데이터 (NCR 동적)
+interface WeldingDayData {
+  day: number;
+  output: number;
+  ng: number | null;
+  ncr: Record<string, number | null> | null;
+}
+
+// Welding 공정 데이터
+interface WeldingProcessData {
+  data: WeldingDayData[];
+  total: {
+    totalOutput: number;
+    targetQuantity: number | null;
+    progress: number | null;
+    totalNg: number | null;
+    ncr: Record<string, number | null> | null;
+    totalYield: number | null;
+  };
+}
+
 interface RealDataResponse {
   category: string;
   type?: string;
@@ -163,8 +202,8 @@ interface RealDataResponse {
     vd?: VDProcessData;
     forming?: FormingProcessData;
     stacking?: StackingProcessData;
-    preWelding?: ProcessData;
-    mainWelding?: ProcessData;
+    preWelding?: WeldingProcessData;
+    mainWelding?: WeldingProcessData;
     sealing?: ProcessData;
     filling?: ProcessData;
     // 화성 공정 (Formation)
@@ -174,7 +213,7 @@ interface RealDataResponse {
     aging?: ProcessData;
     grading?: ProcessData;
     inspection?: ProcessData;
-    [key: string]: ProcessData | VDProcessData | FormingProcessData | StackingProcessData | undefined;
+    [key: string]: ProcessData | VDProcessData | FormingProcessData | StackingProcessData | WeldingProcessData | undefined;
   };
 }
 
@@ -253,8 +292,8 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
     vd: 'V/D',
     forming: 'Forming',
     stacking: 'Stack',
-    preWelding: 'Pre Welding',
-    mainWelding: 'Main Welding',
+    preWelding: 'Pre\nWelding',
+    mainWelding: 'Main\nWelding',
     sealing: 'Sealing',
     filling: 'E/L Filling',
     // 화성 공정 (Formation)
@@ -301,25 +340,40 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
   // Stacking 공정인지 확인
   const isStackingProcess = (key: string): boolean => key === 'stacking';
 
+  // PreWelding 공정인지 확인
+  const isPreWeldingProcess = (key: string): boolean => key === 'preWelding';
+
+  // MainWelding 공정인지 확인
+  const isMainWeldingProcess = (key: string): boolean => key === 'mainWelding';
+
+  // Welding 공정인지 확인 (preWelding 또는 mainWelding)
+  const isWeldingProcess = (key: string): boolean => key === 'preWelding' || key === 'mainWelding';
+
+  type AllProcessData = ProcessData | VDProcessData | FormingProcessData | StackingProcessData | WeldingProcessData;
+
   // VD 데이터인지 타입 체크
-  const isVDProcessData = (
-    processData: ProcessData | VDProcessData | FormingProcessData | StackingProcessData
-  ): processData is VDProcessData => {
+  const isVDProcessData = (processData: AllProcessData): processData is VDProcessData => {
     return 'data' in processData && Array.isArray(processData.data) && processData.data.length > 0 && 'cathodeOutput' in processData.data[0];
   };
 
   // Forming 데이터인지 타입 체크
-  const isFormingProcessData = (
-    processData: ProcessData | VDProcessData | FormingProcessData | StackingProcessData
-  ): processData is FormingProcessData => {
+  const isFormingProcessData = (processData: AllProcessData): processData is FormingProcessData => {
     return 'cutting' in processData && 'forming' in processData && 'folding' in processData && 'topCutting' in processData;
   };
 
   // Stacking 데이터인지 타입 체크
-  const isStackingProcessData = (
-    processData: ProcessData | VDProcessData | FormingProcessData | StackingProcessData
-  ): processData is StackingProcessData => {
-    return 'total' in processData && 'ncr' in (processData as StackingProcessData).total;
+  const isStackingProcessData = (processData: AllProcessData): processData is StackingProcessData => {
+    if (!('total' in processData)) return false;
+    const total = (processData as StackingProcessData).total;
+    return total.ncr !== undefined && (total.ncr === null || ('hiPot' in total.ncr && 'weight' in total.ncr));
+  };
+
+  // Welding 데이터인지 타입 체크
+  const isWeldingProcessData = (processData: AllProcessData): processData is WeldingProcessData => {
+    if (!('total' in processData)) return false;
+    const total = (processData as WeldingProcessData).total;
+    // Welding은 ncr이 Record<string, number | null> 형태 (burning, align 등)
+    return total.ncr !== undefined && (total.ncr === null || ('burning' in total.ncr || 'align' in total.ncr));
   };
 
   // 렌더링할 공정 목록 (데이터가 있는 공정만, null이 아닌 것만)
@@ -332,7 +386,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
   }
 
   // 서브타입이 있는 공정이 있는지 확인 (헤더 colSpan 결정용)
-  const hasSubTypeProcess = processesToRender.some(([key]) => isVDProcess(key) || isFormingProcess(key) || isStackingProcess(key));
+  const hasSubTypeProcess = processesToRender.some(([key]) => isVDProcess(key) || isFormingProcess(key) || isStackingProcess(key) || isWeldingProcess(key));
 
   return (
     <div className={styles.gridContainer}>
@@ -785,6 +839,152 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                 );
               }
 
+              // Welding 공정은 특별하게 렌더링 (NCR에 burning, align 등 하위항목)
+              if (isWeldingProcess(processKey) && isWeldingProcessData(processData)) {
+                const weldingData = processData as WeldingProcessData;
+
+                // 일별 데이터 매핑
+                const dailyDataMap: Record<number, WeldingDayData> = {};
+                weldingData.data.forEach(item => {
+                  dailyDataMap[item.day] = item;
+                });
+
+                // 수율 계산 함수
+                const calcYield = (output: number, ng: number | null) => {
+                  if (output === 0 || ng === null) return null;
+                  return ((output - ng) / output) * 100;
+                };
+
+                // NCR 서브타입 결정 (preWelding vs mainWelding)
+                const ncrSubtypes = isPreWeldingProcess(processKey) ? PRE_WELDING_NCR_SUBTYPES : MAIN_WELDING_NCR_SUBTYPES;
+                const ncrLabels = isPreWeldingProcess(processKey) ? PRE_WELDING_NCR_SUBTYPE_LABELS : MAIN_WELDING_NCR_SUBTYPE_LABELS;
+                const ncrRowCount = ncrSubtypes.length;
+                const totalRowSpan = 3 + ncrRowCount; // 생산량 + NG + NCR 서브타입들 + 수율
+
+                return (
+                  <React.Fragment key={processKey}>
+                    {/* 생산량 행 */}
+                    <tr>
+                      <td rowSpan={totalRowSpan} className={styles.processHeader}>
+                        {processName}
+                      </td>
+                      <td className={styles.rowLabel} colSpan={2}>
+                        생산량({processUnit})
+                      </td>
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const day = i + 1;
+                        const dayData = dailyDataMap[day];
+                        return <td key={day}>{dayData?.output || ''}</td>;
+                      })}
+                      <td>{weldingData.total.totalOutput}</td>
+                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        {weldingData.total.progress !== null ? `${weldingData.total.progress}%` : ''}
+                      </td>
+                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        {weldingData.total.targetQuantity !== null ? weldingData.total.targetQuantity.toLocaleString() : ''}
+                      </td>
+                    </tr>
+
+                    {/* NG 행 */}
+                    <tr>
+                      <td className={styles.rowLabel} colSpan={2}>
+                        NG
+                      </td>
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const day = i + 1;
+                        const dayData = dailyDataMap[day];
+                        return (
+                          <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                            {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
+                          </td>
+                        );
+                      })}
+                      <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                        {weldingData.total.totalNg !== null ? weldingData.total.totalNg : ''}
+                      </td>
+                    </tr>
+
+                    {/* NCR 서브타입 행들 */}
+                    {ncrSubtypes.map((subType, idx) => {
+                      if (idx === 0) {
+                        return (
+                          <tr key={`${processKey}-ncr-${subType}`}>
+                            <td rowSpan={ncrRowCount} className={styles.rowLabel}>
+                              NCR
+                            </td>
+                            <td className={styles.subTypeLabel}>{ncrLabels[subType]}</td>
+                            {Array.from({ length: daysInMonth }, (_, i) => {
+                              const day = i + 1;
+                              const dayData = dailyDataMap[day];
+                              const value = dayData?.ncr?.[subType] ?? null;
+                              return (
+                                <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                                  {value !== null && value !== undefined ? value : ''}
+                                </td>
+                              );
+                            })}
+                            <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                              {weldingData.total.ncr?.[subType] ?? ''}
+                            </td>
+                          </tr>
+                        );
+                      }
+                      return (
+                        <tr key={`${processKey}-ncr-${subType}`}>
+                          <td className={styles.subTypeLabel}>{ncrLabels[subType]}</td>
+                          {Array.from({ length: daysInMonth }, (_, i) => {
+                            const day = i + 1;
+                            const dayData = dailyDataMap[day];
+                            const value = dayData?.ncr?.[subType] ?? null;
+                            return (
+                              <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                                {value !== null && value !== undefined ? value : ''}
+                              </td>
+                            );
+                          })}
+                          <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                            {weldingData.total.ncr?.[subType] ?? ''}
+                          </td>
+                        </tr>
+                      );
+                    })}
+
+                    {/* 수율 행 */}
+                    <tr>
+                      <td className={styles.rowLabel} colSpan={2} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        수율(%)
+                      </td>
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const day = i + 1;
+                        const dayData = dailyDataMap[day];
+                        const yieldValue = calcYield(dayData?.output || 0, dayData?.ng ?? null);
+                        return (
+                          <td
+                            key={day}
+                            style={{
+                              color: '#10b981',
+                              fontWeight: 600,
+                              borderBottom: '2px solid #9ca3af',
+                            }}
+                          >
+                            {yieldValue !== null ? `${yieldValue.toFixed(1)}%` : ''}
+                          </td>
+                        );
+                      })}
+                      <td
+                        style={{
+                          color: '#10b981',
+                          fontWeight: 600,
+                          borderBottom: '2px solid #9ca3af',
+                        }}
+                      >
+                        {weldingData.total.totalYield !== null ? `${weldingData.total.totalYield}%` : ''}
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                );
+              }
+
               // 일반 공정 렌더링
               const normalProcessData = processData as ProcessData;
               const dailyDataMap: Record<number, DayData> = {};
@@ -921,6 +1121,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       const stacking = processData as StackingProcessData;
                       return sum + stacking.total.totalOutput;
                     }
+                    if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
+                      const welding = processData as WeldingProcessData;
+                      return sum + welding.total.totalOutput;
+                    }
                     return sum + ((processData as ProcessData).total.totalOutput || 0);
                   }, 0);
                   const totalNG = processesToRender.reduce((sum, [key, processData]) => {
@@ -936,6 +1140,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                     if (isStackingProcess(key) && isStackingProcessData(processData)) {
                       const stacking = processData as StackingProcessData;
                       return sum + (stacking.total.totalNg || 0);
+                    }
+                    if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
+                      const welding = processData as WeldingProcessData;
+                      return sum + (welding.total.totalNg || 0);
                     }
                     return sum + ((processData as ProcessData).total.totalNg || 0);
                   }, 0);
@@ -960,6 +1168,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       const stacking = processData as StackingProcessData;
                       return sum + stacking.total.totalOutput;
                     }
+                    if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
+                      const welding = processData as WeldingProcessData;
+                      return sum + welding.total.totalOutput;
+                    }
                     return sum + ((processData as ProcessData).total.totalOutput || 0);
                   }, 0);
                   const totalTarget = processesToRender.reduce((sum, [key, processData]) => {
@@ -975,6 +1187,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                     if (isStackingProcess(key) && isStackingProcessData(processData)) {
                       const stacking = processData as StackingProcessData;
                       return sum + (stacking.total.targetQuantity || 0);
+                    }
+                    if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
+                      const welding = processData as WeldingProcessData;
+                      return sum + (welding.total.targetQuantity || 0);
                     }
                     return sum + ((processData as ProcessData).total.targetQuantity || 0);
                   }, 0);

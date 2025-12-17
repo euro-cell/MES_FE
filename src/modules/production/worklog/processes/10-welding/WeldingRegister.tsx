@@ -8,6 +8,7 @@ import { createWeldingWorklog } from './WeldingService';
 import type { WeldingWorklogPayload } from './WeldingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { WELDING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function WeldingRegister() {
@@ -126,7 +127,8 @@ export default function WeldingRegister() {
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
-          multilineFields={['remark', 'preWeldingDefectRemark', 'mainWeldingDefectRemark']}
+          multilineFields={['remark', 'preWeldingDefectRemark', 'mainWeldingDefectRemark', 'hipot2DefectRemark', 'tapingDefectRemark']}
+          numericFields={WELDING_NUMERIC_FIELDS}
         />
       </div>
 

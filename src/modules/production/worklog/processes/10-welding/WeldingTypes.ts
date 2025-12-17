@@ -37,12 +37,14 @@ export interface WeldingWorklog {
   hipot2WorkQuantity?: number;
   hipot2GoodQuantity?: number;
   hipot2DefectQuantity?: number;
+  hipot2DefectRemark?: string;
 
   // B. 생산 정보 - 테이핑
   tapingJrNumber?: string;
   tapingWorkQuantity?: number;
   tapingGoodQuantity?: number;
   tapingDefectQuantity?: number;
+  tapingDefectRemark?: string;
 
   // C. 공정 조건 - 프리웰딩
   preWeldingEnergy?: number;
@@ -99,12 +101,14 @@ export interface WeldingWorklogPayload {
   hipot2WorkQuantity?: number;
   hipot2GoodQuantity?: number;
   hipot2DefectQuantity?: number;
+  hipot2DefectRemark?: string;
 
   // B. 생산 정보 - 테이핑
   tapingJrNumber?: string;
   tapingWorkQuantity?: number;
   tapingGoodQuantity?: number;
   tapingDefectQuantity?: number;
+  tapingDefectRemark?: string;
 
   // C. 공정 조건 - 프리웰딩
   preWeldingEnergy?: number;
