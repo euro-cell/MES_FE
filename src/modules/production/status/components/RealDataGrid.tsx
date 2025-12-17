@@ -143,6 +143,17 @@ const SEALING_NCR_SUBTYPE_LABELS: Record<string, string> = {
   etc: '기타',
 };
 
+// VisualInspection NCR 서브타입 키 배열
+const VISUAL_INSPECTION_NCR_SUBTYPES = ['gas', 'foreignMatter', 'scratch', 'dent', 'leakCorrosion', 'cellSize'] as const;
+const VISUAL_INSPECTION_NCR_SUBTYPE_LABELS: Record<string, string> = {
+  gas: '가스',
+  foreignMatter: '외관',
+  scratch: '긁힘',
+  dent: '찍힘',
+  leakCorrosion: '누액, 부식',
+  cellSize: '크기',
+};
+
 // Stacking 일별 데이터
 interface StackingDayData {
   day: number;
@@ -219,6 +230,28 @@ interface SealingProcessData {
   };
 }
 
+// VisualInspection 공정 일별 데이터
+interface VisualInspectionDayData {
+  day: number;
+  output: number;
+  ng: number | null;
+  ncr: Record<string, number | null> | null;
+  yield: number | null;
+}
+
+// VisualInspection 공정 데이터
+interface VisualInspectionProcessData {
+  data: VisualInspectionDayData[];
+  total: {
+    totalOutput: number;
+    targetQuantity: number | null;
+    progress: number | null;
+    totalNg: number | null;
+    ncr: Record<string, number | null> | null;
+    totalYield: number | null;
+  };
+}
+
 interface RealDataResponse {
   category: string;
   type?: string;
@@ -245,8 +278,8 @@ interface RealDataResponse {
     mainFormation?: ProcessData;
     aging?: ProcessData;
     grading?: ProcessData;
-    inspection?: ProcessData;
-    [key: string]: ProcessData | VDProcessData | FormingProcessData | StackingProcessData | WeldingProcessData | SealingProcessData | undefined;
+    visualInspection?: VisualInspectionProcessData;
+    [key: string]: ProcessData | VDProcessData | FormingProcessData | StackingProcessData | WeldingProcessData | SealingProcessData | VisualInspectionProcessData | undefined;
   };
 }
 
@@ -335,7 +368,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
     mainFormation: 'Main Formation',
     aging: 'Aging\nOCV/IR_2',
     grading: 'Grading\nOCV/IR_3',
-    inspection: '외관검사',
+    visualInspection: '외관검사',
   };
 
   // 공정별 생산량 단위 매핑
@@ -361,7 +394,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
     mainFormation: 'ea',
     aging: 'ea',
     grading: 'ea',
-    inspection: 'ea',
+    visualInspection: 'ea',
   };
 
   // VD 공정인지 확인
@@ -385,7 +418,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
   // Sealing 공정인지 확인
   const isSealingProcess = (key: string): boolean => key === 'sealing';
 
-  type AllProcessData = ProcessData | VDProcessData | FormingProcessData | StackingProcessData | WeldingProcessData | SealingProcessData;
+  // VisualInspection 공정인지 확인
+  const isVisualInspectionProcess = (key: string): boolean => key === 'visualInspection';
+
+  type AllProcessData = ProcessData | VDProcessData | FormingProcessData | StackingProcessData | WeldingProcessData | SealingProcessData | VisualInspectionProcessData;
 
   // VD 데이터인지 타입 체크
   const isVDProcessData = (processData: AllProcessData): processData is VDProcessData => {
@@ -420,6 +456,14 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
     return total.ncr !== undefined && (total.ncr === null || ('appearance' in total.ncr || 'thickness' in total.ncr));
   };
 
+  // VisualInspection 데이터인지 타입 체크
+  const isVisualInspectionProcessData = (processData: AllProcessData): processData is VisualInspectionProcessData => {
+    if (!('total' in processData)) return false;
+    const total = (processData as VisualInspectionProcessData).total;
+    // VisualInspection은 ncr이 Record<string, number | null> 형태 (gas, foreignMatter, scratch, dent, leakCorrosion, cellSize)
+    return total.ncr !== undefined && (total.ncr === null || ('gas' in total.ncr || 'foreignMatter' in total.ncr || 'cellSize' in total.ncr));
+  };
+
   // 렌더링할 공정 목록 (데이터가 있는 공정만, null이 아닌 것만)
   const processesToRender = Object.entries(data.processes).filter(
     ([_, processData]) => processData !== undefined && processData !== null
@@ -430,7 +474,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
   }
 
   // 서브타입이 있는 공정이 있는지 확인 (헤더 colSpan 결정용)
-  const hasSubTypeProcess = processesToRender.some(([key]) => isVDProcess(key) || isFormingProcess(key) || isStackingProcess(key) || isWeldingProcess(key) || isSealingProcess(key));
+  const hasSubTypeProcess = processesToRender.some(([key]) => isVDProcess(key) || isFormingProcess(key) || isStackingProcess(key) || isWeldingProcess(key) || isSealingProcess(key) || isVisualInspectionProcess(key));
 
   return (
     <div className={styles.gridContainer}>
@@ -1148,6 +1192,143 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                         }}
                       >
                         {sealingData.total.totalYield !== null ? `${sealingData.total.totalYield}%` : ''}
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                );
+              }
+
+              // VisualInspection 공정은 특별하게 렌더링 (NCR에 가스, 외관, 긁힘, 찍힘, 누액/부식, 크기 하위항목)
+              if (isVisualInspectionProcess(processKey) && isVisualInspectionProcessData(processData)) {
+                const visualInspectionData = processData as VisualInspectionProcessData;
+
+                // 일별 데이터 매핑
+                const dailyDataMap: Record<number, VisualInspectionDayData> = {};
+                visualInspectionData.data.forEach(item => {
+                  dailyDataMap[item.day] = item;
+                });
+
+                const ncrRowCount = VISUAL_INSPECTION_NCR_SUBTYPES.length;
+                const totalRowSpan = 3 + ncrRowCount; // 생산량 + NG + NCR 서브타입들 + 수율
+
+                return (
+                  <React.Fragment key={processKey}>
+                    {/* 생산량 행 */}
+                    <tr>
+                      <td rowSpan={totalRowSpan} className={styles.processHeader}>
+                        {processName}
+                      </td>
+                      <td className={styles.rowLabel} colSpan={2}>
+                        생산량({processUnit})
+                      </td>
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const day = i + 1;
+                        const dayData = dailyDataMap[day];
+                        return <td key={day}>{dayData?.output || ''}</td>;
+                      })}
+                      <td>{visualInspectionData.total.totalOutput}</td>
+                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        {visualInspectionData.total.progress !== null ? `${visualInspectionData.total.progress}%` : ''}
+                      </td>
+                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        {visualInspectionData.total.targetQuantity !== null ? visualInspectionData.total.targetQuantity.toLocaleString() : ''}
+                      </td>
+                    </tr>
+
+                    {/* NG 행 */}
+                    <tr>
+                      <td className={styles.rowLabel} colSpan={2}>
+                        NG
+                      </td>
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const day = i + 1;
+                        const dayData = dailyDataMap[day];
+                        return (
+                          <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                            {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
+                          </td>
+                        );
+                      })}
+                      <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                        {visualInspectionData.total.totalNg !== null ? visualInspectionData.total.totalNg : ''}
+                      </td>
+                    </tr>
+
+                    {/* NCR 서브타입 행들 */}
+                    {VISUAL_INSPECTION_NCR_SUBTYPES.map((subType, idx) => {
+                      if (idx === 0) {
+                        return (
+                          <tr key={`${processKey}-ncr-${subType}`}>
+                            <td rowSpan={ncrRowCount} className={styles.rowLabel}>
+                              NCR
+                            </td>
+                            <td className={styles.subTypeLabel}>{VISUAL_INSPECTION_NCR_SUBTYPE_LABELS[subType]}</td>
+                            {Array.from({ length: daysInMonth }, (_, i) => {
+                              const day = i + 1;
+                              const dayData = dailyDataMap[day];
+                              const value = dayData?.ncr?.[subType] ?? null;
+                              return (
+                                <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                                  {value !== null && value !== undefined ? value : ''}
+                                </td>
+                              );
+                            })}
+                            <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                              {visualInspectionData.total.ncr?.[subType] ?? ''}
+                            </td>
+                          </tr>
+                        );
+                      }
+                      return (
+                        <tr key={`${processKey}-ncr-${subType}`}>
+                          <td className={styles.subTypeLabel}>{VISUAL_INSPECTION_NCR_SUBTYPE_LABELS[subType]}</td>
+                          {Array.from({ length: daysInMonth }, (_, i) => {
+                            const day = i + 1;
+                            const dayData = dailyDataMap[day];
+                            const value = dayData?.ncr?.[subType] ?? null;
+                            return (
+                              <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                                {value !== null && value !== undefined ? value : ''}
+                              </td>
+                            );
+                          })}
+                          <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                            {visualInspectionData.total.ncr?.[subType] ?? ''}
+                          </td>
+                        </tr>
+                      );
+                    })}
+
+                    {/* 수율 행 */}
+                    <tr>
+                      <td className={styles.rowLabel} colSpan={2} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        수율(%)
+                      </td>
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const day = i + 1;
+                        const dayData = dailyDataMap[day];
+                        const yieldValue = dayData?.yield ?? null;
+                        return (
+                          <td
+                            key={day}
+                            style={{
+                              color: '#10b981',
+                              fontWeight: 600,
+                              borderBottom: '2px solid #9ca3af',
+                            }}
+                          >
+                            {yieldValue !== null ? `${yieldValue.toFixed(1)}%` : ''}
+                          </td>
+                        );
+                      })}
+                      <td
+                        style={{
+                          color: '#10b981',
+                          fontWeight: 600,
+                          borderBottom: '2px solid #9ca3af',
+                        }}
+                      >
+                        {visualInspectionData.total.totalYield !== null ? `${visualInspectionData.total.totalYield}%` : ''}
                       </td>
                     </tr>
                   </React.Fragment>
