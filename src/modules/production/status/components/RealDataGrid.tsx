@@ -154,6 +154,7 @@ interface StackingDayData {
     thickness: number | null;
     alignment: number | null;
   } | null;
+  yield: number | null;
 }
 
 // Stacking 공정 데이터
@@ -180,6 +181,7 @@ interface WeldingDayData {
   output: number;
   ng: number | null;
   ncr: Record<string, number | null> | null;
+  yield: number | null;
 }
 
 // Welding 공정 데이터
@@ -201,6 +203,7 @@ interface SealingDayData {
   output: number;
   ng: number | null;
   ncr: Record<string, number | null> | null;
+  yield: number | null;
 }
 
 // Sealing 공정 데이터
@@ -750,12 +753,6 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                   dailyDataMap[item.day] = item;
                 });
 
-                // 수율 계산 함수
-                const calcYield = (output: number, ng: number | null) => {
-                  if (output === 0 || ng === null) return null;
-                  return ((output - ng) / output) * 100;
-                };
-
                 return (
                   <React.Fragment key={processKey}>
                     {/* 생산량 행 */}
@@ -852,7 +849,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       {Array.from({ length: daysInMonth }, (_, i) => {
                         const day = i + 1;
                         const dayData = dailyDataMap[day];
-                        const yieldValue = calcYield(dayData?.output || 0, dayData?.ng ?? null);
+                        const yieldValue = dayData?.yield ?? null;
                         return (
                           <td
                             key={day}
@@ -889,12 +886,6 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                 weldingData.data.forEach(item => {
                   dailyDataMap[item.day] = item;
                 });
-
-                // 수율 계산 함수
-                const calcYield = (output: number, ng: number | null) => {
-                  if (output === 0 || ng === null) return null;
-                  return ((output - ng) / output) * 100;
-                };
 
                 // NCR 서브타입 결정 (preWelding vs mainWelding)
                 const ncrSubtypes = isPreWeldingProcess(processKey) ? PRE_WELDING_NCR_SUBTYPES : MAIN_WELDING_NCR_SUBTYPES;
@@ -998,7 +989,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       {Array.from({ length: daysInMonth }, (_, i) => {
                         const day = i + 1;
                         const dayData = dailyDataMap[day];
-                        const yieldValue = calcYield(dayData?.output || 0, dayData?.ng ?? null);
+                        const yieldValue = dayData?.yield ?? null;
                         return (
                           <td
                             key={day}
@@ -1035,12 +1026,6 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                 sealingData.data.forEach(item => {
                   dailyDataMap[item.day] = item;
                 });
-
-                // 수율 계산 함수
-                const calcYield = (output: number, ng: number | null) => {
-                  if (output === 0 || ng === null) return null;
-                  return ((output - ng) / output) * 100;
-                };
 
                 const ncrRowCount = SEALING_NCR_SUBTYPES.length;
                 const totalRowSpan = 3 + ncrRowCount; // 생산량 + NG + NCR 서브타입들 + 수율
@@ -1141,7 +1126,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       {Array.from({ length: daysInMonth }, (_, i) => {
                         const day = i + 1;
                         const dayData = dailyDataMap[day];
-                        const yieldValue = calcYield(dayData?.output || 0, dayData?.ng ?? null);
+                        const yieldValue = dayData?.yield ?? null;
                         return (
                           <td
                             key={day}
