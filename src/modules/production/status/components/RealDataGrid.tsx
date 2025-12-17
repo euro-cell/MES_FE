@@ -409,9 +409,6 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
   // PreWelding 공정인지 확인
   const isPreWeldingProcess = (key: string): boolean => key === 'preWelding';
 
-  // MainWelding 공정인지 확인
-  const isMainWeldingProcess = (key: string): boolean => key === 'mainWelding';
-
   // Welding 공정인지 확인 (preWelding 또는 mainWelding)
   const isWeldingProcess = (key: string): boolean => key === 'preWelding' || key === 'mainWelding';
 
@@ -1453,7 +1450,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
 
             {/* 전체 합계 행 */}
             <tr className={styles.totalRow}>
-              <td colSpan={daysInMonth + (hasSubTypeProcess ? 4 : 3)}>합계</td>
+              <td colSpan={daysInMonth + (hasSubTypeProcess ? 3 : 2)}>합계</td>
               <td className={styles.yieldCell}>
                 {(() => {
                   // 전체 수율 계산 (전체 생산량 - 전체 NG) / 전체 생산량 * 100
@@ -1479,6 +1476,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       const sealing = processData as SealingProcessData;
                       return sum + sealing.total.totalOutput;
                     }
+                    if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
+                      const visualInspection = processData as VisualInspectionProcessData;
+                      return sum + visualInspection.total.totalOutput;
+                    }
                     return sum + ((processData as ProcessData).total.totalOutput || 0);
                   }, 0);
                   const totalNG = processesToRender.reduce((sum, [key, processData]) => {
@@ -1502,6 +1503,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                     if (isSealingProcess(key) && isSealingProcessData(processData)) {
                       const sealing = processData as SealingProcessData;
                       return sum + (sealing.total.totalNg || 0);
+                    }
+                    if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
+                      const visualInspection = processData as VisualInspectionProcessData;
+                      return sum + (visualInspection.total.totalNg || 0);
                     }
                     return sum + ((processData as ProcessData).total.totalNg || 0);
                   }, 0);
@@ -1534,6 +1539,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       const sealing = processData as SealingProcessData;
                       return sum + sealing.total.totalOutput;
                     }
+                    if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
+                      const visualInspection = processData as VisualInspectionProcessData;
+                      return sum + visualInspection.total.totalOutput;
+                    }
                     return sum + ((processData as ProcessData).total.totalOutput || 0);
                   }, 0);
                   const totalTarget = processesToRender.reduce((sum, [key, processData]) => {
@@ -1558,11 +1567,16 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       const sealing = processData as SealingProcessData;
                       return sum + (sealing.total.targetQuantity || 0);
                     }
+                    if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
+                      const visualInspection = processData as VisualInspectionProcessData;
+                      return sum + (visualInspection.total.targetQuantity || 0);
+                    }
                     return sum + ((processData as ProcessData).total.targetQuantity || 0);
                   }, 0);
                   return totalTarget > 0 ? `${((totalOutput / totalTarget) * 100).toFixed(1)}%` : '';
                 })()}
               </td>
+              <td></td>
             </tr>
           </tbody>
         </table>

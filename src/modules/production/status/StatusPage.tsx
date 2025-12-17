@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
-import ProductionStatusGrid from './components/ProductionStatusGrid';
 import RealDataGrid from './components/RealDataGrid';
 import { createCategoryMenus, createMonthMenus, createElectrodeTypeMenus } from './statusConfig';
 import { getMonthlyStatusData, getRealMonthlyData, getProductionStatusInfo } from './StatusService';
@@ -129,20 +128,15 @@ export default function StatusPage() {
         </div>
       )}
 
-      {/* 생산 현황 그리드 (전극, 조립 공정 제외) */}
+      {/* 안내 메시지 */}
       <div style={{ marginTop: '20px' }}>
-        {monthlyData && category !== 'Electrode' && category !== 'Assembly' ? (
-          <>
-            <h3 style={{ marginBottom: '10px', fontSize: '16px', fontWeight: 600 }}>목 데이터 (Mock Data)</h3>
-            <ProductionStatusGrid data={monthlyData} />
-          </>
-        ) : !monthlyData ? (
+        {!monthlyData && (
           <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
             {!category && <p>공정 카테고리를 선택하세요.</p>}
             {category && !monthParam && <p>월을 선택하세요.</p>}
             {category === 'Electrode' && monthParam && !electrodeType && <p>양극/음극을 선택하세요.</p>}
           </div>
-        ) : null}
+        )}
       </div>
 
       {/* 실제 데이터 표시 */}
