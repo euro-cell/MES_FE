@@ -667,7 +667,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                   <React.Fragment key={processKey}>
                     {/* 생산량 행 */}
                     <tr>
-                      <td rowSpan={8} className={styles.processHeader}>
+                      <td rowSpan={7} className={styles.processHeader}>
                         {processName}
                       </td>
                       <td className={styles.rowLabel} colSpan={2}>
@@ -679,10 +679,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                         return <td key={day}>{dayData?.output || ''}</td>;
                       })}
                       <td>{stackingData.total.totalOutput}</td>
-                      <td rowSpan={8} style={{ borderBottom: '2px solid #9ca3af' }}>
+                      <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
                         {stackingData.total.progress !== null ? `${stackingData.total.progress}%` : ''}
                       </td>
-                      <td rowSpan={8} style={{ borderBottom: '2px solid #9ca3af' }}>
+                      <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
                         {stackingData.total.targetQuantity !== null ? stackingData.total.targetQuantity.toLocaleString() : ''}
                       </td>
                     </tr>
@@ -905,7 +905,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
 
             {/* 전체 합계 행 */}
             <tr className={styles.totalRow}>
-              <td colSpan={daysInMonth + (hasSubTypeProcess ? 3 : 2)}>합계</td>
+              <td colSpan={daysInMonth + (hasSubTypeProcess ? 4 : 3)}>합계</td>
               <td className={styles.yieldCell}>
                 {(() => {
                   // 전체 수율 계산 (전체 생산량 - 전체 NG) / 전체 생산량 * 100
@@ -983,7 +983,6 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                   return totalTarget > 0 ? `${((totalOutput / totalTarget) * 100).toFixed(1)}%` : '';
                 })()}
               </td>
-              <td></td>
             </tr>
           </tbody>
         </table>
