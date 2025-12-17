@@ -333,8 +333,8 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
     preFormation: 'Pre Formation',
     degass: 'Degass',
     mainFormation: 'Main Formation',
-    aging: 'Aging',
-    grading: 'Grading',
+    aging: 'Aging\nOCV/IR_2',
+    grading: 'Grading\nOCV/IR_3',
     inspection: '외관검사',
   };
 

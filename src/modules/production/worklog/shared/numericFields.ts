@@ -491,6 +491,12 @@ export const GRADING_NUMERIC_FIELDS = [
   'ocv2DefectQuantity',
   'ocv2DiscardQuantity',
   'ocv2DefectRate',
+  // OCV3
+  'ocv3InputQuantity',
+  'ocv3GoodQuantity',
+  'ocv3DefectQuantity',
+  'ocv3DiscardQuantity',
+  'ocv3DefectRate',
   // IR
   'irInputQuantity',
   'irGoodQuantity',
