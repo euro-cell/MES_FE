@@ -335,9 +335,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
   const hasSubTypeProcess = processesToRender.some(([key]) => isVDProcess(key) || isFormingProcess(key) || isStackingProcess(key));
 
   return (
-    <>
-      <h3 style={{ marginBottom: '10px', fontSize: '16px', fontWeight: 600 }}>실제 데이터</h3>
-      <div className={styles.gridContainer}>
+    <div className={styles.gridContainer}>
         <table className={styles.statusTable}>
           <thead>
             <tr>
@@ -986,7 +984,6 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
             </tr>
           </tbody>
         </table>
-      </div>
-    </>
+    </div>
   );
 }
