@@ -107,6 +107,46 @@ const FORMING_SUBTYPE_LABELS: Record<string, string> = {
   topCutting: 'Top Cutting',
 };
 
+// Stacking NCR 서브타입 키 배열
+const STACKING_NCR_SUBTYPES = ['hiPot', 'weight', 'thickness', 'alignment'] as const;
+const STACKING_NCR_SUBTYPE_LABELS: Record<string, string> = {
+  hiPot: 'Hi pot',
+  weight: '무게',
+  thickness: '두께',
+  alignment: 'Alignment',
+};
+
+// Stacking 일별 데이터
+interface StackingDayData {
+  day: number;
+  output: number;
+  ng: number | null;
+  ncr: {
+    hiPot: number | null;
+    weight: number | null;
+    thickness: number | null;
+    alignment: number | null;
+  } | null;
+}
+
+// Stacking 공정 데이터
+interface StackingProcessData {
+  data: StackingDayData[];
+  total: {
+    totalOutput: number;
+    targetQuantity: number | null;
+    progress: number | null;
+    totalNg: number | null;
+    ncr: {
+      hiPot: number | null;
+      weight: number | null;
+      thickness: number | null;
+      alignment: number | null;
+    } | null;
+    totalYield: number | null;
+  };
+}
+
 interface RealDataResponse {
   category: string;
   type?: string;
@@ -122,7 +162,7 @@ interface RealDataResponse {
     // 조립 공정 (Assembly)
     vd?: VDProcessData;
     forming?: FormingProcessData;
-    stacking?: ProcessData;
+    stacking?: StackingProcessData;
     preWelding?: ProcessData;
     mainWelding?: ProcessData;
     sealing?: ProcessData;
@@ -134,7 +174,7 @@ interface RealDataResponse {
     aging?: ProcessData;
     grading?: ProcessData;
     inspection?: ProcessData;
-    [key: string]: ProcessData | VDProcessData | FormingProcessData | undefined;
+    [key: string]: ProcessData | VDProcessData | FormingProcessData | StackingProcessData | undefined;
   };
 }
 
@@ -258,18 +298,28 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
   // Forming 공정인지 확인
   const isFormingProcess = (key: string): boolean => key === 'forming';
 
+  // Stacking 공정인지 확인
+  const isStackingProcess = (key: string): boolean => key === 'stacking';
+
   // VD 데이터인지 타입 체크
   const isVDProcessData = (
-    processData: ProcessData | VDProcessData | FormingProcessData
+    processData: ProcessData | VDProcessData | FormingProcessData | StackingProcessData
   ): processData is VDProcessData => {
     return 'data' in processData && Array.isArray(processData.data) && processData.data.length > 0 && 'cathodeOutput' in processData.data[0];
   };
 
   // Forming 데이터인지 타입 체크
   const isFormingProcessData = (
-    processData: ProcessData | VDProcessData | FormingProcessData
+    processData: ProcessData | VDProcessData | FormingProcessData | StackingProcessData
   ): processData is FormingProcessData => {
     return 'cutting' in processData && 'forming' in processData && 'folding' in processData && 'topCutting' in processData;
+  };
+
+  // Stacking 데이터인지 타입 체크
+  const isStackingProcessData = (
+    processData: ProcessData | VDProcessData | FormingProcessData | StackingProcessData
+  ): processData is StackingProcessData => {
+    return 'total' in processData && 'ncr' in (processData as StackingProcessData).total;
   };
 
   // 렌더링할 공정 목록 (데이터가 있는 공정만, null이 아닌 것만)
@@ -282,7 +332,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
   }
 
   // 서브타입이 있는 공정이 있는지 확인 (헤더 colSpan 결정용)
-  const hasSubTypeProcess = processesToRender.some(([key]) => isVDProcess(key) || isFormingProcess(key));
+  const hasSubTypeProcess = processesToRender.some(([key]) => isVDProcess(key) || isFormingProcess(key) || isStackingProcess(key));
 
   return (
     <>
@@ -597,6 +647,146 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                 );
               }
 
+              // Stacking 공정은 특별하게 렌더링 (NCR에 Hi pot, 무게, 두께, Alignment 하위항목)
+              if (isStackingProcess(processKey) && isStackingProcessData(processData)) {
+                const stackingData = processData as StackingProcessData;
+
+                // 일별 데이터 매핑
+                const dailyDataMap: Record<number, StackingDayData> = {};
+                stackingData.data.forEach(item => {
+                  dailyDataMap[item.day] = item;
+                });
+
+                // 수율 계산 함수
+                const calcYield = (output: number, ng: number | null) => {
+                  if (output === 0 || ng === null) return null;
+                  return ((output - ng) / output) * 100;
+                };
+
+                return (
+                  <React.Fragment key={processKey}>
+                    {/* 생산량 행 */}
+                    <tr>
+                      <td rowSpan={8} className={styles.processHeader}>
+                        {processName}
+                      </td>
+                      <td className={styles.rowLabel} colSpan={2}>
+                        생산량({processUnit})
+                      </td>
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const day = i + 1;
+                        const dayData = dailyDataMap[day];
+                        return <td key={day}>{dayData?.output || ''}</td>;
+                      })}
+                      <td>{stackingData.total.totalOutput}</td>
+                      <td rowSpan={8} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        {stackingData.total.progress !== null ? `${stackingData.total.progress}%` : ''}
+                      </td>
+                      <td rowSpan={8} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        {stackingData.total.targetQuantity !== null ? stackingData.total.targetQuantity.toLocaleString() : ''}
+                      </td>
+                    </tr>
+
+                    {/* NG 행 (NCR과 분리) */}
+                    <tr>
+                      <td className={styles.rowLabel} colSpan={2}>
+                        NG
+                      </td>
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const day = i + 1;
+                        const dayData = dailyDataMap[day];
+                        return (
+                          <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                            {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
+                          </td>
+                        );
+                      })}
+                      <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                        {stackingData.total.totalNg !== null ? stackingData.total.totalNg : ''}
+                      </td>
+                    </tr>
+
+                    {/* NCR 서브타입 행들 (Hi pot, 무게, 두께, Alignment) */}
+                    {STACKING_NCR_SUBTYPES.map((subType, idx) => {
+                      if (idx === 0) {
+                        return (
+                          <tr key={`${processKey}-ncr-${subType}`}>
+                            <td rowSpan={4} className={styles.rowLabel}>
+                              NCR
+                            </td>
+                            <td className={styles.subTypeLabel}>{STACKING_NCR_SUBTYPE_LABELS[subType]}</td>
+                            {Array.from({ length: daysInMonth }, (_, i) => {
+                              const day = i + 1;
+                              const dayData = dailyDataMap[day];
+                              const value = dayData?.ncr?.[subType] ?? null;
+                              return (
+                                <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                                  {value !== null && value !== undefined ? value : ''}
+                                </td>
+                              );
+                            })}
+                            <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                              {stackingData.total.ncr?.[subType] ?? ''}
+                            </td>
+                          </tr>
+                        );
+                      }
+                      return (
+                        <tr key={`${processKey}-ncr-${subType}`}>
+                          <td className={styles.subTypeLabel}>{STACKING_NCR_SUBTYPE_LABELS[subType]}</td>
+                          {Array.from({ length: daysInMonth }, (_, i) => {
+                            const day = i + 1;
+                            const dayData = dailyDataMap[day];
+                            const value = dayData?.ncr?.[subType] ?? null;
+                            return (
+                              <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+                                {value !== null && value !== undefined ? value : ''}
+                              </td>
+                            );
+                          })}
+                          <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                            {stackingData.total.ncr?.[subType] ?? ''}
+                          </td>
+                        </tr>
+                      );
+                    })}
+
+                    {/* 수율 행 */}
+                    <tr>
+                      <td className={styles.rowLabel} colSpan={2} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        수율(%)
+                      </td>
+                      {Array.from({ length: daysInMonth }, (_, i) => {
+                        const day = i + 1;
+                        const dayData = dailyDataMap[day];
+                        const yieldValue = calcYield(dayData?.output || 0, dayData?.ng ?? null);
+                        return (
+                          <td
+                            key={day}
+                            style={{
+                              color: '#10b981',
+                              fontWeight: 600,
+                              borderBottom: '2px solid #9ca3af',
+                            }}
+                          >
+                            {yieldValue !== null ? `${yieldValue.toFixed(1)}%` : ''}
+                          </td>
+                        );
+                      })}
+                      <td
+                        style={{
+                          color: '#10b981',
+                          fontWeight: 600,
+                          borderBottom: '2px solid #9ca3af',
+                        }}
+                      >
+                        {stackingData.total.totalYield !== null ? `${stackingData.total.totalYield}%` : ''}
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                );
+              }
+
               // 일반 공정 렌더링
               const normalProcessData = processData as ProcessData;
               const dailyDataMap: Record<number, DayData> = {};
@@ -729,6 +919,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       const forming = processData as FormingProcessData;
                       return sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0);
                     }
+                    if (isStackingProcess(key) && isStackingProcessData(processData)) {
+                      const stacking = processData as StackingProcessData;
+                      return sum + stacking.total.totalOutput;
+                    }
                     return sum + ((processData as ProcessData).total.totalOutput || 0);
                   }, 0);
                   const totalNG = processesToRender.reduce((sum, [key, processData]) => {
@@ -740,6 +934,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                     if (isFormingProcess(key) && isFormingProcessData(processData)) {
                       const forming = processData as FormingProcessData;
                       return sum + FORMING_SUBTYPES.reduce((s, subType) => s + (forming[subType].total.totalNg || 0), 0);
+                    }
+                    if (isStackingProcess(key) && isStackingProcessData(processData)) {
+                      const stacking = processData as StackingProcessData;
+                      return sum + (stacking.total.totalNg || 0);
                     }
                     return sum + ((processData as ProcessData).total.totalNg || 0);
                   }, 0);
@@ -760,6 +958,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       const forming = processData as FormingProcessData;
                       return sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0);
                     }
+                    if (isStackingProcess(key) && isStackingProcessData(processData)) {
+                      const stacking = processData as StackingProcessData;
+                      return sum + stacking.total.totalOutput;
+                    }
                     return sum + ((processData as ProcessData).total.totalOutput || 0);
                   }, 0);
                   const totalTarget = processesToRender.reduce((sum, [key, processData]) => {
@@ -771,6 +973,10 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                     if (isFormingProcess(key) && isFormingProcessData(processData)) {
                       const forming = processData as FormingProcessData;
                       return sum + (forming.targetQuantity || 0);
+                    }
+                    if (isStackingProcess(key) && isStackingProcessData(processData)) {
+                      const stacking = processData as StackingProcessData;
+                      return sum + (stacking.total.targetQuantity || 0);
                     }
                     return sum + ((processData as ProcessData).total.targetQuantity || 0);
                   }, 0);
