@@ -145,7 +145,7 @@ export default function WeldingEdit() {
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
-          multilineFields={['remark']}
+          multilineFields={['remark', 'preWeldingDefectRemark', 'mainWeldingDefectRemark']}
           numericFields={WELDING_NUMERIC_FIELDS}
         />
       </div>

@@ -126,7 +126,7 @@ export default function WeldingRegister() {
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
-          multilineFields={['remark']}
+          multilineFields={['remark', 'preWeldingDefectRemark', 'mainWeldingDefectRemark']}
         />
       </div>
 

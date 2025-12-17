@@ -96,7 +96,7 @@ export default function WeldingView() {
           editableRanges={[]} // 읽기 전용
           cellValues={cellValues}
           namedRanges={namedRanges}
-          multilineFields={['remark']}
+          multilineFields={['remark', 'preWeldingDefectRemark', 'mainWeldingDefectRemark']}
         />
       </div>
     </div>

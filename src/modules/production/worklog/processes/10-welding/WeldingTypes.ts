@@ -23,32 +23,26 @@ export interface WeldingWorklog {
   preWeldingWorkQuantity?: number;
   preWeldingGoodQuantity?: number;
   preWeldingDefectQuantity?: number;
-  preWeldingDiscardQuantity?: number;
-  preWeldingDefectRate?: number;
+  preWeldingDefectRemark?: string;
 
   // B. 생산 정보 - 메인웰딩
   mainWeldingJrNumber?: string;
   mainWeldingWorkQuantity?: number;
   mainWeldingGoodQuantity?: number;
   mainWeldingDefectQuantity?: number;
-  mainWeldingDiscardQuantity?: number;
-  mainWeldingDefectRate?: number;
+  mainWeldingDefectRemark?: string;
 
   // B. 생산 정보 - 하이팟2
   hipot2JrNumber?: string;
   hipot2WorkQuantity?: number;
   hipot2GoodQuantity?: number;
   hipot2DefectQuantity?: number;
-  hipot2DiscardQuantity?: number;
-  hipot2DefectRate?: number;
 
   // B. 생산 정보 - 테이핑
   tapingJrNumber?: string;
   tapingWorkQuantity?: number;
   tapingGoodQuantity?: number;
   tapingDefectQuantity?: number;
-  tapingDiscardQuantity?: number;
-  tapingDefectRate?: number;
 
   // C. 공정 조건 - 프리웰딩
   preWeldingEnergy?: number;
@@ -91,32 +85,26 @@ export interface WeldingWorklogPayload {
   preWeldingWorkQuantity?: number;
   preWeldingGoodQuantity?: number;
   preWeldingDefectQuantity?: number;
-  preWeldingDiscardQuantity?: number;
-  preWeldingDefectRate?: number;
+  preWeldingDefectRemark?: string;
 
   // B. 생산 정보 - 메인웰딩
   mainWeldingJrNumber?: string;
   mainWeldingWorkQuantity?: number;
   mainWeldingGoodQuantity?: number;
   mainWeldingDefectQuantity?: number;
-  mainWeldingDiscardQuantity?: number;
-  mainWeldingDefectRate?: number;
+  mainWeldingDefectRemark?: string;
 
   // B. 생산 정보 - 하이팟2
   hipot2JrNumber?: string;
   hipot2WorkQuantity?: number;
   hipot2GoodQuantity?: number;
   hipot2DefectQuantity?: number;
-  hipot2DiscardQuantity?: number;
-  hipot2DefectRate?: number;
 
   // B. 생산 정보 - 테이핑
   tapingJrNumber?: string;
   tapingWorkQuantity?: number;
   tapingGoodQuantity?: number;
   tapingDefectQuantity?: number;
-  tapingDiscardQuantity?: number;
-  tapingDefectRate?: number;
 
   // C. 공정 조건 - 프리웰딩
   preWeldingEnergy?: number;
