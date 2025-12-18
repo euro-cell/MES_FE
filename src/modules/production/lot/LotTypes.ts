@@ -42,3 +42,10 @@ export interface MixingData {
   binder: MixingBinder;
   slurry: MixingSlurry;
 }
+
+// Sync 상태 응답
+export interface SyncStatus {
+  id: number;
+  process: string;
+  syncedAt: string;
+}

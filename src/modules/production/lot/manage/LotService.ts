@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { LotProject, MixingData } from '../LotTypes';
+import type { LotProject, MixingData, SyncStatus } from '../LotTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -28,6 +28,33 @@ export async function getProjectInfo(projectId: number): Promise<LotProject | nu
     return projects.find(p => p.id === projectId) || null;
   } catch (error) {
     console.error('프로젝트 정보 조회 실패:', error);
+    return null;
+  }
+}
+
+// Lot 데이터 동기화
+export async function syncLotData(projectId: number, process: string): Promise<void> {
+  try {
+    await axios.post(`${API_BASE}/production/${projectId}/lot/sync`, null, {
+      params: { process: process.toLowerCase() },
+      withCredentials: true,
+    });
+  } catch (error) {
+    console.error('Lot 데이터 동기화 실패:', error);
+    throw error;
+  }
+}
+
+// Sync 상태 조회
+export async function getSyncStatus(projectId: number, process: string): Promise<SyncStatus | null> {
+  try {
+    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/sync`, {
+      params: { process: process.toLowerCase() },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Sync 상태 조회 실패:', error);
     return null;
   }
 }

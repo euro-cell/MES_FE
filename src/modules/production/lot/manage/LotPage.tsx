@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../../components/SubmenuBar';
 import { createCategoryMenus, createProcessMenus, getProcessById } from '../lotConfig';
-import { getProjectInfo, getMixingData } from './LotService';
+import { getProjectInfo, getMixingData, syncLotData, getSyncStatus } from './LotService';
 import type { LotProject, MixingData } from '../LotTypes';
 import MixingGrid from './components/01-MixingGrid';
 import styles from '../../../../styles/production/lot/LotPage.module.css';
@@ -61,12 +61,18 @@ export default function LotPage() {
 
       setIsRefreshing(true);
       try {
+        // Sync 상태 조회
+        const syncStatus = await getSyncStatus(Number(projectId), process);
+        if (syncStatus?.syncedAt) {
+          setLastUpdated(new Date(syncStatus.syncedAt));
+        }
+
+        // 데이터 조회
         if (process === 'Mixing') {
           const data = await getMixingData(Number(projectId));
           setMixingData(data);
         }
         // TODO: 다른 공정 데이터 로드 추가
-        setLastUpdated(new Date());
       } catch (err) {
         console.error('데이터 조회 실패:', err);
       } finally {
@@ -83,14 +89,23 @@ export default function LotPage() {
 
     setIsRefreshing(true);
     try {
+      // 먼저 동기화 API 호출
+      await syncLotData(Number(projectId), process);
+
+      // 동기화 후 Sync 상태 조회
+      const syncStatus = await getSyncStatus(Number(projectId), process);
+      if (syncStatus?.syncedAt) {
+        setLastUpdated(new Date(syncStatus.syncedAt));
+      }
+
+      // 데이터 다시 조회
       if (process === 'Mixing') {
         const data = await getMixingData(Number(projectId));
         setMixingData(data);
       }
       // TODO: 다른 공정 데이터 로드 추가
-      setLastUpdated(new Date());
     } catch (err) {
-      console.error('데이터 조회 실패:', err);
+      console.error('데이터 갱신 실패:', err);
     } finally {
       setIsRefreshing(false);
     }
@@ -179,11 +194,9 @@ export default function LotPage() {
                 </>
               )}
             </button>
-            {lastUpdated && (
-              <span className={styles.lastUpdated}>
-                최근 업데이트 : {formatRelativeTime(lastUpdated)}
-              </span>
-            )}
+            <span className={styles.lastUpdated}>
+              최근 업데이트 : {lastUpdated ? formatRelativeTime(lastUpdated) : '없음'}
+            </span>
           </div>
         )}
       </div>
