@@ -61,3 +61,10 @@ export interface ProductionStatusInfo {
   startDate: string; // YYYY-MM-DD
   endDate: string; // YYYY-MM-DD
 }
+
+// 목표수량 수정 요청 타입
+export interface UpdateTargetRequest {
+  processKey: string;
+  targetQuantity: number;
+  subType?: string; // VD의 경우 'cathode' | 'anode'
+}

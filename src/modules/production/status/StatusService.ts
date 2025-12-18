@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getPlanProjects, getProductionPlan } from '../plan/PlanService';
 import { getProcessesByCategory } from './statusConfig';
-import type { StatusProject, MonthlyStatusData, ElectrodeType, ProductionStatusInfo } from './StatusTypes';
+import type { StatusProject, MonthlyStatusData, ElectrodeType, ProductionStatusInfo, UpdateTargetRequest } from './StatusTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -90,6 +90,21 @@ export async function getMonthlyStatusData(
 
   // 목 데이터 반환
   return getMockMonthlyData(projectId, category, electrodeType, year, month);
+}
+
+// 목표수량 수정 API
+export async function updateTargetQuantity(
+  productionId: number,
+  request: UpdateTargetRequest
+): Promise<void> {
+  try {
+    await axios.patch(`${API_BASE}/production/${productionId}/status/target`, request, {
+      withCredentials: true,
+    });
+  } catch (error) {
+    console.error('목표수량 수정 실패:', error);
+    throw error;
+  }
 }
 
 // 단일 공정의 목 데이터 생성 함수

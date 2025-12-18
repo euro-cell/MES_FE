@@ -45,6 +45,7 @@ interface ProcessData {
   data: DayData[];
   total: {
     totalOutput: number;
+    cumulativeOutput?: number | null;
     targetQuantity: number | null;
     progress: number | null;
     totalNg?: number | null;
@@ -67,6 +68,7 @@ interface VDDayData {
 interface VDTotal {
   cathode: {
     totalOutput: number;
+    cumulativeOutput?: number | null;
     targetQuantity: number | null;
     progress: number | null;
     totalNg: number | null;
@@ -74,6 +76,7 @@ interface VDTotal {
   };
   anode: {
     totalOutput: number;
+    cumulativeOutput?: number | null;
     targetQuantity: number | null;
     progress: number | null;
     totalNg: number | null;
@@ -95,6 +98,7 @@ interface FormingProcessData {
   topCutting: FormingSubTypeData;
   yield: FormingYieldData;
   targetQuantity: number | null;
+  cumulativeOutput?: number | null;
   progress: number | null;
 }
 
@@ -173,6 +177,7 @@ interface StackingProcessData {
   data: StackingDayData[];
   total: {
     totalOutput: number;
+    cumulativeOutput?: number | null;
     targetQuantity: number | null;
     progress: number | null;
     totalNg: number | null;
@@ -200,6 +205,7 @@ interface WeldingProcessData {
   data: WeldingDayData[];
   total: {
     totalOutput: number;
+    cumulativeOutput?: number | null;
     targetQuantity: number | null;
     progress: number | null;
     totalNg: number | null;
@@ -222,6 +228,7 @@ interface SealingProcessData {
   data: SealingDayData[];
   total: {
     totalOutput: number;
+    cumulativeOutput?: number | null;
     targetQuantity: number | null;
     progress: number | null;
     totalNg: number | null;
@@ -244,6 +251,7 @@ interface VisualInspectionProcessData {
   data: VisualInspectionDayData[];
   total: {
     totalOutput: number;
+    cumulativeOutput?: number | null;
     targetQuantity: number | null;
     progress: number | null;
     totalNg: number | null;
@@ -287,9 +295,10 @@ interface RealDataGridProps {
   data: RealDataResponse;
   year: number;
   month: number;
+  onTargetChange?: (processKey: string, subType?: string) => void;
 }
 
-export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
+export default function RealDataGrid({ data, year, month, onTargetChange }: RealDataGridProps) {
   const daysInMonth = getDaysInMonth(year, month);
 
   // 한국 공휴일 체크 함수
@@ -489,7 +498,8 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                   </th>
                 );
               })}
-              <th>합계</th>
+              <th style={{ borderLeft: '2px solid #374151' }}>합계</th>
+              <th>전체 합계</th>
               <th>진행률</th>
               <th>목표수량</th>
             </tr>
@@ -525,7 +535,12 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                         const dayData = vdDailyDataMap[day];
                         return <td key={day}>{dayData?.cathodeOutput || ''}</td>;
                       })}
-                      <td>{vdData.total.cathode.totalOutput}</td>
+                      <td style={{ borderLeft: '2px solid #374151' }}>{vdData.total.cathode.totalOutput}</td>
+                      {/* VD 전체 합계 - Cathode (3행 차지) */}
+                      <td rowSpan={3}>
+                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
+                        <div>{vdData.total.cathode.cumulativeOutput !== null && vdData.total.cathode.cumulativeOutput !== undefined ? vdData.total.cathode.cumulativeOutput.toLocaleString() : ''}</div>
+                      </td>
                       {/* VD 진행률 - Cathode (3행 차지) */}
                       <td rowSpan={3}>
                         <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
@@ -535,6 +550,23 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       <td rowSpan={3}>
                         <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
                         <div>{vdData.total.cathode.targetQuantity !== null ? vdData.total.cathode.targetQuantity.toLocaleString() : ''}</div>
+                        {onTargetChange && (
+                          <button
+                            onClick={() => onTargetChange('vd', 'cathode')}
+                            style={{
+                              marginTop: '4px',
+                              padding: '2px 8px',
+                              fontSize: '11px',
+                              border: '1px solid #3b82f6',
+                              borderRadius: '4px',
+                              background: '#3b82f6',
+                              color: 'white',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            변경
+                          </button>
+                        )}
                       </td>
                     </tr>
                     {/* 생산량 - Anode */}
@@ -545,7 +577,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                         const dayData = vdDailyDataMap[day];
                         return <td key={day}>{dayData?.anodeOutput || ''}</td>;
                       })}
-                      <td>{vdData.total.anode.totalOutput}</td>
+                      <td style={{ borderLeft: '2px solid #374151' }}>{vdData.total.anode.totalOutput}</td>
                     </tr>
 
                     {/* NG - Cathode */}
@@ -563,7 +595,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                           </td>
                         );
                       })}
-                      <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                         {vdData.total.cathode.totalNg !== null ? vdData.total.cathode.totalNg : ''}
                       </td>
                     </tr>
@@ -579,8 +611,13 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                           </td>
                         );
                       })}
-                      <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                         {vdData.total.anode.totalNg !== null ? vdData.total.anode.totalNg : ''}
+                      </td>
+                      {/* VD 전체 합계 - Anode (3행 차지) */}
+                      <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Anode</div>
+                        <div>{vdData.total.anode.cumulativeOutput !== null && vdData.total.anode.cumulativeOutput !== undefined ? vdData.total.anode.cumulativeOutput.toLocaleString() : ''}</div>
                       </td>
                       {/* VD 진행률 - Anode (3행 차지) */}
                       <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
@@ -591,6 +628,23 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
                         <div style={{ fontSize: '11px', color: '#6b7280' }}>Anode</div>
                         <div>{vdData.total.anode.targetQuantity !== null ? vdData.total.anode.targetQuantity.toLocaleString() : ''}</div>
+                        {onTargetChange && (
+                          <button
+                            onClick={() => onTargetChange('vd', 'anode')}
+                            style={{
+                              marginTop: '4px',
+                              padding: '2px 8px',
+                              fontSize: '11px',
+                              border: '1px solid #3b82f6',
+                              borderRadius: '4px',
+                              background: '#3b82f6',
+                              color: 'white',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            변경
+                          </button>
+                        )}
                       </td>
                     </tr>
 
@@ -611,7 +665,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                           </td>
                         );
                       })}
-                      <td style={{ color: '#10b981', fontWeight: 600 }}>
+                      <td style={{ borderLeft: '2px solid #374151', color: '#10b981', fontWeight: 600 }}>
                         {vdData.total.cathode.totalYield !== null ? `${vdData.total.cathode.totalYield}%` : ''}
                       </td>
                     </tr>
@@ -631,7 +685,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                           </td>
                         );
                       })}
-                      <td style={{ color: '#10b981', fontWeight: 600, borderBottom: '2px solid #9ca3af' }}>
+                      <td style={{ borderLeft: '2px solid #374151', color: '#10b981', fontWeight: 600, borderBottom: '2px solid #9ca3af' }}>
                         {vdData.total.anode.totalYield !== null ? `${vdData.total.anode.totalYield}%` : ''}
                       </td>
                     </tr>
@@ -675,12 +729,32 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                               const dayData = subDailyDataMap[day];
                               return <td key={day}>{dayData?.output || ''}</td>;
                             })}
-                            <td>{subData.total.totalOutput}</td>
+                            <td style={{ borderLeft: '2px solid #374151' }}>{subData.total.totalOutput}</td>
+                            <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
+                              {formingData.cumulativeOutput !== null && formingData.cumulativeOutput !== undefined ? formingData.cumulativeOutput.toLocaleString() : ''}
+                            </td>
                             <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
                               {formingData.progress !== null ? `${formingData.progress}%` : ''}
                             </td>
                             <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
-                              {formingData.targetQuantity !== null ? formingData.targetQuantity.toLocaleString() : ''}
+                              <div>{formingData.targetQuantity !== null ? formingData.targetQuantity.toLocaleString() : ''}</div>
+                              {onTargetChange && (
+                                <button
+                                  onClick={() => onTargetChange('forming')}
+                                  style={{
+                                    marginTop: '4px',
+                                    padding: '2px 8px',
+                                    fontSize: '11px',
+                                    border: '1px solid #3b82f6',
+                                    borderRadius: '4px',
+                                    background: '#3b82f6',
+                                    color: 'white',
+                                    cursor: 'pointer',
+                                  }}
+                                >
+                                  변경
+                                </button>
+                              )}
                             </td>
                           </tr>
                         );
@@ -693,7 +767,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                             const dayData = subDailyDataMap[day];
                             return <td key={day}>{dayData?.output || ''}</td>;
                           })}
-                          <td>{subData.total.totalOutput}</td>
+                          <td style={{ borderLeft: '2px solid #374151' }}>{subData.total.totalOutput}</td>
                         </tr>
                       );
                     })}
@@ -722,7 +796,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                                 </td>
                               );
                             })}
-                            <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                            <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                               {subData.total.totalNg !== null ? subData.total.totalNg : ''}
                             </td>
                           </tr>
@@ -740,7 +814,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                               </td>
                             );
                           })}
-                          <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                          <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                             {subData.total.totalNg !== null ? subData.total.totalNg : ''}
                           </td>
                         </tr>
@@ -772,6 +846,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       })}
                       <td
                         style={{
+                          borderLeft: '2px solid #374151',
                           color: '#10b981',
                           fontWeight: 600,
                           borderBottom: '2px solid #9ca3af',
@@ -809,12 +884,32 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                         const dayData = dailyDataMap[day];
                         return <td key={day}>{dayData?.output || ''}</td>;
                       })}
-                      <td>{stackingData.total.totalOutput}</td>
+                      <td style={{ borderLeft: '2px solid #374151' }}>{stackingData.total.totalOutput}</td>
+                      <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        {stackingData.total.cumulativeOutput !== null && stackingData.total.cumulativeOutput !== undefined ? stackingData.total.cumulativeOutput.toLocaleString() : ''}
+                      </td>
                       <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
                         {stackingData.total.progress !== null ? `${stackingData.total.progress}%` : ''}
                       </td>
                       <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {stackingData.total.targetQuantity !== null ? stackingData.total.targetQuantity.toLocaleString() : ''}
+                        <div>{stackingData.total.targetQuantity !== null ? stackingData.total.targetQuantity.toLocaleString() : ''}</div>
+                        {onTargetChange && (
+                          <button
+                            onClick={() => onTargetChange('stacking')}
+                            style={{
+                              marginTop: '4px',
+                              padding: '2px 8px',
+                              fontSize: '11px',
+                              border: '1px solid #3b82f6',
+                              borderRadius: '4px',
+                              background: '#3b82f6',
+                              color: 'white',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            변경
+                          </button>
+                        )}
                       </td>
                     </tr>
 
@@ -832,7 +927,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                           </td>
                         );
                       })}
-                      <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                         {stackingData.total.totalNg !== null ? stackingData.total.totalNg : ''}
                       </td>
                     </tr>
@@ -856,7 +951,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                                 </td>
                               );
                             })}
-                            <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                            <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                               {stackingData.total.ncr?.[subType] ?? ''}
                             </td>
                           </tr>
@@ -875,7 +970,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                               </td>
                             );
                           })}
-                          <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                          <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                             {stackingData.total.ncr?.[subType] ?? ''}
                           </td>
                         </tr>
@@ -906,6 +1001,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       })}
                       <td
                         style={{
+                          borderLeft: '2px solid #374151',
                           color: '#10b981',
                           fontWeight: 600,
                           borderBottom: '2px solid #9ca3af',
@@ -949,12 +1045,32 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                         const dayData = dailyDataMap[day];
                         return <td key={day}>{dayData?.output || ''}</td>;
                       })}
-                      <td>{weldingData.total.totalOutput}</td>
+                      <td style={{ borderLeft: '2px solid #374151' }}>{weldingData.total.totalOutput}</td>
+                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        {weldingData.total.cumulativeOutput !== null && weldingData.total.cumulativeOutput !== undefined ? weldingData.total.cumulativeOutput.toLocaleString() : ''}
+                      </td>
                       <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
                         {weldingData.total.progress !== null ? `${weldingData.total.progress}%` : ''}
                       </td>
                       <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {weldingData.total.targetQuantity !== null ? weldingData.total.targetQuantity.toLocaleString() : ''}
+                        <div>{weldingData.total.targetQuantity !== null ? weldingData.total.targetQuantity.toLocaleString() : ''}</div>
+                        {onTargetChange && (
+                          <button
+                            onClick={() => onTargetChange(processKey)}
+                            style={{
+                              marginTop: '4px',
+                              padding: '2px 8px',
+                              fontSize: '11px',
+                              border: '1px solid #3b82f6',
+                              borderRadius: '4px',
+                              background: '#3b82f6',
+                              color: 'white',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            변경
+                          </button>
+                        )}
                       </td>
                     </tr>
 
@@ -972,7 +1088,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                           </td>
                         );
                       })}
-                      <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                         {weldingData.total.totalNg !== null ? weldingData.total.totalNg : ''}
                       </td>
                     </tr>
@@ -996,7 +1112,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                                 </td>
                               );
                             })}
-                            <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                            <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                               {weldingData.total.ncr?.[subType] ?? ''}
                             </td>
                           </tr>
@@ -1015,7 +1131,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                               </td>
                             );
                           })}
-                          <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                          <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                             {weldingData.total.ncr?.[subType] ?? ''}
                           </td>
                         </tr>
@@ -1046,6 +1162,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       })}
                       <td
                         style={{
+                          borderLeft: '2px solid #374151',
                           color: '#10b981',
                           fontWeight: 600,
                           borderBottom: '2px solid #9ca3af',
@@ -1086,12 +1203,32 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                         const dayData = dailyDataMap[day];
                         return <td key={day}>{dayData?.output || ''}</td>;
                       })}
-                      <td>{sealingData.total.totalOutput}</td>
+                      <td style={{ borderLeft: '2px solid #374151' }}>{sealingData.total.totalOutput}</td>
+                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        {sealingData.total.cumulativeOutput !== null && sealingData.total.cumulativeOutput !== undefined ? sealingData.total.cumulativeOutput.toLocaleString() : ''}
+                      </td>
                       <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
                         {sealingData.total.progress !== null ? `${sealingData.total.progress}%` : ''}
                       </td>
                       <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {sealingData.total.targetQuantity !== null ? sealingData.total.targetQuantity.toLocaleString() : ''}
+                        <div>{sealingData.total.targetQuantity !== null ? sealingData.total.targetQuantity.toLocaleString() : ''}</div>
+                        {onTargetChange && (
+                          <button
+                            onClick={() => onTargetChange('sealing')}
+                            style={{
+                              marginTop: '4px',
+                              padding: '2px 8px',
+                              fontSize: '11px',
+                              border: '1px solid #3b82f6',
+                              borderRadius: '4px',
+                              background: '#3b82f6',
+                              color: 'white',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            변경
+                          </button>
+                        )}
                       </td>
                     </tr>
 
@@ -1109,7 +1246,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                           </td>
                         );
                       })}
-                      <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                         {sealingData.total.totalNg !== null ? sealingData.total.totalNg : ''}
                       </td>
                     </tr>
@@ -1133,7 +1270,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                                 </td>
                               );
                             })}
-                            <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                            <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                               {sealingData.total.ncr?.[subType] ?? ''}
                             </td>
                           </tr>
@@ -1152,7 +1289,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                               </td>
                             );
                           })}
-                          <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                          <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                             {sealingData.total.ncr?.[subType] ?? ''}
                           </td>
                         </tr>
@@ -1183,6 +1320,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       })}
                       <td
                         style={{
+                          borderLeft: '2px solid #374151',
                           color: '#10b981',
                           fontWeight: 600,
                           borderBottom: '2px solid #9ca3af',
@@ -1223,12 +1361,32 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                         const dayData = dailyDataMap[day];
                         return <td key={day}>{dayData?.output || ''}</td>;
                       })}
-                      <td>{visualInspectionData.total.totalOutput}</td>
+                      <td style={{ borderLeft: '2px solid #374151' }}>{visualInspectionData.total.totalOutput}</td>
+                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+                        {visualInspectionData.total.cumulativeOutput !== null && visualInspectionData.total.cumulativeOutput !== undefined ? visualInspectionData.total.cumulativeOutput.toLocaleString() : ''}
+                      </td>
                       <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
                         {visualInspectionData.total.progress !== null ? `${visualInspectionData.total.progress}%` : ''}
                       </td>
                       <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {visualInspectionData.total.targetQuantity !== null ? visualInspectionData.total.targetQuantity.toLocaleString() : ''}
+                        <div>{visualInspectionData.total.targetQuantity !== null ? visualInspectionData.total.targetQuantity.toLocaleString() : ''}</div>
+                        {onTargetChange && (
+                          <button
+                            onClick={() => onTargetChange('visualInspection')}
+                            style={{
+                              marginTop: '4px',
+                              padding: '2px 8px',
+                              fontSize: '11px',
+                              border: '1px solid #3b82f6',
+                              borderRadius: '4px',
+                              background: '#3b82f6',
+                              color: 'white',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            변경
+                          </button>
+                        )}
                       </td>
                     </tr>
 
@@ -1246,7 +1404,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                           </td>
                         );
                       })}
-                      <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                         {visualInspectionData.total.totalNg !== null ? visualInspectionData.total.totalNg : ''}
                       </td>
                     </tr>
@@ -1270,7 +1428,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                                 </td>
                               );
                             })}
-                            <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                            <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                               {visualInspectionData.total.ncr?.[subType] ?? ''}
                             </td>
                           </tr>
@@ -1289,7 +1447,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                               </td>
                             );
                           })}
-                          <td style={{ color: '#ef4444', fontWeight: 500 }}>
+                          <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                             {visualInspectionData.total.ncr?.[subType] ?? ''}
                           </td>
                         </tr>
@@ -1320,6 +1478,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       })}
                       <td
                         style={{
+                          borderLeft: '2px solid #374151',
                           color: '#10b981',
                           fontWeight: 600,
                           borderBottom: '2px solid #9ca3af',
@@ -1364,12 +1523,34 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                       const dayData = dailyDataMap[day];
                       return <td key={day}>{dayData?.output || ''}</td>;
                     })}
-                    <td>{normalProcessData.total.totalOutput}</td>
+                    <td style={{ borderLeft: '2px solid #374151' }}>{normalProcessData.total.totalOutput}</td>
+                    <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
+                      {normalProcessData.total.cumulativeOutput !== null && normalProcessData.total.cumulativeOutput !== undefined
+                        ? normalProcessData.total.cumulativeOutput.toLocaleString()
+                        : ''}
+                    </td>
                     <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
                       {normalProcessData.total.progress !== null ? `${normalProcessData.total.progress}%` : ''}
                     </td>
                     <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
-                      {normalProcessData.total.targetQuantity !== null ? normalProcessData.total.targetQuantity.toLocaleString() : ''}
+                      <div>{normalProcessData.total.targetQuantity !== null ? normalProcessData.total.targetQuantity.toLocaleString() : ''}</div>
+                      {onTargetChange && (
+                        <button
+                          onClick={() => onTargetChange(processKey)}
+                          style={{
+                            marginTop: '4px',
+                            padding: '2px 8px',
+                            fontSize: '11px',
+                            border: '1px solid #3b82f6',
+                            borderRadius: '4px',
+                            background: '#3b82f6',
+                            color: 'white',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          변경
+                        </button>
+                      )}
                     </td>
                   </tr>
 
@@ -1394,7 +1575,7 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                         </td>
                       );
                     })}
-                    <td style={shouldApplyGrayBg ? { background: '#d1d5db' } : { color: '#ef4444', fontWeight: 500 }}>
+                    <td style={shouldApplyGrayBg ? { background: '#d1d5db', borderLeft: '2px solid #374151' } : { color: '#ef4444', fontWeight: 500, borderLeft: '2px solid #374151' }}>
                       {totalNG}
                     </td>
                   </tr>
@@ -1433,11 +1614,12 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
                     <td
                       style={
                         shouldApplyGrayBg
-                          ? { background: '#d1d5db', borderBottom: '2px solid #9ca3af' }
+                          ? { background: '#d1d5db', borderBottom: '2px solid #9ca3af', borderLeft: '2px solid #374151' }
                           : {
                               color: '#10b981',
                               fontWeight: 600,
                               borderBottom: '2px solid #9ca3af',
+                              borderLeft: '2px solid #374151',
                             }
                       }
                     >
@@ -1450,7 +1632,8 @@ export default function RealDataGrid({ data, year, month }: RealDataGridProps) {
 
             {/* 전체 합계 행 */}
             <tr className={styles.totalRow}>
-              <td colSpan={daysInMonth + (hasSubTypeProcess ? 3 : 2)}>합계</td>
+              <td colSpan={daysInMonth + (hasSubTypeProcess ? 3 : 2)} style={{ borderRight: '2px solid #374151' }}>합계</td>
+              <td></td>
               <td className={styles.yieldCell}>
                 {(() => {
                   // 전체 수율 계산 (전체 생산량 - 전체 NG) / 전체 생산량 * 100
