@@ -1,304 +1,46 @@
-import React from 'react';
 import { getDaysInMonth } from '../utils/dateUtils';
 import styles from '../../../../styles/production/status/ProductionStatusGrid.module.css';
+import {
+  FORMING_SUBTYPES,
+  ElectrodeProcessGrid,
+  VDProcessGrid,
+  FormingProcessGrid,
+  StackingProcessGrid,
+  WeldingProcessGrid,
+  SealingProcessGrid,
+  VisualInspectionProcessGrid,
+  NormalProcessGrid,
+} from './grid';
+import type {
+  RealDataResponse,
+  ProcessData,
+  VDProcessData,
+  FormingProcessData,
+  StackingProcessData,
+  WeldingProcessData,
+  SealingProcessData,
+  VisualInspectionProcessData,
+  AllProcessData,
+} from './grid';
 
-// 일반 공정 일별 데이터
-interface DayData {
-  day: number;
-  output: number;
-  ng: number | null;
-  yield: number | null;
-}
-
-// Forming 서브타입 일별 데이터 (yield 없음)
-interface FormingSubTypeDayData {
-  day: number;
-  output: number;
-  ng: number | null;
-}
-
-// Forming 수율 일별 데이터
-interface FormingYieldDayData {
-  day: number;
-  yield: number | null;
-}
-
-// Forming 서브타입 데이터 (yield 없음)
-interface FormingSubTypeData {
-  data: FormingSubTypeDayData[];
-  total: {
-    totalOutput: number;
-    targetQuantity: number | null;
-    progress: number | null;
-    totalNg?: number | null;
-  };
-}
-
-// Forming 수율 데이터
-interface FormingYieldData {
-  data: FormingYieldDayData[];
-  total: number | null;
-}
-
-// 일반 공정 데이터
-interface ProcessData {
-  data: DayData[];
-  total: {
-    totalOutput: number;
-    cumulativeOutput?: number | null;
-    targetQuantity: number | null;
-    progress: number | null;
-    totalNg?: number | null;
-    totalYield?: number | null;
-  };
-}
-
-// VD 공정 일별 데이터 (Cathode/Anode 분리)
-interface VDDayData {
-  day: number;
-  cathodeOutput: number;
-  anodeOutput: number;
-  cathodeNg: number | null;
-  anodeNg: number | null;
-  cathodeYield: number | null;
-  anodeYield: number | null;
-}
-
-// VD 공정 total 구조
-interface VDTotal {
-  cathode: {
-    totalOutput: number;
-    cumulativeOutput?: number | null;
-    targetQuantity: number | null;
-    progress: number | null;
-    totalNg: number | null;
-    totalYield: number | null;
-  };
-  anode: {
-    totalOutput: number;
-    cumulativeOutput?: number | null;
-    targetQuantity: number | null;
-    progress: number | null;
-    totalNg: number | null;
-    totalYield: number | null;
-  };
-}
-
-// VD 공정 데이터
-interface VDProcessData {
-  data: VDDayData[];
-  total: VDTotal;
-}
-
-// Forming 공정 데이터 (4개 서브타입 + 별도 yield + 최상위 targetQuantity, progress)
-interface FormingProcessData {
-  cutting: FormingSubTypeData;
-  forming: FormingSubTypeData;
-  folding: FormingSubTypeData;
-  topCutting: FormingSubTypeData;
-  yield: FormingYieldData;
-  targetQuantity: number | null;
-  cumulativeOutput?: number | null;
-  progress: number | null;
-}
-
-// Forming 서브타입 키 배열
-const FORMING_SUBTYPES = ['cutting', 'forming', 'folding', 'topCutting'] as const;
-const FORMING_SUBTYPE_LABELS: Record<string, string> = {
-  cutting: 'Cutting',
-  forming: 'Forming',
-  folding: 'Folding',
-  topCutting: 'Top Cutting',
-};
-
-// Stacking NCR 서브타입 키 배열
-const STACKING_NCR_SUBTYPES = ['hiPot', 'weight', 'thickness', 'alignment'] as const;
-const STACKING_NCR_SUBTYPE_LABELS: Record<string, string> = {
-  hiPot: 'Hi pot',
-  weight: '무게',
-  thickness: '두께',
-  alignment: 'Alignment',
-};
-
-// PreWelding NCR 서브타입 키 배열
-const PRE_WELDING_NCR_SUBTYPES = ['burning', 'align', 'etc'] as const;
-const PRE_WELDING_NCR_SUBTYPE_LABELS: Record<string, string> = {
-  burning: '소착',
-  align: 'Align',
-  etc: '기타',
-};
-
-// MainWelding NCR 서브타입 키 배열
-const MAIN_WELDING_NCR_SUBTYPES = ['hiPot', 'burning', 'align', 'taping', 'etc'] as const;
-const MAIN_WELDING_NCR_SUBTYPE_LABELS: Record<string, string> = {
-  hiPot: 'Hi pot',
-  burning: '소착',
-  align: 'Align',
-  taping: 'Taping',
-  etc: '기타',
-};
-
-// Sealing NCR 서브타입 키 배열
-const SEALING_NCR_SUBTYPES = ['hiPot', 'appearance', 'thickness', 'etc'] as const;
-const SEALING_NCR_SUBTYPE_LABELS: Record<string, string> = {
-  hiPot: 'Hi pot',
-  appearance: '외관',
-  thickness: '두께',
-  etc: '기타',
-};
-
-// VisualInspection NCR 서브타입 키 배열
-const VISUAL_INSPECTION_NCR_SUBTYPES = ['gas', 'foreignMatter', 'scratch', 'dent', 'leakCorrosion', 'cellSize'] as const;
-const VISUAL_INSPECTION_NCR_SUBTYPE_LABELS: Record<string, string> = {
-  gas: '가스',
-  foreignMatter: '외관',
-  scratch: '긁힘',
-  dent: '찍힘',
-  leakCorrosion: '누액, 부식',
-  cellSize: '크기',
-};
-
-// Stacking 일별 데이터
-interface StackingDayData {
-  day: number;
-  output: number;
-  ng: number | null;
-  ncr: {
-    hiPot: number | null;
-    weight: number | null;
-    thickness: number | null;
-    alignment: number | null;
-  } | null;
-  yield: number | null;
-}
-
-// Stacking 공정 데이터
-interface StackingProcessData {
-  data: StackingDayData[];
-  total: {
-    totalOutput: number;
-    cumulativeOutput?: number | null;
-    targetQuantity: number | null;
-    progress: number | null;
-    totalNg: number | null;
-    ncr: {
-      hiPot: number | null;
-      weight: number | null;
-      thickness: number | null;
-      alignment: number | null;
-    } | null;
-    totalYield: number | null;
-  };
-}
-
-// Welding 공정 일별 데이터 (NCR 동적)
-interface WeldingDayData {
-  day: number;
-  output: number;
-  ng: number | null;
-  ncr: Record<string, number | null> | null;
-  yield: number | null;
-}
-
-// Welding 공정 데이터
-interface WeldingProcessData {
-  data: WeldingDayData[];
-  total: {
-    totalOutput: number;
-    cumulativeOutput?: number | null;
-    targetQuantity: number | null;
-    progress: number | null;
-    totalNg: number | null;
-    ncr: Record<string, number | null> | null;
-    totalYield: number | null;
-  };
-}
-
-// Sealing 공정 일별 데이터
-interface SealingDayData {
-  day: number;
-  output: number;
-  ng: number | null;
-  ncr: Record<string, number | null> | null;
-  yield: number | null;
-}
-
-// Sealing 공정 데이터
-interface SealingProcessData {
-  data: SealingDayData[];
-  total: {
-    totalOutput: number;
-    cumulativeOutput?: number | null;
-    targetQuantity: number | null;
-    progress: number | null;
-    totalNg: number | null;
-    ncr: Record<string, number | null> | null;
-    totalYield: number | null;
-  };
-}
-
-// VisualInspection 공정 일별 데이터
-interface VisualInspectionDayData {
-  day: number;
-  output: number;
-  ng: number | null;
-  ncr: Record<string, number | null> | null;
-  yield: number | null;
-}
-
-// VisualInspection 공정 데이터
-interface VisualInspectionProcessData {
-  data: VisualInspectionDayData[];
-  total: {
-    totalOutput: number;
-    cumulativeOutput?: number | null;
-    targetQuantity: number | null;
-    progress: number | null;
-    totalNg: number | null;
-    ncr: Record<string, number | null> | null;
-    totalYield: number | null;
-  };
-}
-
-interface RealDataResponse {
-  category: string;
-  type?: string;
-  month: string;
-  processes: {
-    // 전극 공정 (Electrode)
-    mixing?: ProcessData;
-    coatingSingle?: ProcessData;
-    coatingDouble?: ProcessData;
-    press?: ProcessData;
-    slitting?: ProcessData;
-    notching?: ProcessData;
-    // 조립 공정 (Assembly)
-    vd?: VDProcessData;
-    forming?: FormingProcessData;
-    stacking?: StackingProcessData;
-    preWelding?: WeldingProcessData;
-    mainWelding?: WeldingProcessData;
-    sealing?: SealingProcessData;
-    filling?: ProcessData;
-    // 화성 공정 (Formation)
-    preFormation?: ProcessData;
-    degass?: ProcessData;
-    mainFormation?: ProcessData;
-    aging?: ProcessData;
-    grading?: ProcessData;
-    visualInspection?: VisualInspectionProcessData;
-    [key: string]: ProcessData | VDProcessData | FormingProcessData | StackingProcessData | WeldingProcessData | SealingProcessData | VisualInspectionProcessData | undefined;
-  };
-}
-
-interface RealDataGridProps {
+interface DataGridProps {
   data: RealDataResponse;
   year: number;
   month: number;
   onTargetChange?: (processKey: string, subType?: string) => void;
 }
 
-export default function RealDataGrid({ data, year, month, onTargetChange }: RealDataGridProps) {
+// 전극 공정 키 목록
+const ELECTRODE_PROCESS_KEYS = [
+  'mixing',
+  'coatingSingle',
+  'coatingDouble',
+  'press',
+  'slitting',
+  'notching',
+];
+
+export default function DataGrid({ data, year, month, onTargetChange }: DataGridProps) {
   const daysInMonth = getDaysInMonth(year, month);
 
   // 한국 공휴일 체크 함수
@@ -314,7 +56,6 @@ export default function RealDataGrid({ data, year, month, onTargetChange }: Real
       '12-25': '크리스마스',
     };
 
-    // 설날, 추석 등 음력 공휴일은 매년 날짜가 변경되므로 연도별로 정의
     const lunarHolidays: Record<number, string[]> = {
       2024: ['2-9', '2-10', '2-11', '2-12', '9-16', '9-17', '9-18', '5-6', '5-15'],
       2025: ['1-28', '1-29', '1-30', '1-31', '10-5', '10-6', '10-7', '10-8', '5-5', '8-6'],
@@ -322,155 +63,95 @@ export default function RealDataGrid({ data, year, month, onTargetChange }: Real
     };
 
     const dateKey = `${month}-${day}`;
-
-    // 양력 공휴일 체크
     if (holidays[dateKey]) return true;
-
-    // 음력 공휴일 체크
     if (lunarHolidays[year]?.includes(dateKey)) return true;
-
     return false;
   };
 
-  // 날짜의 요일을 계산하는 함수
   const getDayOfWeek = (day: number): number => {
     const date = new Date(year, month - 1, day);
-    return date.getDay(); // 0 = 일요일, 6 = 토요일
+    return date.getDay();
   };
 
-  // 요일에 따른 CSS 클래스 반환
   const getDateClassName = (day: number): string => {
-    // 공휴일이면 빨간색
     if (isHoliday(year, month, day)) return styles.sunday;
-
     const dayOfWeek = getDayOfWeek(day);
-    if (dayOfWeek === 0) return styles.sunday; // 일요일
-    if (dayOfWeek === 6) return styles.saturday; // 토요일
+    if (dayOfWeek === 0) return styles.sunday;
+    if (dayOfWeek === 6) return styles.saturday;
     return '';
   };
 
-  // 모든 공정 데이터가 없으면 표시하지 않음
   if (!data.processes || Object.keys(data.processes).length === 0) {
     return null;
   }
 
-  // 공정 이름 매핑
-  const processNameMap: Record<string, string> = {
-    // 전극 공정 (Electrode)
-    mixing: 'Mixing',
-    coatingSingle: 'Coating Single',
-    coatingDouble: 'Coating Double',
-    press: 'Press',
-    slitting: 'Slitting',
-    notching: 'Notching',
-    // 조립 공정 (Assembly)
-    vd: 'V/D',
-    forming: 'Forming',
-    stacking: 'Stack',
-    preWelding: 'Pre\nWelding',
-    mainWelding: 'Main\nWelding',
-    sealing: 'Sealing',
-    filling: 'E/L Filling',
-    // 화성 공정 (Formation)
-    preFormation: 'Pre Formation',
-    degass: 'Degass',
-    mainFormation: 'Main Formation',
-    aging: 'Aging\nOCV/IR_2',
-    grading: 'Grading\nOCV/IR_3',
-    visualInspection: '외관검사',
-  };
-
-  // 공정별 생산량 단위 매핑
-  const processUnitMap: Record<string, string> = {
-    // 전극 공정 (Electrode)
-    mixing: 'KG',
-    coatingSingle: 'M',
-    coatingDouble: 'M',
-    press: 'M',
-    slitting: 'M',
-    notching: 'ea',
-    // 조립 공정 (Assembly)
-    vd: 'ea',
-    forming: 'ea',
-    stacking: 'ea',
-    preWelding: 'ea',
-    mainWelding: 'ea',
-    sealing: 'ea',
-    filling: 'ea',
-    // 화성 공정 (Formation)
-    preFormation: 'ea',
-    degass: 'ea',
-    mainFormation: 'ea',
-    aging: 'ea',
-    grading: 'ea',
-    visualInspection: 'ea',
-  };
-
-  // VD 공정인지 확인
+  // 타입 체크 함수들
   const isVDProcess = (key: string): boolean => key === 'vd';
-
-  // Forming 공정인지 확인
   const isFormingProcess = (key: string): boolean => key === 'forming';
-
-  // Stacking 공정인지 확인
   const isStackingProcess = (key: string): boolean => key === 'stacking';
-
-  // PreWelding 공정인지 확인
-  const isPreWeldingProcess = (key: string): boolean => key === 'preWelding';
-
-  // Welding 공정인지 확인 (preWelding 또는 mainWelding)
   const isWeldingProcess = (key: string): boolean => key === 'preWelding' || key === 'mainWelding';
-
-  // Sealing 공정인지 확인
   const isSealingProcess = (key: string): boolean => key === 'sealing';
-
-  // VisualInspection 공정인지 확인
   const isVisualInspectionProcess = (key: string): boolean => key === 'visualInspection';
 
-  type AllProcessData = ProcessData | VDProcessData | FormingProcessData | StackingProcessData | WeldingProcessData | SealingProcessData | VisualInspectionProcessData;
-
-  // VD 데이터인지 타입 체크
   const isVDProcessData = (processData: AllProcessData): processData is VDProcessData => {
-    return 'data' in processData && Array.isArray(processData.data) && processData.data.length > 0 && 'cathodeOutput' in processData.data[0];
+    return (
+      'data' in processData &&
+      Array.isArray(processData.data) &&
+      processData.data.length > 0 &&
+      'cathodeOutput' in processData.data[0]
+    );
   };
 
-  // Forming 데이터인지 타입 체크
   const isFormingProcessData = (processData: AllProcessData): processData is FormingProcessData => {
-    return 'cutting' in processData && 'forming' in processData && 'folding' in processData && 'topCutting' in processData;
+    return (
+      'cutting' in processData &&
+      'forming' in processData &&
+      'folding' in processData &&
+      'topCutting' in processData
+    );
   };
 
-  // Stacking 데이터인지 타입 체크
-  const isStackingProcessData = (processData: AllProcessData): processData is StackingProcessData => {
+  const isStackingProcessData = (
+    processData: AllProcessData
+  ): processData is StackingProcessData => {
     if (!('total' in processData)) return false;
     const total = (processData as StackingProcessData).total;
-    return total.ncr !== undefined && (total.ncr === null || ('hiPot' in total.ncr && 'weight' in total.ncr));
+    return (
+      total.ncr !== undefined && (total.ncr === null || ('hiPot' in total.ncr && 'weight' in total.ncr))
+    );
   };
 
-  // Welding 데이터인지 타입 체크
   const isWeldingProcessData = (processData: AllProcessData): processData is WeldingProcessData => {
     if (!('total' in processData)) return false;
     const total = (processData as WeldingProcessData).total;
-    // Welding은 ncr이 Record<string, number | null> 형태 (burning, align 등)
-    return total.ncr !== undefined && (total.ncr === null || ('burning' in total.ncr || 'align' in total.ncr));
+    return (
+      total.ncr !== undefined && (total.ncr === null || 'burning' in total.ncr || 'align' in total.ncr)
+    );
   };
 
-  // Sealing 데이터인지 타입 체크
   const isSealingProcessData = (processData: AllProcessData): processData is SealingProcessData => {
     if (!('total' in processData)) return false;
     const total = (processData as SealingProcessData).total;
-    // Sealing은 ncr이 Record<string, number | null> 형태 (hiPot, appearance, thickness, etc)
-    return total.ncr !== undefined && (total.ncr === null || ('appearance' in total.ncr || 'thickness' in total.ncr));
+    return (
+      total.ncr !== undefined &&
+      (total.ncr === null || 'appearance' in total.ncr || 'thickness' in total.ncr)
+    );
   };
 
-  // VisualInspection 데이터인지 타입 체크
-  const isVisualInspectionProcessData = (processData: AllProcessData): processData is VisualInspectionProcessData => {
+  const isVisualInspectionProcessData = (
+    processData: AllProcessData
+  ): processData is VisualInspectionProcessData => {
     if (!('total' in processData)) return false;
     const total = (processData as VisualInspectionProcessData).total;
-    // VisualInspection은 ncr이 Record<string, number | null> 형태 (gas, foreignMatter, scratch, dent, leakCorrosion, cellSize)
-    return total.ncr !== undefined && (total.ncr === null || ('gas' in total.ncr || 'foreignMatter' in total.ncr || 'cellSize' in total.ncr));
+    return (
+      total.ncr !== undefined &&
+      (total.ncr === null ||
+        'gas' in total.ncr ||
+        'foreignMatter' in total.ncr ||
+        'cellSize' in total.ncr)
+    );
   };
 
-  // 렌더링할 공정 목록 (데이터가 있는 공정만, null이 아닌 것만)
   const processesToRender = Object.entries(data.processes).filter(
     ([_, processData]) => processData !== undefined && processData !== null
   );
@@ -479,1290 +160,268 @@ export default function RealDataGrid({ data, year, month, onTargetChange }: Real
     return null;
   }
 
-  // 서브타입이 있는 공정이 있는지 확인 (헤더 colSpan 결정용)
-  const hasSubTypeProcess = processesToRender.some(([key]) => isVDProcess(key) || isFormingProcess(key) || isStackingProcess(key) || isWeldingProcess(key) || isSealingProcess(key) || isVisualInspectionProcess(key));
+  const hasSubTypeProcess = processesToRender.some(
+    ([key]) =>
+      isVDProcess(key) ||
+      isFormingProcess(key) ||
+      isStackingProcess(key) ||
+      isWeldingProcess(key) ||
+      isSealingProcess(key) ||
+      isVisualInspectionProcess(key)
+  );
+
+  // 공정별 렌더링 함수
+  const renderProcess = (processKey: string, processData: AllProcessData) => {
+    // VD 공정
+    if (isVDProcess(processKey) && isVDProcessData(processData)) {
+      return (
+        <VDProcessGrid
+          key={processKey}
+          processKey={processKey}
+          processData={processData}
+          daysInMonth={daysInMonth}
+          getDateClassName={getDateClassName}
+          onTargetChange={onTargetChange}
+        />
+      );
+    }
+
+    // Forming 공정
+    if (isFormingProcess(processKey) && isFormingProcessData(processData)) {
+      return (
+        <FormingProcessGrid
+          key={processKey}
+          processKey={processKey}
+          processData={processData}
+          daysInMonth={daysInMonth}
+          getDateClassName={getDateClassName}
+          onTargetChange={onTargetChange}
+        />
+      );
+    }
+
+    // Stacking 공정
+    if (isStackingProcess(processKey) && isStackingProcessData(processData)) {
+      return (
+        <StackingProcessGrid
+          key={processKey}
+          processKey={processKey}
+          processData={processData}
+          daysInMonth={daysInMonth}
+          getDateClassName={getDateClassName}
+          onTargetChange={onTargetChange}
+        />
+      );
+    }
+
+    // Welding 공정
+    if (isWeldingProcess(processKey) && isWeldingProcessData(processData)) {
+      return (
+        <WeldingProcessGrid
+          key={processKey}
+          processKey={processKey}
+          processData={processData}
+          daysInMonth={daysInMonth}
+          getDateClassName={getDateClassName}
+          onTargetChange={onTargetChange}
+        />
+      );
+    }
+
+    // Sealing 공정
+    if (isSealingProcess(processKey) && isSealingProcessData(processData)) {
+      return (
+        <SealingProcessGrid
+          key={processKey}
+          processKey={processKey}
+          processData={processData}
+          daysInMonth={daysInMonth}
+          getDateClassName={getDateClassName}
+          onTargetChange={onTargetChange}
+        />
+      );
+    }
+
+    // VisualInspection 공정
+    if (isVisualInspectionProcess(processKey) && isVisualInspectionProcessData(processData)) {
+      return (
+        <VisualInspectionProcessGrid
+          key={processKey}
+          processKey={processKey}
+          processData={processData}
+          daysInMonth={daysInMonth}
+          getDateClassName={getDateClassName}
+          onTargetChange={onTargetChange}
+        />
+      );
+    }
+
+    // 전극 공정
+    if (ELECTRODE_PROCESS_KEYS.includes(processKey)) {
+      return (
+        <ElectrodeProcessGrid
+          key={processKey}
+          processKey={processKey}
+          processData={processData as ProcessData}
+          daysInMonth={daysInMonth}
+          hasSubTypeProcess={hasSubTypeProcess}
+          getDateClassName={getDateClassName}
+          onTargetChange={onTargetChange}
+        />
+      );
+    }
+
+    // 일반 공정 (화성 공정 등)
+    return (
+      <NormalProcessGrid
+        key={processKey}
+        processKey={processKey}
+        processData={processData as ProcessData}
+        daysInMonth={daysInMonth}
+        hasSubTypeProcess={hasSubTypeProcess}
+        getDateClassName={getDateClassName}
+        onTargetChange={onTargetChange}
+      />
+    );
+  };
+
+  // 합계 계산 함수
+  const calculateTotalOutput = (): number => {
+    return processesToRender.reduce((sum, [key, processData]) => {
+      if (!processData) return sum;
+      if (isVDProcess(key) && isVDProcessData(processData)) {
+        const vd = processData as VDProcessData;
+        return sum + vd.total.cathode.totalOutput + vd.total.anode.totalOutput;
+      }
+      if (isFormingProcess(key) && isFormingProcessData(processData)) {
+        const forming = processData as FormingProcessData;
+        return (
+          sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0)
+        );
+      }
+      if (isStackingProcess(key) && isStackingProcessData(processData)) {
+        return sum + (processData as StackingProcessData).total.totalOutput;
+      }
+      if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
+        return sum + (processData as WeldingProcessData).total.totalOutput;
+      }
+      if (isSealingProcess(key) && isSealingProcessData(processData)) {
+        return sum + (processData as SealingProcessData).total.totalOutput;
+      }
+      if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
+        return sum + (processData as VisualInspectionProcessData).total.totalOutput;
+      }
+      return sum + ((processData as ProcessData).total.totalOutput || 0);
+    }, 0);
+  };
+
+  const calculateTotalNG = (): number => {
+    return processesToRender.reduce((sum, [key, processData]) => {
+      if (!processData) return sum;
+      if (isVDProcess(key) && isVDProcessData(processData)) {
+        const vd = processData as VDProcessData;
+        return sum + (vd.total.cathode.totalNg || 0) + (vd.total.anode.totalNg || 0);
+      }
+      if (isFormingProcess(key) && isFormingProcessData(processData)) {
+        const forming = processData as FormingProcessData;
+        return (
+          sum +
+          FORMING_SUBTYPES.reduce((s, subType) => s + (forming[subType].total.totalNg || 0), 0)
+        );
+      }
+      if (isStackingProcess(key) && isStackingProcessData(processData)) {
+        return sum + ((processData as StackingProcessData).total.totalNg || 0);
+      }
+      if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
+        return sum + ((processData as WeldingProcessData).total.totalNg || 0);
+      }
+      if (isSealingProcess(key) && isSealingProcessData(processData)) {
+        return sum + ((processData as SealingProcessData).total.totalNg || 0);
+      }
+      if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
+        return sum + ((processData as VisualInspectionProcessData).total.totalNg || 0);
+      }
+      return sum + ((processData as ProcessData).total.totalNg || 0);
+    }, 0);
+  };
+
+  const calculateTotalTarget = (): number => {
+    return processesToRender.reduce((sum, [key, processData]) => {
+      if (!processData) return sum;
+      if (isVDProcess(key) && isVDProcessData(processData)) {
+        const vd = processData as VDProcessData;
+        return (
+          sum + (vd.total.cathode.targetQuantity || 0) + (vd.total.anode.targetQuantity || 0)
+        );
+      }
+      if (isFormingProcess(key) && isFormingProcessData(processData)) {
+        return sum + ((processData as FormingProcessData).targetQuantity || 0);
+      }
+      if (isStackingProcess(key) && isStackingProcessData(processData)) {
+        return sum + ((processData as StackingProcessData).total.targetQuantity || 0);
+      }
+      if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
+        return sum + ((processData as WeldingProcessData).total.targetQuantity || 0);
+      }
+      if (isSealingProcess(key) && isSealingProcessData(processData)) {
+        return sum + ((processData as SealingProcessData).total.targetQuantity || 0);
+      }
+      if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
+        return sum + ((processData as VisualInspectionProcessData).total.targetQuantity || 0);
+      }
+      return sum + ((processData as ProcessData).total.targetQuantity || 0);
+    }, 0);
+  };
+
+  const totalOutput = calculateTotalOutput();
+  const totalNG = calculateTotalNG();
+  const totalTarget = calculateTotalTarget();
+  const overallYield = totalOutput > 0 ? ((totalOutput - totalNG) / totalOutput) * 100 : 0;
+  const overallProgress = totalTarget > 0 ? (totalOutput / totalTarget) * 100 : 0;
 
   return (
     <div className={styles.gridContainer}>
-        <table className={styles.statusTable}>
-          <thead>
-            <tr>
-              <th className={styles.processColumn} colSpan={hasSubTypeProcess ? 3 : 2}>
-                제조일자
-              </th>
-              {Array.from({ length: daysInMonth }, (_, i) => {
-                const day = i + 1;
-                return (
-                  <th key={day} className={getDateClassName(day)}>
-                    {day}
-                  </th>
-                );
-              })}
-              <th style={{ borderLeft: '2px solid #374151' }}>합계</th>
-              <th>전체 합계</th>
-              <th>진행률</th>
-              <th>목표수량</th>
-            </tr>
-          </thead>
-          <tbody>
-            {processesToRender.map(([processKey, processData]) => {
-              if (!processData) return null;
-
-              const processName = processNameMap[processKey] || processKey;
-              const processUnit = processUnitMap[processKey] || 'ea';
-
-              // VD 공정은 특별하게 렌더링 (Cathode, Anode 분리 - 6행)
-              if (isVDProcess(processKey) && isVDProcessData(processData)) {
-                const vdData = processData as VDProcessData;
-                const vdDailyDataMap: Record<number, VDDayData> = {};
-                vdData.data.forEach(item => {
-                  vdDailyDataMap[item.day] = item;
-                });
-
-                return (
-                  <React.Fragment key={processKey}>
-                    {/* 생산량 - Cathode */}
-                    <tr>
-                      <td rowSpan={6} className={styles.processHeader}>
-                        {processName}
-                      </td>
-                      <td rowSpan={2} className={styles.rowLabel}>
-                        생산량({processUnit})
-                      </td>
-                      <td className={styles.subTypeLabel}>Cathode</td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = vdDailyDataMap[day];
-                        return <td key={day}>{dayData?.cathodeOutput || ''}</td>;
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151' }}>{vdData.total.cathode.totalOutput}</td>
-                      {/* VD 전체 합계 - Cathode (3행 차지) */}
-                      <td rowSpan={3}>
-                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
-                        <div>{vdData.total.cathode.cumulativeOutput !== null && vdData.total.cathode.cumulativeOutput !== undefined ? vdData.total.cathode.cumulativeOutput.toLocaleString() : ''}</div>
-                      </td>
-                      {/* VD 진행률 - Cathode (3행 차지) */}
-                      <td rowSpan={3}>
-                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
-                        <div>{vdData.total.cathode.progress !== null ? `${vdData.total.cathode.progress}%` : ''}</div>
-                      </td>
-                      {/* VD 목표수량 - Cathode (3행 차지) */}
-                      <td rowSpan={3}>
-                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
-                        <div>{vdData.total.cathode.targetQuantity !== null ? vdData.total.cathode.targetQuantity.toLocaleString() : ''}</div>
-                        {onTargetChange && (
-                          <button
-                            onClick={() => onTargetChange('vd', 'cathode')}
-                            style={{
-                              marginTop: '4px',
-                              padding: '2px 8px',
-                              fontSize: '11px',
-                              border: '1px solid #3b82f6',
-                              borderRadius: '4px',
-                              background: '#3b82f6',
-                              color: 'white',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            변경
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                    {/* 생산량 - Anode */}
-                    <tr>
-                      <td className={styles.subTypeLabel}>Anode</td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = vdDailyDataMap[day];
-                        return <td key={day}>{dayData?.anodeOutput || ''}</td>;
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151' }}>{vdData.total.anode.totalOutput}</td>
-                    </tr>
-
-                    {/* NG - Cathode */}
-                    <tr>
-                      <td rowSpan={2} className={styles.rowLabel}>
-                        NG
-                      </td>
-                      <td className={styles.subTypeLabel}>Cathode</td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = vdDailyDataMap[day];
-                        return (
-                          <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                            {dayData?.cathodeNg !== null && dayData?.cathodeNg !== undefined ? dayData.cathodeNg : ''}
-                          </td>
-                        );
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                        {vdData.total.cathode.totalNg !== null ? vdData.total.cathode.totalNg : ''}
-                      </td>
-                    </tr>
-                    {/* NG - Anode */}
-                    <tr>
-                      <td className={styles.subTypeLabel}>Anode</td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = vdDailyDataMap[day];
-                        return (
-                          <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                            {dayData?.anodeNg !== null && dayData?.anodeNg !== undefined ? dayData.anodeNg : ''}
-                          </td>
-                        );
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                        {vdData.total.anode.totalNg !== null ? vdData.total.anode.totalNg : ''}
-                      </td>
-                      {/* VD 전체 합계 - Anode (3행 차지) */}
-                      <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Anode</div>
-                        <div>{vdData.total.anode.cumulativeOutput !== null && vdData.total.anode.cumulativeOutput !== undefined ? vdData.total.anode.cumulativeOutput.toLocaleString() : ''}</div>
-                      </td>
-                      {/* VD 진행률 - Anode (3행 차지) */}
-                      <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Anode</div>
-                        <div>{vdData.total.anode.progress !== null ? `${vdData.total.anode.progress}%` : ''}</div>
-                      </td>
-                      {/* VD 목표수량 - Anode (3행 차지) */}
-                      <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        <div style={{ fontSize: '11px', color: '#6b7280' }}>Anode</div>
-                        <div>{vdData.total.anode.targetQuantity !== null ? vdData.total.anode.targetQuantity.toLocaleString() : ''}</div>
-                        {onTargetChange && (
-                          <button
-                            onClick={() => onTargetChange('vd', 'anode')}
-                            style={{
-                              marginTop: '4px',
-                              padding: '2px 8px',
-                              fontSize: '11px',
-                              border: '1px solid #3b82f6',
-                              borderRadius: '4px',
-                              background: '#3b82f6',
-                              color: 'white',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            변경
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-
-                    {/* 수율 - Cathode */}
-                    <tr>
-                      <td rowSpan={2} className={styles.rowLabel} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        수율(%)
-                      </td>
-                      <td className={styles.subTypeLabel}>Cathode</td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = vdDailyDataMap[day];
-                        return (
-                          <td key={day} style={{ color: '#10b981', fontWeight: 600 }}>
-                            {dayData?.cathodeYield !== null && dayData?.cathodeYield !== undefined
-                              ? `${dayData.cathodeYield.toFixed(1)}%`
-                              : ''}
-                          </td>
-                        );
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151', color: '#10b981', fontWeight: 600 }}>
-                        {vdData.total.cathode.totalYield !== null ? `${vdData.total.cathode.totalYield}%` : ''}
-                      </td>
-                    </tr>
-                    {/* 수율 - Anode */}
-                    <tr>
-                      <td className={styles.subTypeLabel} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        Anode
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = vdDailyDataMap[day];
-                        return (
-                          <td key={day} style={{ color: '#10b981', fontWeight: 600, borderBottom: '2px solid #9ca3af' }}>
-                            {dayData?.anodeYield !== null && dayData?.anodeYield !== undefined
-                              ? `${dayData.anodeYield.toFixed(1)}%`
-                              : ''}
-                          </td>
-                        );
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151', color: '#10b981', fontWeight: 600, borderBottom: '2px solid #9ca3af' }}>
-                        {vdData.total.anode.totalYield !== null ? `${vdData.total.anode.totalYield}%` : ''}
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                );
-              }
-
-              // Forming 공정은 특별하게 렌더링 (Cutting, Forming, Folding, Top Cutting 분리 - 9행: 생산량4 + NG4 + 수율1)
-              if (isFormingProcess(processKey) && isFormingProcessData(processData)) {
-                const formingData = processData as FormingProcessData;
-
-                // yield 데이터 매핑
-                const yieldDataMap: Record<number, number | null> = {};
-                formingData.yield.data.forEach(item => {
-                  yieldDataMap[item.day] = item.yield;
-                });
-
-                return (
-                  <React.Fragment key={processKey}>
-                    {/* 생산량 - 4개 서브타입 */}
-                    {FORMING_SUBTYPES.map((subType, idx) => {
-                      const subData = formingData[subType];
-                      const subDailyDataMap: Record<number, FormingSubTypeDayData> = {};
-                      subData.data.forEach(item => {
-                        subDailyDataMap[item.day] = item;
-                      });
-
-                      if (idx === 0) {
-                        // 첫 번째 서브타입 (Cutting) - 진행률과 목표수량은 1칸씩
-                        return (
-                          <tr key={`${processKey}-output-${subType}`}>
-                            <td rowSpan={9} className={styles.processHeader}>
-                              {processName}
-                            </td>
-                            <td rowSpan={4} className={styles.rowLabel}>
-                              생산량({processUnit})
-                            </td>
-                            <td className={styles.subTypeLabel}>{FORMING_SUBTYPE_LABELS[subType]}</td>
-                            {Array.from({ length: daysInMonth }, (_, i) => {
-                              const day = i + 1;
-                              const dayData = subDailyDataMap[day];
-                              return <td key={day}>{dayData?.output || ''}</td>;
-                            })}
-                            <td style={{ borderLeft: '2px solid #374151' }}>{subData.total.totalOutput}</td>
-                            <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
-                              {formingData.cumulativeOutput !== null && formingData.cumulativeOutput !== undefined ? formingData.cumulativeOutput.toLocaleString() : ''}
-                            </td>
-                            <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
-                              {formingData.progress !== null ? `${formingData.progress}%` : ''}
-                            </td>
-                            <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
-                              <div>{formingData.targetQuantity !== null ? formingData.targetQuantity.toLocaleString() : ''}</div>
-                              {onTargetChange && (
-                                <button
-                                  onClick={() => onTargetChange('forming')}
-                                  style={{
-                                    marginTop: '4px',
-                                    padding: '2px 8px',
-                                    fontSize: '11px',
-                                    border: '1px solid #3b82f6',
-                                    borderRadius: '4px',
-                                    background: '#3b82f6',
-                                    color: 'white',
-                                    cursor: 'pointer',
-                                  }}
-                                >
-                                  변경
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      }
-                      return (
-                        <tr key={`${processKey}-output-${subType}`}>
-                          <td className={styles.subTypeLabel}>{FORMING_SUBTYPE_LABELS[subType]}</td>
-                          {Array.from({ length: daysInMonth }, (_, i) => {
-                            const day = i + 1;
-                            const dayData = subDailyDataMap[day];
-                            return <td key={day}>{dayData?.output || ''}</td>;
-                          })}
-                          <td style={{ borderLeft: '2px solid #374151' }}>{subData.total.totalOutput}</td>
-                        </tr>
-                      );
-                    })}
-
-                    {/* NG - 4개 서브타입 */}
-                    {FORMING_SUBTYPES.map((subType, idx) => {
-                      const subData = formingData[subType];
-                      const subDailyDataMap: Record<number, FormingSubTypeDayData> = {};
-                      subData.data.forEach(item => {
-                        subDailyDataMap[item.day] = item;
-                      });
-
-                      if (idx === 0) {
-                        return (
-                          <tr key={`${processKey}-ng-${subType}`}>
-                            <td rowSpan={4} className={styles.rowLabel}>
-                              NG
-                            </td>
-                            <td className={styles.subTypeLabel}>{FORMING_SUBTYPE_LABELS[subType]}</td>
-                            {Array.from({ length: daysInMonth }, (_, i) => {
-                              const day = i + 1;
-                              const dayData = subDailyDataMap[day];
-                              return (
-                                <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                                  {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
-                                </td>
-                              );
-                            })}
-                            <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                              {subData.total.totalNg !== null ? subData.total.totalNg : ''}
-                            </td>
-                          </tr>
-                        );
-                      }
-                      return (
-                        <tr key={`${processKey}-ng-${subType}`}>
-                          <td className={styles.subTypeLabel}>{FORMING_SUBTYPE_LABELS[subType]}</td>
-                          {Array.from({ length: daysInMonth }, (_, i) => {
-                            const day = i + 1;
-                            const dayData = subDailyDataMap[day];
-                            return (
-                              <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                                {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
-                              </td>
-                            );
-                          })}
-                          <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                            {subData.total.totalNg !== null ? subData.total.totalNg : ''}
-                          </td>
-                        </tr>
-                      );
-                    })}
-
-                    {/* 수율 - 단일 행 (별도 yield 데이터 사용) */}
-                    <tr key={`${processKey}-yield`}>
-                      <td className={styles.rowLabel} colSpan={2} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        수율(%)
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const yieldValue = yieldDataMap[day];
-                        return (
-                          <td
-                            key={day}
-                            style={{
-                              color: '#10b981',
-                              fontWeight: 600,
-                              borderBottom: '2px solid #9ca3af',
-                            }}
-                          >
-                            {yieldValue !== null && yieldValue !== undefined
-                              ? `${yieldValue.toFixed(1)}%`
-                              : ''}
-                          </td>
-                        );
-                      })}
-                      <td
-                        style={{
-                          borderLeft: '2px solid #374151',
-                          color: '#10b981',
-                          fontWeight: 600,
-                          borderBottom: '2px solid #9ca3af',
-                        }}
-                      >
-                        {formingData.yield.total !== null ? `${formingData.yield.total}%` : ''}
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                );
-              }
-
-              // Stacking 공정은 특별하게 렌더링 (NCR에 Hi pot, 무게, 두께, Alignment 하위항목)
-              if (isStackingProcess(processKey) && isStackingProcessData(processData)) {
-                const stackingData = processData as StackingProcessData;
-
-                // 일별 데이터 매핑
-                const dailyDataMap: Record<number, StackingDayData> = {};
-                stackingData.data.forEach(item => {
-                  dailyDataMap[item.day] = item;
-                });
-
-                return (
-                  <React.Fragment key={processKey}>
-                    {/* 생산량 행 */}
-                    <tr>
-                      <td rowSpan={7} className={styles.processHeader}>
-                        {processName}
-                      </td>
-                      <td className={styles.rowLabel} colSpan={2}>
-                        생산량({processUnit})
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        return <td key={day}>{dayData?.output || ''}</td>;
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151' }}>{stackingData.total.totalOutput}</td>
-                      <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {stackingData.total.cumulativeOutput !== null && stackingData.total.cumulativeOutput !== undefined ? stackingData.total.cumulativeOutput.toLocaleString() : ''}
-                      </td>
-                      <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {stackingData.total.progress !== null ? `${stackingData.total.progress}%` : ''}
-                      </td>
-                      <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        <div>{stackingData.total.targetQuantity !== null ? stackingData.total.targetQuantity.toLocaleString() : ''}</div>
-                        {onTargetChange && (
-                          <button
-                            onClick={() => onTargetChange('stacking')}
-                            style={{
-                              marginTop: '4px',
-                              padding: '2px 8px',
-                              fontSize: '11px',
-                              border: '1px solid #3b82f6',
-                              borderRadius: '4px',
-                              background: '#3b82f6',
-                              color: 'white',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            변경
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-
-                    {/* NG 행 (NCR과 분리) */}
-                    <tr>
-                      <td className={styles.rowLabel} colSpan={2}>
-                        NG
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        return (
-                          <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                            {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
-                          </td>
-                        );
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                        {stackingData.total.totalNg !== null ? stackingData.total.totalNg : ''}
-                      </td>
-                    </tr>
-
-                    {/* NCR 서브타입 행들 (Hi pot, 무게, 두께, Alignment) */}
-                    {STACKING_NCR_SUBTYPES.map((subType, idx) => {
-                      if (idx === 0) {
-                        return (
-                          <tr key={`${processKey}-ncr-${subType}`}>
-                            <td rowSpan={4} className={styles.rowLabel}>
-                              NCR
-                            </td>
-                            <td className={styles.subTypeLabel}>{STACKING_NCR_SUBTYPE_LABELS[subType]}</td>
-                            {Array.from({ length: daysInMonth }, (_, i) => {
-                              const day = i + 1;
-                              const dayData = dailyDataMap[day];
-                              const value = dayData?.ncr?.[subType] ?? null;
-                              return (
-                                <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                                  {value !== null && value !== undefined ? value : ''}
-                                </td>
-                              );
-                            })}
-                            <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                              {stackingData.total.ncr?.[subType] ?? ''}
-                            </td>
-                          </tr>
-                        );
-                      }
-                      return (
-                        <tr key={`${processKey}-ncr-${subType}`}>
-                          <td className={styles.subTypeLabel}>{STACKING_NCR_SUBTYPE_LABELS[subType]}</td>
-                          {Array.from({ length: daysInMonth }, (_, i) => {
-                            const day = i + 1;
-                            const dayData = dailyDataMap[day];
-                            const value = dayData?.ncr?.[subType] ?? null;
-                            return (
-                              <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                                {value !== null && value !== undefined ? value : ''}
-                              </td>
-                            );
-                          })}
-                          <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                            {stackingData.total.ncr?.[subType] ?? ''}
-                          </td>
-                        </tr>
-                      );
-                    })}
-
-                    {/* 수율 행 */}
-                    <tr>
-                      <td className={styles.rowLabel} colSpan={2} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        수율(%)
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        const yieldValue = dayData?.yield ?? null;
-                        return (
-                          <td
-                            key={day}
-                            style={{
-                              color: '#10b981',
-                              fontWeight: 600,
-                              borderBottom: '2px solid #9ca3af',
-                            }}
-                          >
-                            {yieldValue !== null ? `${yieldValue.toFixed(1)}%` : ''}
-                          </td>
-                        );
-                      })}
-                      <td
-                        style={{
-                          borderLeft: '2px solid #374151',
-                          color: '#10b981',
-                          fontWeight: 600,
-                          borderBottom: '2px solid #9ca3af',
-                        }}
-                      >
-                        {stackingData.total.totalYield !== null ? `${stackingData.total.totalYield}%` : ''}
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                );
-              }
-
-              // Welding 공정은 특별하게 렌더링 (NCR에 burning, align 등 하위항목)
-              if (isWeldingProcess(processKey) && isWeldingProcessData(processData)) {
-                const weldingData = processData as WeldingProcessData;
-
-                // 일별 데이터 매핑
-                const dailyDataMap: Record<number, WeldingDayData> = {};
-                weldingData.data.forEach(item => {
-                  dailyDataMap[item.day] = item;
-                });
-
-                // NCR 서브타입 결정 (preWelding vs mainWelding)
-                const ncrSubtypes = isPreWeldingProcess(processKey) ? PRE_WELDING_NCR_SUBTYPES : MAIN_WELDING_NCR_SUBTYPES;
-                const ncrLabels = isPreWeldingProcess(processKey) ? PRE_WELDING_NCR_SUBTYPE_LABELS : MAIN_WELDING_NCR_SUBTYPE_LABELS;
-                const ncrRowCount = ncrSubtypes.length;
-                const totalRowSpan = 3 + ncrRowCount; // 생산량 + NG + NCR 서브타입들 + 수율
-
-                return (
-                  <React.Fragment key={processKey}>
-                    {/* 생산량 행 */}
-                    <tr>
-                      <td rowSpan={totalRowSpan} className={styles.processHeader}>
-                        {processName}
-                      </td>
-                      <td className={styles.rowLabel} colSpan={2}>
-                        생산량({processUnit})
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        return <td key={day}>{dayData?.output || ''}</td>;
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151' }}>{weldingData.total.totalOutput}</td>
-                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {weldingData.total.cumulativeOutput !== null && weldingData.total.cumulativeOutput !== undefined ? weldingData.total.cumulativeOutput.toLocaleString() : ''}
-                      </td>
-                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {weldingData.total.progress !== null ? `${weldingData.total.progress}%` : ''}
-                      </td>
-                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        <div>{weldingData.total.targetQuantity !== null ? weldingData.total.targetQuantity.toLocaleString() : ''}</div>
-                        {onTargetChange && (
-                          <button
-                            onClick={() => onTargetChange(processKey)}
-                            style={{
-                              marginTop: '4px',
-                              padding: '2px 8px',
-                              fontSize: '11px',
-                              border: '1px solid #3b82f6',
-                              borderRadius: '4px',
-                              background: '#3b82f6',
-                              color: 'white',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            변경
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-
-                    {/* NG 행 */}
-                    <tr>
-                      <td className={styles.rowLabel} colSpan={2}>
-                        NG
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        return (
-                          <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                            {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
-                          </td>
-                        );
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                        {weldingData.total.totalNg !== null ? weldingData.total.totalNg : ''}
-                      </td>
-                    </tr>
-
-                    {/* NCR 서브타입 행들 */}
-                    {ncrSubtypes.map((subType, idx) => {
-                      if (idx === 0) {
-                        return (
-                          <tr key={`${processKey}-ncr-${subType}`}>
-                            <td rowSpan={ncrRowCount} className={styles.rowLabel}>
-                              NCR
-                            </td>
-                            <td className={styles.subTypeLabel}>{ncrLabels[subType]}</td>
-                            {Array.from({ length: daysInMonth }, (_, i) => {
-                              const day = i + 1;
-                              const dayData = dailyDataMap[day];
-                              const value = dayData?.ncr?.[subType] ?? null;
-                              return (
-                                <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                                  {value !== null && value !== undefined ? value : ''}
-                                </td>
-                              );
-                            })}
-                            <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                              {weldingData.total.ncr?.[subType] ?? ''}
-                            </td>
-                          </tr>
-                        );
-                      }
-                      return (
-                        <tr key={`${processKey}-ncr-${subType}`}>
-                          <td className={styles.subTypeLabel}>{ncrLabels[subType]}</td>
-                          {Array.from({ length: daysInMonth }, (_, i) => {
-                            const day = i + 1;
-                            const dayData = dailyDataMap[day];
-                            const value = dayData?.ncr?.[subType] ?? null;
-                            return (
-                              <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                                {value !== null && value !== undefined ? value : ''}
-                              </td>
-                            );
-                          })}
-                          <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                            {weldingData.total.ncr?.[subType] ?? ''}
-                          </td>
-                        </tr>
-                      );
-                    })}
-
-                    {/* 수율 행 */}
-                    <tr>
-                      <td className={styles.rowLabel} colSpan={2} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        수율(%)
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        const yieldValue = dayData?.yield ?? null;
-                        return (
-                          <td
-                            key={day}
-                            style={{
-                              color: '#10b981',
-                              fontWeight: 600,
-                              borderBottom: '2px solid #9ca3af',
-                            }}
-                          >
-                            {yieldValue !== null ? `${yieldValue.toFixed(1)}%` : ''}
-                          </td>
-                        );
-                      })}
-                      <td
-                        style={{
-                          borderLeft: '2px solid #374151',
-                          color: '#10b981',
-                          fontWeight: 600,
-                          borderBottom: '2px solid #9ca3af',
-                        }}
-                      >
-                        {weldingData.total.totalYield !== null ? `${weldingData.total.totalYield}%` : ''}
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                );
-              }
-
-              // Sealing 공정은 특별하게 렌더링 (NCR에 Hi pot, 외관, 두께, 기타 하위항목)
-              if (isSealingProcess(processKey) && isSealingProcessData(processData)) {
-                const sealingData = processData as SealingProcessData;
-
-                // 일별 데이터 매핑
-                const dailyDataMap: Record<number, SealingDayData> = {};
-                sealingData.data.forEach(item => {
-                  dailyDataMap[item.day] = item;
-                });
-
-                const ncrRowCount = SEALING_NCR_SUBTYPES.length;
-                const totalRowSpan = 3 + ncrRowCount; // 생산량 + NG + NCR 서브타입들 + 수율
-
-                return (
-                  <React.Fragment key={processKey}>
-                    {/* 생산량 행 */}
-                    <tr>
-                      <td rowSpan={totalRowSpan} className={styles.processHeader}>
-                        {processName}
-                      </td>
-                      <td className={styles.rowLabel} colSpan={2}>
-                        생산량({processUnit})
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        return <td key={day}>{dayData?.output || ''}</td>;
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151' }}>{sealingData.total.totalOutput}</td>
-                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {sealingData.total.cumulativeOutput !== null && sealingData.total.cumulativeOutput !== undefined ? sealingData.total.cumulativeOutput.toLocaleString() : ''}
-                      </td>
-                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {sealingData.total.progress !== null ? `${sealingData.total.progress}%` : ''}
-                      </td>
-                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        <div>{sealingData.total.targetQuantity !== null ? sealingData.total.targetQuantity.toLocaleString() : ''}</div>
-                        {onTargetChange && (
-                          <button
-                            onClick={() => onTargetChange('sealing')}
-                            style={{
-                              marginTop: '4px',
-                              padding: '2px 8px',
-                              fontSize: '11px',
-                              border: '1px solid #3b82f6',
-                              borderRadius: '4px',
-                              background: '#3b82f6',
-                              color: 'white',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            변경
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-
-                    {/* NG 행 */}
-                    <tr>
-                      <td className={styles.rowLabel} colSpan={2}>
-                        NG
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        return (
-                          <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                            {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
-                          </td>
-                        );
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                        {sealingData.total.totalNg !== null ? sealingData.total.totalNg : ''}
-                      </td>
-                    </tr>
-
-                    {/* NCR 서브타입 행들 */}
-                    {SEALING_NCR_SUBTYPES.map((subType, idx) => {
-                      if (idx === 0) {
-                        return (
-                          <tr key={`${processKey}-ncr-${subType}`}>
-                            <td rowSpan={ncrRowCount} className={styles.rowLabel}>
-                              NCR
-                            </td>
-                            <td className={styles.subTypeLabel}>{SEALING_NCR_SUBTYPE_LABELS[subType]}</td>
-                            {Array.from({ length: daysInMonth }, (_, i) => {
-                              const day = i + 1;
-                              const dayData = dailyDataMap[day];
-                              const value = dayData?.ncr?.[subType] ?? null;
-                              return (
-                                <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                                  {value !== null && value !== undefined ? value : ''}
-                                </td>
-                              );
-                            })}
-                            <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                              {sealingData.total.ncr?.[subType] ?? ''}
-                            </td>
-                          </tr>
-                        );
-                      }
-                      return (
-                        <tr key={`${processKey}-ncr-${subType}`}>
-                          <td className={styles.subTypeLabel}>{SEALING_NCR_SUBTYPE_LABELS[subType]}</td>
-                          {Array.from({ length: daysInMonth }, (_, i) => {
-                            const day = i + 1;
-                            const dayData = dailyDataMap[day];
-                            const value = dayData?.ncr?.[subType] ?? null;
-                            return (
-                              <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                                {value !== null && value !== undefined ? value : ''}
-                              </td>
-                            );
-                          })}
-                          <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                            {sealingData.total.ncr?.[subType] ?? ''}
-                          </td>
-                        </tr>
-                      );
-                    })}
-
-                    {/* 수율 행 */}
-                    <tr>
-                      <td className={styles.rowLabel} colSpan={2} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        수율(%)
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        const yieldValue = dayData?.yield ?? null;
-                        return (
-                          <td
-                            key={day}
-                            style={{
-                              color: '#10b981',
-                              fontWeight: 600,
-                              borderBottom: '2px solid #9ca3af',
-                            }}
-                          >
-                            {yieldValue !== null ? `${yieldValue.toFixed(1)}%` : ''}
-                          </td>
-                        );
-                      })}
-                      <td
-                        style={{
-                          borderLeft: '2px solid #374151',
-                          color: '#10b981',
-                          fontWeight: 600,
-                          borderBottom: '2px solid #9ca3af',
-                        }}
-                      >
-                        {sealingData.total.totalYield !== null ? `${sealingData.total.totalYield}%` : ''}
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                );
-              }
-
-              // VisualInspection 공정은 특별하게 렌더링 (NCR에 가스, 외관, 긁힘, 찍힘, 누액/부식, 크기 하위항목)
-              if (isVisualInspectionProcess(processKey) && isVisualInspectionProcessData(processData)) {
-                const visualInspectionData = processData as VisualInspectionProcessData;
-
-                // 일별 데이터 매핑
-                const dailyDataMap: Record<number, VisualInspectionDayData> = {};
-                visualInspectionData.data.forEach(item => {
-                  dailyDataMap[item.day] = item;
-                });
-
-                const ncrRowCount = VISUAL_INSPECTION_NCR_SUBTYPES.length;
-                const totalRowSpan = 3 + ncrRowCount; // 생산량 + NG + NCR 서브타입들 + 수율
-
-                return (
-                  <React.Fragment key={processKey}>
-                    {/* 생산량 행 */}
-                    <tr>
-                      <td rowSpan={totalRowSpan} className={styles.processHeader}>
-                        {processName}
-                      </td>
-                      <td className={styles.rowLabel} colSpan={2}>
-                        생산량({processUnit})
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        return <td key={day}>{dayData?.output || ''}</td>;
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151' }}>{visualInspectionData.total.totalOutput}</td>
-                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {visualInspectionData.total.cumulativeOutput !== null && visualInspectionData.total.cumulativeOutput !== undefined ? visualInspectionData.total.cumulativeOutput.toLocaleString() : ''}
-                      </td>
-                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        {visualInspectionData.total.progress !== null ? `${visualInspectionData.total.progress}%` : ''}
-                      </td>
-                      <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        <div>{visualInspectionData.total.targetQuantity !== null ? visualInspectionData.total.targetQuantity.toLocaleString() : ''}</div>
-                        {onTargetChange && (
-                          <button
-                            onClick={() => onTargetChange('visualInspection')}
-                            style={{
-                              marginTop: '4px',
-                              padding: '2px 8px',
-                              fontSize: '11px',
-                              border: '1px solid #3b82f6',
-                              borderRadius: '4px',
-                              background: '#3b82f6',
-                              color: 'white',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            변경
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-
-                    {/* NG 행 */}
-                    <tr>
-                      <td className={styles.rowLabel} colSpan={2}>
-                        NG
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        return (
-                          <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                            {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
-                          </td>
-                        );
-                      })}
-                      <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                        {visualInspectionData.total.totalNg !== null ? visualInspectionData.total.totalNg : ''}
-                      </td>
-                    </tr>
-
-                    {/* NCR 서브타입 행들 */}
-                    {VISUAL_INSPECTION_NCR_SUBTYPES.map((subType, idx) => {
-                      if (idx === 0) {
-                        return (
-                          <tr key={`${processKey}-ncr-${subType}`}>
-                            <td rowSpan={ncrRowCount} className={styles.rowLabel}>
-                              NCR
-                            </td>
-                            <td className={styles.subTypeLabel}>{VISUAL_INSPECTION_NCR_SUBTYPE_LABELS[subType]}</td>
-                            {Array.from({ length: daysInMonth }, (_, i) => {
-                              const day = i + 1;
-                              const dayData = dailyDataMap[day];
-                              const value = dayData?.ncr?.[subType] ?? null;
-                              return (
-                                <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                                  {value !== null && value !== undefined ? value : ''}
-                                </td>
-                              );
-                            })}
-                            <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                              {visualInspectionData.total.ncr?.[subType] ?? ''}
-                            </td>
-                          </tr>
-                        );
-                      }
-                      return (
-                        <tr key={`${processKey}-ncr-${subType}`}>
-                          <td className={styles.subTypeLabel}>{VISUAL_INSPECTION_NCR_SUBTYPE_LABELS[subType]}</td>
-                          {Array.from({ length: daysInMonth }, (_, i) => {
-                            const day = i + 1;
-                            const dayData = dailyDataMap[day];
-                            const value = dayData?.ncr?.[subType] ?? null;
-                            return (
-                              <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                                {value !== null && value !== undefined ? value : ''}
-                              </td>
-                            );
-                          })}
-                          <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                            {visualInspectionData.total.ncr?.[subType] ?? ''}
-                          </td>
-                        </tr>
-                      );
-                    })}
-
-                    {/* 수율 행 */}
-                    <tr>
-                      <td className={styles.rowLabel} colSpan={2} style={{ borderBottom: '2px solid #9ca3af' }}>
-                        수율(%)
-                      </td>
-                      {Array.from({ length: daysInMonth }, (_, i) => {
-                        const day = i + 1;
-                        const dayData = dailyDataMap[day];
-                        const yieldValue = dayData?.yield ?? null;
-                        return (
-                          <td
-                            key={day}
-                            style={{
-                              color: '#10b981',
-                              fontWeight: 600,
-                              borderBottom: '2px solid #9ca3af',
-                            }}
-                          >
-                            {yieldValue !== null ? `${yieldValue.toFixed(1)}%` : ''}
-                          </td>
-                        );
-                      })}
-                      <td
-                        style={{
-                          borderLeft: '2px solid #374151',
-                          color: '#10b981',
-                          fontWeight: 600,
-                          borderBottom: '2px solid #9ca3af',
-                        }}
-                      >
-                        {visualInspectionData.total.totalYield !== null ? `${visualInspectionData.total.totalYield}%` : ''}
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                );
-              }
-
-              // 일반 공정 렌더링
-              const normalProcessData = processData as ProcessData;
-              const dailyDataMap: Record<number, DayData> = {};
-              normalProcessData.data.forEach(item => {
-                dailyDataMap[item.day] = item;
-              });
-
-              // NG와 수율 합계 계산
-              const totalNG = normalProcessData.data.reduce((sum, item) => sum + (item.ng || 0), 0);
-              const averageYield =
-                normalProcessData.total.totalOutput > 0
-                  ? ((normalProcessData.total.totalOutput - totalNG) / normalProcessData.total.totalOutput) * 100
-                  : 0;
-
-              // Mixing과 Coating Single만 회색 배경 적용
-              const shouldApplyGrayBg = processKey === 'mixing' || processKey === 'coatingSingle';
-
+      <table className={styles.statusTable}>
+        <thead>
+          <tr>
+            <th className={styles.processColumn} colSpan={hasSubTypeProcess ? 3 : 2}>
+              제조일자
+            </th>
+            {Array.from({ length: daysInMonth }, (_, i) => {
+              const day = i + 1;
               return (
-                <React.Fragment key={processKey}>
-                  {/* 생산량 행 */}
-                  <tr>
-                    <td rowSpan={3} className={styles.processHeader}>
-                      {processName}
-                    </td>
-                    <td className={styles.rowLabel} colSpan={hasSubTypeProcess ? 2 : 1}>
-                      생산량({processUnit})
-                    </td>
-                    {Array.from({ length: daysInMonth }, (_, i) => {
-                      const day = i + 1;
-                      const dayData = dailyDataMap[day];
-                      return <td key={day}>{dayData?.output || ''}</td>;
-                    })}
-                    <td style={{ borderLeft: '2px solid #374151' }}>{normalProcessData.total.totalOutput}</td>
-                    <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
-                      {normalProcessData.total.cumulativeOutput !== null && normalProcessData.total.cumulativeOutput !== undefined
-                        ? normalProcessData.total.cumulativeOutput.toLocaleString()
-                        : ''}
-                    </td>
-                    <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
-                      {normalProcessData.total.progress !== null ? `${normalProcessData.total.progress}%` : ''}
-                    </td>
-                    <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
-                      <div>{normalProcessData.total.targetQuantity !== null ? normalProcessData.total.targetQuantity.toLocaleString() : ''}</div>
-                      {onTargetChange && (
-                        <button
-                          onClick={() => onTargetChange(processKey)}
-                          style={{
-                            marginTop: '4px',
-                            padding: '2px 8px',
-                            fontSize: '11px',
-                            border: '1px solid #3b82f6',
-                            borderRadius: '4px',
-                            background: '#3b82f6',
-                            color: 'white',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          변경
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-
-                  {/* NG 행 */}
-                  <tr>
-                    <td className={styles.rowLabel} colSpan={hasSubTypeProcess ? 2 : 1}>
-                      NG
-                    </td>
-                    {Array.from({ length: daysInMonth }, (_, i) => {
-                      const day = i + 1;
-                      const dayData = dailyDataMap[day];
-                      return (
-                        <td
-                          key={day}
-                          style={
-                            shouldApplyGrayBg
-                              ? { background: '#d1d5db' }
-                              : { color: '#ef4444', fontWeight: 500 }
-                          }
-                        >
-                          {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
-                        </td>
-                      );
-                    })}
-                    <td style={shouldApplyGrayBg ? { background: '#d1d5db', borderLeft: '2px solid #374151' } : { color: '#ef4444', fontWeight: 500, borderLeft: '2px solid #374151' }}>
-                      {totalNG}
-                    </td>
-                  </tr>
-
-                  {/* 수율 행 */}
-                  <tr>
-                    <td
-                      className={styles.rowLabel}
-                      colSpan={hasSubTypeProcess ? 2 : 1}
-                      style={{ borderBottom: '2px solid #9ca3af' }}
-                    >
-                      수율(%)
-                    </td>
-                    {Array.from({ length: daysInMonth }, (_, i) => {
-                      const day = i + 1;
-                      const dayData = dailyDataMap[day];
-                      return (
-                        <td
-                          key={day}
-                          style={
-                            shouldApplyGrayBg
-                              ? { background: '#d1d5db', borderBottom: '2px solid #9ca3af' }
-                              : {
-                                  color: '#10b981',
-                                  fontWeight: 600,
-                                  borderBottom: '2px solid #9ca3af',
-                                }
-                          }
-                        >
-                          {dayData?.yield !== null && dayData?.yield !== undefined
-                            ? `${dayData.yield.toFixed(1)}%`
-                            : ''}
-                        </td>
-                      );
-                    })}
-                    <td
-                      style={
-                        shouldApplyGrayBg
-                          ? { background: '#d1d5db', borderBottom: '2px solid #9ca3af', borderLeft: '2px solid #374151' }
-                          : {
-                              color: '#10b981',
-                              fontWeight: 600,
-                              borderBottom: '2px solid #9ca3af',
-                              borderLeft: '2px solid #374151',
-                            }
-                      }
-                    >
-                      {averageYield.toFixed(1)}%
-                    </td>
-                  </tr>
-                </React.Fragment>
+                <th key={day} className={getDateClassName(day)}>
+                  {day}
+                </th>
               );
             })}
+            <th style={{ borderLeft: '2px solid #374151' }}>합계</th>
+            <th>전체 합계</th>
+            <th>진행률</th>
+            <th>목표수량</th>
+          </tr>
+        </thead>
+        <tbody>
+          {processesToRender.map(([processKey, processData]) => {
+            if (!processData) return null;
+            return renderProcess(processKey, processData);
+          })}
 
-            {/* 전체 합계 행 */}
-            <tr className={styles.totalRow}>
-              <td colSpan={daysInMonth + (hasSubTypeProcess ? 3 : 2)} style={{ borderRight: '2px solid #374151' }}>합계</td>
-              <td></td>
-              <td className={styles.yieldCell}>
-                {(() => {
-                  // 전체 수율 계산 (전체 생산량 - 전체 NG) / 전체 생산량 * 100
-                  const totalOutput = processesToRender.reduce((sum, [key, processData]) => {
-                    if (!processData) return sum;
-                    if (isVDProcess(key) && isVDProcessData(processData)) {
-                      const vd = processData as VDProcessData;
-                      return sum + vd.total.cathode.totalOutput + vd.total.anode.totalOutput;
-                    }
-                    if (isFormingProcess(key) && isFormingProcessData(processData)) {
-                      const forming = processData as FormingProcessData;
-                      return sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0);
-                    }
-                    if (isStackingProcess(key) && isStackingProcessData(processData)) {
-                      const stacking = processData as StackingProcessData;
-                      return sum + stacking.total.totalOutput;
-                    }
-                    if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
-                      const welding = processData as WeldingProcessData;
-                      return sum + welding.total.totalOutput;
-                    }
-                    if (isSealingProcess(key) && isSealingProcessData(processData)) {
-                      const sealing = processData as SealingProcessData;
-                      return sum + sealing.total.totalOutput;
-                    }
-                    if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
-                      const visualInspection = processData as VisualInspectionProcessData;
-                      return sum + visualInspection.total.totalOutput;
-                    }
-                    return sum + ((processData as ProcessData).total.totalOutput || 0);
-                  }, 0);
-                  const totalNG = processesToRender.reduce((sum, [key, processData]) => {
-                    if (!processData) return sum;
-                    if (isVDProcess(key) && isVDProcessData(processData)) {
-                      const vd = processData as VDProcessData;
-                      return sum + (vd.total.cathode.totalNg || 0) + (vd.total.anode.totalNg || 0);
-                    }
-                    if (isFormingProcess(key) && isFormingProcessData(processData)) {
-                      const forming = processData as FormingProcessData;
-                      return sum + FORMING_SUBTYPES.reduce((s, subType) => s + (forming[subType].total.totalNg || 0), 0);
-                    }
-                    if (isStackingProcess(key) && isStackingProcessData(processData)) {
-                      const stacking = processData as StackingProcessData;
-                      return sum + (stacking.total.totalNg || 0);
-                    }
-                    if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
-                      const welding = processData as WeldingProcessData;
-                      return sum + (welding.total.totalNg || 0);
-                    }
-                    if (isSealingProcess(key) && isSealingProcessData(processData)) {
-                      const sealing = processData as SealingProcessData;
-                      return sum + (sealing.total.totalNg || 0);
-                    }
-                    if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
-                      const visualInspection = processData as VisualInspectionProcessData;
-                      return sum + (visualInspection.total.totalNg || 0);
-                    }
-                    return sum + ((processData as ProcessData).total.totalNg || 0);
-                  }, 0);
-                  const overallYield = totalOutput > 0 ? ((totalOutput - totalNG) / totalOutput) * 100 : 0;
-                  return `${overallYield.toFixed(1)}%`;
-                })()}
-              </td>
-              <td>
-                {(() => {
-                  // 전체 진행률 계산
-                  const totalOutput = processesToRender.reduce((sum, [key, processData]) => {
-                    if (!processData) return sum;
-                    if (isVDProcess(key) && isVDProcessData(processData)) {
-                      const vd = processData as VDProcessData;
-                      return sum + vd.total.cathode.totalOutput + vd.total.anode.totalOutput;
-                    }
-                    if (isFormingProcess(key) && isFormingProcessData(processData)) {
-                      const forming = processData as FormingProcessData;
-                      return sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0);
-                    }
-                    if (isStackingProcess(key) && isStackingProcessData(processData)) {
-                      const stacking = processData as StackingProcessData;
-                      return sum + stacking.total.totalOutput;
-                    }
-                    if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
-                      const welding = processData as WeldingProcessData;
-                      return sum + welding.total.totalOutput;
-                    }
-                    if (isSealingProcess(key) && isSealingProcessData(processData)) {
-                      const sealing = processData as SealingProcessData;
-                      return sum + sealing.total.totalOutput;
-                    }
-                    if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
-                      const visualInspection = processData as VisualInspectionProcessData;
-                      return sum + visualInspection.total.totalOutput;
-                    }
-                    return sum + ((processData as ProcessData).total.totalOutput || 0);
-                  }, 0);
-                  const totalTarget = processesToRender.reduce((sum, [key, processData]) => {
-                    if (!processData) return sum;
-                    if (isVDProcess(key) && isVDProcessData(processData)) {
-                      const vd = processData as VDProcessData;
-                      return sum + (vd.total.cathode.targetQuantity || 0) + (vd.total.anode.targetQuantity || 0);
-                    }
-                    if (isFormingProcess(key) && isFormingProcessData(processData)) {
-                      const forming = processData as FormingProcessData;
-                      return sum + (forming.targetQuantity || 0);
-                    }
-                    if (isStackingProcess(key) && isStackingProcessData(processData)) {
-                      const stacking = processData as StackingProcessData;
-                      return sum + (stacking.total.targetQuantity || 0);
-                    }
-                    if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
-                      const welding = processData as WeldingProcessData;
-                      return sum + (welding.total.targetQuantity || 0);
-                    }
-                    if (isSealingProcess(key) && isSealingProcessData(processData)) {
-                      const sealing = processData as SealingProcessData;
-                      return sum + (sealing.total.targetQuantity || 0);
-                    }
-                    if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
-                      const visualInspection = processData as VisualInspectionProcessData;
-                      return sum + (visualInspection.total.targetQuantity || 0);
-                    }
-                    return sum + ((processData as ProcessData).total.targetQuantity || 0);
-                  }, 0);
-                  return totalTarget > 0 ? `${((totalOutput / totalTarget) * 100).toFixed(1)}%` : '';
-                })()}
-              </td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
+          {/* 전체 합계 행 */}
+          <tr className={styles.totalRow}>
+            <td
+              colSpan={daysInMonth + (hasSubTypeProcess ? 3 : 2)}
+              style={{ borderRight: '2px solid #374151' }}
+            >
+              합계
+            </td>
+            <td></td>
+            <td className={styles.yieldCell}>{overallYield.toFixed(1)}%</td>
+            <td>{totalTarget > 0 ? `${overallProgress.toFixed(1)}%` : ''}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }
