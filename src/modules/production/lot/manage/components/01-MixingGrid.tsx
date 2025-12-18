@@ -6,6 +6,16 @@ interface MixingGridProps {
   data: MixingData[];
 }
 
+// tempHumi 문자열에서 온도와 습도를 분리하는 함수
+function parseTempHumi(tempHumi: string): { temp: string; humi: string } {
+  // "25°C / 50%" 형식 파싱
+  const parts = tempHumi.split('/').map(s => s.trim());
+  return {
+    temp: parts[0] || '-',
+    humi: parts[1] || '-',
+  };
+}
+
 export default function MixingGrid({ data }: MixingGridProps) {
   const firstColRef = useRef<HTMLTableCellElement>(null);
   const [secondColLeft, setSecondColLeft] = useState<number>(0);
@@ -71,26 +81,29 @@ export default function MixingGrid({ data }: MixingGridProps) {
           </tr>
         </thead>
         <tbody>
-          {data.map(row => (
-            <tr key={row.id}>
-              <td className={`${styles.stickyCol} ${styles.stickyFirst}`}>{row.mixingDate}</td>
-              <td className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickySecond}`} style={{ left: secondColLeft }}>{row.lotNumber}</td>
-              <td>{row.temp}</td>
-              <td>{row.humidity}%</td>
-              <td>{row.activeMaterial}</td>
-              <td>{row.viscosityAfterMixing} cp</td>
-              <td>{row.viscosityAfterDefoam} cp</td>
-              <td>{row.viscosityAfterStable} cp</td>
-              <td>{row.grindGage}</td>
-              <td>{row.solidContent1}%</td>
-              <td>{row.solidContent2}%</td>
-              <td>{row.solidContent3}%</td>
-              <td>{row.binderViscosity !== null ? `${row.binderViscosity} cp` : '-'}</td>
-              <td>{row.binderSolidContent1}%</td>
-              <td>{row.binderSolidContent2}%</td>
-              <td>{row.binderSolidContent3 !== undefined ? `${row.binderSolidContent3}%` : '-'}</td>
-            </tr>
-          ))}
+          {data.map(row => {
+            const { temp, humi } = parseTempHumi(row.slurry.tempHumi);
+            return (
+              <tr key={row.id}>
+                <td className={`${styles.stickyCol} ${styles.stickyFirst}`}>{row.processDate}</td>
+                <td className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickySecond}`} style={{ left: secondColLeft }}>{row.lot}</td>
+                <td>{temp}</td>
+                <td>{humi}</td>
+                <td>{row.slurry.activeMaterialInput}</td>
+                <td>{row.slurry.viscosityAfterMixing} cp</td>
+                <td>{row.slurry.viscosityAfterDefoaming} cp</td>
+                <td>{row.slurry.viscosityAfterStabilization} cp</td>
+                <td>{row.slurry.grindGage}</td>
+                <td>{row.slurry.solidContent1}%</td>
+                <td>{row.slurry.solidContent2}%</td>
+                <td>{row.slurry.solidContent3}%</td>
+                <td>{row.binder.viscosity !== null ? `${row.binder.viscosity} cp` : '-'}</td>
+                <td>{row.binder.solidContent1}%</td>
+                <td>{row.binder.solidContent2}%</td>
+                <td>{row.binder.solidContent3 !== null ? `${row.binder.solidContent3}%` : '-'}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

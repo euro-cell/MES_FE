@@ -15,24 +15,30 @@ export interface CategoryInfo {
   title: string;
 }
 
-// Mixing 공정 데이터
-export interface MixingData {
-  id: number;
-  mixingDate: string;
-  projectName: string;
-  lotNumber: string;
-  temp: number;
-  humidity: number;
-  activeMaterial: number;
+// Mixing 공정 데이터 (API 응답 구조)
+export interface MixingBinder {
+  viscosity: number | null;
+  solidContent1: number;
+  solidContent2: number;
+  solidContent3: number | null;
+}
+
+export interface MixingSlurry {
+  tempHumi: string;
+  activeMaterialInput: number;
   viscosityAfterMixing: number;
-  viscosityAfterDefoam: number;
-  viscosityAfterStable: number;
-  grindGage: string;
+  viscosityAfterDefoaming: number;
+  viscosityAfterStabilization: number;
   solidContent1: number;
   solidContent2: number;
   solidContent3: number;
-  binderViscosity: number | null;
-  binderSolidContent1: number;
-  binderSolidContent2: number;
-  binderSolidContent3: number | null;
+  grindGage: string;
+}
+
+export interface MixingData {
+  id: number;
+  lot: string;
+  processDate: string;
+  binder: MixingBinder;
+  slurry: MixingSlurry;
 }
