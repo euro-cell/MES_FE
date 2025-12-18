@@ -158,6 +158,25 @@ export default function StatusPage() {
     setTargetInputValue(currentValue !== null ? String(currentValue) : '');
   };
 
+  // processKey와 subType을 백엔드 필드명으로 변환
+  const buildProcessKeyForBackend = (processKey: string, subType?: string): string => {
+    // 양/음극 구분이 있는 공정들
+    const electrodeProcesses = ['mixing', 'coatingSingle', 'coatingDouble', 'press', 'slitting', 'notching', 'vd'];
+
+    if (subType && electrodeProcesses.includes(processKey)) {
+      // mixing + cathode -> mixingCathode
+      const capitalizedSubType = subType.charAt(0).toUpperCase() + subType.slice(1);
+      return `${processKey}${capitalizedSubType}`;
+    }
+
+    // stacking -> stack (백엔드 필드명과 맞추기)
+    if (processKey === 'stacking') {
+      return 'stack';
+    }
+
+    return processKey;
+  };
+
   // 목표수량 변경 저장
   const handleTargetSave = async () => {
     if (!projectId || !targetInputValue) return;
@@ -169,10 +188,13 @@ export default function StatusPage() {
     }
 
     try {
+      // 전극 공정인 경우 electrodeType도 subType으로 사용
+      const subType = targetModal.subType || electrodeType || undefined;
+      const processKey = buildProcessKeyForBackend(targetModal.processKey, subType);
+
       await updateTargetQuantity(Number(projectId), {
-        processKey: targetModal.processKey,
+        processKey,
         targetQuantity,
-        subType: targetModal.subType,
       });
       alert('목표수량이 변경되었습니다.');
       setTargetModal({ open: false, processKey: '', currentValue: null });
