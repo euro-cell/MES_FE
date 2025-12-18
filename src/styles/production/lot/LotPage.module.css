@@ -38,8 +38,12 @@
 .menuRow {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
+}
+
+.menuGroup {
+  flex: 1;
 }
 
 .refreshSection {

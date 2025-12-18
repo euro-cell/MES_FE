@@ -54,7 +54,30 @@ export default function LotPage() {
     loadProjectInfo();
   }, [projectId]);
 
-  // 데이터 갱신 핸들러 (버튼 클릭 시에만 실행)
+  // 공정 선택 시 자동으로 데이터 로드
+  useEffect(() => {
+    const loadProcessData = async () => {
+      if (!projectId || !process) return;
+
+      setIsRefreshing(true);
+      try {
+        if (process === 'Mixing') {
+          const data = await getMixingData(Number(projectId));
+          setMixingData(data);
+        }
+        // TODO: 다른 공정 데이터 로드 추가
+        setLastUpdated(new Date());
+      } catch (err) {
+        console.error('데이터 조회 실패:', err);
+      } finally {
+        setIsRefreshing(false);
+      }
+    };
+
+    loadProcessData();
+  }, [projectId, process]);
+
+  // 데이터 갱신 핸들러 (버튼 클릭 시)
   const handleRefresh = async () => {
     if (!projectId || !process) return;
 
@@ -110,9 +133,21 @@ export default function LotPage() {
         </button>
       </div>
 
-      {/* 1단계: 카테고리 선택 + 갱신 버튼 */}
+      {/* 메뉴 + 갱신 버튼 영역 */}
       <div className={styles.menuRow}>
-        <SubmenuBar menus={categoryMenus} />
+        <div className={styles.menuGroup}>
+          {/* 1단계: 카테고리 선택 */}
+          <SubmenuBar menus={categoryMenus} />
+
+          {/* 2단계: 공정 선택 (카테고리 선택 후) */}
+          {category && (
+            <div className={styles.menuSection}>
+              <SubmenuBar menus={processMenus} />
+            </div>
+          )}
+        </div>
+
+        {/* 갱신 버튼 */}
         {currentProcess && (
           <div className={styles.refreshSection}>
             <button
@@ -152,13 +187,6 @@ export default function LotPage() {
           </div>
         )}
       </div>
-
-      {/* 2단계: 공정 선택 (카테고리 선택 후) */}
-      {category && (
-        <div className={styles.menuSection}>
-          <SubmenuBar menus={processMenus} />
-        </div>
-      )}
 
       {/* 안내 메시지 */}
       {!category && (
