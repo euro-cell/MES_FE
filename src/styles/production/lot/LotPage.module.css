@@ -1,0 +1,65 @@
+.projectHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.projectHeader h2 {
+  margin: 0;
+  color: #334155;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.backButton {
+  background-color: #475569;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background-color: #334155;
+}
+
+.menuSection {
+  margin-top: 10px;
+}
+
+.placeholder {
+  margin-top: 40px;
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 2px dashed #cbd5e1;
+}
+
+.placeholder p {
+  color: #64748b;
+  font-size: 16px;
+  margin: 0;
+}
+
+.placeholder .processName {
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.guideMessage {
+  margin-top: 20px;
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}

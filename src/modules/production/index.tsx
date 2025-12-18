@@ -7,7 +7,7 @@ import PlanPage from './plan';
 import SpecPage from './spec';
 import WorklogPage from './worklog';
 import StatusIndex from './status';
-// import LotPage from './lot';
+import LotIndex from './lot';
 
 export default function ProductionIndex() {
   const { sub } = MENU_CONFIG.production;
@@ -22,7 +22,7 @@ export default function ProductionIndex() {
           <Route path='spec/*' element={<SpecPage />} />
           <Route path='log/*' element={<WorklogPage />} />
           <Route path='status/*' element={<StatusIndex />} />
-          {/* <Route path="lot" element={<LotPage />} /> */}
+          <Route path='lot/*' element={<LotIndex />} />
         </Routes>
       </div>
     </div>
