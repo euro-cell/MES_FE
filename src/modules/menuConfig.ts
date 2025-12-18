@@ -10,6 +10,7 @@ export const MENU_CONFIG = {
       { title: '작업 일지', path: '/prod/log' },
       { title: '생산 현황 (수율)', path: '/prod/status' },
       { title: 'Lot 관리', path: '/prod/lot' },
+      { title: 'Lot 검색', path: '/prod/search' },
     ],
   },
 
