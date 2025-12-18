@@ -7,6 +7,20 @@ import type { LotProject, MixingData } from '../LotTypes';
 import MixingGrid from './components/01-MixingGrid';
 import styles from '../../../../styles/production/lot/LotPage.module.css';
 
+// 상대 시간 포맷 함수
+function formatRelativeTime(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffHour = Math.floor(diffMs / 3600000);
+  const diffDay = Math.floor(diffMs / 86400000);
+
+  if (diffMin < 1) return '방금 전';
+  if (diffMin < 60) return `${diffMin}분 전`;
+  if (diffHour < 24) return `${diffHour}시간 전`;
+  return `${diffDay}일 전`;
+}
+
 export default function LotPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const location = useLocation();
@@ -15,6 +29,8 @@ export default function LotPage() {
   const [projectInfo, setProjectInfo] = useState<LotProject | null>(null);
   const [loading, setLoading] = useState(true);
   const [mixingData, setMixingData] = useState<MixingData[]>([]);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const searchParams = new URLSearchParams(location.search);
   const category = searchParams.get('category');
@@ -38,21 +54,24 @@ export default function LotPage() {
     loadProjectInfo();
   }, [projectId]);
 
-  // Mixing 데이터 로드
-  useEffect(() => {
-    const loadMixingData = async () => {
-      if (!projectId || process !== 'Mixing') return;
+  // 데이터 갱신 핸들러 (버튼 클릭 시에만 실행)
+  const handleRefresh = async () => {
+    if (!projectId || !process) return;
 
-      try {
+    setIsRefreshing(true);
+    try {
+      if (process === 'Mixing') {
         const data = await getMixingData(Number(projectId));
         setMixingData(data);
-      } catch (err) {
-        console.error('Mixing 데이터 조회 실패:', err);
       }
-    };
-
-    loadMixingData();
-  }, [projectId, process]);
+      // TODO: 다른 공정 데이터 로드 추가
+      setLastUpdated(new Date());
+    } catch (err) {
+      console.error('데이터 조회 실패:', err);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   if (loading) return <p>데이터를 불러오는 중...</p>;
   if (!projectInfo) return <p>프로젝트를 찾을 수 없습니다.</p>;
@@ -91,8 +110,48 @@ export default function LotPage() {
         </button>
       </div>
 
-      {/* 1단계: 카테고리 선택 */}
-      <SubmenuBar menus={categoryMenus} />
+      {/* 1단계: 카테고리 선택 + 갱신 버튼 */}
+      <div className={styles.menuRow}>
+        <SubmenuBar menus={categoryMenus} />
+        {currentProcess && (
+          <div className={styles.refreshSection}>
+            <button
+              className={styles.refreshButton}
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+            >
+              {isRefreshing ? (
+                '갱신 중...'
+              ) : (
+                <>
+                  <svg
+                    className={styles.refreshIcon}
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                    <path d="M16 21h5v-5" />
+                  </svg>
+                  데이터 갱신
+                </>
+              )}
+            </button>
+            {lastUpdated && (
+              <span className={styles.lastUpdated}>
+                최근 업데이트 : {formatRelativeTime(lastUpdated)}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* 2단계: 공정 선택 (카테고리 선택 후) */}
       {category && (
