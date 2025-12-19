@@ -1,0 +1,167 @@
+.slittingGrid {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+.slittingTable {
+  width: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+  background: #fff;
+  margin: 0 auto;
+}
+
+.slittingTable th,
+.slittingTable td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 8px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 고정 열 스타일 */
+.stickyCol {
+  position: sticky;
+  z-index: 2;
+  white-space: nowrap;
+  background: #fff;
+}
+
+.stickyFirst {
+  left: 0;
+}
+
+.stickySecond {
+  /* left는 JS에서 동적으로 설정 */
+}
+
+/* 헤더 상단 고정 */
+.slittingTable thead th {
+  position: sticky;
+  z-index: 2;
+}
+
+.slittingTable thead tr:first-child th {
+  top: 0;
+}
+
+.slittingTable thead tr:nth-child(2) th {
+  top: 29px;
+}
+
+.slittingTable thead tr:nth-child(3) th {
+  top: 55px;
+}
+
+/* 고정 열 헤더 - 좌측+상단 모두 고정 시 z-index 높게 */
+.slittingTable thead .stickyCol {
+  z-index: 4;
+}
+
+.slittingTable thead tr:first-child .stickyCol {
+  background: #1e40af;
+}
+
+.slittingTable thead tr:nth-child(2) .stickyCol {
+  background: #f1f5f9;
+}
+
+.slittingTable thead tr:nth-child(3) .stickyCol {
+  background: #f8fafc;
+}
+
+.slittingTable tbody .stickyCol {
+  background: #fff;
+}
+
+.slittingTable tbody tr:hover .stickyCol {
+  background: #f8fafc;
+}
+
+/* 대분류 헤더 */
+.slittingTable thead tr:first-child th {
+  background: #1e40af;
+  color: white;
+  font-weight: 600;
+  border-bottom: 2px solid #1e3a8a;
+}
+
+/* 중분류 헤더 (2행) */
+.slittingTable thead tr:nth-child(2) th {
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* 단위 헤더 (3행) */
+.slittingTable thead tr:nth-child(3) th {
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 11px;
+  border-bottom: 2px solid #94a3b8;
+}
+
+.slittingTable tbody tr:hover td {
+  background: #f8fafc;
+}
+
+.slittingTable tbody td {
+  color: #475569;
+}
+
+/* 컬럼 그룹별 색상 */
+.groupBasic {
+  border-right: 2px solid #94a3b8 !important;
+}
+
+/* 헤더의 Slitting Date, Lot 열 (rowSpan으로 3행 병합) */
+.headerBasicCol {
+  background: #1e40af !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-right: 2px solid #94a3b8 !important;
+}
+
+.groupLot {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  border-right: 2px solid #2563eb !important;
+}
+
+.groupSlitting {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border-right: 2px solid #d97706 !important;
+}
+
+/* 그룹 구분선 (마지막 열에 적용) */
+.groupLotEnd {
+  border-right: 2px solid #2563eb !important;
+}
+
+.groupSlittingEnd {
+  border-right: 2px solid #d97706 !important;
+}
+
+/* Electrode Spec. 그룹 */
+.groupElectrode {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+}
+
+.lotNumber {
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.noData {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}

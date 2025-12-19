@@ -185,3 +185,18 @@ export interface CalenderingData {
   electrodeSpec: CalenderingElectrodeSpec;
   realInspection: CalenderingRealInspection;
 }
+
+// Slitting 공정 데이터
+export interface SlittingAtSlitting {
+  temp: number;
+  humidity: number;
+}
+
+export interface SlittingData {
+  id: number;
+  slittingDate: string;
+  lot: string;
+  atSlitting: SlittingAtSlitting;
+  slittingLength: number; // m
+  slittingWidth: number; // mm
+}

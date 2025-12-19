@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../../components/SubmenuBar';
 import { createCategoryMenus, createProcessMenus, getProcessById } from '../lotConfig';
-import { getProjectInfo, getMixingData, getCoatingData, getCalenderingData, syncLotData, getSyncStatus } from './LotService';
-import type { LotProject, MixingData, CoatingData, CalenderingData } from '../LotTypes';
+import { getProjectInfo, getMixingData, getCoatingData, getCalenderingData, getSlittingData, syncLotData, getSyncStatus } from './LotService';
+import type { LotProject, MixingData, CoatingData, CalenderingData, SlittingData } from '../LotTypes';
 import MixingGrid from './components/01-MixingGrid';
 import CoatingGrid from './components/02-CoatingGrid';
 import CalenderingGrid from './components/03-CalenderingGrid';
+import SlittingGrid from './components/04-SlittingGrid';
 import styles from '../../../../styles/production/lot/LotPage.module.css';
 
 // 상대 시간 포맷 함수
@@ -33,6 +34,7 @@ export default function LotPage() {
   const [mixingData, setMixingData] = useState<MixingData[]>([]);
   const [coatingData, setCoatingData] = useState<CoatingData[]>([]);
   const [calenderingData, setCalenderingData] = useState<CalenderingData[]>([]);
+  const [slittingData, setSlittingData] = useState<SlittingData[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -81,6 +83,9 @@ export default function LotPage() {
         } else if (process === 'Calendering') {
           const data = await getCalenderingData(Number(projectId));
           setCalenderingData(data);
+        } else if (process === 'Slitting') {
+          const data = await getSlittingData(Number(projectId));
+          setSlittingData(data);
         }
       } catch (err) {
         console.error('데이터 조회 실패:', err);
@@ -117,6 +122,9 @@ export default function LotPage() {
       } else if (process === 'Calendering') {
         const data = await getCalenderingData(Number(projectId));
         setCalenderingData(data);
+      } else if (process === 'Slitting') {
+        const data = await getSlittingData(Number(projectId));
+        setSlittingData(data);
       }
     } catch (err) {
       console.error('데이터 갱신 실패:', err);
@@ -146,6 +154,8 @@ export default function LotPage() {
         return <CoatingGrid data={coatingData} />;
       case 'Calendering':
         return <CalenderingGrid data={calenderingData} />;
+      case 'Slitting':
+        return <SlittingGrid data={slittingData} />;
       default:
         return (
           <div className={styles.placeholder}>

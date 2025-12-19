@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { LotProject, MixingData, CoatingData, CalenderingData, SyncStatus } from '../LotTypes';
+import type { LotProject, MixingData, CoatingData, CalenderingData, SlittingData, SyncStatus } from '../LotTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -290,6 +290,45 @@ export async function getCalenderingData(projectId: number): Promise<Calendering
         },
         coatWeight: { spec: 17.8, p1: 17.6, p3: 17.7, p4: 17.9 },
       },
+    },
+  ];
+}
+
+// Slitting 데이터 조회 (목데이터)
+export async function getSlittingData(projectId: number): Promise<SlittingData[]> {
+  console.log('Slitting 데이터 조회 - projectId:', projectId);
+
+  // TODO: 백엔드 API 연동 시 아래 코드로 교체
+  // const response = await axios.get(`${API_BASE}/production/${projectId}/lot/slitting`, {
+  //   withCredentials: true,
+  // });
+  // return response.data;
+
+  // 목데이터
+  return [
+    {
+      id: 1,
+      slittingDate: '2024-12-19',
+      lot: 'SL-241219-001',
+      atSlitting: { temp: 25, humidity: 45 },
+      slittingLength: 420,
+      slittingWidth: 85,
+    },
+    {
+      id: 2,
+      slittingDate: '2024-12-19',
+      lot: 'SL-241219-002',
+      atSlitting: { temp: 25, humidity: 46 },
+      slittingLength: 430,
+      slittingWidth: 85,
+    },
+    {
+      id: 3,
+      slittingDate: '2024-12-20',
+      lot: 'SL-241220-001',
+      atSlitting: { temp: 24, humidity: 48 },
+      slittingLength: 410,
+      slittingWidth: 90,
     },
   ];
 }
