@@ -98,73 +98,17 @@ export async function getCoatingData(projectId: number): Promise<CoatingData[]> 
   }
 }
 
-// Calendering 데이터 조회 (목데이터)
+// Calendering 데이터 조회
 export async function getCalenderingData(projectId: number): Promise<CalenderingData[]> {
-  console.log('Calendering 데이터 조회 - projectId:', projectId);
-
-  // TODO: 백엔드 API 연동 시 아래 코드로 교체
-  // const response = await axios.get(`${API_BASE}/production/${projectId}/lot/calendering`, {
-  //   withCredentials: true,
-  // });
-  // return response.data;
-
-  // 목데이터
-  return [
-    {
-      id: 1,
-      calenderingDate: '2024-12-17',
-      lot: 'CL-241217-001',
-      atCalendering: { temp: 25, humidity: 45 },
-      calenderingLen: 450,
-      electrodeSpec: { pressingThick: 120, loadingWeight: 18.5 },
-      realInspection: {
-        conditions: 'Normal',
-        pressingTemp: 85,
-        thickness: {
-          op: { start: 118, end: 120 },
-          mid: { start: 119, end: 121 },
-          gear: { start: 117, end: 119 },
-        },
-        coatWeight: { spec: 18.5, p1: 18.3, p3: 18.4, p4: 18.6 },
-      },
-    },
-    {
-      id: 2,
-      calenderingDate: '2024-12-17',
-      lot: 'CL-241217-002',
-      atCalendering: { temp: 25, humidity: 46 },
-      calenderingLen: 460,
-      electrodeSpec: { pressingThick: 118, loadingWeight: 18.3 },
-      realInspection: {
-        conditions: 'Normal',
-        pressingTemp: 84,
-        thickness: {
-          op: { start: 116, end: 118 },
-          mid: { start: 117, end: 119 },
-          gear: { start: 115, end: 117 },
-        },
-        coatWeight: { spec: 18.3, p1: 18.1, p3: 18.2, p4: 18.4 },
-      },
-    },
-    {
-      id: 3,
-      calenderingDate: '2024-12-18',
-      lot: 'CL-241218-001',
-      atCalendering: { temp: 24, humidity: 48 },
-      calenderingLen: 440,
-      electrodeSpec: { pressingThick: 115, loadingWeight: 17.8 },
-      realInspection: {
-        conditions: 'Normal',
-        pressingTemp: 82,
-        thickness: {
-          op: { start: 113, end: 115 },
-          mid: { start: 114, end: 116 },
-          gear: { start: 112, end: 114 },
-        },
-        coatWeight: { spec: 17.8, p1: 17.6, p3: 17.7, p4: 17.9 },
-      },
-    },
-  ];
+  try {
+    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/calendering`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Calendering 데이터 조회 실패:', error);
+    return [];
+  }
 }
 
 // Slitting 데이터 조회 (목데이터)
