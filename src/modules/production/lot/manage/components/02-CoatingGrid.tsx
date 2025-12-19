@@ -139,74 +139,74 @@ export default function CoatingGrid({ data }: CoatingGridProps) {
               <tr key={`${row.id}-start`}>
                 <td rowSpan={2} className={`${styles.stickyCol} ${styles.stickyFirst}`}>{row.coatingDate}</td>
                 <td rowSpan={2} className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickySecond} ${styles.groupBorderRight}`} style={{ left: secondColLeft }}>{row.lot}</td>
-                <td rowSpan={2}>{row.atCoating.temp}</td>
-                <td rowSpan={2} className={styles.groupCoatingEnd}>{row.atCoating.humidity}</td>
-                <td rowSpan={2}>{row.electrodeSpec.coatLength}</td>
-                <td rowSpan={2}>{row.electrodeSpec.coatingWidth}</td>
-                <td rowSpan={2} className={styles.groupElectrodeEnd}>{row.electrodeSpec.loadingWeight}</td>
+                <td rowSpan={2}>{row.atCoating?.temp ?? '-'}</td>
+                <td rowSpan={2} className={styles.groupCoatingEnd}>{row.atCoating?.humidity ?? '-'}</td>
+                <td rowSpan={2}>{row.electrodeSpec?.coatLength ?? '-'}</td>
+                <td rowSpan={2}>{row.electrodeSpec?.coatingWidth ?? '-'}</td>
+                <td rowSpan={2} className={styles.groupElectrodeEnd}>{row.electrodeSpec?.loadingWeight ?? '-'}</td>
                 {/* A-Side Coat Weight - Start */}
-                <td>{row.inspection.aSideCoatWeight.op.start}</td>
-                <td>{row.inspection.aSideCoatWeight.mid.start}</td>
-                <td>{row.inspection.aSideCoatWeight.gear.start}</td>
-                <td rowSpan={2}>{row.inspection.aSideCoatWeight.webSpeed}</td>
-                <td className={styles.groupSubEnd}>{row.inspection.aSideCoatWeight.pump.start}</td>
+                <td>{row.inspection?.aSideCoatWeight?.op?.start ?? '-'}</td>
+                <td>{row.inspection?.aSideCoatWeight?.mid?.start ?? '-'}</td>
+                <td>{row.inspection?.aSideCoatWeight?.gear?.start ?? '-'}</td>
+                <td rowSpan={2}>{row.inspection?.aSideCoatWeight?.webSpeed ?? '-'}</td>
+                <td className={styles.groupSubEnd}>{row.inspection?.aSideCoatWeight?.pump?.start ?? '-'}</td>
                 {/* Both Coat Weight - Start */}
-                <td>{row.inspection.bothCoatWeight.op.start}</td>
-                <td>{row.inspection.bothCoatWeight.mid.start}</td>
-                <td>{row.inspection.bothCoatWeight.gear.start}</td>
-                <td rowSpan={2}>{row.inspection.bothCoatWeight.webSpeed}</td>
-                <td rowSpan={2} className={styles.groupSubEnd}>{row.inspection.bothCoatWeight.pump}</td>
+                <td>{row.inspection?.bothCoatWeight?.op?.start ?? '-'}</td>
+                <td>{row.inspection?.bothCoatWeight?.mid?.start ?? '-'}</td>
+                <td>{row.inspection?.bothCoatWeight?.gear?.start ?? '-'}</td>
+                <td rowSpan={2}>{row.inspection?.bothCoatWeight?.webSpeed ?? '-'}</td>
+                <td rowSpan={2} className={styles.groupSubEnd}>{row.inspection?.bothCoatWeight?.pump ?? '-'}</td>
                 {/* Both Coat Thickness - Start */}
-                <td>{row.inspection.bothCoatThickness.op.start}</td>
-                <td>{row.inspection.bothCoatThickness.mid.start}</td>
-                <td className={styles.groupSubEnd}>{row.inspection.bothCoatThickness.gear.start}</td>
+                <td>{row.inspection?.bothCoatThickness?.op?.start ?? '-'}</td>
+                <td>{row.inspection?.bothCoatThickness?.mid?.start ?? '-'}</td>
+                <td className={styles.groupSubEnd}>{row.inspection?.bothCoatThickness?.gear?.start ?? '-'}</td>
                 {/* Both */}
-                <td rowSpan={2} className={styles.groupInspectionEnd}>{row.inspection.misalignment}</td>
+                <td rowSpan={2} className={styles.groupInspectionEnd}>{row.inspection?.misalignment ?? '-'}</td>
                 {/* Temperature - Zone 1,2 Start */}
-                <td>{row.dryingCondition.temperature.zone1.start}</td>
-                <td>{row.dryingCondition.temperature.zone2.start}</td>
-                <td rowSpan={2}>{row.dryingCondition.temperature.zone3}</td>
-                <td rowSpan={2} className={styles.groupSubEnd}>{row.dryingCondition.temperature.zone4}</td>
+                <td>{row.dryingCondition?.temperature?.zone1?.start ?? '-'}</td>
+                <td>{row.dryingCondition?.temperature?.zone2?.start ?? '-'}</td>
+                <td rowSpan={2}>{row.dryingCondition?.temperature?.zone3 ?? '-'}</td>
+                <td rowSpan={2} className={styles.groupSubEnd}>{row.dryingCondition?.temperature?.zone4 ?? '-'}</td>
                 {/* Supply - Zone 1,2 Start */}
-                <td>{row.dryingCondition.supply.zone1.start}</td>
-                <td>{row.dryingCondition.supply.zone2.start}</td>
-                <td rowSpan={2}>{row.dryingCondition.supply.zone3}</td>
-                <td rowSpan={2} className={styles.groupSubEnd}>{row.dryingCondition.supply.zone4}</td>
+                <td>{row.dryingCondition?.supply?.zone1?.start ?? '-'}</td>
+                <td>{row.dryingCondition?.supply?.zone2?.start ?? '-'}</td>
+                <td rowSpan={2}>{row.dryingCondition?.supply?.zone3 ?? '-'}</td>
+                <td rowSpan={2} className={styles.groupSubEnd}>{row.dryingCondition?.supply?.zone4 ?? '-'}</td>
                 {/* Exhaust */}
-                <td rowSpan={2}>{row.dryingCondition.exhaust.zone2}</td>
-                <td rowSpan={2} className={styles.groupDryingEnd}>{row.dryingCondition.exhaust.zone4}</td>
+                <td rowSpan={2}>{row.dryingCondition?.exhaust?.zone2 ?? '-'}</td>
+                <td rowSpan={2} className={styles.groupDryingEnd}>{row.dryingCondition?.exhaust?.zone4 ?? '-'}</td>
                 {/* Slurry Information */}
-                <td rowSpan={2}>{row.slurryInfo.lot}</td>
-                <td rowSpan={2}>{row.slurryInfo.viscosity}</td>
-                <td rowSpan={2} className={styles.groupSlurryEnd}>{row.slurryInfo.solidContent}</td>
+                <td rowSpan={2}>{row.slurryInfo?.lot ?? '-'}</td>
+                <td rowSpan={2}>{row.slurryInfo?.viscosity ?? '-'}</td>
+                <td rowSpan={2} className={styles.groupSlurryEnd}>{row.slurryInfo?.solidContent ?? '-'}</td>
                 {/* Foil Information */}
-                <td rowSpan={2}>{row.foilInfo.lot}</td>
-                <td rowSpan={2}>{row.foilInfo.type}</td>
-                <td rowSpan={2}>{row.foilInfo.length}</td>
-                <td rowSpan={2}>{row.foilInfo.width}</td>
-                <td rowSpan={2}>{row.foilInfo.thickness}</td>
+                <td rowSpan={2}>{row.foilInfo?.lot ?? '-'}</td>
+                <td rowSpan={2}>{row.foilInfo?.type ?? '-'}</td>
+                <td rowSpan={2}>{row.foilInfo?.length ?? '-'}</td>
+                <td rowSpan={2}>{row.foilInfo?.width ?? '-'}</td>
+                <td rowSpan={2}>{row.foilInfo?.thickness ?? '-'}</td>
               </tr>
               {/* End (후단) 행 */}
               <tr key={`${row.id}-end`}>
                 {/* A-Side Coat Weight - End */}
-                <td>{row.inspection.aSideCoatWeight.op.end}</td>
-                <td>{row.inspection.aSideCoatWeight.mid.end}</td>
-                <td>{row.inspection.aSideCoatWeight.gear.end}</td>
-                <td className={styles.groupSubEnd}>{row.inspection.aSideCoatWeight.pump.end}</td>
+                <td>{row.inspection?.aSideCoatWeight?.op?.end ?? '-'}</td>
+                <td>{row.inspection?.aSideCoatWeight?.mid?.end ?? '-'}</td>
+                <td>{row.inspection?.aSideCoatWeight?.gear?.end ?? '-'}</td>
+                <td className={styles.groupSubEnd}>{row.inspection?.aSideCoatWeight?.pump?.end ?? '-'}</td>
                 {/* Both Coat Weight - End */}
-                <td>{row.inspection.bothCoatWeight.op.end}</td>
-                <td>{row.inspection.bothCoatWeight.mid.end}</td>
-                <td>{row.inspection.bothCoatWeight.gear.end}</td>
+                <td>{row.inspection?.bothCoatWeight?.op?.end ?? '-'}</td>
+                <td>{row.inspection?.bothCoatWeight?.mid?.end ?? '-'}</td>
+                <td>{row.inspection?.bothCoatWeight?.gear?.end ?? '-'}</td>
                 {/* Both Coat Thickness - End */}
-                <td>{row.inspection.bothCoatThickness.op.end}</td>
-                <td>{row.inspection.bothCoatThickness.mid.end}</td>
-                <td className={styles.groupSubEnd}>{row.inspection.bothCoatThickness.gear.end}</td>
+                <td>{row.inspection?.bothCoatThickness?.op?.end ?? '-'}</td>
+                <td>{row.inspection?.bothCoatThickness?.mid?.end ?? '-'}</td>
+                <td className={styles.groupSubEnd}>{row.inspection?.bothCoatThickness?.gear?.end ?? '-'}</td>
                 {/* Temperature - Zone 1,2 End */}
-                <td>{row.dryingCondition.temperature.zone1.end}</td>
-                <td>{row.dryingCondition.temperature.zone2.end}</td>
+                <td>{row.dryingCondition?.temperature?.zone1?.end ?? '-'}</td>
+                <td>{row.dryingCondition?.temperature?.zone2?.end ?? '-'}</td>
                 {/* Supply - Zone 1,2 End */}
-                <td>{row.dryingCondition.supply.zone1.end}</td>
-                <td>{row.dryingCondition.supply.zone2.end}</td>
+                <td>{row.dryingCondition?.supply?.zone1?.end ?? '-'}</td>
+                <td>{row.dryingCondition?.supply?.zone2?.end ?? '-'}</td>
               </tr>
             </>
           ))}

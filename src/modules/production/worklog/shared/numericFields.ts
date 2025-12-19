@@ -136,6 +136,8 @@ export const COATING_NUMERIC_FIELDS = [
     `monoPumpRear${n}`,
     `coatingSpeedFront${n}`,
     `coatingSpeedRear${n}`,
+    `coatingWidth${n}`,
+    `misalignment${n}`,
     `weightPerAreaFront${n}M`,
     `weightPerAreaFront${n}C`,
     `weightPerAreaFront${n}D`,
