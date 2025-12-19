@@ -27,7 +27,7 @@ export default function NotchingGrid({ data }: NotchingGridProps) {
         <thead>
           {/* 대분류 헤더 (1행) */}
           <tr>
-            <th ref={firstColRef} rowSpan={3} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Notching Date</th>
+            <th ref={firstColRef} rowSpan={3} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Date</th>
             <th rowSpan={3} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickySecond}`} style={{ left: secondColLeft }}>Lot</th>
             <th colSpan={2} className={styles.groupNotching}>at Notching</th>
             <th colSpan={4} className={styles.groupElectrode}>Electrode Spec.</th>

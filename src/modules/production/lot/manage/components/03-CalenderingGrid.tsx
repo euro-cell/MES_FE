@@ -27,7 +27,7 @@ export default function CalenderingGrid({ data }: CalenderingGridProps) {
         <thead>
           {/* 대분류 헤더 (1행) */}
           <tr>
-            <th ref={firstColRef} rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Calendering Date</th>
+            <th ref={firstColRef} rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Date</th>
             <th rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickySecond}`} style={{ left: secondColLeft }}>Lot</th>
             <th colSpan={2} className={styles.groupCalendering}>at Calendering</th>
             <th colSpan={3} className={styles.groupElectrode}>Electrode Spec.</th>

@@ -27,7 +27,7 @@ export default function CoatingGrid({ data }: CoatingGridProps) {
         <thead>
           {/* 1행: 대분류 헤더 */}
           <tr>
-            <th ref={firstColRef} rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Coating Date</th>
+            <th ref={firstColRef} rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Date</th>
             <th rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickySecond}`} style={{ left: secondColLeft }}>Lot</th>
             <th colSpan={2} rowSpan={2} className={styles.groupCoating}>at Coating</th>
             <th colSpan={3} rowSpan={2} className={styles.groupElectrode}>Electrode Spec.</th>

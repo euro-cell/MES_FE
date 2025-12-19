@@ -33,10 +33,9 @@ export default function FormationGrid({ data }: FormationGridProps) {
           <tr>
             <th ref={firstColRef} rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Date</th>
             <th ref={secondColRef} rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickySecond}`} style={{ left: secondColLeft }}>Ass'y Lot</th>
-            <th rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyThird}`} style={{ left: thirdColLeft }}>Formation Lot</th>
+            <th rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyThird}`} style={{ left: thirdColLeft }}>최종 Lot</th>
             <th rowSpan={2} colSpan={5} className={styles.groupPreFormation}>Pre-Formation</th>
             <th rowSpan={2} colSpan={2} className={styles.groupFinalSealing}>Final Sealing</th>
-            <th rowSpan={4} className={styles.groupFinalLot}>최종 Lot</th>
             <th rowSpan={2} colSpan={3} className={styles.groupMainFormation}>Main-Formation</th>
             <th rowSpan={2} colSpan={2} className={styles.groupOcvIr1}>OCV/IR1</th>
             <th colSpan={20} className={styles.groupAging}>Aging</th>
@@ -144,7 +143,7 @@ export default function FormationGrid({ data }: FormationGridProps) {
               {/* 기본 정보 */}
               <td className={`${styles.stickyCol} ${styles.stickyFirst} ${styles.groupBasic}`}>{row.date}</td>
               <td className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickySecond} ${styles.groupBasic}`} style={{ left: secondColLeft }}>{row.assyLot}</td>
-              <td className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickyThird} ${styles.groupBasic}`} style={{ left: thirdColLeft }}>{row.formationLot}</td>
+              <td className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickyThird} ${styles.groupBasic}`} style={{ left: thirdColLeft }}>{row.finalLot}</td>
               {/* Pre-Formation */}
               <td>{row.preFormation.equipment}</td>
               <td>{row.preFormation.chNo}</td>
@@ -154,8 +153,6 @@ export default function FormationGrid({ data }: FormationGridProps) {
               {/* Final Sealing */}
               <td>{row.finalSealing.pouchSealingThickness}</td>
               <td className={styles.groupFinalSealingEnd}>{row.finalSealing.sideBottomSealingWidth}</td>
-              {/* 최종 Lot */}
-              <td className={styles.groupBasic}>{row.finalLot}</td>
               {/* Main-Formation */}
               <td>{row.mainFormation.equipment}</td>
               <td>{row.mainFormation.chNo}</td>

@@ -27,7 +27,7 @@ export default function WeldingGrid({ data }: WeldingGridProps) {
         <thead>
           {/* 대분류 헤더 (1행) */}
           <tr>
-            <th ref={firstColRef} rowSpan={3} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Welding Date</th>
+            <th ref={firstColRef} rowSpan={3} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Date</th>
             <th rowSpan={3} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickySecond}`} style={{ left: secondColLeft }}>Lot</th>
             <th colSpan={2} className={styles.groupWelding}>at Welding</th>
             <th colSpan={2} className={styles.groupPreWelding}>Pre Welding</th>

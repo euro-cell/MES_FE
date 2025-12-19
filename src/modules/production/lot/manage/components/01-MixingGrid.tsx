@@ -37,7 +37,7 @@ export default function MixingGrid({ data }: MixingGridProps) {
         <thead>
           {/* 대분류 헤더 */}
           <tr>
-            <th ref={firstColRef} rowSpan={3} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Mixing Date</th>
+            <th ref={firstColRef} rowSpan={3} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Date</th>
             <th rowSpan={3} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickySecond}`} style={{ left: secondColLeft }}>Lot</th>
             <th colSpan={2} className={styles.groupMixing}>at Mixing</th>
             <th colSpan={1} className={styles.groupInput}>INPUT</th>
