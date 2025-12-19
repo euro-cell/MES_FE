@@ -43,8 +43,8 @@ export default function StackingGrid({ data }: StackingGridProps) {
             <th>Thickness</th>
             <th>Alignment (Top/Bottom)</th>
             <th className={styles.groupJellyrollEnd}>IR</th>
-            <th>Notching (양극)</th>
-            <th className={styles.groupMagazineEnd}>Notching (음극)</th>
+            <th rowSpan={2}>Notching (양극)</th>
+            <th rowSpan={2} className={styles.groupMagazineEnd}>Notching (음극)</th>
           </tr>
           {/* 단위 헤더 (3행) */}
           <tr>
@@ -55,8 +55,6 @@ export default function StackingGrid({ data }: StackingGridProps) {
             <th>P/NP</th>
             <th>P/NP</th>
             <th className={styles.groupJellyrollEnd}>P/NP</th>
-            <th>-</th>
-            <th className={styles.groupMagazineEnd}>-</th>
           </tr>
         </thead>
         <tbody>
