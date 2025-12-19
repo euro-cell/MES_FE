@@ -4,6 +4,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
+import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createBinderWorklog } from './BinderService';
 import type { BinderWorklogPayload } from './BinderTypes';
 import { getProject } from '../../WorklogService';
@@ -58,7 +59,7 @@ export default function BinderRegister() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as BinderWorklogPayload;
+      const payload = mapFormToPayload(formValues, namedRanges, BINDER_NUMERIC_FIELDS) as BinderWorklogPayload;
       await createBinderWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/prod/log/${projectId}?category=Electrode&process=Binder`);
@@ -139,6 +140,7 @@ export default function BinderRegister() {
             'stabilizationStartTime',
             'stabilizationEndTime',
           ]}
+          numericFields={BINDER_NUMERIC_FIELDS}
         />
       </div>
 

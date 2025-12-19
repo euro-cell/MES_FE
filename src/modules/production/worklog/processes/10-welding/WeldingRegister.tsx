@@ -61,7 +61,7 @@ export default function WeldingRegister() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as WeldingWorklogPayload;
+      const payload = mapFormToPayload(formValues, namedRanges, WELDING_NUMERIC_FIELDS) as WeldingWorklogPayload;
       await createWeldingWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/prod/log/${projectId}?category=Assembly&process=Welding`);

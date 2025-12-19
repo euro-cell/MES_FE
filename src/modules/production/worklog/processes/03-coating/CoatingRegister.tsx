@@ -4,6 +4,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
+import { COATING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createCoatingWorklog } from './CoatingService';
 import type { CoatingWorklogPayload } from './CoatingTypes';
 import { getProject } from '../../WorklogService';
@@ -58,7 +59,7 @@ export default function CoatingRegister() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as CoatingWorklogPayload;
+      const payload = mapFormToPayload(formValues, namedRanges, COATING_NUMERIC_FIELDS) as CoatingWorklogPayload;
       await createCoatingWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/prod/log/${projectId}?category=Electrode&process=Coating`);
@@ -126,6 +127,7 @@ export default function CoatingRegister() {
           onCellChange={handleCellChange}
           multilineFields={[]}
           timeFields={[]}
+          numericFields={COATING_NUMERIC_FIELDS}
         />
       </div>
 

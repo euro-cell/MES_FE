@@ -4,6 +4,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
+import { GRADING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createGradingWorklog } from './GradingService';
 import type { GradingWorklogPayload } from './GradingTypes';
 import { getProject } from '../../WorklogService';
@@ -58,7 +59,7 @@ export default function GradingRegister() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as GradingWorklogPayload;
+      const payload = mapFormToPayload(formValues, namedRanges, GRADING_NUMERIC_FIELDS) as GradingWorklogPayload;
       await createGradingWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/prod/log/${projectId}?category=Formation&process=Grading`);
@@ -125,6 +126,7 @@ export default function GradingRegister() {
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
+          numericFields={GRADING_NUMERIC_FIELDS}
         />
       </div>
 

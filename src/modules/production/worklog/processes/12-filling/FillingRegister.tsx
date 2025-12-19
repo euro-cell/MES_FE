@@ -4,6 +4,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
+import { FILLING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createFillingWorklog } from './FillingService';
 import type { FillingWorklogPayload } from './FillingTypes';
 import { getProject } from '../../WorklogService';
@@ -58,7 +59,7 @@ export default function FillingRegister() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as FillingWorklogPayload;
+      const payload = mapFormToPayload(formValues, namedRanges, FILLING_NUMERIC_FIELDS) as FillingWorklogPayload;
       await createFillingWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/prod/log/${projectId}?category=Assembly&process=Filling`);
@@ -125,6 +126,7 @@ export default function FillingRegister() {
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
+          numericFields={FILLING_NUMERIC_FIELDS}
         />
       </div>
 

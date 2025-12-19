@@ -4,6 +4,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
+import { STACKING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createStackingWorklog } from './StackingService';
 import type { StackingWorklogPayload } from './StackingTypes';
 import { getProject } from '../../WorklogService';
@@ -60,7 +61,7 @@ export default function StackingRegister() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as StackingWorklogPayload;
+      const payload = mapFormToPayload(formValues, namedRanges, STACKING_NUMERIC_FIELDS) as StackingWorklogPayload;
       await createStackingWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/prod/log/${projectId}?category=Assembly&process=Stacking`);
@@ -128,6 +129,7 @@ export default function StackingRegister() {
           onCellChange={handleCellChange}
           multilineFields={['remark']}
           timeFields={['jr1WorkTime', 'jr2WorkTime', 'jr3WorkTime', 'jr4WorkTime']}
+          numericFields={STACKING_NUMERIC_FIELDS}
         />
       </div>
 

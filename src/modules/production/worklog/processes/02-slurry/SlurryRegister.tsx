@@ -4,6 +4,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
+import { SLURRY_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createSlurryWorklog } from './SlurryService';
 import type { SlurryWorklogPayload } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS } from './slurryConstants';
@@ -59,7 +60,7 @@ export default function SlurryRegister() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as SlurryWorklogPayload;
+      const payload = mapFormToPayload(formValues, namedRanges, SLURRY_NUMERIC_FIELDS) as SlurryWorklogPayload;
       await createSlurryWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/prod/log/${projectId}?category=Electrode&process=Slurry`);
@@ -127,6 +128,7 @@ export default function SlurryRegister() {
           onCellChange={handleCellChange}
           multilineFields={SLURRY_MULTILINE_FIELDS}
           timeFields={SLURRY_TIME_FIELDS}
+          numericFields={SLURRY_NUMERIC_FIELDS}
         />
       </div>
 

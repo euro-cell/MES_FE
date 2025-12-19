@@ -4,6 +4,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
+import { FORMATION_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createFormationWorklog } from './FormationService';
 import type { FormationWorklogPayload } from './FormationTypes';
 import { getProject } from '../../WorklogService';
@@ -58,7 +59,7 @@ export default function FormationRegister() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = mapFormToPayload(formValues, namedRanges) as FormationWorklogPayload;
+      const payload = mapFormToPayload(formValues, namedRanges, FORMATION_NUMERIC_FIELDS) as FormationWorklogPayload;
       await createFormationWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/prod/log/${projectId}?category=Formation&process=Formation`);
@@ -125,6 +126,7 @@ export default function FormationRegister() {
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
+          numericFields={FORMATION_NUMERIC_FIELDS}
         />
       </div>
 
