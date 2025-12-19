@@ -103,6 +103,7 @@
   color: #64748b;
   font-weight: 500;
   font-size: 11px;
+  border-bottom: 2px solid #94a3b8;
 }
 
 .mixingTable tbody tr:hover td {
@@ -115,32 +116,61 @@
 
 /* 컬럼 그룹별 색상 */
 .groupBasic {
-  background: #f8fafc !important;
+  border-right: 2px solid #94a3b8 !important;
+}
+
+/* 헤더의 Mixing Date, Lot 열 (rowSpan으로 3행 병합) */
+.headerBasicCol {
+  background: #1e40af !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-right: 2px solid #94a3b8 !important;
 }
 
 .groupMixing {
   background: #fef3c7 !important;
   color: #92400e !important;
+  border-right: 2px solid #d97706 !important;
 }
 
 .groupInput {
   background: #dbeafe !important;
   color: #1e40af !important;
+  border-right: 2px solid #2563eb !important;
 }
 
 .groupViscosity {
   background: #fce7f3 !important;
   color: #9d174d !important;
+  border-right: 2px solid #db2777 !important;
 }
 
 .groupElectrode {
   background: #d1fae5 !important;
   color: #065f46 !important;
+  border-right: 2px solid #059669 !important;
 }
 
 .groupBinder {
   background: #e0e7ff !important;
   color: #3730a3 !important;
+}
+
+/* 그룹 구분선 (마지막 열에 적용) */
+.groupMixingEnd {
+  border-right: 2px solid #d97706 !important;
+}
+
+.groupInputEnd {
+  border-right: 2px solid #2563eb !important;
+}
+
+.groupViscosityEnd {
+  border-right: 2px solid #db2777 !important;
+}
+
+.groupElectrodeEnd {
+  border-right: 2px solid #059669 !important;
 }
 
 .lotNumber {
