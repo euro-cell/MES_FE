@@ -144,3 +144,44 @@ export interface CoatingData {
   slurryInfo: CoatingSlurryInfo;
   foilInfo: CoatingFoilInfo;
 }
+
+// Calendering 공정 데이터
+export interface CalenderingAtCalendering {
+  temp: number;
+  humidity: number;
+}
+
+export interface CalenderingElectrodeSpec {
+  pressingThick: number;
+  loadingWeight: number;
+}
+
+export interface CalenderingThickness {
+  op: StartEndValue; // 전단/후단
+  mid: StartEndValue; // 전단/후단
+  gear: StartEndValue; // 전단/후단
+}
+
+export interface CalenderingCoatWeight {
+  spec: number;
+  p1: number;
+  p3: number;
+  p4: number;
+}
+
+export interface CalenderingRealInspection {
+  conditions: string;
+  pressingTemp: number;
+  thickness: CalenderingThickness;
+  coatWeight: CalenderingCoatWeight;
+}
+
+export interface CalenderingData {
+  id: number;
+  calenderingDate: string;
+  lot: string;
+  atCalendering: CalenderingAtCalendering;
+  calenderingLen: number; // Both - Calendering Len (m)
+  electrodeSpec: CalenderingElectrodeSpec;
+  realInspection: CalenderingRealInspection;
+}

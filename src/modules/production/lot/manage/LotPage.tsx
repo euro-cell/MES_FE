@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../../components/SubmenuBar';
 import { createCategoryMenus, createProcessMenus, getProcessById } from '../lotConfig';
-import { getProjectInfo, getMixingData, getCoatingData, syncLotData, getSyncStatus } from './LotService';
-import type { LotProject, MixingData, CoatingData } from '../LotTypes';
+import { getProjectInfo, getMixingData, getCoatingData, getCalenderingData, syncLotData, getSyncStatus } from './LotService';
+import type { LotProject, MixingData, CoatingData, CalenderingData } from '../LotTypes';
 import MixingGrid from './components/01-MixingGrid';
 import CoatingGrid from './components/02-CoatingGrid';
+import CalenderingGrid from './components/03-CalenderingGrid';
 import styles from '../../../../styles/production/lot/LotPage.module.css';
 
 // 상대 시간 포맷 함수
@@ -31,6 +32,7 @@ export default function LotPage() {
   const [loading, setLoading] = useState(true);
   const [mixingData, setMixingData] = useState<MixingData[]>([]);
   const [coatingData, setCoatingData] = useState<CoatingData[]>([]);
+  const [calenderingData, setCalenderingData] = useState<CalenderingData[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -76,8 +78,10 @@ export default function LotPage() {
         } else if (process === 'Coating') {
           const data = await getCoatingData(Number(projectId));
           setCoatingData(data);
+        } else if (process === 'Calendering') {
+          const data = await getCalenderingData(Number(projectId));
+          setCalenderingData(data);
         }
-        // TODO: 다른 공정 데이터 로드 추가
       } catch (err) {
         console.error('데이터 조회 실패:', err);
       } finally {
@@ -110,8 +114,10 @@ export default function LotPage() {
       } else if (process === 'Coating') {
         const data = await getCoatingData(Number(projectId));
         setCoatingData(data);
+      } else if (process === 'Calendering') {
+        const data = await getCalenderingData(Number(projectId));
+        setCalenderingData(data);
       }
-      // TODO: 다른 공정 데이터 로드 추가
     } catch (err) {
       console.error('데이터 갱신 실패:', err);
     } finally {
@@ -138,6 +144,8 @@ export default function LotPage() {
         return <MixingGrid data={mixingData} />;
       case 'Coating':
         return <CoatingGrid data={coatingData} />;
+      case 'Calendering':
+        return <CalenderingGrid data={calenderingData} />;
       default:
         return (
           <div className={styles.placeholder}>
