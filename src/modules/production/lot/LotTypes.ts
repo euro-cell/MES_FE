@@ -263,3 +263,29 @@ export interface StackingData {
   jellyrollSpec: StackingJellyrollSpec;
   magazine: StackingMagazine;
 }
+
+// Welding 공정 데이터
+export interface WeldingAtWelding {
+  temp: number;
+  humidity: number;
+}
+
+export interface WeldingPreWelding {
+  weldingPosition: string; // P/N
+  trimPosition: string; // P/N
+}
+
+export interface WeldingMainWelding {
+  weldingPosition: string; // P/N
+  irCheck: string; // P/N
+  taping: string; // P/N
+}
+
+export interface WeldingData {
+  id: number;
+  weldingDate: string;
+  lot: string;
+  atWelding: WeldingAtWelding;
+  preWelding: WeldingPreWelding;
+  mainWelding: WeldingMainWelding;
+}

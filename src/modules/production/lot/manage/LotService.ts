@@ -7,6 +7,7 @@ import type {
   SlittingData,
   NotchingData,
   StackingData,
+  WeldingData,
   SyncStatus,
 } from '../LotTypes';
 
@@ -428,6 +429,45 @@ export async function getStackingData(projectId: number): Promise<StackingData[]
         notchingCathode: { row1: 'NT-C-005', row2: 'NT-C-006' },
         separate: 'SEP-003',
       },
+    },
+  ];
+}
+
+// Welding 데이터 조회 (목데이터)
+export async function getWeldingData(projectId: number): Promise<WeldingData[]> {
+  console.log('Welding 데이터 조회 - projectId:', projectId);
+
+  // TODO: 백엔드 API 연동 시 아래 코드로 교체
+  // const response = await axios.get(`${API_BASE}/production/${projectId}/lot/welding`, {
+  //   withCredentials: true,
+  // });
+  // return response.data;
+
+  // 목데이터
+  return [
+    {
+      id: 1,
+      weldingDate: '2024-12-25',
+      lot: 'WD-241225-001',
+      atWelding: { temp: 25, humidity: 45 },
+      preWelding: { weldingPosition: 'P', trimPosition: 'P' },
+      mainWelding: { weldingPosition: 'P', irCheck: 'P', taping: 'P' },
+    },
+    {
+      id: 2,
+      weldingDate: '2024-12-25',
+      lot: 'WD-241225-002',
+      atWelding: { temp: 25, humidity: 46 },
+      preWelding: { weldingPosition: 'P', trimPosition: 'N' },
+      mainWelding: { weldingPosition: 'P', irCheck: 'P', taping: 'P' },
+    },
+    {
+      id: 3,
+      weldingDate: '2024-12-26',
+      lot: 'WD-241226-001',
+      atWelding: { temp: 24, humidity: 48 },
+      preWelding: { weldingPosition: 'N', trimPosition: 'P' },
+      mainWelding: { weldingPosition: 'P', irCheck: 'N', taping: 'P' },
     },
   ];
 }
