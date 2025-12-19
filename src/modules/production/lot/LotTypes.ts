@@ -200,3 +200,32 @@ export interface SlittingData {
   slittingLength: number; // m
   slittingWidth: number; // mm
 }
+
+// Notching 공정 데이터
+export interface NotchingAtNotching {
+  temp: number;
+  humidity: number;
+}
+
+export interface NotchingElectrodeSpec {
+  overTab: number; // mm
+  wide: number; // mm
+  length: number; // mm
+  missMatch: number; // >mm
+}
+
+export interface NotchingProduction {
+  totalOutput: number; // ea
+  defective: number; // ea
+  quantity: number; // ea
+  fractionDefective: number; // %
+}
+
+export interface NotchingData {
+  id: number;
+  notchingDate: string;
+  lot: string;
+  atNotching: NotchingAtNotching;
+  electrodeSpec: NotchingElectrodeSpec;
+  production: NotchingProduction;
+}

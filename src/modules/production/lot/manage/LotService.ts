@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { LotProject, MixingData, CoatingData, CalenderingData, SlittingData, SyncStatus } from '../LotTypes';
+import type { LotProject, MixingData, CoatingData, CalenderingData, SlittingData, NotchingData, SyncStatus } from '../LotTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -329,6 +329,45 @@ export async function getSlittingData(projectId: number): Promise<SlittingData[]
       atSlitting: { temp: 24, humidity: 48 },
       slittingLength: 410,
       slittingWidth: 90,
+    },
+  ];
+}
+
+// Notching 데이터 조회 (목데이터)
+export async function getNotchingData(projectId: number): Promise<NotchingData[]> {
+  console.log('Notching 데이터 조회 - projectId:', projectId);
+
+  // TODO: 백엔드 API 연동 시 아래 코드로 교체
+  // const response = await axios.get(`${API_BASE}/production/${projectId}/lot/notching`, {
+  //   withCredentials: true,
+  // });
+  // return response.data;
+
+  // 목데이터
+  return [
+    {
+      id: 1,
+      notchingDate: '2024-12-21',
+      lot: 'NT-241221-001',
+      atNotching: { temp: 25, humidity: 45 },
+      electrodeSpec: { overTab: 3.5, wide: 85, length: 400, missMatch: 0.3 },
+      production: { totalOutput: 1200, defective: 12, quantity: 1188, fractionDefective: 1.0 },
+    },
+    {
+      id: 2,
+      notchingDate: '2024-12-21',
+      lot: 'NT-241221-002',
+      atNotching: { temp: 25, humidity: 46 },
+      electrodeSpec: { overTab: 3.4, wide: 85, length: 410, missMatch: 0.2 },
+      production: { totalOutput: 1150, defective: 8, quantity: 1142, fractionDefective: 0.7 },
+    },
+    {
+      id: 3,
+      notchingDate: '2024-12-22',
+      lot: 'NT-241222-001',
+      atNotching: { temp: 24, humidity: 48 },
+      electrodeSpec: { overTab: 3.6, wide: 90, length: 395, missMatch: 0.4 },
+      production: { totalOutput: 1100, defective: 15, quantity: 1085, fractionDefective: 1.4 },
     },
   ];
 }
