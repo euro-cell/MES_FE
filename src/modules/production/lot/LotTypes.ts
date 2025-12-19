@@ -406,3 +406,28 @@ export interface FormationData {
   soc: FormationSoc;
   ocvIr3: FormationOcvIr3;
 }
+
+// Degassing 공정 데이터
+export interface DegassingFinalSealing {
+  pouchSealingThickness: number; // μm
+  sideBottomSealingWidth: string; // P/NP
+  visualInspection: string; // P/NP
+}
+
+export interface DegassingFormation {
+  type: string;
+  year: string;
+  month: string;
+  day: string;
+  cellNo: string[]; // 4칸
+}
+
+export interface DegassingData {
+  id: number;
+  date: string;
+  assyLot: string;
+  formationLot: string;
+  finalLot: string; // 최종 Lot
+  formation: DegassingFormation;
+  finalSealing: DegassingFinalSealing;
+}

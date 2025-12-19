@@ -10,6 +10,7 @@ import type {
   WeldingData,
   SealingData,
   FormationData,
+  DegassingData,
   SyncStatus,
 } from '../LotTypes';
 
@@ -578,6 +579,48 @@ export async function getFormationData(projectId: number): Promise<FormationData
       grading: { equipment: '2호기', chNo: '양', mfd: 3.15, formEff2: 96.8, stc: 3.12, std: 3.10, formEff3: 97.8, temp: 24, wh: 11.3, nominalV: 3.62 },
       soc: { capacity: 3.14, soc: 95.0, dcIr: 23.5 },
       ocvIr3: { ocv3: 3.57, ir3: 24.3 },
+    },
+  ];
+}
+
+// Degassing 데이터 조회 (목데이터)
+export async function getDegassingData(projectId: number): Promise<DegassingData[]> {
+  console.log('Degassing 데이터 조회 - projectId:', projectId);
+
+  // TODO: 백엔드 API 연동 시 아래 코드로 교체
+  // const response = await axios.get(`${API_BASE}/production/${projectId}/lot/degassing`, {
+  //   withCredentials: true,
+  // });
+  // return response.data;
+
+  // 목데이터
+  return [
+    {
+      id: 1,
+      date: '2024-12-29',
+      assyLot: 'AS-241229-001',
+      formationLot: 'FM-241229-001',
+      finalLot: 'FL-241229-001',
+      formation: { type: 'A', year: '2024', month: '12', day: '29', cellNo: ['1', '2', '3', '4'] },
+      finalSealing: { pouchSealingThickness: 150, sideBottomSealingWidth: 'P', visualInspection: 'P' },
+    },
+    {
+      id: 2,
+      date: '2024-12-29',
+      assyLot: 'AS-241229-002',
+      formationLot: 'FM-241229-002',
+      finalLot: 'FL-241229-002',
+      formation: { type: 'B', year: '2024', month: '12', day: '29', cellNo: ['5', '6', '7', '8'] },
+      finalSealing: { pouchSealingThickness: 152, sideBottomSealingWidth: 'P', visualInspection: 'P' },
+    },
+    {
+      id: 3,
+      date: '2024-12-30',
+      assyLot: 'AS-241230-001',
+      formationLot: 'FM-241230-001',
+      finalLot: 'FL-241230-001',
+      formation: { type: 'A', year: '2024', month: '12', day: '30', cellNo: ['9', '0', '1', '2'] },
+      finalSealing: { pouchSealingThickness: 148, sideBottomSealingWidth: 'NP', visualInspection: 'P' },
     },
   ];
 }
