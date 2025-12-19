@@ -229,3 +229,37 @@ export interface NotchingData {
   electrodeSpec: NotchingElectrodeSpec;
   production: NotchingProduction;
 }
+
+// Stacking 공정 데이터
+export interface StackingAtStacking {
+  temp: number;
+  humidity: number;
+}
+
+export interface StackingJellyrollSpec {
+  stack: string; // 양/음
+  weight: string; // P/NP
+  thickness: string; // P/NP
+  alignment: string; // P/NP (Top/Bottom)
+  ir: string; // P/NP
+}
+
+export interface StackingMagazineNotching {
+  row1: string;
+  row2: string;
+}
+
+export interface StackingMagazine {
+  notchingAnode: StackingMagazineNotching; // 양극 (2행)
+  notchingCathode: StackingMagazineNotching; // 음극 (2행)
+  separate: string;
+}
+
+export interface StackingData {
+  id: number;
+  productionDate: string;
+  lot: string;
+  atStacking: StackingAtStacking;
+  jellyrollSpec: StackingJellyrollSpec;
+  magazine: StackingMagazine;
+}

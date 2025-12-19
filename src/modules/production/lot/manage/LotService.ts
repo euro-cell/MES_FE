@@ -1,5 +1,14 @@
 import axios from 'axios';
-import type { LotProject, MixingData, CoatingData, CalenderingData, SlittingData, NotchingData, SyncStatus } from '../LotTypes';
+import type {
+  LotProject,
+  MixingData,
+  CoatingData,
+  CalenderingData,
+  SlittingData,
+  NotchingData,
+  StackingData,
+  SyncStatus,
+} from '../LotTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -138,14 +147,14 @@ export async function getCoatingData(projectId: number): Promise<CoatingData[]> 
       electrodeSpec: { coatLength: 500, coatingWidth: 200, loadingWeight: 18.3 },
       inspection: {
         aSideCoatWeight: {
-          op: { start: 12.30, end: 12.50 },
+          op: { start: 12.3, end: 12.5 },
           mid: { start: 12.38, end: 12.48 },
           gear: { start: 12.32, end: 12.46 },
           webSpeed: 7.0,
           pump: { start: 110.0, end: 110.0 },
         },
         bothCoatWeight: {
-          op: { start: 24.60, end: 25.00 },
+          op: { start: 24.6, end: 25.0 },
           mid: { start: 24.76, end: 24.96 },
           gear: { start: 24.64, end: 24.92 },
           webSpeed: 7.0,
@@ -184,14 +193,14 @@ export async function getCoatingData(projectId: number): Promise<CoatingData[]> 
       electrodeSpec: { coatLength: 480, coatingWidth: 195, loadingWeight: 17.8 },
       inspection: {
         aSideCoatWeight: {
-          op: { start: 11.80, end: 12.00 },
+          op: { start: 11.8, end: 12.0 },
           mid: { start: 11.88, end: 11.98 },
           gear: { start: 11.82, end: 11.96 },
           webSpeed: 6.8,
           pump: { start: 108.0, end: 108.0 },
         },
         bothCoatWeight: {
-          op: { start: 23.60, end: 24.00 },
+          op: { start: 23.6, end: 24.0 },
           mid: { start: 23.76, end: 23.96 },
           gear: { start: 23.64, end: 23.92 },
           webSpeed: 6.8,
@@ -368,6 +377,57 @@ export async function getNotchingData(projectId: number): Promise<NotchingData[]
       atNotching: { temp: 24, humidity: 48 },
       electrodeSpec: { overTab: 3.6, wide: 90, length: 395, missMatch: 0.4 },
       production: { totalOutput: 1100, defective: 15, quantity: 1085, fractionDefective: 1.4 },
+    },
+  ];
+}
+
+// Stacking 데이터 조회 (목데이터)
+export async function getStackingData(projectId: number): Promise<StackingData[]> {
+  console.log('Stacking 데이터 조회 - projectId:', projectId);
+
+  // TODO: 백엔드 API 연동 시 아래 코드로 교체
+  // const response = await axios.get(`${API_BASE}/production/${projectId}/lot/stacking`, {
+  //   withCredentials: true,
+  // });
+  // return response.data;
+
+  // 목데이터
+  return [
+    {
+      id: 1,
+      productionDate: '2024-12-23',
+      lot: 'ST-241223-001',
+      atStacking: { temp: 25, humidity: 45 },
+      jellyrollSpec: { stack: '양', weight: 'P', thickness: 'P', alignment: 'P', ir: 'P' },
+      magazine: {
+        notchingAnode: { row1: 'NT-A-001', row2: 'NT-A-002' },
+        notchingCathode: { row1: 'NT-C-001', row2: 'NT-C-002' },
+        separate: 'SEP-001',
+      },
+    },
+    {
+      id: 2,
+      productionDate: '2024-12-23',
+      lot: 'ST-241223-002',
+      atStacking: { temp: 25, humidity: 46 },
+      jellyrollSpec: { stack: '음', weight: 'P', thickness: 'NP', alignment: 'P', ir: 'P' },
+      magazine: {
+        notchingAnode: { row1: 'NT-A-003', row2: 'NT-A-004' },
+        notchingCathode: { row1: 'NT-C-003', row2: 'NT-C-004' },
+        separate: 'SEP-002',
+      },
+    },
+    {
+      id: 3,
+      productionDate: '2024-12-24',
+      lot: 'ST-241224-001',
+      atStacking: { temp: 24, humidity: 48 },
+      jellyrollSpec: { stack: '양', weight: 'NP', thickness: 'P', alignment: 'NP', ir: 'P' },
+      magazine: {
+        notchingAnode: { row1: 'NT-A-005', row2: 'NT-A-006' },
+        notchingCathode: { row1: 'NT-C-005', row2: 'NT-C-006' },
+        separate: 'SEP-003',
+      },
     },
   ];
 }

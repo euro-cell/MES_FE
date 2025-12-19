@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../../components/SubmenuBar';
 import { createCategoryMenus, createProcessMenus, getProcessById } from '../lotConfig';
-import { getProjectInfo, getMixingData, getCoatingData, getCalenderingData, getSlittingData, getNotchingData, syncLotData, getSyncStatus } from './LotService';
-import type { LotProject, MixingData, CoatingData, CalenderingData, SlittingData, NotchingData } from '../LotTypes';
+import { getProjectInfo, getMixingData, getCoatingData, getCalenderingData, getSlittingData, getNotchingData, getStackingData, syncLotData, getSyncStatus } from './LotService';
+import type { LotProject, MixingData, CoatingData, CalenderingData, SlittingData, NotchingData, StackingData } from '../LotTypes';
 import MixingGrid from './components/01-MixingGrid';
 import CoatingGrid from './components/02-CoatingGrid';
 import CalenderingGrid from './components/03-CalenderingGrid';
 import SlittingGrid from './components/04-SlittingGrid';
 import NotchingGrid from './components/05-NotchingGrid';
+import StackingGrid from './components/06-StackingGrid';
 import styles from '../../../../styles/production/lot/LotPage.module.css';
 
 // 상대 시간 포맷 함수
@@ -37,6 +38,7 @@ export default function LotPage() {
   const [calenderingData, setCalenderingData] = useState<CalenderingData[]>([]);
   const [slittingData, setSlittingData] = useState<SlittingData[]>([]);
   const [notchingData, setNotchingData] = useState<NotchingData[]>([]);
+  const [stackingData, setStackingData] = useState<StackingData[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -91,6 +93,9 @@ export default function LotPage() {
         } else if (process === 'Notching') {
           const data = await getNotchingData(Number(projectId));
           setNotchingData(data);
+        } else if (process === 'Stacking') {
+          const data = await getStackingData(Number(projectId));
+          setStackingData(data);
         }
       } catch (err) {
         console.error('데이터 조회 실패:', err);
@@ -133,6 +138,9 @@ export default function LotPage() {
       } else if (process === 'Notching') {
         const data = await getNotchingData(Number(projectId));
         setNotchingData(data);
+      } else if (process === 'Stacking') {
+        const data = await getStackingData(Number(projectId));
+        setStackingData(data);
       }
     } catch (err) {
       console.error('데이터 갱신 실패:', err);
@@ -166,6 +174,8 @@ export default function LotPage() {
         return <SlittingGrid data={slittingData} />;
       case 'Notching':
         return <NotchingGrid data={notchingData} />;
+      case 'Stacking':
+        return <StackingGrid data={stackingData} />;
       default:
         return (
           <div className={styles.placeholder}>
