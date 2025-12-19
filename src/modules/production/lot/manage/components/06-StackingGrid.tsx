@@ -36,18 +36,27 @@ export default function StackingGrid({ data }: StackingGridProps) {
           </tr>
           {/* 중분류 헤더 (2행) */}
           <tr>
-            <th rowSpan={2}>Temp<br/><span className={styles.unit}>°C</span></th>
-            <th rowSpan={2} className={styles.groupStackingEnd}>Humidity<br/><span className={styles.unit}>%</span></th>
-            <th rowSpan={2}>Stack<br/><span className={styles.unit}>양/음</span></th>
-            <th rowSpan={2}>Weight<br/><span className={styles.unit}>P/NP</span></th>
-            <th rowSpan={2}>Thickness<br/><span className={styles.unit}>P/NP</span></th>
-            <th rowSpan={2}>Alignment (Top/Bottom)<br/><span className={styles.unit}>P/NP</span></th>
-            <th rowSpan={2} className={styles.groupJellyrollEnd}>IR<br/><span className={styles.unit}>P/NP</span></th>
-            <th rowSpan={2}>Notching (양극)</th>
-            <th rowSpan={2} className={styles.groupMagazineEnd}>Notching (음극)</th>
+            <th>Temp</th>
+            <th className={styles.groupStackingEnd}>Humidity</th>
+            <th>Stack</th>
+            <th>Weight</th>
+            <th>Thickness</th>
+            <th>Alignment (Top/Bottom)</th>
+            <th className={styles.groupJellyrollEnd}>IR</th>
+            <th>Notching (양극)</th>
+            <th className={styles.groupMagazineEnd}>Notching (음극)</th>
           </tr>
-          {/* 단위 헤더 (3행) - 빈 행 (모두 rowSpan으로 병합됨) */}
+          {/* 단위 헤더 (3행) */}
           <tr>
+            <th>°C</th>
+            <th className={styles.groupStackingEnd}>%</th>
+            <th>양/음</th>
+            <th>P/NP</th>
+            <th>P/NP</th>
+            <th>P/NP</th>
+            <th className={styles.groupJellyrollEnd}>P/NP</th>
+            <th>-</th>
+            <th className={styles.groupMagazineEnd}>-</th>
           </tr>
         </thead>
         <tbody>

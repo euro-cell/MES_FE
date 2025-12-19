@@ -35,16 +35,23 @@ export default function WeldingGrid({ data }: WeldingGridProps) {
           </tr>
           {/* 중분류 헤더 (2행) */}
           <tr>
-            <th rowSpan={2}>Temp<br/><span className={styles.unit}>°C</span></th>
-            <th rowSpan={2} className={styles.groupWeldingEnd}>Humidity<br/><span className={styles.unit}>%</span></th>
-            <th rowSpan={2}>Welding Position<br/><span className={styles.unit}>P/N</span></th>
-            <th rowSpan={2} className={styles.groupPreWeldingEnd}>Trim Position<br/><span className={styles.unit}>P/N</span></th>
-            <th rowSpan={2}>Welding Position<br/><span className={styles.unit}>P/N</span></th>
-            <th rowSpan={2}>IR Check<br/><span className={styles.unit}>P/N</span></th>
-            <th rowSpan={2}>Taping<br/><span className={styles.unit}>P/N</span></th>
+            <th>Temp</th>
+            <th className={styles.groupWeldingEnd}>Humidity</th>
+            <th>Welding Position</th>
+            <th className={styles.groupPreWeldingEnd}>Trim Position</th>
+            <th>Welding Position</th>
+            <th>IR Check</th>
+            <th>Taping</th>
           </tr>
-          {/* 단위 헤더 (3행) - 빈 행 (모두 rowSpan으로 병합됨) */}
+          {/* 단위 헤더 (3행) */}
           <tr>
+            <th>°C</th>
+            <th className={styles.groupWeldingEnd}>%</th>
+            <th>P/N</th>
+            <th className={styles.groupPreWeldingEnd}>P/N</th>
+            <th>P/N</th>
+            <th>P/N</th>
+            <th>P/N</th>
           </tr>
         </thead>
         <tbody>
