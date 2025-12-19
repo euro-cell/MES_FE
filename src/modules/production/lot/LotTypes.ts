@@ -289,3 +289,43 @@ export interface WeldingData {
   preWelding: WeldingPreWelding;
   mainWelding: WeldingMainWelding;
 }
+
+// Sealing/Filling 공정 데이터
+export interface SealingAtAssy {
+  temp: number;
+  humidity: number;
+}
+
+export interface SealingTopSealing {
+  sealantHeight: string; // Sealant 돌출높이 P/NP
+  pouchSealingThickness: number; // μm
+  tabSealingThickness: number; // μm
+  visualInspection: string; // P/NP
+}
+
+export interface SealingSideSealing {
+  pouchSealingThickness: number; // μm
+  sideBottomSealingWidth: string; // P/NP
+  visualInspection: string; // P/NP
+  irCheck: string; // P/NP
+}
+
+export interface SealingFilling {
+  injection: string; // 주액 - 완료 일자
+  lot: string; // LOT - 전해액
+}
+
+export interface SealingProduction {
+  lot: string; // LOT - Pouch
+}
+
+export interface SealingData {
+  id: number;
+  fillingDate: string;
+  lot: string;
+  atAssy: SealingAtAssy;
+  topSealing: SealingTopSealing;
+  sideSealing: SealingSideSealing;
+  filling: SealingFilling;
+  production: SealingProduction;
+}

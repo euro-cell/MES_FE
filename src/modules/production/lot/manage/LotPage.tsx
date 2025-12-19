@@ -2,8 +2,30 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../../components/SubmenuBar';
 import { createCategoryMenus, createProcessMenus, getProcessById } from '../lotConfig';
-import { getProjectInfo, getMixingData, getCoatingData, getCalenderingData, getSlittingData, getNotchingData, getStackingData, getWeldingData, syncLotData, getSyncStatus } from './LotService';
-import type { LotProject, MixingData, CoatingData, CalenderingData, SlittingData, NotchingData, StackingData, WeldingData } from '../LotTypes';
+import {
+  getProjectInfo,
+  getMixingData,
+  getCoatingData,
+  getCalenderingData,
+  getSlittingData,
+  getNotchingData,
+  getStackingData,
+  getWeldingData,
+  getSealingData,
+  syncLotData,
+  getSyncStatus,
+} from './LotService';
+import type {
+  LotProject,
+  MixingData,
+  CoatingData,
+  CalenderingData,
+  SlittingData,
+  NotchingData,
+  StackingData,
+  WeldingData,
+  SealingData,
+} from '../LotTypes';
 import MixingGrid from './components/01-MixingGrid';
 import CoatingGrid from './components/02-CoatingGrid';
 import CalenderingGrid from './components/03-CalenderingGrid';
@@ -11,6 +33,7 @@ import SlittingGrid from './components/04-SlittingGrid';
 import NotchingGrid from './components/05-NotchingGrid';
 import StackingGrid from './components/06-StackingGrid';
 import WeldingGrid from './components/07-WeldingGrid';
+import SealingGrid from './components/08-SealingGrid';
 import styles from '../../../../styles/production/lot/LotPage.module.css';
 
 // 상대 시간 포맷 함수
@@ -41,6 +64,7 @@ export default function LotPage() {
   const [notchingData, setNotchingData] = useState<NotchingData[]>([]);
   const [stackingData, setStackingData] = useState<StackingData[]>([]);
   const [weldingData, setWeldingData] = useState<WeldingData[]>([]);
+  const [sealingData, setSealingData] = useState<SealingData[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -101,6 +125,9 @@ export default function LotPage() {
         } else if (process === 'Welding') {
           const data = await getWeldingData(Number(projectId));
           setWeldingData(data);
+        } else if (process === 'Sealing_Filling') {
+          const data = await getSealingData(Number(projectId));
+          setSealingData(data);
         }
       } catch (err) {
         console.error('데이터 조회 실패:', err);
@@ -149,6 +176,9 @@ export default function LotPage() {
       } else if (process === 'Welding') {
         const data = await getWeldingData(Number(projectId));
         setWeldingData(data);
+      } else if (process === 'Sealing_Filling') {
+        const data = await getSealingData(Number(projectId));
+        setSealingData(data);
       }
     } catch (err) {
       console.error('데이터 갱신 실패:', err);
@@ -186,6 +216,8 @@ export default function LotPage() {
         return <StackingGrid data={stackingData} />;
       case 'Welding':
         return <WeldingGrid data={weldingData} />;
+      case 'Sealing_Filling':
+        return <SealingGrid data={sealingData} />;
       default:
         return (
           <div className={styles.placeholder}>
@@ -223,30 +255,26 @@ export default function LotPage() {
         {/* 갱신 버튼 */}
         {currentProcess && (
           <div className={styles.refreshSection}>
-            <button
-              className={styles.refreshButton}
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-            >
+            <button className={styles.refreshButton} onClick={handleRefresh} disabled={isRefreshing}>
               {isRefreshing ? (
                 '갱신 중...'
               ) : (
                 <>
                   <svg
                     className={styles.refreshIcon}
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    width='16'
+                    height='16'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   >
-                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                    <path d="M3 3v5h5" />
-                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-                    <path d="M16 21h5v-5" />
+                    <path d='M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8' />
+                    <path d='M3 3v5h5' />
+                    <path d='M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16' />
+                    <path d='M16 21h5v-5' />
                   </svg>
                   데이터 갱신
                 </>
