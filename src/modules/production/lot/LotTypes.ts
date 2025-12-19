@@ -329,3 +329,80 @@ export interface SealingData {
   filling: SealingFilling;
   production: SealingProduction;
 }
+
+// Formation 공정 데이터
+export interface FormationPreFormation {
+  equipment: string; // 설비 - 호기
+  chNo: string; // CH No. - 양/음
+  pfc: number; // PFC - Ah
+  rfd: number; // RFD - Ah
+  forEff1: number; // For.EFF_1 - %
+}
+
+export interface FormationFinalSealing {
+  pouchSealingThickness: number; // μm
+  sideBottomSealingWidth: string; // P/NP
+}
+
+export interface FormationMainFormation {
+  equipment: string; // 설비 - 호기
+  chNo: string; // CH No. - 양/음
+  mfc: number; // MFC - Ah
+}
+
+export interface FormationOcvIr1 {
+  ocv1: number; // OCV1 - V
+  ir1: number; // IR1 - mΩ
+}
+
+export interface FormationAging4Days {
+  ocv2_4: number; // OCV2-4 - V
+  ir2_4: number; // IR2-4 - mΩ
+}
+
+export interface FormationAging7Days {
+  ocv2_7: number; // OCV2-7 - V
+  ir2_7: number; // IR2-7 - mΩ
+  deltaV: number; // Delta V - V
+}
+
+export interface FormationGrading {
+  equipment: string; // 설비 - 호기
+  chNo: string; // CH No. - 양/음
+  mfd: number; // MFD - Ah
+  formEff2: number; // Form.EFF_2 - %
+  stc: number; // STC - Ah
+  std: number; // STD - Ah
+  formEff3: number; // Form.EFF_3 - %
+  temp: number; // Temp. - °C
+  wh: number; // Wh - Wh
+  nominalV: number; // Nominal V - V
+}
+
+export interface FormationSoc {
+  capacity: number; // Capacity - Ah
+  soc: number; // SOC - %
+  dcIr: number; // DC-IR - mΩ
+}
+
+export interface FormationOcvIr3 {
+  ocv3: number; // OCV3 - V
+  ir3: number; // IR3 - mΩ
+}
+
+export interface FormationData {
+  id: number;
+  date: string;
+  assyLot: string;
+  formationLot: string;
+  preFormation: FormationPreFormation;
+  finalSealing: FormationFinalSealing;
+  finalLot: string; // 최종 Lot
+  mainFormation: FormationMainFormation;
+  ocvIr1: FormationOcvIr1;
+  aging4Days: FormationAging4Days;
+  aging7Days: FormationAging7Days;
+  grading: FormationGrading;
+  soc: FormationSoc;
+  ocvIr3: FormationOcvIr3;
+}

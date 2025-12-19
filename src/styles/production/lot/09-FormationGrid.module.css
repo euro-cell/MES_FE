@@ -1,0 +1,271 @@
+.formationGrid {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+.formationTable {
+  width: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+  background: #fff;
+  margin: 0 auto;
+}
+
+.formationTable th,
+.formationTable td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 8px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 고정 열 스타일 */
+.stickyCol {
+  position: sticky;
+  z-index: 2;
+  white-space: nowrap;
+  background: #fff;
+}
+
+.stickyFirst {
+  left: 0;
+}
+
+.stickySecond {
+  /* left는 JS에서 동적으로 설정 */
+}
+
+.stickyThird {
+  /* left는 JS에서 동적으로 설정 */
+}
+
+/* 헤더 상단 고정 */
+.formationTable thead th {
+  position: sticky;
+  z-index: 2;
+}
+
+.formationTable thead tr:first-child th {
+  top: 0;
+}
+
+.formationTable thead tr:nth-child(2) th {
+  top: 29px;
+}
+
+.formationTable thead tr:nth-child(3) th {
+  top: 55px;
+}
+
+.formationTable thead tr:nth-child(4) th {
+  top: 81px;
+}
+
+/* 고정 열 헤더 - 좌측+상단 모두 고정 시 z-index 높게 */
+.formationTable thead .stickyCol {
+  z-index: 4;
+}
+
+.formationTable thead tr:first-child .stickyCol {
+  background: #1e40af;
+}
+
+.formationTable thead tr:nth-child(2) .stickyCol {
+  background: #1e40af;
+}
+
+.formationTable thead tr:nth-child(3) .stickyCol {
+  background: #f1f5f9;
+}
+
+.formationTable thead tr:nth-child(4) .stickyCol {
+  background: #f8fafc;
+}
+
+.formationTable tbody .stickyCol {
+  background: #fff;
+}
+
+.formationTable tbody tr:hover .stickyCol {
+  background: #f8fafc;
+}
+
+/* 대분류 헤더 (1행) */
+.formationTable thead tr:first-child th {
+  background: #1e40af;
+  color: white;
+  font-weight: 600;
+  border-bottom: 2px solid #1e3a8a;
+}
+
+/* Aging 중분류 헤더 (2행) */
+.formationTable thead tr:nth-child(2) th {
+  background: #1e40af;
+  color: white;
+  font-weight: 600;
+  font-size: 12px;
+  border-bottom: 2px solid #1e3a8a;
+}
+
+/* 중분류 헤더 (3행) */
+.formationTable thead tr:nth-child(3) th {
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 600;
+  font-size: 12px;
+  border-bottom: 2px solid #94a3b8;
+}
+
+/* 단위 헤더 (4행) */
+.formationTable thead tr:nth-child(4) th {
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 11px;
+  border-bottom: 2px solid #94a3b8;
+}
+
+.formationTable tbody tr:hover td {
+  background: #f8fafc;
+}
+
+.formationTable tbody td {
+  color: #475569;
+}
+
+/* 컬럼 그룹별 색상 */
+.groupBasic {
+  border-right: 2px solid #94a3b8 !important;
+}
+
+/* 헤더의 Date, Ass'y Lot, Formation Lot 열 (rowSpan으로 3행 병합) */
+.headerBasicCol {
+  background: #1e40af !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-right: 2px solid #94a3b8 !important;
+}
+
+/* Pre-Formation 그룹 (노란색) */
+.groupPreFormation {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border-right: 2px solid #d97706 !important;
+}
+
+.groupPreFormationEnd {
+  border-right: 2px solid #d97706 !important;
+}
+
+/* Final Sealing 그룹 (초록색) */
+.groupFinalSealing {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  border-right: 2px solid #059669 !important;
+}
+
+.groupFinalSealingEnd {
+  border-right: 2px solid #059669 !important;
+}
+
+/* 최종 Lot */
+.groupFinalLot {
+  background: #1e40af !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-right: 2px solid #94a3b8 !important;
+}
+
+/* Main-Formation 그룹 (보라색) */
+.groupMainFormation {
+  background: #e0e7ff !important;
+  color: #3730a3 !important;
+  border-right: 2px solid #6366f1 !important;
+}
+
+.groupMainFormationEnd {
+  border-right: 2px solid #6366f1 !important;
+}
+
+/* OCV/IR1 그룹 (청록색) */
+.groupOcvIr1 {
+  background: #cffafe !important;
+  color: #0e7490 !important;
+  border-right: 2px solid #06b6d4 !important;
+}
+
+.groupOcvIr1End {
+  border-right: 2px solid #06b6d4 !important;
+}
+
+/* Aging 그룹 (핑크색) */
+.groupAging {
+  background: #fce7f3 !important;
+  color: #9d174d !important;
+  border-right: 2px solid #db2777 !important;
+}
+
+/* Aging - 4Days 그룹 */
+.groupAging4Days {
+  background: #fdf2f8 !important;
+  color: #be185d !important;
+  border-right: 2px solid #ec4899 !important;
+}
+
+.groupAging4DaysEnd {
+  border-right: 2px solid #ec4899 !important;
+}
+
+/* Aging - 7Days 그룹 */
+.groupAging7Days {
+  background: #fbcfe8 !important;
+  color: #9d174d !important;
+  border-right: 2px solid #db2777 !important;
+}
+
+.groupAging7DaysEnd {
+  border-right: 2px solid #db2777 !important;
+}
+
+/* Grading 그룹 (오렌지색) */
+.groupGrading {
+  background: #ffedd5 !important;
+  color: #9a3412 !important;
+  border-right: 2px solid #ea580c !important;
+}
+
+.groupGradingEnd {
+  border-right: 2px solid #ea580c !important;
+}
+
+/* SOC 그룹 (라임색) */
+.groupSoc {
+  background: #ecfccb !important;
+  color: #3f6212 !important;
+  border-right: 2px solid #84cc16 !important;
+}
+
+.groupSocEnd {
+  border-right: 2px solid #84cc16 !important;
+}
+
+/* OCV/IR3 그룹 (회색) */
+.groupOcvIr3 {
+  background: #e5e7eb !important;
+  color: #374151 !important;
+}
+
+.lotNumber {
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.noData {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}

@@ -12,6 +12,7 @@ import {
   getStackingData,
   getWeldingData,
   getSealingData,
+  getFormationData,
   syncLotData,
   getSyncStatus,
 } from './LotService';
@@ -25,6 +26,7 @@ import type {
   StackingData,
   WeldingData,
   SealingData,
+  FormationData,
 } from '../LotTypes';
 import MixingGrid from './components/01-MixingGrid';
 import CoatingGrid from './components/02-CoatingGrid';
@@ -34,6 +36,7 @@ import NotchingGrid from './components/05-NotchingGrid';
 import StackingGrid from './components/06-StackingGrid';
 import WeldingGrid from './components/07-WeldingGrid';
 import SealingGrid from './components/08-SealingGrid';
+import FormationGrid from './components/09-FormationGrid';
 import styles from '../../../../styles/production/lot/LotPage.module.css';
 
 // 상대 시간 포맷 함수
@@ -65,6 +68,7 @@ export default function LotPage() {
   const [stackingData, setStackingData] = useState<StackingData[]>([]);
   const [weldingData, setWeldingData] = useState<WeldingData[]>([]);
   const [sealingData, setSealingData] = useState<SealingData[]>([]);
+  const [formationData, setFormationData] = useState<FormationData[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -128,6 +132,9 @@ export default function LotPage() {
         } else if (process === 'Sealing_Filling') {
           const data = await getSealingData(Number(projectId));
           setSealingData(data);
+        } else if (process === 'Formation') {
+          const data = await getFormationData(Number(projectId));
+          setFormationData(data);
         }
       } catch (err) {
         console.error('데이터 조회 실패:', err);
@@ -179,6 +186,9 @@ export default function LotPage() {
       } else if (process === 'Sealing_Filling') {
         const data = await getSealingData(Number(projectId));
         setSealingData(data);
+      } else if (process === 'Formation') {
+        const data = await getFormationData(Number(projectId));
+        setFormationData(data);
       }
     } catch (err) {
       console.error('데이터 갱신 실패:', err);
@@ -218,6 +228,8 @@ export default function LotPage() {
         return <WeldingGrid data={weldingData} />;
       case 'Sealing_Filling':
         return <SealingGrid data={sealingData} />;
+      case 'Formation':
+        return <FormationGrid data={formationData} />;
       default:
         return (
           <div className={styles.placeholder}>
