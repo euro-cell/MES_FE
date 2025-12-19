@@ -49,3 +49,98 @@ export interface SyncStatus {
   process: string;
   syncedAt: string;
 }
+
+// Coating 공정 데이터
+export interface CoatingAtCoating {
+  temp: number;
+  humidity: number;
+}
+
+export interface CoatingElectrodeSpec {
+  coatLength: number;
+  coatingWidth: number;
+  loadingWeight: number;
+}
+
+// Start/End 값 (전단/후단)
+export interface StartEndValue {
+  start: number;
+  end: number;
+}
+
+// A-Side Coat Weight (OP, Mid, Gear - 각각 Start/End)
+export interface CoatingASideCoatWeight {
+  op: StartEndValue;
+  mid: StartEndValue;
+  gear: StartEndValue;
+  webSpeed: number;
+  pump: StartEndValue;
+}
+
+// Both Coat Weight (OP, Mid, Gear - 각각 Start/End)
+export interface CoatingBothCoatWeight {
+  op: StartEndValue;
+  mid: StartEndValue;
+  gear: StartEndValue;
+  webSpeed: number;
+  pump: number;
+}
+
+// Both Coat Thickness (OP, Mid, Gear - 각각 Start/End)
+export interface CoatingBothCoatThickness {
+  op: StartEndValue;
+  mid: StartEndValue;
+  gear: StartEndValue;
+}
+
+export interface CoatingInspection {
+  aSideCoatWeight: CoatingASideCoatWeight;
+  bothCoatWeight: CoatingBothCoatWeight;
+  bothCoatThickness: CoatingBothCoatThickness;
+  misalignment: number;
+}
+
+export interface CoatingDryingCondition {
+  temperature: {
+    zone1: StartEndValue; // 2줄
+    zone2: StartEndValue; // 2줄
+    zone3: number; // 1줄
+    zone4: number; // 1줄
+  };
+  supply: {
+    zone1: StartEndValue; // 2줄
+    zone2: StartEndValue; // 2줄
+    zone3: number; // 1줄
+    zone4: number; // 1줄
+  };
+  exhaust: {
+    zone2: number; // 1줄
+    zone4: number; // 1줄
+  };
+}
+
+export interface CoatingSlurryInfo {
+  lot: string;
+  viscosity: number;
+  solidContent: number;
+}
+
+export interface CoatingFoilInfo {
+  lot: string;
+  type: string;
+  length: number;
+  width: number;
+  thickness: number;
+}
+
+export interface CoatingData {
+  id: number;
+  coatingDate: string;
+  lot: string;
+  atCoating: CoatingAtCoating;
+  electrodeSpec: CoatingElectrodeSpec;
+  inspection: CoatingInspection;
+  dryingCondition: CoatingDryingCondition;
+  slurryInfo: CoatingSlurryInfo;
+  foilInfo: CoatingFoilInfo;
+}
