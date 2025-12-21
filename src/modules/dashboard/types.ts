@@ -25,11 +25,12 @@ export interface DashboardProgressData {
   formation: string; // 화성
 }
 
-/** ✅ 공정별 실제 값 (차트 렌더용) */
-export interface DashboardProcessRaw {
-  전극: number;
-  조립: number;
-  화성: number;
+/** ✅ API 응답: 프로젝트 진행률 */
+export interface ProductionProgressResponse {
+  electrode: number; // 전극 진행률 (0-100)
+  assembly: number; // 조립 진행률 (0-100)
+  formation: number; // 화성 진행률 (0-100)
+  overall: number; // 전체 진행률 (0-100)
 }
 
 /** ✅ 프로젝트 + 일정 결합 데이터 */

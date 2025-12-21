@@ -1,6 +1,7 @@
 import Chart from 'chart.js/auto';
+import type { ProductionProgressResponse } from './types';
 
-export function renderProcessChart(canvasId: string, projectName: string, data: any) {
+export function renderProcessChart(canvasId: string, projectName: string, data: ProductionProgressResponse) {
   const ctx = document.getElementById(canvasId) as HTMLCanvasElement;
   if (!ctx) {
     return {
@@ -9,7 +10,7 @@ export function renderProcessChart(canvasId: string, projectName: string, data: 
     };
   }
 
-  const avg = Math.round((data.전극 + data.조립 + data.화성) / 3);
+  const avg = Math.round(data.overall);
 
   const newChart = new Chart(ctx, {
     type: 'pie',
@@ -41,9 +42,9 @@ export function renderProcessChart(canvasId: string, projectName: string, data: 
   return {
     newChart,
     progressData: {
-      electrode: `${data.전극}%`,
-      assembly: `${data.조립}%`,
-      formation: `${data.화성}%`,
+      electrode: `${data.electrode.toFixed(2)}%`,
+      assembly: `${data.assembly.toFixed(2)}%`,
+      formation: `${data.formation.toFixed(2)}%`,
     },
   };
 }

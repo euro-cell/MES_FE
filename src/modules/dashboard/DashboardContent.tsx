@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import Chart from 'chart.js/auto';
 import { renderProcessChart } from './chartUtils';
-import { getAllProductions, getProductionPlan, createProduction } from './dashboardService';
+import { getAllProductions, getProductionPlan, createProduction, getProductionProgress } from './dashboardService';
 import type {
   DashboardProject,
-  DashboardProcessRaw,
   DashboardProgressData,
   DashboardFormState,
   DashboardProjectPlan,
@@ -35,20 +34,22 @@ export default function DashboardContent() {
     targetQuantity: 0,
   });
 
-  const processData: Record<string, DashboardProcessRaw> = {
-    'A 프로젝트': { 전극: 50, 조립: 20, 화성: 80 },
-    'B 프로젝트': { 전극: 70, 조립: 40, 화성: 50 },
-    'C 프로젝트': { 전극: 30, 조립: 60, 화성: 10 },
-    'D 프로젝트': { 전극: 60, 조립: 30, 화성: 40 },
-  };
-
-  const renderChart = (projectName: string) => {
-    const data = processData[projectName];
-    if (!data) return;
-    if (chart) chart.destroy();
-    const { newChart, progressData } = renderProcessChart('processChart', projectName, data);
-    setChart(newChart);
-    setProgress(progressData);
+  const renderChart = async (project: DashboardProject) => {
+    try {
+      if (chart) chart.destroy();
+      const data = await getProductionProgress(project.id);
+      const { newChart, progressData } = renderProcessChart('processChart', project.name, data);
+      setChart(newChart);
+      setProgress(progressData);
+    } catch (err) {
+      console.error('프로젝트 진행률 로드 실패:', err);
+      // 에러 발생 시 기본값으로 설정
+      setProgress({
+        electrode: '-',
+        assembly: '-',
+        formation: '-',
+      });
+    }
   };
 
   const fetchProjectsAndPlans = async () => {
@@ -74,7 +75,7 @@ export default function DashboardContent() {
   return (
     <div className='dashboard-content'>
       <div className='dashboard-top'>
-        <DashboardSummary processData={processData} projects={projects} onSelectProject={renderChart} />
+        <DashboardSummary projects={projects} onSelectProject={renderChart} />
         <DashboardProgress progress={progress} />
         <DashboardProjectManager
           form={form}

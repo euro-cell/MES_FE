@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { DashboardProject, DashboardProjectPlan } from './types';
+import type { DashboardProject, DashboardProjectPlan, ProductionProgressResponse } from './types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -31,5 +31,10 @@ export const updateProduction = async (id: number, form: any) => {
 
 export const deleteProduction = async (id: number) => {
   const res = await axios.delete(`${API_BASE}/production/${id}`, { withCredentials: true });
+  return res.data;
+};
+
+export const getProductionProgress = async (id: number): Promise<ProductionProgressResponse> => {
+  const res = await axios.get(`${API_BASE}/production/${id}/status/progress`, { withCredentials: true });
   return res.data;
 };
