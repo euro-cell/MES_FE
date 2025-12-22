@@ -286,6 +286,8 @@ export interface WeldingData {
   id: number;
   weldingDate: string;
   lot: string;
+  isDefectiveFromStacking?: boolean;
+  isDefectiveFromWelding?: boolean;
   atWelding: WeldingAtWelding;
   preWelding: WeldingPreWelding;
   mainWelding: WeldingMainWelding;

@@ -55,8 +55,14 @@ export default function WeldingGrid({ data }: WeldingGridProps) {
           </tr>
         </thead>
         <tbody>
-          {data.map(row => (
-            <tr key={row.id}>
+          {data.map(row => {
+            const rowClassName = row.isDefectiveFromWelding
+              ? styles.defectiveFromWelding
+              : row.isDefectiveFromStacking
+                ? styles.defectiveFromStacking
+                : '';
+            return (
+            <tr key={row.id} className={rowClassName}>
               <td className={`${styles.stickyCol} ${styles.stickyFirst} ${styles.groupBasic}`}>{row.weldingDate}</td>
               <td className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickySecond} ${styles.groupBasic}`} style={{ left: secondColLeft }}>{row.lot}</td>
               <td>{row.atWelding.temp}</td>
@@ -67,7 +73,8 @@ export default function WeldingGrid({ data }: WeldingGridProps) {
               <td>{row.mainWelding.irCheck}</td>
               <td>{row.mainWelding.taping}</td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>
