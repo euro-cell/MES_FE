@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { DashboardProject, DashboardFormState } from './types';
 import { updateProduction } from './dashboardService';
-import '../../styles/dashboard/modal.css';
+import styles from '../../styles/dashboard/modal.module.css';
 
 interface Props {
   projects: DashboardProject[];
@@ -62,15 +62,15 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
   };
 
   return (
-    <div className='modal-overlay wide'>
-      <div className='modal large'>
+    <div className={`${styles.modalOverlay} ${styles.wide}`}>
+      <div className={`${styles.modal} ${styles.large}`}>
         <h3>프로젝트 수정</h3>
-        <div className='edit-modal-layout'>
+        <div className={styles.editModalLayout}>
           {/* 🔹 왼쪽: 프로젝트 리스트 */}
-          <div className='project-list-section'>
-            <ul className='modal-list'>
+          <div className={styles.projectListSection}>
+            <ul className={styles.modalList}>
               {projects.map(p => (
-                <li key={p.id} onClick={() => handleSelect(p)} className={selected?.id === p.id ? 'active' : ''}>
+                <li key={p.id} onClick={() => handleSelect(p)} className={selected?.id === p.id ? styles.active : ''}>
                   {p.name}
                 </li>
               ))}
@@ -78,17 +78,17 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
           </div>
 
           {/* 🔹 오른쪽: 수정 폼 */}
-          <div className='project-edit-form'>
+          <div className={styles.projectEditForm}>
             {selected ? (
               <div>
                 <h4>{selected.name} 수정</h4>
 
-                <div className='form-row'>
+                <div className={styles.formRow}>
                   <label>회사 약어</label>
                   <input name='company' value={form.company} onChange={handleChange} />
                 </div>
 
-                <div className='form-row'>
+                <div className={styles.formRow}>
                   <label>회사 유형</label>
                   <select name='mode' value={form.mode} onChange={handleChange}>
                     <option value=''>선택</option>
@@ -97,12 +97,12 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
                   </select>
                 </div>
 
-                <div className='form-row'>
+                <div className={styles.formRow}>
                   <label>생산년도</label>
                   <input type='number' name='year' value={form.year} onChange={handleChange} />
                 </div>
 
-                <div className='form-row'>
+                <div className={styles.formRow}>
                   <label>생산월</label>
                   <select name='month' value={form.month} onChange={handleChange}>
                     {[...Array(12)].map((_, i) => (
@@ -113,37 +113,37 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
                   </select>
                 </div>
 
-                <div className='form-row'>
+                <div className={styles.formRow}>
                   <label>회차</label>
                   <input type='number' name='round' value={form.round} onChange={handleChange} />
                 </div>
 
-                <div className='form-row'>
+                <div className={styles.formRow}>
                   <label>전지 타입</label>
                   <input name='batteryType' value={form.batteryType} onChange={handleChange} />
                 </div>
 
-                <div className='form-row'>
+                <div className={styles.formRow}>
                   <label>용량</label>
                   <input type='number' name='capacity' value={form.capacity} onChange={handleChange} />
                 </div>
 
-                <div className='form-row'>
+                <div className={styles.formRow}>
                   <label>목표 수량</label>
                   <input type='number' name='targetQuantity' value={form.targetQuantity} onChange={handleChange} />
                 </div>
 
-                <div className='modal-actions'>
+                <div className={styles.modalActions}>
                   <button onClick={handleUpdate} disabled={loading}>
                     {loading ? '수정 중...' : '완료'}
                   </button>
-                  <button className='cancel-btn' onClick={onClose}>
+                  <button className={styles.cancelBtn} onClick={onClose}>
                     닫기
                   </button>
                 </div>
               </div>
             ) : (
-              <p className='empty-msg'>수정할 프로젝트를 선택하세요.</p>
+              <p className={styles.emptyMsg}>수정할 프로젝트를 선택하세요.</p>
             )}
           </div>
         </div>

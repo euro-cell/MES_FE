@@ -1,18 +1,18 @@
-.module-page {
+.modulePage {
   display: flex;
   flex-direction: column;
   gap: 15px;
   margin-top: 10px;
 }
 
-.submenu-bar {
+.submenuBar {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   padding-left: 15px;
 }
 
-.submenu-button {
+.submenuButton {
   background: #e2e8f0;
   border: none;
   padding: 8px 14px;
@@ -23,12 +23,19 @@
   color: #334155;
 }
 
-.submenu-button:hover {
+.submenuButton:hover {
   background: #cbd5e1;
 }
 
 /* ✅ 활성화된 버튼 */
-.submenu-button.active {
+.submenuButton.active {
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.active {
   background: #2563eb;
   color: #fff;
   font-weight: 600;

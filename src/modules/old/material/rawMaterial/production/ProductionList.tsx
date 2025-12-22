@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ProductionService } from './ProductionService';
 import ProductionMaterialForm from './ProductionMaterialForm';
-import '../../../../../styles/material/rawMaterial.css';
+import styles from '../../../../../styles/material/production.module.css';
 
 interface Production {
   id: number;
@@ -52,7 +52,7 @@ export default function ProductionList() {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
   return (
-    <div className='production-list'>
+    <div className={styles.productionList}>
       <h3>📋 프로젝트 리스트</h3>
 
       {productions.length === 0 ? (
@@ -75,14 +75,14 @@ export default function ProductionList() {
                 <td>{p.name}</td>
                 <td>{p.batteryType}</td>
                 <td>{getCellType(p.batteryType)}</td>
-                <td className='manage-buttons'>
-                  <button className='view-btn' disabled={!p.hasMaterials} onClick={() => alert(`조회: ${p.name}`)}>
+                <td className={styles.manageButtons}>
+                  <button className={styles.viewBtn} disabled={!p.hasMaterials} onClick={() => alert(`조회: ${p.name}`)}>
                     조회
                   </button>
-                  <button className='register-btn' onClick={() => handleRegisterClick(p.id)}>
+                  <button className={styles.registerBtn} onClick={() => handleRegisterClick(p.id)}>
                     등록
                   </button>
-                  <button className='delete-btn' disabled={!p.hasMaterials} onClick={() => alert(`삭제: ${p.name}`)}>
+                  <button className={styles.deleteBtn} disabled={!p.hasMaterials} onClick={() => alert(`삭제: ${p.name}`)}>
                     삭제
                   </button>
                 </td>

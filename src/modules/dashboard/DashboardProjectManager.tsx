@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { DashboardFormState, DashboardProject } from './types';
 import DashboardEditModal from './DashboardEditModal';
 import DashboardDeleteModal from './DashboardDeleteModal';
-import '../../styles/dashboard/manager.css';
+import styles from '../../styles/dashboard/manager.module.css';
 
 interface Props {
   form: DashboardFormState;
@@ -46,28 +46,28 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
   };
 
   return (
-    <div className='dashboard-project-manager box'>
+    <div className={styles.dashboardProjectManager}>
       {/* ✅ 제목 + 버튼 */}
-      <div className='manager-header'>
+      <div className={styles.managerHeader}>
         <h3>프로젝트 관리</h3>
-        <div className='manager-header-actions'>
-          <button type='button' className='edit-open-btn' onClick={() => setShowEdit(true)}>
+        <div className={styles.managerHeaderActions}>
+          <button type='button' className={styles.editOpenBtn} onClick={() => setShowEdit(true)}>
             수정
           </button>
-          <button type='button' className='delete-open-btn' onClick={() => setShowDelete(true)}>
+          <button type='button' className={styles.deleteOpenBtn} onClick={() => setShowDelete(true)}>
             삭제
           </button>
         </div>
       </div>
 
       {/* ✅ 등록 폼 */}
-      <form onSubmit={handleSubmit} className='manager-form'>
-        <div className='form-row'>
+      <form onSubmit={handleSubmit} className={styles.managerForm}>
+        <div className={styles.formRow}>
           <label>회사 약어</label>
           <input type='text' name='company' value={form.company} onChange={handleChange} placeholder='예: NA' />
         </div>
 
-        <div className='form-row'>
+        <div className={styles.formRow}>
           <label>회사 유형</label>
           <select name='mode' value={form.mode} onChange={handleChange}>
             <option value=''>선택</option>
@@ -76,12 +76,12 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
           </select>
         </div>
 
-        <div className='form-row'>
+        <div className={styles.formRow}>
           <label>생산년도</label>
           <input type='number' name='year' value={form.year} onChange={handleChange} />
         </div>
 
-        <div className='form-row'>
+        <div className={styles.formRow}>
           <label>생산월</label>
           <select name='month' value={form.month} onChange={handleChange}>
             {[...Array(12)].map((_, i) => (
@@ -92,12 +92,12 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
           </select>
         </div>
 
-        <div className='form-row'>
+        <div className={styles.formRow}>
           <label>회차</label>
           <input type='number' name='round' value={form.round} onChange={handleChange} />
         </div>
 
-        <div className='form-row'>
+        <div className={styles.formRow}>
           <label>전지 타입</label>
           <input
             type='text'
@@ -108,12 +108,12 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
           />
         </div>
 
-        <div className='form-row'>
+        <div className={styles.formRow}>
           <label>용량</label>
           <input type='number' name='capacity' value={form.capacity} onChange={handleChange} placeholder='예: 38' />
         </div>
 
-        <div className='form-row'>
+        <div className={styles.formRow}>
           <label>목표 수량</label>
           <input
             type='number'
@@ -124,7 +124,7 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
           />
         </div>
 
-        <button type='submit' className='manager-btn'>
+        <button type='submit' className={styles.managerBtn}>
           등록하기
         </button>
       </form>

@@ -1,5 +1,5 @@
 import type { DashboardProgressData } from './types';
-import '../../styles/dashboard/progress.css';
+import styles from '../../styles/dashboard/progress.module.css';
 
 interface Props {
   progress: DashboardProgressData;
@@ -7,33 +7,33 @@ interface Props {
 
 export default function DashboardProgress({ progress }: Props) {
   return (
-    <div className='dashboard-progress box'>
+    <div className={styles.dashboardProgress}>
       <h3>프로젝트 진행률</h3>
 
-      <div className='progress-chart-wrapper'>
-        <div className='chart-container'>
+      <div className={styles.progressChartWrapper}>
+        <div className={styles.chartContainer}>
           <canvas id='processChart'></canvas>
-          <div className='chart-center-text' id='chart-center-text'>
+          <div className={styles.chartCenterText} id='chart-center-text'>
             -
           </div>
         </div>
 
-        <div className='process-list'>
-          <div className='process-item'>
-            <span className='label'>전극 공정</span>
-            <span className='value'>{progress.electrode}</span>
+        <div className={styles.processList}>
+          <div className={styles.processItem}>
+            <span className={styles.label}>전극 공정</span>
+            <span className={styles.value}>{progress.electrode}</span>
           </div>
-          <div className='process-item'>
-            <span className='label'>조립 공정</span>
-            <span className='value'>{progress.assembly}</span>
+          <div className={styles.processItem}>
+            <span className={styles.label}>조립 공정</span>
+            <span className={styles.value}>{progress.assembly}</span>
           </div>
-          <div className='process-item'>
-            <span className='label'>화성 공정</span>
-            <span className='value'>{progress.formation}</span>
+          <div className={styles.processItem}>
+            <span className={styles.label}>화성 공정</span>
+            <span className={styles.value}>{progress.formation}</span>
           </div>
         </div>
 
-        <div className='chart-title' id='chart-title'>
+        <div className={styles.chartTitle} id='chart-title'>
           프로젝트를 선택하세요
         </div>
       </div>

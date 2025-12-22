@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../../../styles/permission.css';
+import styles from '../../../styles/permission.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -79,7 +79,7 @@ export default function UserPermission() {
     <>
       <h2>사용자별 권한</h2>
 
-      <table className='permission-table'>
+      <table className={styles.permissionTable}>
         <thead>
           <tr>
             <th rowSpan={2}>ID</th>
@@ -136,7 +136,7 @@ export default function UserPermission() {
         </tbody>
       </table>
 
-      <div className='actions'>
+      <div className={styles.actions}>
         <button onClick={handleSave}>사용자 권한 저장</button>
       </div>
     </>

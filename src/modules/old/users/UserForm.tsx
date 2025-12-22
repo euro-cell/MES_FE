@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createUser, updateUser } from './userService';
 import type { User } from './userService';
 import { ROLE_LABELS } from './userRoleMap';
+import styles from '../../../styles/users.module.css';
 
 interface Props {
   user?: User | null;
@@ -47,8 +48,8 @@ export default function UserForm({ user, onClose }: Props) {
   };
 
   return (
-    <div className='modal-backdrop'>
-      <div className='modal'>
+    <div className={styles.modalBackdrop}>
+      <div className={styles.modal}>
         <h3>{isEdit ? '인원 수정' : '인원 추가'}</h3>
         <form onSubmit={handleSubmit}>
           <input
@@ -70,7 +71,7 @@ export default function UserForm({ user, onClose }: Props) {
           />
 
           {/* ✅ 직급 선택 */}
-          <div className='select-container'>
+          <div>
             <select name='position' value={form.position} onChange={handleChange} size={5}>
               {Object.entries(ROLE_LABELS).map(([key, label]) => (
                 <option key={key} value={key}>
@@ -90,11 +91,11 @@ export default function UserForm({ user, onClose }: Props) {
             required={!isEdit}
           />
 
-          <div className='modal-buttons'>
-            <button type='submit' className='btn-primary'>
+          <div className={styles.modalButtons}>
+            <button type='submit' className={styles.btnPrimary}>
               저장
             </button>
-            <button type='button' className='btn-secondary' onClick={onClose}>
+            <button type='button' className={styles.btnSecondary} onClick={onClose}>
               닫기
             </button>
           </div>

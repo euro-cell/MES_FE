@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ProductionService } from './ProductionService';
-import '../../../../../styles/material/production.css';
+import styles from '../../../../../styles/material/production.module.css';
 
 interface Props {
   productionId: number; // 선택된 프로덕트 ID
@@ -46,11 +46,11 @@ export default function ProductionMaterialForm({ productionId, onClose, onSucces
   };
 
   return (
-    <div className='modal-overlay'>
-      <div className='modal-content'>
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContent}>
         <h3>📦 자재 등록</h3>
 
-        <form onSubmit={handleSubmit} className='material-form'>
+        <form onSubmit={handleSubmit} className={styles.materialForm}>
           {/* 공정 선택 */}
           <label>
             공정 (classification)
@@ -120,11 +120,11 @@ export default function ProductionMaterialForm({ productionId, onClose, onSucces
           </label>
 
           {/* 버튼 영역 */}
-          <div className='form-buttons'>
-            <button type='submit' className='register-btn' disabled={loading}>
+          <div className={styles.formButtons}>
+            <button type='submit' className={styles.registerBtn} disabled={loading}>
               {loading ? '등록 중...' : '등록'}
             </button>
-            <button type='button' className='cancel-btn' onClick={onClose}>
+            <button type='button' className={styles.cancelBtn} onClick={onClose}>
               닫기
             </button>
           </div>

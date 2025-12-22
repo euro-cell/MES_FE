@@ -1,5 +1,5 @@
 import type { DashboardProject } from './types';
-import '../../styles/dashboard/summary.css';
+import styles from '../../styles/dashboard/summary.module.css';
 
 interface Props {
   projects: DashboardProject[];
@@ -8,10 +8,10 @@ interface Props {
 
 export default function DashboardSummary({ projects, onSelectProject }: Props) {
   return (
-    <div className='dashboard-summary box'>
+    <div className={styles.dashboardSummary}>
       <h3>프로젝트 현황</h3>
 
-      <ul className='summary-list registered-list'>
+      <ul className={`${styles.summaryList} ${styles.registeredList}`}>
         {projects.length > 0 ? (
           projects.map(p => (
             <li key={p.id} onClick={() => onSelectProject(p)}>
@@ -19,7 +19,7 @@ export default function DashboardSummary({ projects, onSelectProject }: Props) {
             </li>
           ))
         ) : (
-          <li className='empty'>등록된 프로젝트가 없습니다.</li>
+          <li className={styles.empty}>등록된 프로젝트가 없습니다.</li>
         )}
       </ul>
     </div>

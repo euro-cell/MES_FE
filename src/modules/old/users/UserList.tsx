@@ -3,7 +3,7 @@ import { getUsers, deleteUser, toggleUserActive } from './userService'; // ✅ �
 import type { User } from './userService';
 import { ROLE_LABELS } from './userRoleMap';
 import UserForm from './UserForm';
-import '../../../styles/users.css';
+import styles from '../../../styles/users.module.css';
 
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
@@ -64,15 +64,15 @@ export default function UserList() {
   if (loading) return <div className='loading'>로딩 중...</div>;
 
   return (
-    <div className='user-list-container'>
-      <div className='user-list-header'>
+    <div className={styles.userListContainer}>
+      <div className={styles.userListHeader}>
         <h2>👥 인원 전체 리스트</h2>
-        <button className='btn-primary' onClick={() => setShowForm(true)}>
+        <button className={styles.btnPrimary} onClick={() => setShowForm(true)}>
           + 인원 추가
         </button>
       </div>
 
-      <table className='user-table'>
+      <table className={styles.userTable}>
         <thead>
           <tr>
             <th>ID</th>
@@ -88,7 +88,7 @@ export default function UserList() {
         <tbody>
           {users.length === 0 ? (
             <tr>
-              <td colSpan={8} className='empty'>
+              <td colSpan={8} className={styles.empty}>
                 데이터가 없습니다.
               </td>
             </tr>
@@ -103,7 +103,7 @@ export default function UserList() {
 
                 {/* ✅ 활성 상태 토글 */}
                 <td
-                  className='active-status'
+                  className={styles.activeStatus}
                   onClick={() => handleToggleActive(u)}
                   style={{ cursor: 'pointer' }}
                   title='클릭하여 상태 변경'
@@ -113,10 +113,10 @@ export default function UserList() {
 
                 <td>{new Date(u.createdAt).toLocaleDateString()}</td>
                 <td>
-                  <button className='btn-secondary' onClick={() => handleEdit(u)}>
+                  <button className={styles.btnSecondary} onClick={() => handleEdit(u)}>
                     수정
                   </button>
-                  <button className='btn-danger' onClick={() => handleDelete(u.id)}>
+                  <button className={styles.btnDanger} onClick={() => handleDelete(u.id)}>
                     삭제
                   </button>
                 </td>

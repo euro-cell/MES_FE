@@ -1,32 +1,45 @@
-.summary-list {
+.dashboardSummary {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.summaryList {
   list-style: disc;
   margin-left: 20px;
   color: #333;
   padding: 0;
 }
 
-.summary-list li {
+.summaryList li {
   cursor: pointer;
   padding: 4px 0;
   transition: font-weight 0.2s;
 }
 
-.summary-list li:hover {
+.summaryList li:hover {
   font-weight: bold;
 }
 
-.registered-list {
+.registeredList {
   margin-top: 10px;
   padding-top: 8px;
 }
 
-.summary-list li.empty {
+.summaryList li.empty {
   cursor: default;
   font-weight: normal;
   color: #888;
 }
 
-.dashboard-summary hr {
+.empty {
+  cursor: default;
+  font-weight: normal;
+  color: #888;
+}
+
+.dashboardSummary hr {
   margin: 10px 0;
   border: 0;
   border-top: 1px solid #e5e7eb;

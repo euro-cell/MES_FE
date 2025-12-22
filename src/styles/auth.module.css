@@ -1,7 +1,7 @@
 /* ======================
   로그인 / 회원가입 전용
 ======================== */
-.auth-page {
+.authPage {
   position: fixed; /* ✅ BaseLayout 영향 완전 제거 */
   top: 0;
   left: 0;
@@ -19,7 +19,7 @@
 }
 
 /* 로그인 박스 */
-.auth-container {
+.authContainer {
   width: 340px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
@@ -30,7 +30,7 @@
 }
 
 /* 제목 */
-.auth-container h2 {
+.authContainer h2 {
   font-size: 22px;
   font-weight: 700;
   color: #1b263b;
@@ -38,14 +38,14 @@
 }
 
 /* 입력 폼 */
-.auth-container form {
+.authContainer form {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 /* 입력창 */
-.auth-container input {
+.authContainer input {
   padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -53,7 +53,7 @@
 }
 
 /* 로그인 버튼 */
-.auth-container button {
+.authContainer button {
   background: #1b263b;
   color: white;
   padding: 10px;
@@ -64,29 +64,45 @@
   transition: background 0.2s ease;
 }
 
-.auth-container button:hover {
+.authContainer button:hover {
   background: #0f1a2c;
 }
 
 /* 회원가입 링크 */
-.auth-container .link {
+.authContainer .link {
   text-align: center;
   margin-top: 12px;
   font-size: 14px;
 }
 
-.auth-container .link a {
+.link {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.authContainer .link a {
   color: #1b263b;
   text-decoration: none;
   font-weight: 500;
 }
 
-.auth-container .link a:hover {
+.link a {
+  color: #1b263b;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.authContainer .link a:hover {
+  text-decoration: underline;
+}
+
+.link a:hover {
   text-decoration: underline;
 }
 
 /* 에러 메세지 */
-.error-text {
+.errorText {
   color: #e74c3c;
   font-size: 13px;
   margin-top: 4px;

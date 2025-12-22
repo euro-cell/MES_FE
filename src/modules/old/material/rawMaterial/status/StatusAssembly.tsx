@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import '../../../../../styles/material/rawMaterial.css';
+import styles from '../../../../../styles/material/rawMaterial.module.css';
 import { fetchAssemblyMaterials } from './StatusService';
 
 interface Material {
@@ -37,13 +37,13 @@ export default function StatusAssembly() {
   }, []);
 
   return (
-    <div className='status-assembly'>
+    <div className={styles.statusAssembly}>
       <h4>🔧 조립 자재 현황</h4>
 
       {loading ? (
         <p>로딩 중...</p>
       ) : (
-        <table className='raw-detail-table'>
+        <table className={styles.rawDetailTable}>
           <thead>
             <tr>
               <th>No.</th>

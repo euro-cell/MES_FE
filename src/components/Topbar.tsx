@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { ROLE_LABELS } from '../modules/old/users/userRoleMap';
 import { MENU_CONFIG } from '../modules/menuConfig';
-import '../styles/topbar.css';
+import styles from '../styles/topbar.module.css';
 
 const Topbar: React.FC = () => {
   const navigate = useNavigate();
@@ -46,19 +46,19 @@ const Topbar: React.FC = () => {
     })();
 
   return (
-    <div className='top-bar'>
+    <div className={styles.topBar}>
       <h2>{pageTitle}</h2>
 
-      <div className='right'>
+      <div className={styles.right}>
         {user ? (
-          <span className='user-info'>
+          <span className={styles.userInfo}>
             {user.name} ({displayRole})
           </span>
         ) : (
-          <span className='user-info'>로그인 사용자</span>
+          <span className={styles.userInfo}>로그인 사용자</span>
         )}
 
-        <button className='logout-btn' onClick={handleLogout}>
+        <button className={styles.logoutBtn} onClick={handleLogout}>
           로그아웃
         </button>
       </div>

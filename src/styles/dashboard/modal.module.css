@@ -1,7 +1,7 @@
 /* ======================
    공통 모달 스타일
 ======================== */
-.modal-overlay {
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -29,13 +29,18 @@
   color: #1e293b;
 }
 
-.modal-list {
+.modal h4 {
+  margin-bottom: 10px;
+  color: #1e293b;
+}
+
+.modalList {
   list-style: none;
   padding: 0;
   margin: 10px 0 20px 0;
 }
 
-.modal-list li {
+.modalList li {
   padding: 10px;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
@@ -44,23 +49,29 @@
   transition: 0.2s;
 }
 
-.modal-list li:hover {
+.modalList li:hover {
   background: #f1f5f9;
 }
 
-.modal-list li.active {
+.modalList li.active {
   background: #2563eb;
   color: #fff;
   border-color: #2563eb;
 }
 
-.modal-actions {
+.active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.modalActions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
-.modal-actions button {
+.modalActions button {
   border: none;
   border-radius: 6px;
   padding: 8px 12px;
@@ -69,16 +80,73 @@
   transition: 0.2s;
 }
 
-.modal-actions button:hover {
+.modalActions button:hover {
   opacity: 0.9;
 }
 
-.modal-actions .cancel-btn {
+.modalActions .cancelBtn {
   background: #e2e8f0;
   color: #1e293b;
 }
 
-.modal-actions button:not(.cancel-btn) {
+.cancelBtn {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.modalActions button:not(.cancelBtn) {
   background: #2563eb;
   color: #fff;
+}
+
+/* Edit Modal Specific */
+.wide {
+  width: 800px;
+}
+
+.large {
+  width: 800px;
+  max-width: 90vw;
+}
+
+.editModalLayout {
+  display: flex;
+  gap: 20px;
+}
+
+.projectListSection {
+  flex: 1;
+}
+
+.projectEditForm {
+  flex: 1;
+}
+
+.formRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.formRow label {
+  flex: 0 0 100px;
+  font-weight: 600;
+  color: #333;
+}
+
+.formRow input,
+.formRow select {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.emptyMsg {
+  color: #888;
+  text-align: center;
+  padding: 40px 20px;
 }

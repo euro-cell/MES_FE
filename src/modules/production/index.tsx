@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { MENU_CONFIG } from '../menuConfig';
 import SubmenuBar from '../../components/SubmenuBar';
-import '../../styles/moduleIndex.css';
+import styles from '../../styles/moduleIndex.module.css';
 
 import PlanPage from './plan';
 import SpecPage from './spec';
@@ -13,7 +13,7 @@ export default function ProductionIndex() {
   const { sub } = MENU_CONFIG.production;
 
   return (
-    <div className='module-page'>
+    <div className={styles.modulePage}>
       <SubmenuBar menus={sub} />
 
       <div className='module-content'>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { DashboardProject } from './types';
 import { deleteProduction } from './dashboardService';
-import '../../styles/dashboard/modal.css';
+import styles from '../../styles/dashboard/modal.module.css';
 
 interface Props {
   projects: DashboardProject[];
@@ -31,21 +31,21 @@ export default function DashboardDeleteModal({ projects, onClose, refreshProject
   };
 
   return (
-    <div className='modal-overlay'>
-      <div className='modal'>
+    <div className={styles.modalOverlay}>
+      <div className={styles.modal}>
         <h3>프로젝트 삭제</h3>
-        <ul className='modal-list'>
+        <ul className={styles.modalList}>
           {projects.map(p => (
-            <li key={p.id} onClick={() => setSelectedId(p.id)} className={selectedId === p.id ? 'active' : ''}>
+            <li key={p.id} onClick={() => setSelectedId(p.id)} className={selectedId === p.id ? styles.active : ''}>
               {p.name}
             </li>
           ))}
         </ul>
-        <div className='modal-actions'>
+        <div className={styles.modalActions}>
           <button onClick={handleDelete} disabled={loading}>
             {loading ? '삭제 중...' : '삭제'}
           </button>
-          <button className='cancel-btn' onClick={onClose}>
+          <button className={styles.cancelBtn} onClick={onClose}>
             닫기
           </button>
         </div>

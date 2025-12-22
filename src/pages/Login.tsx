@@ -1,6 +1,6 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-import '../styles/auth.css';
+import styles from '../styles/auth.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
@@ -39,8 +39,8 @@ export default function Login() {
   };
 
   return (
-    <div className='auth-page'>
-      <div className='auth-container'>
+    <div className={styles.authPage}>
+      <div className={styles.authContainer}>
         <h2>유로셀 MES 로그인</h2>
         <form onSubmit={handleSubmit}>
           <input
@@ -59,10 +59,10 @@ export default function Login() {
             required
             autoComplete='current-password'
           />
-          {error && <p className='error-text'>{error}</p>}
+          {error && <p className={styles.errorText}>{error}</p>}
           <button type='submit'>로그인</button>
         </form>
-        <p className='link'>
+        <p className={styles.link}>
           계정이 없으신가요? <Link to='/register'>회원가입</Link>
         </p>
       </div>

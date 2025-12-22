@@ -1,20 +1,14 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: #f8fafc;
-  overflow: hidden;
-}
-
-.container {
+/* ======================
+   BaseLayout 전용 스타일
+======================== */
+.layoutContainer {
   display: flex;
   height: 100vh;
   overflow: hidden;
   background: #f8fafc;
 }
 
-.main {
+.layoutMain {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -22,11 +16,7 @@ body {
   overflow: hidden;
 }
 
-.top-bar {
-  flex-shrink: 0;
-}
-
-.content {
+.layoutContent {
   flex: 1;
   padding: 20px;
   background: #f8fafc;
@@ -34,10 +24,10 @@ body {
   overflow-y: auto;
 }
 
-.content::-webkit-scrollbar {
+.layoutContent::-webkit-scrollbar {
   width: 8px;
 }
-.content::-webkit-scrollbar-thumb {
+.layoutContent::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 4px;
 }

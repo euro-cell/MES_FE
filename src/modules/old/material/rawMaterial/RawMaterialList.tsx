@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import '../../../../styles/material/rawMaterial.css';
+import styles from '../../../../styles/material/rawMaterial.module.css';
 import StatusAll from './status/StatusAll';
 import StatusElectrode from './status/StatusElectrode';
 import StatusAssembly from './status/StatusAssembly';
@@ -10,36 +10,36 @@ export default function RawMaterialList() {
   const [statusTab, setStatusTab] = useState<'all' | 'electrode' | 'assembly'>('all');
 
   return (
-    <div className='raw-material-page'>
+    <div className={styles.rawMaterialPage}>
       <h3>📦 원부자재</h3>
 
       {/* 상위 메뉴 */}
-      <div className='sub-nav'>
-        <button className={subTab === 'status' ? 'active' : ''} onClick={() => setSubTab('status')}>
+      <div className={styles.subNav}>
+        <button className={subTab === 'status' ? styles.active : ''} onClick={() => setSubTab('status')}>
           현황
         </button>
-        <button className={subTab === 'project' ? 'active' : ''} onClick={() => setSubTab('project')}>
+        <button className={subTab === 'project' ? styles.active : ''} onClick={() => setSubTab('project')}>
           프로젝트
         </button>
       </div>
 
       {/* 현황 하위 탭 */}
       {subTab === 'status' && (
-        <div className='sub-sub-nav'>
-          <button className={statusTab === 'all' ? 'active' : ''} onClick={() => setStatusTab('all')}>
+        <div className={styles.subSubNav}>
+          <button className={statusTab === 'all' ? styles.active : ''} onClick={() => setStatusTab('all')}>
             전체
           </button>
-          <button className={statusTab === 'electrode' ? 'active' : ''} onClick={() => setStatusTab('electrode')}>
+          <button className={statusTab === 'electrode' ? styles.active : ''} onClick={() => setStatusTab('electrode')}>
             전극
           </button>
-          <button className={statusTab === 'assembly' ? 'active' : ''} onClick={() => setStatusTab('assembly')}>
+          <button className={statusTab === 'assembly' ? styles.active : ''} onClick={() => setStatusTab('assembly')}>
             조립
           </button>
         </div>
       )}
 
       {/* 내용 */}
-      <div className='raw-material-content'>
+      <div className={styles.rawMaterialContent}>
         {subTab === 'status' && statusTab === 'all' && <StatusAll />}
         {subTab === 'status' && statusTab === 'electrode' && <StatusElectrode />}
         {subTab === 'status' && statusTab === 'assembly' && <StatusAssembly />}

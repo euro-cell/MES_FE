@@ -1,4 +1,4 @@
-import '../styles/moduleIndex.css';
+import styles from '../styles/moduleIndex.module.css';
 import { useActiveSubmenu } from '../hooks/useActiveSubmenu';
 
 interface SubmenuBarProps {
@@ -9,12 +9,12 @@ export default function SubmenuBar({ menus }: SubmenuBarProps) {
   const { activePath, handleNavigate } = useActiveSubmenu(menus);
 
   return (
-    <div className='submenu-bar'>
+    <div className={styles.submenuBar}>
       {menus.map(menu => (
         <button
           key={menu.path}
           onClick={() => handleNavigate(menu.path)}
-          className={`submenu-button ${activePath === menu.path ? 'active' : ''}`}
+          className={`${styles.submenuButton} ${activePath === menu.path ? styles.active : ''}`}
         >
           {menu.title}
         </button>

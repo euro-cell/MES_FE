@@ -1,7 +1,7 @@
 import React from 'react';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
-import '../styles/common.css';
+import styles from '../styles/common.module.css';
 
 interface BaseLayoutProps {
   children: React.ReactNode;
@@ -9,11 +9,11 @@ interface BaseLayoutProps {
 
 const BaseLayout: React.FC<BaseLayoutProps> = ({ children }) => {
   return (
-    <div className='container'>
+    <div className={styles.layoutContainer}>
       <Sidebar />
-      <div className='main'>
+      <div className={styles.layoutMain}>
         <Topbar />
-        <div className='content'>{children}</div>
+        <div className={styles.layoutContent}>{children}</div>
       </div>
     </div>
   );

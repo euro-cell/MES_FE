@@ -29,7 +29,7 @@
 }
 
 /* 상위 메뉴 */
-.menu-title {
+.menuTitle {
   padding: 10px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -38,12 +38,19 @@
   color: #f8fafc;
 }
 
-.menu-title:hover {
+.menuTitle:hover {
   background: #415a77;
 }
 
 /* ✅ 현재 위치한 최상단 메뉴 강조 */
-.menu-title.active-top {
+.menuTitle.activeTop {
+  background: #2d72d9;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 0 6px rgba(45, 114, 217, 0.4);
+}
+
+.activeTop {
   background: #2d72d9;
   color: #ffffff;
   font-weight: 700;
@@ -60,7 +67,7 @@
 }
 
 /* 기존 메뉴 hover 효과 유지 */
-.sidebar ul > li:not(.menu-title):hover {
+.sidebar ul > li:not(.menuTitle):hover {
   background: #778da9;
 }
 
@@ -75,7 +82,7 @@
     font-size: 18px;
   }
 
-  .menu-title {
+  .menuTitle {
     font-size: 14px;
   }
 }

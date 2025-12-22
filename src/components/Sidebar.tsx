@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../styles/sidebar.css';
+import styles from '../styles/sidebar.module.css';
 import { MENU_CONFIG } from '../modules/menuConfig';
 
 const Sidebar: React.FC = () => {
@@ -21,14 +21,14 @@ const Sidebar: React.FC = () => {
   const activeMenuPath = getActiveMenuPath();
 
   return (
-    <aside className='sidebar'>
+    <aside className={styles.sidebar}>
       <h1>유로셀 MES</h1>
 
       <ul>
         {NEW_MENUS.map(menu => (
           <li
             key={menu.title}
-            className={`menu-title ${activeMenuPath === menu.path ? 'active-top' : ''}`} // ✅ 현재 메뉴면 강조
+            className={`${styles.menuTitle} ${activeMenuPath === menu.path ? styles.activeTop : ''}`}
             onClick={() => navigate(menu.path)}
           >
             {menu.title}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../../../styles/permission.css';
+import styles from '../../../styles/permission.module.css';
 import { ROLE_LABELS } from '../users/userRoleMap';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -78,10 +78,10 @@ export default function RolePermission() {
   if (loading) return <p>로딩 중...</p>;
 
   return (
-    <div className='permission-section'>
+    <div className={styles.permissionSection}>
       <h2>직급별 권한</h2>
 
-      <table className='permission-table'>
+      <table className={styles.permissionTable}>
         <thead>
           <tr>
             <th rowSpan={2}>직급</th>
@@ -142,7 +142,7 @@ export default function RolePermission() {
         </tbody>
       </table>
 
-      <div className='actions'>
+      <div className={styles.actions}>
         <button onClick={handleSave}>직급 권한 저장</button>
       </div>
     </div>

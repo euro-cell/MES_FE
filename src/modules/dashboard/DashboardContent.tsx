@@ -13,6 +13,7 @@ import DashboardSummary from './DashboardSummary';
 import DashboardProgress from './DashboardProgress';
 import DashboardProjectManager from './DashboardProjectManager';
 import DashboardSchedule from './DashboardSchedule';
+import styles from '../../styles/dashboard/layout.module.css';
 
 export default function DashboardContent() {
   const [projects, setProjects] = useState<DashboardProject[]>([]);
@@ -81,8 +82,8 @@ export default function DashboardContent() {
   }, []);
 
   return (
-    <div className='dashboard-content'>
-      <div className='dashboard-top'>
+    <div className={styles.dashboardContent}>
+      <div className={styles.dashboardTop}>
         <DashboardSummary projects={projects} onSelectProject={renderChart} />
         <DashboardProgress progress={progress} />
         <DashboardProjectManager
@@ -94,7 +95,7 @@ export default function DashboardContent() {
         />
       </div>
 
-      <div className='dashboard-bottom'>
+      <div className={styles.dashboardBottom}>
         <DashboardSchedule plans={plans} />
       </div>
     </div>

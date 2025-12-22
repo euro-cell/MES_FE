@@ -1,7 +1,7 @@
 /* ==========================================================
    📦 원부자재 페이지 전체 레이아웃
 ========================================================== */
-.raw-material-page {
+.rawMaterialPage {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -10,7 +10,7 @@
   gap: 16px;
 }
 
-.raw-material-page h3 {
+.rawMaterialPage h3 {
   font-size: 20px;
   font-weight: 600;
   color: #222;
@@ -19,13 +19,13 @@
 /* ==========================================================
    1️⃣ 상위 탭 (현황 / 프로젝트)
 ========================================================== */
-.sub-nav {
+.subNav {
   display: flex;
   gap: 10px;
   margin-bottom: 5px;
 }
 
-.sub-nav button {
+.subNav button {
   padding: 9px 18px;
   border: none;
   border-radius: 8px;
@@ -36,11 +36,17 @@
   color: #333;
 }
 
-.sub-nav button:hover {
+.subNav button:hover {
   background: #e7ebf1;
 }
 
-.sub-nav button.active {
+.subNav button.active {
+  background: #2d72d9;
+  color: #fff;
+  font-weight: 600;
+}
+
+.active {
   background: #2d72d9;
   color: #fff;
   font-weight: 600;
@@ -49,13 +55,13 @@
 /* ==========================================================
    2️⃣ 하위 탭 (전체 / 전극 / 조립)
 ========================================================== */
-.sub-sub-nav {
+.subSubNav {
   display: flex;
   gap: 8px;
   margin-bottom: 10px;
 }
 
-.sub-sub-nav button {
+.subSubNav button {
   padding: 7px 14px;
   border: none;
   border-radius: 8px;
@@ -66,11 +72,11 @@
   color: #333;
 }
 
-.sub-sub-nav button:hover {
+.subSubNav button:hover {
   background: #e8edf3;
 }
 
-.sub-sub-nav button.active {
+.subSubNav button.active {
   background: #1e5bb8;
   color: #fff;
   font-weight: 600;
@@ -79,7 +85,7 @@
 /* ==========================================================
    📄 콘텐츠 영역
 ========================================================== */
-.raw-material-content {
+.rawMaterialContent {
   border-top: 1px solid #e3e7ec;
   padding-top: 16px;
 }
@@ -87,12 +93,12 @@
 /* ==========================================================
    📊 전체 현황 테이블 (StatusAll)
 ========================================================== */
-.status-all {
+.statusAll {
   background: #fff;
   border-radius: 10px;
 }
 
-.status-all h4 {
+.statusAll h4 {
   margin-bottom: 14px;
   font-size: 16px;
   color: #333;
@@ -102,34 +108,35 @@
 /* ==========================================================
    ⚡ 전극 / 🔧 조립 상세 테이블 (StatusElectrode / StatusAssembly)
 ========================================================== */
-.status-electrode,
-.status-assembly {
+.statusElectrode,
+.statusAssembly {
   background: #fff;
   border-radius: 10px;
 }
 
-.status-electrode h4,
-.status-assembly h4 {
+.statusElectrode h4,
+.statusAssembly h4 {
   margin-bottom: 14px;
   font-size: 16px;
   color: #333;
   font-weight: 600;
 }
 
-.raw-detail-table {
+.rawDetailTable {
   width: 100%;
   border-collapse: collapse;
   text-align: center;
   font-size: 14px;
   border: 1px solid #e0e4eb;
-  table-layout: fixed;
+  table-layout: auto;
+  max-width: 100%;
 }
 
-.raw-detail-table thead tr {
+.rawDetailTable thead tr {
   background: #f3f6fa;
 }
 
-.raw-detail-table th {
+.rawDetailTable th {
   padding: 10px 6px;
   border: 1px solid #d9e1eb;
   font-weight: 600;
@@ -137,15 +144,17 @@
   vertical-align: middle;
   white-space: nowrap;
   font-size: 13.5px;
+  max-width: 250px;
+  word-break: keep-all;
 }
 
-.raw-detail-table th:nth-child(2),
-.raw-detail-table th:nth-child(3) {
+.rawDetailTable th:nth-child(2),
+.rawDetailTable th:nth-child(3) {
   white-space: normal;
   line-height: 1.2;
 }
 
-.raw-detail-table td {
+.rawDetailTable td {
   padding: 8px 6px;
   border: 1px solid #e2e8f0;
   color: #444;
@@ -155,59 +164,49 @@
   word-break: break-word;
   overflow-wrap: anywhere;
   line-height: 1.4;
+  max-width: 250px;
 }
 
-.raw-detail-table td:nth-child(12) {
+.rawDetailTable td:nth-child(12) {
   word-break: break-word;
 }
 
-.raw-detail-table td:nth-child(11),
-.raw-detail-table td:nth-child(12) {
+.rawDetailTable td:nth-child(11),
+.rawDetailTable td:nth-child(12) {
   white-space: normal;
   line-height: 1.4;
 }
 
-.raw-detail-table tr:nth-child(even) {
+.rawDetailTable tr:nth-child(even) {
   background: #fafbfc;
-}
-
-.raw-detail-table {
-  table-layout: auto;
-  max-width: 100%;
-}
-
-.raw-detail-table td,
-.raw-detail-table th {
-  max-width: 250px;
-  word-break: keep-all;
 }
 
 /* ==========================================================
    📱 반응형 스타일
 ========================================================== */
 @media (max-width: 1024px) {
-  .raw-detail-table {
+  .rawDetailTable {
     font-size: 13px;
   }
 
-  .sub-nav button,
-  .sub-sub-nav button {
+  .subNav button,
+  .subSubNav button {
     font-size: 13px;
     padding: 7px 12px;
   }
 }
 
 @media (max-width: 768px) {
-  .raw-detail-table {
+  .rawDetailTable {
     font-size: 12px;
   }
 
-  .raw-detail-table th,
-  .raw-detail-table td {
+  .rawDetailTable th,
+  .rawDetailTable td {
     padding: 6px;
   }
 
-  .raw-material-page {
+  .rawMaterialPage {
     padding: 15px;
   }
 }

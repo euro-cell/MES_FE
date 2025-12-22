@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import '../../../../../styles/material/rawMaterial.css';
+import styles from '../../../../../styles/material/rawMaterial.module.css';
 import { fetchElectrodeMaterials } from './StatusService';
 
 interface Material {
@@ -37,13 +37,13 @@ export default function StatusElectrode() {
   }, []);
 
   return (
-    <div className='status-electrode'>
+    <div className={styles.statusElectrode}>
       <h4>⚡ 전극 자재 현황</h4>
 
       {loading ? (
         <p>로딩 중...</p>
       ) : (
-        <table className='raw-detail-table'>
+        <table className={styles.rawDetailTable}>
           <thead>
             <tr>
               <th>No.</th>

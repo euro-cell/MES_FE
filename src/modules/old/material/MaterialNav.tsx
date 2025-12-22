@@ -1,4 +1,4 @@
-import '../../../styles/material/material.css';
+import styles from '../../../styles/material/material.module.css';
 
 interface Props {
   activeTab: 'raw' | 'cell';
@@ -7,11 +7,11 @@ interface Props {
 
 export default function MaterialNav({ activeTab, setActiveTab }: Props) {
   return (
-    <div className='material-nav'>
-      <button className={activeTab === 'raw' ? 'active' : ''} onClick={() => setActiveTab('raw')}>
+    <div className={styles.materialNav}>
+      <button className={activeTab === 'raw' ? styles.active : ''} onClick={() => setActiveTab('raw')}>
         원부자재
       </button>
-      <button className={activeTab === 'cell' ? 'active' : ''} onClick={() => setActiveTab('cell')}>
+      <button className={activeTab === 'cell' ? styles.active : ''} onClick={() => setActiveTab('cell')}>
         셀
       </button>
     </div>
