@@ -61,7 +61,7 @@ export default function StackingGrid({ data }: StackingGridProps) {
           {data.map(row => (
             <>
               {/* 1행 */}
-              <tr key={`${row.id}-row1`}>
+              <tr key={`${row.id}-row1`} className={row.isDefective ? styles.defectiveRow : ''}>
                 <td rowSpan={2} className={`${styles.stickyCol} ${styles.stickyFirst} ${styles.groupBasic}`}>{row.productionDate}</td>
                 <td rowSpan={2} className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickySecond} ${styles.groupBasic}`} style={{ left: secondColLeft }}>{row.lot}</td>
                 <td rowSpan={2}>{row.atStacking.temp}</td>
@@ -76,7 +76,7 @@ export default function StackingGrid({ data }: StackingGridProps) {
                 <td rowSpan={2} className={styles.groupSeparateCell}>{row.magazine.separate}</td>
               </tr>
               {/* 2행 */}
-              <tr key={`${row.id}-row2`}>
+              <tr key={`${row.id}-row2`} className={row.isDefective ? styles.defectiveRow : ''}>
                 <td>{row.magazine.notchingAnode.row2}</td>
                 <td className={styles.groupMagazineEnd}>{row.magazine.notchingCathode.row2}</td>
               </tr>

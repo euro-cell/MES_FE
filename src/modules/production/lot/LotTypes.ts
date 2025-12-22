@@ -259,6 +259,7 @@ export interface StackingData {
   id: number;
   productionDate: string;
   lot: string;
+  isDefective?: boolean;
   atStacking: StackingAtStacking;
   jellyrollSpec: StackingJellyrollSpec;
   magazine: StackingMagazine;

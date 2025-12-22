@@ -163,55 +163,17 @@ export async function getNotchingData(projectId: number): Promise<NotchingData[]
   }
 }
 
-// Stacking 데이터 조회 (목데이터)
+// Stacking 데이터 조회
 export async function getStackingData(projectId: number): Promise<StackingData[]> {
-  console.log('Stacking 데이터 조회 - projectId:', projectId);
-
-  // TODO: 백엔드 API 연동 시 아래 코드로 교체
-  // const response = await axios.get(`${API_BASE}/production/${projectId}/lot/stacking`, {
-  //   withCredentials: true,
-  // });
-  // return response.data;
-
-  // 목데이터
-  return [
-    {
-      id: 1,
-      productionDate: '2024-12-23',
-      lot: 'ST-241223-001',
-      atStacking: { temp: 25, humidity: 45 },
-      jellyrollSpec: { stack: '양', weight: 'P', thickness: 'P', alignment: 'P', ir: 'P' },
-      magazine: {
-        notchingAnode: { row1: 'NT-A-001', row2: 'NT-A-002' },
-        notchingCathode: { row1: 'NT-C-001', row2: 'NT-C-002' },
-        separate: 'SEP-001',
-      },
-    },
-    {
-      id: 2,
-      productionDate: '2024-12-23',
-      lot: 'ST-241223-002',
-      atStacking: { temp: 25, humidity: 46 },
-      jellyrollSpec: { stack: '음', weight: 'P', thickness: 'NP', alignment: 'P', ir: 'P' },
-      magazine: {
-        notchingAnode: { row1: 'NT-A-003', row2: 'NT-A-004' },
-        notchingCathode: { row1: 'NT-C-003', row2: 'NT-C-004' },
-        separate: 'SEP-002',
-      },
-    },
-    {
-      id: 3,
-      productionDate: '2024-12-24',
-      lot: 'ST-241224-001',
-      atStacking: { temp: 24, humidity: 48 },
-      jellyrollSpec: { stack: '양', weight: 'NP', thickness: 'P', alignment: 'NP', ir: 'P' },
-      magazine: {
-        notchingAnode: { row1: 'NT-A-005', row2: 'NT-A-006' },
-        notchingCathode: { row1: 'NT-C-005', row2: 'NT-C-006' },
-        separate: 'SEP-003',
-      },
-    },
-  ];
+  try {
+    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/stacking`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Stacking 데이터 조회 실패:', error);
+    return [];
+  }
 }
 
 // Welding 데이터 조회 (목데이터)
