@@ -7,6 +7,7 @@ import type {
   DashboardProgressData,
   DashboardFormState,
   DashboardProjectPlan,
+  DashboardProjectWithPlan,
 } from './types';
 import DashboardSummary from './DashboardSummary';
 import DashboardProgress from './DashboardProgress';
@@ -15,7 +16,7 @@ import DashboardSchedule from './DashboardSchedule';
 
 export default function DashboardContent() {
   const [projects, setProjects] = useState<DashboardProject[]>([]);
-  const [plans, setPlans] = useState<{ project: DashboardProject; plan: DashboardProjectPlan | null }[]>([]);
+  const [plans, setPlans] = useState<DashboardProjectWithPlan[]>([]);
   const [chart, setChart] = useState<Chart | null>(null);
   const [progress, setProgress] = useState<DashboardProgressData>({
     electrode: '-',
@@ -58,7 +59,14 @@ export default function DashboardContent() {
       const planData = await Promise.all(
         prods.map(async p => {
           const plan = await getProductionPlan(p.id);
-          return { project: p, plan };
+          let progressValue: number | undefined;
+          try {
+            const progressData = await getProductionProgress(p.id);
+            progressValue = progressData.overall;
+          } catch {
+            progressValue = undefined; // 진행률 로드 실패 시 undefined
+          }
+          return { project: p, plan, progress: progressValue };
         })
       );
       setProjects(prods);

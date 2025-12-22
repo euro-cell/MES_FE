@@ -37,6 +37,7 @@ export interface ProductionProgressResponse {
 export interface DashboardProjectWithPlan {
   project: DashboardProject;
   plan: DashboardProjectPlan | null;
+  progress?: number; // 전체 진행률 (overall)
 }
 
 /** ✅ 등록 폼 상태 */

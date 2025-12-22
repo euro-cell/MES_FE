@@ -1,9 +1,9 @@
 import React from 'react';
-import type { DashboardProject, DashboardProjectPlan } from './types';
+import type { DashboardProjectWithPlan } from './types';
 import '../../styles/dashboard/schedule.css';
 
 interface Props {
-  plans: { project: DashboardProject; plan: DashboardProjectPlan | null }[];
+  plans: DashboardProjectWithPlan[];
 }
 
 export default function DashboardSchedule({ plans }: Props) {
@@ -52,7 +52,7 @@ export default function DashboardSchedule({ plans }: Props) {
             {plans.length === 0 ? (
               <div className='timeline-message'>등록된 프로젝트가 없습니다.</div>
             ) : (
-              plans.map(({ project, plan }) => {
+              plans.map(({ project, plan, progress }) => {
                 const { start, span } = calculateTimelineBar(plan?.startDate, plan?.endDate);
                 return (
                   <div className='schedule-grid schedule-row' key={project.id}>
@@ -79,7 +79,9 @@ export default function DashboardSchedule({ plans }: Props) {
                       </div>
                     </div>
                     <div className='progress-cell'>
-                      <span className='progress-value'>-</span>
+                      <span className='progress-value'>
+                        {progress !== undefined ? `${Math.round(progress)}%` : '-'}
+                      </span>
                     </div>
                   </div>
                 );
