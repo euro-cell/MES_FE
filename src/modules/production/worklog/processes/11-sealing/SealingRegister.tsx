@@ -127,7 +127,7 @@ export default function SealingRegister() {
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
-          multilineFields={['topChecklist', 'sideChecklist', 'bottomChecklist', 'remark']}
+          multilineFields={['topChecklist', 'sideChecklist', 'bottomChecklist', 'remarkTop', 'remarkSide']}
           numericFields={SEALING_NUMERIC_FIELDS}
         />
       </div>

@@ -96,7 +96,7 @@ export default function SealingView() {
           editableRanges={[]} // 읽기 전용
           cellValues={cellValues}
           namedRanges={namedRanges}
-          multilineFields={['topChecklist', 'sideChecklist', 'bottomChecklist', 'remark']}
+          multilineFields={['topChecklist', 'sideChecklist', 'bottomChecklist', 'remarkTop', 'remarkSide']}
         />
       </div>
     </div>

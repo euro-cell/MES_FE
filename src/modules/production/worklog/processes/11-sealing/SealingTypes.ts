@@ -60,6 +60,10 @@ export interface SealingWorklog {
   // C. 공정 조건 - 하이팟
   hipotVoltage?: number;
   hipotTime?: number;
+
+  // D. 비고
+  remarkTop?: string;
+  remarkSide?: string;
 }
 
 export interface SealingWorklogPayload {
@@ -118,4 +122,8 @@ export interface SealingWorklogPayload {
   // C. 공정 조건 - 하이팟
   hipotVoltage?: number;
   hipotTime?: number;
+
+  // D. 비고
+  remarkTop?: string;
+  remarkSide?: string;
 }
