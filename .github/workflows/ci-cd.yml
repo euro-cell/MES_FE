@@ -18,7 +18,7 @@ jobs:
         uses: docker/login-action@master
         with:
           registry: ghcr.io
-          username: ${{github.repository_owner}}
+          username: ${{secrets.GHCR_USERNAME}}
           password: ${{secrets.GHCR_TOKEN}}
 
       - name: 빌드 및 푸시
@@ -69,7 +69,7 @@ jobs:
             cd ${{ secrets.SERVER_PATH }}/site/eurocell/fe
 
             # GHCR 로그인 & 이미지 pull
-            echo ${{secrets.GHCR_TOKEN}} | docker login ghcr.io -u ${{github.repository_owner}} --password-stdin
+            echo ${{secrets.GHCR_TOKEN}} | docker login ghcr.io -u ${{secrets.GHCR_USERNAME}} --password-stdin
             docker pull ghcr.io/${{github.repository_owner}}/eurocell-mes-fe:latest
 
             NET_NAME="gotiger_default"
