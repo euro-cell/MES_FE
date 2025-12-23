@@ -15,6 +15,7 @@ export const LOT_PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
   ],
   Formation: [
     { id: 'Formation', title: 'Formation' },
+    { id: 'LowData', title: 'Low Data 등록' },
   ],
 };
 
