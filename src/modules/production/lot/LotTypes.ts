@@ -339,7 +339,7 @@ export interface SealingData {
 // Formation 공정 데이터
 export interface FormationPreFormation {
   equipment: string; // 설비 - 호기
-  chNo: string; // CH No. - 양/음
+  chNo: string; // CH No. - 행/열
   pfc: number; // PFC - Ah
   rfd: number; // RFD - Ah
   forEff1: number; // For.EFF_1 - %
@@ -348,11 +348,12 @@ export interface FormationPreFormation {
 export interface FormationFinalSealing {
   pouchSealingThickness: number; // μm
   sideBottomSealingWidth: string; // P/NP
+  visualInspection: string; // P/NP - 외관
 }
 
 export interface FormationMainFormation {
   equipment: string; // 설비 - 호기
-  chNo: string; // CH No. - 양/음
+  chNo: string; // CH No. - 행/열
   mfc: number; // MFC - Ah
 }
 
@@ -374,7 +375,7 @@ export interface FormationAging7Days {
 
 export interface FormationGrading {
   equipment: string; // 설비 - 호기
-  chNo: string; // CH No. - 양/음
+  chNo: string; // CH No. - 행/열
   mfd: number; // MFD - Ah
   formEff2: number; // Form.EFF_2 - %
   stc: number; // STC - Ah
@@ -413,27 +414,3 @@ export interface FormationData {
   ocvIr3: FormationOcvIr3;
 }
 
-// Degassing 공정 데이터
-export interface DegassingFinalSealing {
-  pouchSealingThickness: number; // μm
-  sideBottomSealingWidth: string; // P/NP
-  visualInspection: string; // P/NP
-}
-
-export interface DegassingFormation {
-  type: string;
-  year: string;
-  month: string;
-  day: string;
-  cellNo: string[]; // 4칸
-}
-
-export interface DegassingData {
-  id: number;
-  date: string;
-  assyLot: string;
-  formationLot: string;
-  finalLot: string; // 최종 Lot
-  formation: DegassingFormation;
-  finalSealing: DegassingFinalSealing;
-}

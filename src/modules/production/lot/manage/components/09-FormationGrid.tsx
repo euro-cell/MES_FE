@@ -35,7 +35,7 @@ export default function FormationGrid({ data }: FormationGridProps) {
             <th ref={secondColRef} rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickySecond}`} style={{ left: secondColLeft }}>Ass'y Lot</th>
             <th rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyThird}`} style={{ left: thirdColLeft }}>최종 Lot</th>
             <th rowSpan={2} colSpan={5} className={styles.groupPreFormation}>Pre-Formation</th>
-            <th rowSpan={2} colSpan={2} className={styles.groupFinalSealing}>Final Sealing</th>
+            <th rowSpan={2} colSpan={3} className={styles.groupFinalSealing}>Final Sealing</th>
             <th rowSpan={2} colSpan={3} className={styles.groupMainFormation}>Main-Formation</th>
             <th rowSpan={2} colSpan={2} className={styles.groupOcvIr1}>OCV/IR1</th>
             <th colSpan={20} className={styles.groupAging}>Aging</th>
@@ -58,7 +58,8 @@ export default function FormationGrid({ data }: FormationGridProps) {
             <th className={styles.groupPreFormationEnd}>For.EFF_1</th>
             {/* Final Sealing */}
             <th>Pouch Sealing<br/>Thickness</th>
-            <th className={styles.groupFinalSealingEnd}>Side/Bottom<br/>Sealing Width</th>
+            <th>Side/Bottom<br/>Sealing Width</th>
+            <th className={styles.groupFinalSealingEnd}>Visual<br/>Inspection</th>
             {/* Main-Formation */}
             <th>설비</th>
             <th>CH No.</th>
@@ -96,16 +97,17 @@ export default function FormationGrid({ data }: FormationGridProps) {
           <tr>
             {/* Pre-Formation */}
             <th>호기</th>
-            <th>양/음</th>
+            <th>행/열</th>
             <th>Ah</th>
             <th>Ah</th>
             <th className={styles.groupPreFormationEnd}>%</th>
             {/* Final Sealing */}
             <th>μm</th>
+            <th>P/NP</th>
             <th className={styles.groupFinalSealingEnd}>P/NP</th>
             {/* Main-Formation */}
             <th>호기</th>
-            <th>양/음</th>
+            <th>행/열</th>
             <th className={styles.groupMainFormationEnd}>Ah</th>
             {/* OCV/IR1 */}
             <th>V</th>
@@ -119,7 +121,7 @@ export default function FormationGrid({ data }: FormationGridProps) {
             <th className={styles.groupAging7DaysEnd}>mV</th>
             {/* Grading */}
             <th>호기</th>
-            <th>양/음</th>
+            <th>행/열</th>
             <th>Ah</th>
             <th>%</th>
             <th>Ah</th>
@@ -152,7 +154,8 @@ export default function FormationGrid({ data }: FormationGridProps) {
               <td className={styles.groupPreFormationEnd}>{row.preFormation.forEff1}</td>
               {/* Final Sealing */}
               <td>{row.finalSealing.pouchSealingThickness}</td>
-              <td className={styles.groupFinalSealingEnd}>{row.finalSealing.sideBottomSealingWidth}</td>
+              <td>{row.finalSealing.sideBottomSealingWidth}</td>
+              <td className={styles.groupFinalSealingEnd}>{row.finalSealing.visualInspection}</td>
               {/* Main-Formation */}
               <td>{row.mainFormation.equipment}</td>
               <td>{row.mainFormation.chNo}</td>
