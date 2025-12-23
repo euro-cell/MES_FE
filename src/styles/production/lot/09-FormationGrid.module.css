@@ -268,3 +268,20 @@
   padding: 40px;
   color: #64748b;
 }
+
+/* 불량 행 스타일 (하늘색) */
+.defective td {
+  background: #eff6ff !important;
+}
+
+.defective:hover td {
+  background: #dbeafe !important;
+}
+
+.defective .stickyCol {
+  background: #eff6ff !important;
+}
+
+.defective:hover .stickyCol {
+  background: #dbeafe !important;
+}

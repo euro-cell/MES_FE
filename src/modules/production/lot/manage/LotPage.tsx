@@ -313,7 +313,7 @@ export default function LotPage() {
       )}
 
       {/* 공정별 컨텐츠 */}
-      {currentProcess && <div style={{ marginTop: '20px' }}>{renderProcessContent()}</div>}
+      {currentProcess && <div className={styles.gridWrapper}>{renderProcessContent()}</div>}
     </div>
   );
 }

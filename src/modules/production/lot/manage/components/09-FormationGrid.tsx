@@ -31,22 +31,61 @@ export default function FormationGrid({ data }: FormationGridProps) {
         <thead>
           {/* 대분류 헤더 (1행) */}
           <tr>
-            <th ref={firstColRef} rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}>Date</th>
-            <th ref={secondColRef} rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickySecond}`} style={{ left: secondColLeft }}>Ass'y Lot</th>
-            <th rowSpan={4} className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyThird}`} style={{ left: thirdColLeft }}>최종 Lot</th>
-            <th rowSpan={2} colSpan={5} className={styles.groupPreFormation}>Pre-Formation</th>
-            <th rowSpan={2} colSpan={3} className={styles.groupFinalSealing}>Final Sealing</th>
-            <th rowSpan={2} colSpan={3} className={styles.groupMainFormation}>Main-Formation</th>
-            <th rowSpan={2} colSpan={2} className={styles.groupOcvIr1}>OCV/IR1</th>
-            <th colSpan={20} className={styles.groupAging}>Aging</th>
+            <th
+              ref={firstColRef}
+              rowSpan={4}
+              className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyFirst}`}
+            >
+              Date
+            </th>
+            <th
+              ref={secondColRef}
+              rowSpan={4}
+              className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickySecond}`}
+              style={{ left: secondColLeft }}
+            >
+              Ass'y Lot
+            </th>
+            <th
+              rowSpan={4}
+              className={`${styles.headerBasicCol} ${styles.stickyCol} ${styles.stickyThird}`}
+              style={{ left: thirdColLeft }}
+            >
+              Lot
+            </th>
+            <th rowSpan={2} colSpan={5} className={styles.groupPreFormation}>
+              Pre-Formation
+            </th>
+            <th rowSpan={2} colSpan={3} className={styles.groupFinalSealing}>
+              Final Sealing
+            </th>
+            <th rowSpan={2} colSpan={3} className={styles.groupMainFormation}>
+              Main-Formation
+            </th>
+            <th rowSpan={2} colSpan={2} className={styles.groupOcvIr1}>
+              OCV/IR1
+            </th>
+            <th colSpan={20} className={styles.groupAging}>
+              Aging
+            </th>
           </tr>
           {/* Aging 중분류 헤더 (2행) */}
           <tr>
-            <th colSpan={2} className={styles.groupAging4Days}>OCV/IR2 4Days</th>
-            <th colSpan={3} className={styles.groupAging7Days}>OCV/IR2 7Days</th>
-            <th colSpan={10} className={styles.groupGrading}>Grading</th>
-            <th colSpan={3} className={styles.groupSoc}>SOC</th>
-            <th colSpan={2} className={styles.groupOcvIr3}>OCV/IR3</th>
+            <th colSpan={2} className={styles.groupAging4Days}>
+              OCV/IR2 4Days
+            </th>
+            <th colSpan={3} className={styles.groupAging7Daysㄱ}>
+              OCV/IR2 7Days
+            </th>
+            <th colSpan={10} className={styles.groupGrading}>
+              Grading
+            </th>
+            <th colSpan={3} className={styles.groupSoc}>
+              SOC
+            </th>
+            <th colSpan={2} className={styles.groupOcvIr3}>
+              OCV/IR3
+            </th>
           </tr>
           {/* 중분류 헤더 (3행) */}
           <tr>
@@ -57,9 +96,21 @@ export default function FormationGrid({ data }: FormationGridProps) {
             <th>RFD</th>
             <th className={styles.groupPreFormationEnd}>For.EFF_1</th>
             {/* Final Sealing */}
-            <th>Pouch Sealing<br/>Thickness</th>
-            <th>Side/Bottom<br/>Sealing Width</th>
-            <th className={styles.groupFinalSealingEnd}>Visual<br/>Inspection</th>
+            <th>
+              Pouch Sealing
+              <br />
+              Thickness
+            </th>
+            <th>
+              Side/Bottom
+              <br />
+              Sealing Width
+            </th>
+            <th className={styles.groupFinalSealingEnd}>
+              Visual
+              <br />
+              Inspection
+            </th>
             {/* Main-Formation */}
             <th>설비</th>
             <th>CH No.</th>
@@ -140,56 +191,69 @@ export default function FormationGrid({ data }: FormationGridProps) {
           </tr>
         </thead>
         <tbody>
-          {data.map(row => (
-            <tr key={row.id}>
-              {/* 기본 정보 */}
-              <td className={`${styles.stickyCol} ${styles.stickyFirst} ${styles.groupBasic}`}>{row.date}</td>
-              <td className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickySecond} ${styles.groupBasic}`} style={{ left: secondColLeft }}>{row.assyLot}</td>
-              <td className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickyThird} ${styles.groupBasic}`} style={{ left: thirdColLeft }}>{row.finalLot}</td>
-              {/* Pre-Formation */}
-              <td>{row.preFormation.equipment}</td>
-              <td>{row.preFormation.chNo}</td>
-              <td>{row.preFormation.pfc}</td>
-              <td>{row.preFormation.rfd}</td>
-              <td className={styles.groupPreFormationEnd}>{row.preFormation.forEff1}</td>
-              {/* Final Sealing */}
-              <td>{row.finalSealing.pouchSealingThickness}</td>
-              <td>{row.finalSealing.sideBottomSealingWidth}</td>
-              <td className={styles.groupFinalSealingEnd}>{row.finalSealing.visualInspection}</td>
-              {/* Main-Formation */}
-              <td>{row.mainFormation.equipment}</td>
-              <td>{row.mainFormation.chNo}</td>
-              <td className={styles.groupMainFormationEnd}>{row.mainFormation.mfc}</td>
-              {/* OCV/IR1 */}
-              <td>{row.ocvIr1.ocv1}</td>
-              <td className={styles.groupOcvIr1End}>{row.ocvIr1.ir1}</td>
-              {/* Aging - 4Days */}
-              <td>{row.aging4Days.ocv2_4}</td>
-              <td className={styles.groupAging4DaysEnd}>{row.aging4Days.ir2_4}</td>
-              {/* Aging - 7Days */}
-              <td>{row.aging7Days.ocv2_7}</td>
-              <td>{row.aging7Days.ir2_7}</td>
-              <td className={styles.groupAging7DaysEnd}>{row.aging7Days.deltaV}</td>
-              {/* Grading */}
-              <td>{row.grading.equipment}</td>
-              <td>{row.grading.chNo}</td>
-              <td>{row.grading.mfd}</td>
-              <td>{row.grading.formEff2}</td>
-              <td>{row.grading.stc}</td>
-              <td>{row.grading.std}</td>
-              <td>{row.grading.formEff3}</td>
-              <td>{row.grading.temp}</td>
-              <td>{row.grading.wh}</td>
-              <td className={styles.groupGradingEnd}>{row.grading.nominalV}</td>
-              {/* SOC */}
-              <td>{row.soc.capacity}</td>
-              <td>{row.soc.soc}</td>
-              <td className={styles.groupSocEnd}>{row.soc.dcIr}</td>
-              {/* OCV/IR3 */}
-              <td>{row.ocvIr3.ocv3}</td>
-              <td>{row.ocvIr3.ir3}</td>
-            </tr>
-          ))}
+          {data.map(row => {
+            const rowClassName = row.isDefective ? styles.defective : '';
+            return (
+              <tr key={row.id} className={rowClassName}>
+                {/* 기본 정보 */}
+                <td className={`${styles.stickyCol} ${styles.stickyFirst} ${styles.groupBasic}`}>{row.date}</td>
+                <td
+                  className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickySecond} ${styles.groupBasic}`}
+                  style={{ left: secondColLeft }}
+                >
+                  {row.assyLot}
+                </td>
+                <td
+                  className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickyThird} ${styles.groupBasic}`}
+                  style={{ left: thirdColLeft }}
+                >
+                  {row.lot}
+                </td>
+                {/* Pre-Formation */}
+                <td>{row.preFormation.equipment}</td>
+                <td>{row.preFormation.chNo}</td>
+                <td>{row.preFormation.pfc}</td>
+                <td>{row.preFormation.rfd}</td>
+                <td className={styles.groupPreFormationEnd}>{row.preFormation.forEff1}</td>
+                {/* Final Sealing */}
+                <td>{row.finalSealing.pouchSealingThickness}</td>
+                <td>{row.finalSealing.sideBottomSealingWidth ? 'P' : 'NP'}</td>
+                <td className={styles.groupFinalSealingEnd}>{row.finalSealing.visualInspection ? 'P' : 'NP'}</td>
+                {/* Main-Formation */}
+                <td>{row.mainFormation.equipment}</td>
+                <td>{row.mainFormation.chNo}</td>
+                <td className={styles.groupMainFormationEnd}>{row.mainFormation.mfc}</td>
+                {/* OCV/IR1 */}
+                <td>{row.ocvIr1.ocv1}</td>
+                <td className={styles.groupOcvIr1End}>{row.ocvIr1.ir1}</td>
+                {/* Aging - 4Days */}
+                <td>{row.aging4Days.ocv2_4}</td>
+                <td className={styles.groupAging4DaysEnd}>{row.aging4Days.ir2_4}</td>
+                {/* Aging - 7Days */}
+                <td>{row.aging7Days.ocv2_7}</td>
+                <td>{row.aging7Days.ir2_7}</td>
+                <td className={styles.groupAging7DaysEnd}>{row.aging7Days.deltaV}</td>
+                {/* Grading */}
+                <td>{row.grading.equipment}</td>
+                <td>{row.grading.chNo}</td>
+                <td>{row.grading.mfd}</td>
+                <td>{row.grading.formEff2}</td>
+                <td>{row.grading.stc}</td>
+                <td>{row.grading.std}</td>
+                <td>{row.grading.formEff3}</td>
+                <td>{row.grading.gradingTemp}</td>
+                <td>{row.grading.wh}</td>
+                <td className={styles.groupGradingEnd}>{row.grading.nominalV}</td>
+                {/* SOC */}
+                <td>{row.soc.socCapacity}</td>
+                <td>{row.soc.soc}</td>
+                <td className={styles.groupSocEnd}>{row.soc.dcIr}</td>
+                {/* OCV/IR3 */}
+                <td>{row.ocvIr3.ocv3}</td>
+                <td>{row.ocvIr3.ir3}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

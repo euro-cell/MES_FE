@@ -7,8 +7,6 @@
   margin-bottom: 16px;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
-  position: sticky;
-  left: 0;
 }
 
 .projectHeader h2 {
@@ -42,8 +40,6 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  position: sticky;
-  left: 0;
 }
 
 .menuGroup {
@@ -100,8 +96,6 @@
   background: #f8fafc;
   border-radius: 8px;
   border: 2px dashed #cbd5e1;
-  position: sticky;
-  left: 0;
 }
 
 .placeholder p {
@@ -122,8 +116,6 @@
   text-align: center;
   padding: 40px;
   color: #64748b;
-  position: sticky;
-  left: 0;
 }
 
 .gridWrapper {

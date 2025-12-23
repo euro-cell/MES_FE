@@ -339,7 +339,7 @@ export interface SealingData {
 // Formation 공정 데이터
 export interface FormationPreFormation {
   equipment: string; // 설비 - 호기
-  chNo: string; // CH No. - 행/열
+  chNo: number; // CH No. - 행/열
   pfc: number; // PFC - Ah
   rfd: number; // RFD - Ah
   forEff1: number; // For.EFF_1 - %
@@ -347,13 +347,13 @@ export interface FormationPreFormation {
 
 export interface FormationFinalSealing {
   pouchSealingThickness: number; // μm
-  sideBottomSealingWidth: string; // P/NP
-  visualInspection: string; // P/NP - 외관
+  sideBottomSealingWidth: boolean; // P/NP
+  visualInspection: boolean; // P/NP - 외관
 }
 
 export interface FormationMainFormation {
   equipment: string; // 설비 - 호기
-  chNo: string; // CH No. - 행/열
+  chNo: number; // CH No. - 행/열
   mfc: number; // MFC - Ah
 }
 
@@ -375,19 +375,19 @@ export interface FormationAging7Days {
 
 export interface FormationGrading {
   equipment: string; // 설비 - 호기
-  chNo: string; // CH No. - 행/열
+  chNo: number; // CH No. - 행/열
   mfd: number; // MFD - Ah
   formEff2: number; // Form.EFF_2 - %
   stc: number; // STC - Ah
   std: number; // STD - Ah
   formEff3: number; // Form.EFF_3 - %
-  temp: number; // Temp. - °C
+  gradingTemp: number; // Temp. - °C
   wh: number; // Wh - Wh
   nominalV: number; // Nominal V - V
 }
 
 export interface FormationSoc {
-  capacity: number; // Capacity - Ah
+  socCapacity: number; // Capacity - Ah
   soc: number; // SOC - %
   dcIr: number; // DC-IR - mΩ
 }
@@ -400,11 +400,11 @@ export interface FormationOcvIr3 {
 export interface FormationData {
   id: number;
   date: string;
+  lot: string; // Lot
   assyLot: string;
-  formationLot: string;
+  isDefective?: boolean;
   preFormation: FormationPreFormation;
   finalSealing: FormationFinalSealing;
-  finalLot: string; // 최종 Lot
   mainFormation: FormationMainFormation;
   ocvIr1: FormationOcvIr1;
   aging4Days: FormationAging4Days;
