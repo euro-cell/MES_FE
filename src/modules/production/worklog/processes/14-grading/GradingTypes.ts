@@ -39,6 +39,16 @@ export interface GradingWorklog {
   gradingDefectQuantity?: number;
   gradingDiscardQuantity?: number;
   gradingDefectRate?: number;
+  grading1CellNumberRange?: string;
+  grading2CellNumberRange?: string;
+  grading3CellNumberRange?: string;
+  grading4CellNumberRange?: string;
+  grading5CellNumberRange?: string;
+  grading1Quantity?: number;
+  grading2Quantity?: number;
+  grading3Quantity?: number;
+  grading4Quantity?: number;
+  grading5Quantity?: number;
 
   // B. 생산 정보 - Lot 범위
   lotRange?: string;
@@ -105,6 +115,16 @@ export interface GradingWorklogPayload {
   gradingDefectQuantity?: number;
   gradingDiscardQuantity?: number;
   gradingDefectRate?: number;
+  grading1CellNumberRange?: string;
+  grading2CellNumberRange?: string;
+  grading3CellNumberRange?: string;
+  grading4CellNumberRange?: string;
+  grading5CellNumberRange?: string;
+  grading1Quantity?: number;
+  grading2Quantity?: number;
+  grading3Quantity?: number;
+  grading4Quantity?: number;
+  grading5Quantity?: number;
 
   // B. 생산 정보 - Lot 범위
   lotRange?: string;

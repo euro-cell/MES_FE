@@ -515,6 +515,11 @@ export const GRADING_NUMERIC_FIELDS = [
   'gradingDefectQuantity',
   'gradingDiscardQuantity',
   'gradingDefectRate',
+  'grading1Quantity',
+  'grading2Quantity',
+  'grading3Quantity',
+  'grading4Quantity',
+  'grading5Quantity',
   // 공정 조건 - OCV2
   'ocv2MeasurementTemp',
   'ocv2SettlingTime',
