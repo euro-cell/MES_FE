@@ -33,7 +33,7 @@ export default function SealingGrid({ data }: SealingGridProps) {
             <th colSpan={4} className={styles.groupTopSealing}>Top Sealing</th>
             <th colSpan={4} className={styles.groupSideSealing}>Side Sealing</th>
             <th colSpan={2} className={styles.groupFilling}>Filling</th>
-            <th className={styles.groupProduction}>Production</th>
+            <th className={styles.groupProduction}>Pouch</th>
           </tr>
           {/* 중분류 헤더 (2행) */}
           <tr>
@@ -69,9 +69,17 @@ export default function SealingGrid({ data }: SealingGridProps) {
           </tr>
         </thead>
         <tbody>
-          {data.map(row => (
-            <tr key={row.id}>
-              <td className={`${styles.stickyCol} ${styles.stickyFirst} ${styles.groupBasic}`}>{row.fillingDate}</td>
+          {data.map(row => {
+            const rowClassName = row.isDefectiveFromSealing
+              ? styles.defectiveFromSealing
+              : row.isDefectiveFromWelding
+                ? styles.defectiveFromWelding
+                : row.isDefectiveFromStacking
+                  ? styles.defectiveFromStacking
+                  : '';
+            return (
+            <tr key={row.id} className={rowClassName}>
+              <td className={`${styles.stickyCol} ${styles.stickyFirst} ${styles.groupBasic}`}>{row.date}</td>
               <td className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickySecond} ${styles.groupBasic}`} style={{ left: secondColLeft }}>{row.lot}</td>
               <td>{row.atAssy.temp}</td>
               <td className={styles.groupAssyEnd}>{row.atAssy.humidity}</td>
@@ -85,9 +93,10 @@ export default function SealingGrid({ data }: SealingGridProps) {
               <td className={styles.groupSideSealingEnd}>{row.sideSealing.irCheck}</td>
               <td>{row.filling.injection}</td>
               <td className={styles.groupFillingEnd}>{row.filling.lot}</td>
-              <td>{row.production.lot}</td>
+              <td>{row.pouch.lot}</td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>

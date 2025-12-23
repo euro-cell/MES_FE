@@ -3,7 +3,6 @@
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  overflow-x: auto;
 }
 
 .sealingTable {
@@ -196,4 +195,55 @@
   text-align: center;
   padding: 40px;
   color: #64748b;
+}
+
+/* 스태킹 불량 행 스타일 - 이전 공정 불량 (연한 빨간색) */
+.defectiveFromStacking td {
+  background: #fef2f2 !important;
+}
+
+.defectiveFromStacking:hover td {
+  background: #fee2e2 !important;
+}
+
+.defectiveFromStacking .stickyCol {
+  background: #fef2f2 !important;
+}
+
+.defectiveFromStacking:hover .stickyCol {
+  background: #fee2e2 !important;
+}
+
+/* 웰딩 불량 행 스타일 - 이전 공정 불량 (연한 주황색) */
+.defectiveFromWelding td {
+  background: #fff7ed !important;
+}
+
+.defectiveFromWelding:hover td {
+  background: #ffedd5 !important;
+}
+
+.defectiveFromWelding .stickyCol {
+  background: #fff7ed !important;
+}
+
+.defectiveFromWelding:hover .stickyCol {
+  background: #ffedd5 !important;
+}
+
+/* 실링 불량 행 스타일 - 현재 공정 불량 (연한 초록색) */
+.defectiveFromSealing td {
+  background: #f0fdf4 !important;
+}
+
+.defectiveFromSealing:hover td {
+  background: #dcfce7 !important;
+}
+
+.defectiveFromSealing .stickyCol {
+  background: #f0fdf4 !important;
+}
+
+.defectiveFromSealing:hover .stickyCol {
+  background: #dcfce7 !important;
 }

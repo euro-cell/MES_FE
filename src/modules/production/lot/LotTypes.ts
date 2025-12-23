@@ -318,19 +318,22 @@ export interface SealingFilling {
   lot: string; // LOT - 전해액
 }
 
-export interface SealingProduction {
+export interface SealingPouch {
   lot: string; // LOT - Pouch
 }
 
 export interface SealingData {
   id: number;
-  fillingDate: string;
+  date: string;
   lot: string;
+  isDefectiveFromStacking?: boolean;
+  isDefectiveFromWelding?: boolean;
+  isDefectiveFromSealing?: boolean;
   atAssy: SealingAtAssy;
   topSealing: SealingTopSealing;
   sideSealing: SealingSideSealing;
   filling: SealingFilling;
-  production: SealingProduction;
+  pouch: SealingPouch;
 }
 
 // Formation 공정 데이터

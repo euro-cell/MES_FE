@@ -12,8 +12,8 @@ export interface SealingWorklog {
   pouchLot?: string;
   pouchManufacturer?: string;
   pouchDepth?: number;
-  pouchInputQuantity?: number;
-  pouchUsage?: number;
+  pouchInputQuantity?: string;
+  pouchUsage?: string;
 
   // B. 생산 정보 - 탑
   topJrNumber?: string;
@@ -74,8 +74,8 @@ export interface SealingWorklogPayload {
   pouchLot?: string;
   pouchManufacturer?: string;
   pouchDepth?: number;
-  pouchInputQuantity?: number;
-  pouchUsage?: number;
+  pouchInputQuantity?: string;
+  pouchUsage?: string;
 
   // B. 생산 정보 - 탑
   topJrNumber?: string;

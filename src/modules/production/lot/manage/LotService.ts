@@ -189,49 +189,17 @@ export async function getWeldingData(projectId: number): Promise<WeldingData[]> 
   }
 }
 
-// Sealing/Filling 데이터 조회 (목데이터)
+// Sealing/Filling 데이터 조회
 export async function getSealingData(projectId: number): Promise<SealingData[]> {
-  console.log('Sealing/Filling 데이터 조회 - projectId:', projectId);
-
-  // TODO: 백엔드 API 연동 시 아래 코드로 교체
-  // const response = await axios.get(`${API_BASE}/production/${projectId}/lot/sealing`, {
-  //   withCredentials: true,
-  // });
-  // return response.data;
-
-  // 목데이터
-  return [
-    {
-      id: 1,
-      fillingDate: '2024-12-27',
-      lot: 'SF-241227-001',
-      atAssy: { temp: 25, humidity: 45 },
-      topSealing: { sealantHeight: 'P', pouchSealingThickness: 150, tabSealingThickness: 145, visualInspection: 'P' },
-      sideSealing: { pouchSealingThickness: 148, sideBottomSealingWidth: 'P', visualInspection: 'P', irCheck: 'P' },
-      filling: { injection: '2024-12-27', lot: 'EL-241225-001' },
-      production: { lot: 'PC-241227-001' },
-    },
-    {
-      id: 2,
-      fillingDate: '2024-12-27',
-      lot: 'SF-241227-002',
-      atAssy: { temp: 25, humidity: 46 },
-      topSealing: { sealantHeight: 'P', pouchSealingThickness: 152, tabSealingThickness: 147, visualInspection: 'P' },
-      sideSealing: { pouchSealingThickness: 150, sideBottomSealingWidth: 'NP', visualInspection: 'P', irCheck: 'P' },
-      filling: { injection: '2024-12-27', lot: 'EL-241225-002' },
-      production: { lot: 'PC-241227-002' },
-    },
-    {
-      id: 3,
-      fillingDate: '2024-12-28',
-      lot: 'SF-241228-001',
-      atAssy: { temp: 24, humidity: 48 },
-      topSealing: { sealantHeight: 'NP', pouchSealingThickness: 148, tabSealingThickness: 143, visualInspection: 'NP' },
-      sideSealing: { pouchSealingThickness: 146, sideBottomSealingWidth: 'P', visualInspection: 'P', irCheck: 'NP' },
-      filling: { injection: '2024-12-28', lot: 'EL-241226-001' },
-      production: { lot: 'PC-241228-001' },
-    },
-  ];
+  try {
+    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/sealing`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Sealing 데이터 조회 실패:', error);
+    return [];
+  }
 }
 
 // Formation 데이터 조회 (목데이터)

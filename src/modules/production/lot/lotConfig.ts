@@ -11,7 +11,7 @@ export const LOT_PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
   Assembly: [
     { id: 'Stacking', title: 'Stacking' },
     { id: 'Welding', title: 'Welding' },
-    { id: 'Sealing_Filling', title: 'Sealing/Filling' },
+    { id: 'Sealing', title: 'Sealing/Filling' },
   ],
   Formation: [
     { id: 'Formation', title: 'Formation' },

@@ -133,7 +133,7 @@ export default function LotPage() {
         } else if (process === 'Welding') {
           const data = await getWeldingData(Number(projectId));
           setWeldingData(data);
-        } else if (process === 'Sealing_Filling') {
+        } else if (process === 'Sealing') {
           const data = await getSealingData(Number(projectId));
           setSealingData(data);
         } else if (process === 'Formation') {
@@ -190,7 +190,7 @@ export default function LotPage() {
       } else if (process === 'Welding') {
         const data = await getWeldingData(Number(projectId));
         setWeldingData(data);
-      } else if (process === 'Sealing_Filling') {
+      } else if (process === 'Sealing') {
         const data = await getSealingData(Number(projectId));
         setSealingData(data);
       } else if (process === 'Formation') {
@@ -236,7 +236,7 @@ export default function LotPage() {
         return <StackingGrid data={stackingData} />;
       case 'Welding':
         return <WeldingGrid data={weldingData} />;
-      case 'Sealing_Filling':
+      case 'Sealing':
         return <SealingGrid data={sealingData} />;
       case 'Formation':
         return <FormationGrid data={formationData} />;

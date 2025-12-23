@@ -357,8 +357,6 @@ export const WELDING_NUMERIC_FIELDS = [
 // Sealing 숫자 필드
 export const SEALING_NUMERIC_FIELDS = [
   'pouchDepth',
-  'pouchInputQuantity',
-  'pouchUsage',
   // 탑
   'topWorkQuantity',
   'topGoodQuantity',
