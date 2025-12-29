@@ -35,14 +35,14 @@
 }
 
 .categoryCell {
-  background: #fef9c3;
+  background: #f8fafc;
   font-weight: 600;
-  color: #854d0e;
+  color: #334155;
   vertical-align: middle;
 }
 
 .materialCell {
-  background: #fefce8;
+  background: #fff;
   font-weight: 500;
 }
 
@@ -55,6 +55,6 @@
 }
 
 .lotCell {
-  background: #fef9c3;
+  background: #fff;
   font-family: monospace;
 }
