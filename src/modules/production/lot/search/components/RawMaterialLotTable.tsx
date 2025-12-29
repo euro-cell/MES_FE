@@ -1,12 +1,11 @@
 import type { RawMaterialLotInfo } from '../LotSearchTypes';
-import { RAW_MATERIAL_CATEGORIES } from '../LotSearchTypes';
 import styles from '../../../../../styles/production/lot/RawMaterialLotTable.module.css';
 
 interface RawMaterialLotTableProps {
   data: RawMaterialLotInfo[];
 }
 
-// 원자재 카테고리별 자재 목록
+// 원자재 카테고리별 자재 목록 (테이블 구조용)
 const MATERIAL_CONFIG: {
   category: 'Cathode' | 'Anode' | "Ass'y";
   materials: string[];
@@ -36,7 +35,7 @@ export default function RawMaterialLotTable({ data }: RawMaterialLotTableProps) 
           </tr>
         </thead>
         <tbody>
-          {MATERIAL_CONFIG.map((config) => (
+          {MATERIAL_CONFIG.map(config =>
             config.materials.map((material, materialIndex) => {
               const materialInfo = findMaterial(config.category, material);
               const isFirstInCategory = materialIndex === 0;
@@ -44,27 +43,18 @@ export default function RawMaterialLotTable({ data }: RawMaterialLotTableProps) 
               return (
                 <tr key={`${config.category}-${material}`}>
                   {isFirstInCategory && (
-                    <td
-                      rowSpan={config.materials.length}
-                      className={styles.categoryCell}
-                    >
+                    <td rowSpan={config.materials.length} className={styles.categoryCell}>
                       {config.category}
                     </td>
                   )}
-                  <td className={styles.materialCell}>{material}</td>
-                  <td className={styles.productCell}>
-                    {materialInfo?.product || ''}
-                  </td>
-                  <td className={styles.manufacturerCell}>
-                    {materialInfo?.manufacturer || ''}
-                  </td>
-                  <td className={styles.lotCell}>
-                    {materialInfo?.lot || ''}
-                  </td>
+                  <td className={styles.materialCell}>{materialInfo?.material || ''}</td>
+                  <td className={styles.productCell}>{materialInfo?.product || ''}</td>
+                  <td className={styles.manufacturerCell}>{materialInfo?.manufacturer || ''}</td>
+                  <td className={styles.lotCell}>{materialInfo?.lot || ''}</td>
                 </tr>
               );
             })
-          ))}
+          )}
         </tbody>
       </table>
     </div>

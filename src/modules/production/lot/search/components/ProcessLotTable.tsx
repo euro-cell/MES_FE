@@ -1,5 +1,4 @@
 import type { ProcessLotInfo } from '../LotSearchTypes';
-import { PROCESS_CATEGORIES } from '../LotSearchTypes';
 import styles from '../../../../../styles/production/lot/ProcessLotTable.module.css';
 
 interface ProcessLotTableProps {
@@ -33,7 +32,7 @@ export default function ProcessLotTable({ data }: ProcessLotTableProps) {
           </tr>
         </thead>
         <tbody>
-          {categories.map((category) => (
+          {categories.map(category =>
             category.processes.map((process, processIndex) => {
               const lotInfo = findLot(process);
               const isFirstInCategory = processIndex === 0;
@@ -42,10 +41,7 @@ export default function ProcessLotTable({ data }: ProcessLotTableProps) {
               return (
                 <tr key={`${category.name}-${process}`}>
                   {isFirstInCategory && (
-                    <td
-                      rowSpan={category.processes.length}
-                      className={styles.categoryCell}
-                    >
+                    <td rowSpan={category.processes.length} className={styles.categoryCell}>
                       {category.name}
                     </td>
                   )}
@@ -56,18 +52,14 @@ export default function ProcessLotTable({ data }: ProcessLotTableProps) {
                     </td>
                   ) : (
                     <>
-                      <td className={styles.lotCell}>
-                        {lotInfo?.cathodeLot || ''}
-                      </td>
-                      <td className={styles.lotCell}>
-                        {lotInfo?.anodeLot || ''}
-                      </td>
+                      <td className={styles.lotCell}>{lotInfo?.cathodeLot || ''}</td>
+                      <td className={styles.lotCell}>{lotInfo?.anodeLot || ''}</td>
                     </>
                   )}
                 </tr>
               );
             })
-          ))}
+          )}
         </tbody>
       </table>
     </div>
