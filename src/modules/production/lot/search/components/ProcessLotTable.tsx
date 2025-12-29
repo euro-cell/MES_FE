@@ -15,8 +15,8 @@ export default function ProcessLotTable({ data }: ProcessLotTableProps) {
   ];
 
   // data에서 각 공정의 Lot 찾기
-  const findLot = (processType: string) => {
-    return data.find(d => d.processType === processType);
+  const findLot = (process: string) => {
+    return data.find(d => d.category === process);
   };
 
   return (

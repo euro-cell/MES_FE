@@ -25,13 +25,13 @@ function getMockSearchResult(): LotSearchResult {
     projectId: 1,
     projectName: 'NA-E-2412-1-TNP38',
     processLots: [
-      { category: '전극공정', processType: 'Mixing', cathodeLot: 'MX-CA-2412-001', anodeLot: 'MX-AN-2412-001' },
-      { category: '전극공정', processType: 'Coating', cathodeLot: 'CT-CA-2412-001', anodeLot: 'CT-AN-2412-001' },
-      { category: '전극공정', processType: 'Calendering', cathodeLot: 'CL-CA-2412-001', anodeLot: 'CL-AN-2412-001' },
-      { category: '전극공정', processType: 'Slitting', cathodeLot: 'SL-CA-2412-001', anodeLot: 'SL-AN-2412-001' },
-      { category: '전극공정', processType: 'Notching', cathodeLot: 'NC-CA-2412-001', anodeLot: 'NC-AN-2412-001' },
-      { category: '조립 공정', processType: 'Assembly', lot: 'AS-2412-001' },
-      { category: '화성 공정', processType: 'Formation', lot: 'FM-2412-001' },
+      { category: 'Mixing', cathodeLot: 'MX-CA-2412-001', anodeLot: 'MX-AN-2412-001' },
+      { category: 'Coating', cathodeLot: 'CT-CA-2412-001', anodeLot: 'CT-AN-2412-001' },
+      { category: 'Calendering', cathodeLot: 'CL-CA-2412-001', anodeLot: 'CL-AN-2412-001' },
+      { category: 'Slitting', cathodeLot: 'SL-CA-2412-001', anodeLot: 'SL-AN-2412-001' },
+      { category: 'Notching', cathodeLot: 'NC-CA-2412-001', anodeLot: 'NC-AN-2412-001' },
+      { category: 'Assembly', lot: 'AS-2412-001' },
+      { category: 'Formation', lot: 'FM-2412-001' },
     ],
     rawMaterialLots: [
       // Cathode
