@@ -43,7 +43,8 @@ export default function FormingRegister() {
         if (rangeName === 'productionId' && project) {
           initialValues[rangeName] = project.name;
         } else {
-          initialValues[rangeName] = '';
+          const defaultValue = namedRanges[rangeName]?.value;
+          initialValues[rangeName] = defaultValue ?? '';
         }
       });
       setFormValues(initialValues);
@@ -91,8 +92,12 @@ export default function FormingRegister() {
       // B. 생산 정보 - 탑컷팅
       topCuttingWorkQuantity: formValues.topCuttingWorkQuantity ? Number(formValues.topCuttingWorkQuantity) : undefined,
       topCuttingGoodQuantity: formValues.topCuttingGoodQuantity ? Number(formValues.topCuttingGoodQuantity) : undefined,
-      topCuttingDefectQuantity: formValues.topCuttingDefectQuantity ? Number(formValues.topCuttingDefectQuantity) : undefined,
-      topCuttingDiscardQuantity: formValues.topCuttingDiscardQuantity ? Number(formValues.topCuttingDiscardQuantity) : undefined,
+      topCuttingDefectQuantity: formValues.topCuttingDefectQuantity
+        ? Number(formValues.topCuttingDefectQuantity)
+        : undefined,
+      topCuttingDiscardQuantity: formValues.topCuttingDiscardQuantity
+        ? Number(formValues.topCuttingDiscardQuantity)
+        : undefined,
       topCuttingDefectRate: formValues.topCuttingDefectRate ? Number(formValues.topCuttingDefectRate) : undefined,
 
       // C. 공정 조건 - 컷팅
@@ -136,7 +141,10 @@ export default function FormingRegister() {
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
         </div>
         <div className={styles.actions}>
-          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Assembly&process=Forming`)}>
+          <button
+            className={styles.btnCancel}
+            onClick={() => navigate(`/prod/log/${projectId}?category=Assembly&process=Forming`)}
+          >
             취소
           </button>
           <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>

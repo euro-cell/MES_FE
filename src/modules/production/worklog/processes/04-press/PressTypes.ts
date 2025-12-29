@@ -4,7 +4,11 @@ export interface PressWorklog {
   id: number;
   projectId: number;
   processId: string;
-  workDate: string;
+  manufactureDate: string;
+  worker: string;
+  line: string;
+  plant: string;
+  shift: string;
   round: number;
   writer: string;
   createdAt: string;
@@ -121,7 +125,11 @@ export interface PressWorklog {
 }
 
 export interface PressWorklogPayload {
-  workDate: string;
+  manufactureDate: string;
+  worker: string;
+  line: string;
+  plant: string;
+  shift: string;
   round: number;
 
   // ===== A. 자재 투입 정보 =====

@@ -46,7 +46,8 @@ export default function VdRegister() {
         if (rangeName === 'productionId' && project) {
           initialValues[rangeName] = project.name;
         } else {
-          initialValues[rangeName] = '';
+          const defaultValue = namedRanges[rangeName]?.value;
+          initialValues[rangeName] = defaultValue ?? '';
         }
       });
       setFormValues(initialValues);
@@ -82,61 +83,81 @@ export default function VdRegister() {
       cathodeLot1: formValues.cathodeLot1,
       cathodeInputQuantity1: formValues.cathodeInputQuantity1 ? Number(formValues.cathodeInputQuantity1) : undefined,
       cathodeInputOutputTime1: formValues.cathodeInputOutputTime1,
-      cathodeMoistureMeasurement1: formValues.cathodeMoistureMeasurement1 ? Number(formValues.cathodeMoistureMeasurement1) : undefined,
+      cathodeMoistureMeasurement1: formValues.cathodeMoistureMeasurement1
+        ? Number(formValues.cathodeMoistureMeasurement1)
+        : undefined,
 
       // B. 생산 정보 - 1차 음극
       anodeLot1: formValues.anodeLot1,
       anodeInputQuantity1: formValues.anodeInputQuantity1 ? Number(formValues.anodeInputQuantity1) : undefined,
       anodeInputOutputTime1: formValues.anodeInputOutputTime1,
-      anodeMoistureMeasurement1: formValues.anodeMoistureMeasurement1 ? Number(formValues.anodeMoistureMeasurement1) : undefined,
+      anodeMoistureMeasurement1: formValues.anodeMoistureMeasurement1
+        ? Number(formValues.anodeMoistureMeasurement1)
+        : undefined,
 
       // B. 생산 정보 - 2차 양극
       cathodeLot2: formValues.cathodeLot2,
       cathodeInputQuantity2: formValues.cathodeInputQuantity2 ? Number(formValues.cathodeInputQuantity2) : undefined,
       cathodeInputOutputTime2: formValues.cathodeInputOutputTime2,
-      cathodeMoistureMeasurement2: formValues.cathodeMoistureMeasurement2 ? Number(formValues.cathodeMoistureMeasurement2) : undefined,
+      cathodeMoistureMeasurement2: formValues.cathodeMoistureMeasurement2
+        ? Number(formValues.cathodeMoistureMeasurement2)
+        : undefined,
 
       // B. 생산 정보 - 2차 음극
       anodeLot2: formValues.anodeLot2,
       anodeInputQuantity2: formValues.anodeInputQuantity2 ? Number(formValues.anodeInputQuantity2) : undefined,
       anodeInputOutputTime2: formValues.anodeInputOutputTime2,
-      anodeMoistureMeasurement2: formValues.anodeMoistureMeasurement2 ? Number(formValues.anodeMoistureMeasurement2) : undefined,
+      anodeMoistureMeasurement2: formValues.anodeMoistureMeasurement2
+        ? Number(formValues.anodeMoistureMeasurement2)
+        : undefined,
 
       // B. 생산 정보 - 3차 양극
       cathodeLot3: formValues.cathodeLot3,
       cathodeInputQuantity3: formValues.cathodeInputQuantity3 ? Number(formValues.cathodeInputQuantity3) : undefined,
       cathodeInputOutputTime3: formValues.cathodeInputOutputTime3,
-      cathodeMoistureMeasurement3: formValues.cathodeMoistureMeasurement3 ? Number(formValues.cathodeMoistureMeasurement3) : undefined,
+      cathodeMoistureMeasurement3: formValues.cathodeMoistureMeasurement3
+        ? Number(formValues.cathodeMoistureMeasurement3)
+        : undefined,
 
       // B. 생산 정보 - 3차 음극
       anodeLot3: formValues.anodeLot3,
       anodeInputQuantity3: formValues.anodeInputQuantity3 ? Number(formValues.anodeInputQuantity3) : undefined,
       anodeInputOutputTime3: formValues.anodeInputOutputTime3,
-      anodeMoistureMeasurement3: formValues.anodeMoistureMeasurement3 ? Number(formValues.anodeMoistureMeasurement3) : undefined,
+      anodeMoistureMeasurement3: formValues.anodeMoistureMeasurement3
+        ? Number(formValues.anodeMoistureMeasurement3)
+        : undefined,
 
       // B. 생산 정보 - 4차 양극
       cathodeLot4: formValues.cathodeLot4,
       cathodeInputQuantity4: formValues.cathodeInputQuantity4 ? Number(formValues.cathodeInputQuantity4) : undefined,
       cathodeInputOutputTime4: formValues.cathodeInputOutputTime4,
-      cathodeMoistureMeasurement4: formValues.cathodeMoistureMeasurement4 ? Number(formValues.cathodeMoistureMeasurement4) : undefined,
+      cathodeMoistureMeasurement4: formValues.cathodeMoistureMeasurement4
+        ? Number(formValues.cathodeMoistureMeasurement4)
+        : undefined,
 
       // B. 생산 정보 - 4차 음극
       anodeLot4: formValues.anodeLot4,
       anodeInputQuantity4: formValues.anodeInputQuantity4 ? Number(formValues.anodeInputQuantity4) : undefined,
       anodeInputOutputTime4: formValues.anodeInputOutputTime4,
-      anodeMoistureMeasurement4: formValues.anodeMoistureMeasurement4 ? Number(formValues.anodeMoistureMeasurement4) : undefined,
+      anodeMoistureMeasurement4: formValues.anodeMoistureMeasurement4
+        ? Number(formValues.anodeMoistureMeasurement4)
+        : undefined,
 
       // B. 생산 정보 - 5차 양극
       cathodeLot5: formValues.cathodeLot5,
       cathodeInputQuantity5: formValues.cathodeInputQuantity5 ? Number(formValues.cathodeInputQuantity5) : undefined,
       cathodeInputOutputTime5: formValues.cathodeInputOutputTime5,
-      cathodeMoistureMeasurement5: formValues.cathodeMoistureMeasurement5 ? Number(formValues.cathodeMoistureMeasurement5) : undefined,
+      cathodeMoistureMeasurement5: formValues.cathodeMoistureMeasurement5
+        ? Number(formValues.cathodeMoistureMeasurement5)
+        : undefined,
 
       // B. 생산 정보 - 5차 음극
       anodeLot5: formValues.anodeLot5,
       anodeInputQuantity5: formValues.anodeInputQuantity5 ? Number(formValues.anodeInputQuantity5) : undefined,
       anodeInputOutputTime5: formValues.anodeInputOutputTime5,
-      anodeMoistureMeasurement5: formValues.anodeMoistureMeasurement5 ? Number(formValues.anodeMoistureMeasurement5) : undefined,
+      anodeMoistureMeasurement5: formValues.anodeMoistureMeasurement5
+        ? Number(formValues.anodeMoistureMeasurement5)
+        : undefined,
 
       // C. 공정 조건
       vacuumDegreeSetting: formValues.vacuumDegreeSetting ? Number(formValues.vacuumDegreeSetting) : undefined,
@@ -173,7 +194,10 @@ export default function VdRegister() {
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
         </div>
         <div className={styles.actions}>
-          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Assembly&process=VD`)}>
+          <button
+            className={styles.btnCancel}
+            onClick={() => navigate(`/prod/log/${projectId}?category=Assembly&process=VD`)}
+          >
             취소
           </button>
           <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>

@@ -42,7 +42,8 @@ export default function CoatingRegister() {
         if (rangeName === 'productionId' && project) {
           initialValues[rangeName] = project.name;
         } else {
-          initialValues[rangeName] = '';
+          const defaultValue = namedRanges[rangeName]?.value;
+          initialValues[rangeName] = defaultValue ?? '';
         }
       });
       setFormValues(initialValues);

@@ -46,7 +46,8 @@ export default function PressRegister() {
         if (rangeName === 'productionId' && project) {
           initialValues[rangeName] = project.name;
         } else {
-          initialValues[rangeName] = '';
+          const defaultValue = namedRanges[rangeName]?.value;
+          initialValues[rangeName] = defaultValue ?? '';
         }
       });
       setFormValues(initialValues);
@@ -61,7 +62,11 @@ export default function PressRegister() {
     if (!projectId) return;
 
     const payload: PressWorklogPayload = {
-      workDate: formValues.workDate || '',
+      manufactureDate: formValues.manufactureDate || '',
+      worker: formValues.worker || '',
+      line: formValues.line || '',
+      plant: formValues.plant || '',
+      shift: formValues.shift || '',
       round: Number(formValues.round) || 0,
 
       // A. 자재 투입 정보
@@ -200,7 +205,10 @@ export default function PressRegister() {
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
         </div>
         <div className={styles.actions}>
-          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Press`)}>
+          <button
+            className={styles.btnCancel}
+            onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Press`)}
+          >
             취소
           </button>
           <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>

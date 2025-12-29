@@ -7,7 +7,10 @@ interface MixingGridProps {
 }
 
 // tempHumi 문자열에서 온도와 습도를 분리하는 함수
-function parseTempHumi(tempHumi: string): { temp: string; humi: string } {
+function parseTempHumi(tempHumi: string | null | undefined): { temp: string; humi: string } {
+  if (!tempHumi) {
+    return { temp: '-', humi: '-' };
+  }
   // "25°C / 50%" 형식 파싱
   const parts = tempHumi.split('/').map(s => s.trim());
   return {

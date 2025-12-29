@@ -44,7 +44,8 @@ export default function NotchingRegister() {
         if (rangeName === 'productionId' && project) {
           initialValues[rangeName] = project.name;
         } else {
-          initialValues[rangeName] = '';
+          const defaultValue = namedRanges[rangeName]?.value;
+          initialValues[rangeName] = defaultValue ?? '';
         }
       });
       setFormValues(initialValues);
@@ -86,7 +87,10 @@ export default function NotchingRegister() {
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
         </div>
         <div className={styles.actions}>
-          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Notching`)}>
+          <button
+            className={styles.btnCancel}
+            onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Notching`)}
+          >
             취소
           </button>
           <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>
