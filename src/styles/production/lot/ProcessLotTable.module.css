@@ -1,0 +1,52 @@
+.tableContainer {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tableTitle {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.processTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.processTable th {
+  background: #f1f5f9;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  font-weight: 600;
+  color: #334155;
+}
+
+.processTable td {
+  padding: 10px 16px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  color: #475569;
+}
+
+.categoryCell {
+  background: #fef9c3;
+  font-weight: 600;
+  color: #854d0e;
+  vertical-align: middle;
+}
+
+.processCell {
+  background: #fefce8;
+  font-weight: 500;
+}
+
+.lotCell {
+  background: #fef9c3;
+  font-family: monospace;
+}

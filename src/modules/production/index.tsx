@@ -8,6 +8,7 @@ import SpecPage from './spec';
 import WorklogPage from './worklog';
 import StatusIndex from './status';
 import LotIndex from './lot';
+import SearchIndex from './lot/search';
 
 export default function ProductionIndex() {
   const { sub } = MENU_CONFIG.production;
@@ -23,6 +24,7 @@ export default function ProductionIndex() {
           <Route path='log/*' element={<WorklogPage />} />
           <Route path='status/*' element={<StatusIndex />} />
           <Route path='lot/*' element={<LotIndex />} />
+          <Route path='search/*' element={<SearchIndex />} />
         </Routes>
       </div>
     </div>
