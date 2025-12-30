@@ -7,7 +7,7 @@ import { mapFormToPayload } from '../../shared/excelUtils';
 import { SLURRY_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createSlurryWorklog } from './SlurryService';
 import type { SlurryWorklogPayload } from './SlurryTypes';
-import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS } from './slurryConstants';
+import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS, SLURRY_READONLY_FIELDS } from './slurryConstants';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import styles from '../../../../../styles/production/worklog/common.module.css';
@@ -51,11 +51,44 @@ export default function SlurryRegister() {
     }
   }, [namedRanges, project]);
 
+  // 고형분 자동계산 함수
+  const calculateSolidContent = (
+    dish: number,
+    slurry: number,
+    dry: number
+  ): number | null => {
+    if (isNaN(dish) || isNaN(slurry) || isNaN(dry)) return null;
+    const wetMass = slurry - dish;
+    const dryMass = dry - dish;
+    if (wetMass <= 0) return null;
+    return Number(((dryMass / wetMass) * 100).toFixed(2));
+  };
+
   const handleCellChange = (rangeName: string, value: any) => {
-    setFormValues(prev => ({
-      ...prev,
-      [rangeName]: value,
-    }));
+    setFormValues(prev => {
+      const newValues = { ...prev, [rangeName]: value };
+
+      // 고형분 1-3 자동계산
+      const solidContentGroups = [1, 2, 3];
+      solidContentGroups.forEach(num => {
+        const dishKey = `solidContent${num}Dish`;
+        const slurryKey = `solidContent${num}Slurry`;
+        const dryKey = `solidContent${num}Dry`;
+        const percentageKey = `solidContent${num}Percentage`;
+
+        if (rangeName === dishKey || rangeName === slurryKey || rangeName === dryKey) {
+          const dish = parseFloat(newValues[dishKey]);
+          const slurryVal = parseFloat(newValues[slurryKey]);
+          const dry = parseFloat(newValues[dryKey]);
+          const percentage = calculateSolidContent(dish, slurryVal, dry);
+          if (percentage !== null) {
+            newValues[percentageKey] = percentage;
+          }
+        }
+      });
+
+      return newValues;
+    });
   };
 
   const handleSave = async () => {
@@ -123,13 +156,14 @@ export default function SlurryRegister() {
       <div className={styles.excelWrapper}>
         <ExcelRenderer
           workbook={workbook}
-          editableRanges={Object.keys(namedRanges)}
+          editableRanges={Object.keys(namedRanges).filter(name => !SLURRY_READONLY_FIELDS.includes(name))}
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={SLURRY_MULTILINE_FIELDS}
           timeFields={SLURRY_TIME_FIELDS}
           numericFields={SLURRY_NUMERIC_FIELDS}
+          readOnlyFields={SLURRY_READONLY_FIELDS}
         />
       </div>
 

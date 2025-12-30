@@ -66,6 +66,7 @@ interface ExcelRendererProps {
   multilineFields?: string[];
   timeFields?: string[];
   numericFields?: string[];
+  readOnlyFields?: string[];
 }
 
 function decodeAddress(addr: string) {
@@ -236,6 +237,7 @@ export default function ExcelRenderer({
   multilineFields = [],
   timeFields = [],
   numericFields = [],
+  readOnlyFields = [],
 }: ExcelRendererProps) {
   const sheetData = useMemo((): SheetData | null => {
     if (!workbook) return null;
@@ -377,6 +379,7 @@ export default function ExcelRenderer({
                 const cellValue = getCellValue(rowIdx, colIdx, cell);
                 const textAlign = cell.alignment?.horizontal || 'left';
                 const isMultiline = rangeName ? multilineFields.includes(rangeName) : false;
+                const isReadOnly = rangeName ? readOnlyFields.includes(rangeName) : false;
 
                 // 셀 스타일 생성
                 const borderStyle = getBorderStyle(cell.border);
@@ -389,8 +392,11 @@ export default function ExcelRenderer({
                   ...fontStyle,
                 };
 
-                // 편집 가능한 셀이 아닌 경우에만 배경색 적용
-                if (backgroundColor && !isEditable) {
+                // 읽기 전용 필드는 연한 노란색 배경
+                if (isReadOnly) {
+                  cellStyle.backgroundColor = '#FFFDE7';
+                } else if (backgroundColor && !isEditable) {
+                  // 편집 가능한 셀이 아닌 경우에만 배경색 적용
                   cellStyle.backgroundColor = backgroundColor;
                 }
 
