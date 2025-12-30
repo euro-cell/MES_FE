@@ -9,6 +9,7 @@ import type { SealingWorklogPayload } from './SealingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import { SEALING_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function SealingRegister() {
@@ -123,12 +124,13 @@ export default function SealingRegister() {
       <div className={styles.excelWrapper}>
         <ExcelRenderer
           workbook={workbook}
-          editableRanges={Object.keys(namedRanges)}
+          editableRanges={Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name))}
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['topChecklist', 'sideChecklist', 'bottomChecklist', 'remarkTop', 'remarkSide']}
           numericFields={SEALING_NUMERIC_FIELDS}
+          readOnlyFields={COMMON_READONLY_FIELDS}
         />
       </div>
 

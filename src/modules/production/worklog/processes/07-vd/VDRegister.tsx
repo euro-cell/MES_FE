@@ -8,6 +8,7 @@ import type { VdWorklogPayload } from './VdTypes';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 
 export default function VdRegister() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -184,7 +185,7 @@ export default function VdRegister() {
   if (error) return <p>템플릿 로드 실패: {error.message}</p>;
   if (!workbook) return <p>엑셀 데이터를 불러올 수 없습니다.</p>;
 
-  const editableRanges = Object.keys(namedRanges);
+  const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
 
   return (
     <div className={styles.container}>
@@ -213,6 +214,7 @@ export default function VdRegister() {
         namedRanges={namedRanges}
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
+        readOnlyFields={COMMON_READONLY_FIELDS}
       />
     </div>
   );

@@ -9,6 +9,7 @@ import type { BinderWorklog, BinderWorklogPayload } from './BinderTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function BinderEdit() {
@@ -141,7 +142,7 @@ export default function BinderEdit() {
       <div className={styles.excelWrapper}>
         <ExcelRenderer
           workbook={workbook}
-          editableRanges={Object.keys(namedRanges)}
+          editableRanges={Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name))}
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
@@ -161,6 +162,7 @@ export default function BinderEdit() {
             'stabilizationEndTime',
           ]}
           numericFields={BINDER_NUMERIC_FIELDS}
+          readOnlyFields={COMMON_READONLY_FIELDS}
         />
       </div>
 

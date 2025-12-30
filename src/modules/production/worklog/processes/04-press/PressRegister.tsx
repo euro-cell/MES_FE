@@ -7,6 +7,7 @@ import { createPressWorklog } from './PressService';
 import type { PressWorklogPayload } from './PressTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function PressRegister() {
@@ -195,7 +196,7 @@ export default function PressRegister() {
   if (error) return <p>템플릿 로드 실패: {error.message}</p>;
   if (!workbook) return <p>엑셀 데이터를 불러올 수 없습니다.</p>;
 
-  const editableRanges = Object.keys(namedRanges);
+  const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
 
   return (
     <div className={styles.container}>
@@ -224,6 +225,7 @@ export default function PressRegister() {
         namedRanges={namedRanges}
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
+        readOnlyFields={COMMON_READONLY_FIELDS}
       />
     </div>
   );

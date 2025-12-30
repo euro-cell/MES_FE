@@ -9,6 +9,7 @@ import type { InspectionWorklogPayload } from './InspectionTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import { INSPECTION_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function InspectionRegister() {
@@ -122,12 +123,13 @@ export default function InspectionRegister() {
       <div className={styles.excelWrapper}>
         <ExcelRenderer
           workbook={workbook}
-          editableRanges={Object.keys(namedRanges)}
+          editableRanges={Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name))}
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
           numericFields={INSPECTION_NUMERIC_FIELDS}
+          readOnlyFields={COMMON_READONLY_FIELDS}
         />
       </div>
 

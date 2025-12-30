@@ -5,6 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { STACKING_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import { createStackingWorklog } from './StackingService';
 import type { StackingWorklogPayload } from './StackingTypes';
 import { getProject } from '../../WorklogService';
@@ -123,13 +124,14 @@ export default function StackingRegister() {
       <div className={styles.excelWrapper}>
         <ExcelRenderer
           workbook={workbook}
-          editableRanges={Object.keys(namedRanges)}
+          editableRanges={Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name))}
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
           timeFields={['jr1WorkTime', 'jr2WorkTime', 'jr3WorkTime', 'jr4WorkTime']}
           numericFields={STACKING_NUMERIC_FIELDS}
+          readOnlyFields={COMMON_READONLY_FIELDS}
         />
       </div>
 

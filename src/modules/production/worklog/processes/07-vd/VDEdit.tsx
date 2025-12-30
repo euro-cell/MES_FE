@@ -9,6 +9,7 @@ import styles from '../../../../../styles/production/worklog/common.module.css';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import { VD_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 
 export default function VdEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -235,7 +236,7 @@ export default function VdEdit() {
   if (templateError) return <p>템플릿 로드 실패: {templateError.message}</p>;
   if (!workbook || !worklog) return <p>데이터를 불러올 수 없습니다.</p>;
 
-  const editableRanges = Object.keys(namedRanges);
+  const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
 
   return (
     <div className={styles.container}>
@@ -262,6 +263,7 @@ export default function VdEdit() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
         numericFields={VD_NUMERIC_FIELDS}
+        readOnlyFields={COMMON_READONLY_FIELDS}
       />
     </div>
   );

@@ -10,6 +10,7 @@ import styles from '../../../../../styles/production/worklog/common.module.css';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import { NOTCHING_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 
 export default function NotchingRegister() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -77,7 +78,7 @@ export default function NotchingRegister() {
   if (templateError) return <p>템플릿 로드 실패: {templateError.message}</p>;
   if (!workbook) return <p>엑셀 데이터를 불러올 수 없습니다.</p>;
 
-  const editableRanges = Object.keys(namedRanges);
+  const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
 
   return (
     <div className={styles.container}>
@@ -107,6 +108,7 @@ export default function NotchingRegister() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
         numericFields={NOTCHING_NUMERIC_FIELDS}
+        readOnlyFields={COMMON_READONLY_FIELDS}
       />
     </div>
   );

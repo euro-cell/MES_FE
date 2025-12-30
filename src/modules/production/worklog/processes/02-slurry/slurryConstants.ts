@@ -46,6 +46,7 @@ export const SLURRY_MULTILINE_FIELDS = ['remark'];
 
 // 자동계산 필드 (읽기 전용)
 export const SLURRY_READONLY_FIELDS = [
+  'productionId',
   'solidContent1Percentage',
   'solidContent2Percentage',
   'solidContent3Percentage',

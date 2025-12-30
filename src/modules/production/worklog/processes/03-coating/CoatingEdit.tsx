@@ -9,6 +9,7 @@ import type { CoatingWorklog, CoatingWorklogPayload } from './CoatingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import { COATING_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
 export default function CoatingEdit() {
@@ -140,13 +141,14 @@ export default function CoatingEdit() {
       <div className={styles.excelWrapper}>
         <ExcelRenderer
           workbook={workbook}
-          editableRanges={Object.keys(namedRanges)}
+          editableRanges={Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name))}
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={[]}
           timeFields={[]}
           numericFields={COATING_NUMERIC_FIELDS}
+          readOnlyFields={COMMON_READONLY_FIELDS}
         />
       </div>
 
