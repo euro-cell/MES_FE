@@ -11,6 +11,9 @@ jobs:
       - name: 레포 체크아웃
         uses: actions/checkout@main
 
+      - name: QEMU 설정
+        uses: docker/setup-qemu-action@master
+
       - name: Docker Buildx 설정
         uses: docker/setup-buildx-action@master
 
@@ -27,7 +30,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           tags: ghcr.io/${{github.repository_owner}}/eurocell-mes-fe:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
