@@ -50,6 +50,10 @@
   background: #fff;
 }
 
+.specCell {
+  background: #fff;
+}
+
 .manufacturerCell {
   background: #fff;
 }
@@ -57,4 +61,11 @@
 .lotCell {
   background: #fff;
   font-family: monospace;
+}
+
+.emptyCell {
+  background: #f8fafc;
+  color: #94a3b8;
+  text-align: center;
+  padding: 24px;
 }

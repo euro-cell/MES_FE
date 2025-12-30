@@ -19,7 +19,8 @@ export interface RawMaterialLotInfo {
   category: 'Cathode' | 'Anode' | "Ass'y";
   material: string;
   product: string;
-  manufacturer: string;
+  spec: string | null;
+  manufacturer: string | null;
   lot: string;
 }
 

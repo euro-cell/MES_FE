@@ -5,21 +5,28 @@ interface RawMaterialLotTableProps {
   data: RawMaterialLotInfo[];
 }
 
-// 원자재 카테고리별 자재 목록 (테이블 구조용)
-const MATERIAL_CONFIG: {
-  category: 'Cathode' | 'Anode' | "Ass'y";
-  materials: string[];
-}[] = [
-  { category: 'Cathode', materials: ['NCM622', 'LCO', 'Conductor', 'Binder', 'Collector', 'Solvent'] },
-  { category: 'Anode', materials: ['LTO', 'Conductor', 'Binder', 'Collector', 'Solvent'] },
-  { category: "Ass'y", materials: ['separator', 'Tab', 'Pouch', 'electrolyte', 'PI Tape', 'PP Tape'] },
-];
+// 카테고리 정렬 순서
+const CATEGORY_ORDER = ['Cathode', 'Anode', "Ass'y"];
 
 export default function RawMaterialLotTable({ data }: RawMaterialLotTableProps) {
-  // data에서 각 원자재의 정보 찾기
-  const findMaterial = (category: string, material: string) => {
-    return data.find(d => d.category === category && d.material === material);
-  };
+  // 데이터를 카테고리별로 그룹화
+  const groupedData = data.reduce((acc, item) => {
+    if (!acc[item.category]) {
+      acc[item.category] = [];
+    }
+    acc[item.category].push(item);
+    return acc;
+  }, {} as Record<string, RawMaterialLotInfo[]>);
+
+  // 카테고리 순서대로 정렬
+  const sortedCategories = Object.keys(groupedData).sort((a, b) => {
+    const indexA = CATEGORY_ORDER.indexOf(a);
+    const indexB = CATEGORY_ORDER.indexOf(b);
+    if (indexA === -1 && indexB === -1) return 0;
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+    return indexA - indexB;
+  });
 
   return (
     <div className={styles.tableContainer}>
@@ -30,30 +37,37 @@ export default function RawMaterialLotTable({ data }: RawMaterialLotTableProps) 
             <th>구분</th>
             <th>Material</th>
             <th>Product</th>
+            <th>Spec</th>
             <th>제조사</th>
             <th>Lot</th>
           </tr>
         </thead>
         <tbody>
-          {MATERIAL_CONFIG.map(config =>
-            config.materials.map((material, materialIndex) => {
-              const materialInfo = findMaterial(config.category, material);
-              const isFirstInCategory = materialIndex === 0;
+          {sortedCategories.length > 0 ? (
+            sortedCategories.map(category =>
+              groupedData[category].map((item, index) => {
+                const isFirstInCategory = index === 0;
 
-              return (
-                <tr key={`${config.category}-${material}`}>
-                  {isFirstInCategory && (
-                    <td rowSpan={config.materials.length} className={styles.categoryCell}>
-                      {config.category}
-                    </td>
-                  )}
-                  <td className={styles.materialCell}>{materialInfo?.material || ''}</td>
-                  <td className={styles.productCell}>{materialInfo?.product || ''}</td>
-                  <td className={styles.manufacturerCell}>{materialInfo?.manufacturer || ''}</td>
-                  <td className={styles.lotCell}>{materialInfo?.lot || ''}</td>
-                </tr>
-              );
-            })
+                return (
+                  <tr key={`${category}-${item.material}-${index}`}>
+                    {isFirstInCategory && (
+                      <td rowSpan={groupedData[category].length} className={styles.categoryCell}>
+                        {category}
+                      </td>
+                    )}
+                    <td className={styles.materialCell}>{item.material || ''}</td>
+                    <td className={styles.productCell}>{item.product || ''}</td>
+                    <td className={styles.specCell}>{item.spec || ''}</td>
+                    <td className={styles.manufacturerCell}>{item.manufacturer || ''}</td>
+                    <td className={styles.lotCell}>{item.lot || ''}</td>
+                  </tr>
+                );
+              })
+            )
+          ) : (
+            <tr>
+              <td colSpan={6} className={styles.emptyCell}>데이터가 없습니다</td>
+            </tr>
           )}
         </tbody>
       </table>

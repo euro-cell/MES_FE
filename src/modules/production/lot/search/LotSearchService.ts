@@ -14,8 +14,7 @@ export async function searchLot(cellLotNumber: string): Promise<LotSearchResult 
     return response.data;
   } catch (error) {
     console.error('Lot 검색 실패:', error);
-    // API 없을 경우 목데이터 반환
-    return getMockSearchResult();
+    return null;
   }
 }
 
@@ -35,25 +34,18 @@ function getMockSearchResult(): LotSearchResult {
     ],
     rawMaterialLots: [
       // Cathode
-      { category: 'Cathode', material: 'NCM622', product: 'NCM-622', manufacturer: 'POSCO', lot: 'NCM-2412-001' },
-      { category: 'Cathode', material: 'LCO', product: '15DP', manufacturer: 'EASPRING', lot: 'LCO-2412-001' },
-      { category: 'Cathode', material: 'Conductor', product: 'Super-P', manufacturer: 'Imerys_KB코퍼레이션', lot: 'CD-2412-001' },
-      { category: 'Cathode', material: 'Binder', product: 'Solef5130', manufacturer: 'Solvay_Typolymer', lot: 'BD-2412-001' },
-      { category: 'Cathode', material: 'Collector', product: 'Al-Foil (230×10)', manufacturer: '삼아알미늄', lot: 'CL-2412-001' },
-      { category: 'Cathode', material: 'Solvent', product: 'NMP', manufacturer: '재원산업', lot: 'SV-2412-001' },
+      { category: 'Cathode', material: '양극재', product: 'LCO', spec: '15DP', manufacturer: 'EASPRING', lot: 'ZBGSL-15DP-22091602' },
+      { category: 'Cathode', material: '도전재', product: 'Carbon black', spec: 'Super-P-Li', manufacturer: 'IMERYS(케이비코퍼레이션)', lot: '841D0212' },
+      { category: 'Cathode', material: '도전재', product: 'CNT', spec: 'CN-04Y', manufacturer: '나노신소재', lot: 'ANP-221219' },
+      { category: 'Cathode', material: '집전체', product: 'Al Foil', spec: 'A1100 H18(12㎛ x 230㎜)', manufacturer: '롯데인프라셀', lot: 'C2E4100006-21' },
       // Anode
-      { category: 'Anode', material: 'LTO', product: 'KP-T2', manufacturer: 'KEDA', lot: 'LTO-2412-001' },
-      { category: 'Anode', material: 'Conductor', product: 'Super-P', manufacturer: 'Imerys_KB코퍼레이션', lot: 'CD-2412-002' },
-      { category: 'Anode', material: 'Binder', product: 'Solef5130', manufacturer: 'Solvay_Typolymer', lot: 'BD-2412-002' },
-      { category: 'Anode', material: 'Collector', product: 'Al-Foil (230×10)', manufacturer: '삼아알미늄', lot: 'CL-2412-002' },
-      { category: 'Anode', material: 'Solvent', product: 'NMP', manufacturer: '재원산업', lot: 'SV-2412-002' },
+      { category: 'Anode', material: '집전체', product: 'Al Foil', spec: 'A1100 H18(12㎛ x 230㎜)', manufacturer: '롯데인프라셀', lot: 'C2E4100006-21' },
       // Ass'y
-      { category: "Ass'y", material: 'separator', product: 'MS-PCS12_182mm', manufacturer: '에너에버', lot: 'SP-2412-001' },
-      { category: "Ass'y", material: 'Tab', product: '25mm, 0.3T', manufacturer: '신화아이티', lot: 'TB-2412-001' },
-      { category: "Ass'y", material: 'Pouch', product: 'CP-153A', manufacturer: '디아인텍', lot: 'PC-2412-001' },
-      { category: "Ass'y", material: 'electrolyte', product: 'SL24-2828', manufacturer: '동화일렉', lot: 'EL-2412-001' },
-      { category: "Ass'y", material: 'PI Tape', product: 'ST-5399_15mm', manufacturer: '대현에스티', lot: 'PI-2412-001' },
-      { category: "Ass'y", material: 'PP Tape', product: 'ST-PP5055DGHF_15', manufacturer: '대현에스티', lot: 'PP-2412-001' },
+      { category: "Ass'y", material: '분리막', product: '양면', spec: 'GPCS13E9E22D', manufacturer: 'Enerever', lot: 'E13S2250910A01' },
+      { category: "Ass'y", material: '리드탭', product: 'Al lead tab', spec: 'Al lead tab', manufacturer: '신화아이티', lot: '230816MA' },
+      { category: "Ass'y", material: '테이프', product: 'PI(Yellow)', spec: 'ST-5399WA', manufacturer: '대현에스티', lot: '22702F9-14' },
+      { category: "Ass'y", material: '파우치', product: 'CPP', spec: 'CP-153A', manufacturer: '디아인텍', lot: 'A4F130101' },
+      { category: "Ass'y", material: '전해액', product: 'LiPF6', spec: 'ED-UFC-026A1', manufacturer: '동화일렉트로라이트', lot: 'SL25-0819' },
     ],
   };
 }
