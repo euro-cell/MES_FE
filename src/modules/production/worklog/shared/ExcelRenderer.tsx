@@ -400,12 +400,18 @@ export default function ExcelRenderer({
                   cellStyle.backgroundColor = backgroundColor;
                 }
 
-                // border-collapse에서 테두리 중복을 방지하기 위해 오른쪽과 아래 테두리만 사용
-                // 맨 왼쪽 열은 왼쪽 테두리, 맨 위 행은 위쪽 테두리 유지
-                if (colIdx > 0) {
+                // border-collapse에서 테두리 중복을 방지하기 위해 얇은 테두리만 삭제
+                // 굵은 테두리(medium, thick)는 유지
+                const isThickBorderStyle = (side: any) => {
+                  if (!side) return false;
+                  const style = side.style || 'thin';
+                  return style === 'medium' || style === 'thick';
+                };
+
+                if (colIdx > 0 && !isThickBorderStyle(cell.border?.left)) {
                   delete cellStyle.borderLeft;
                 }
-                if (rowIdx > 0) {
+                if (rowIdx > 0 && !isThickBorderStyle(cell.border?.top)) {
                   delete cellStyle.borderTop;
                 }
 
