@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import styles from '../../../styles/production/plan/PlanRegister.module.css';
 import { getProductionPlan, updateProductionPlan } from './PlanService';
 import type { PlanPayload } from './PlanTypes';
+import DateInput from '../../../components/DateInput';
 
 interface ProcessRow {
   group: string;
@@ -245,11 +246,11 @@ export default function PlanEdit() {
       <div className={styles.dateInputs}>
         <label>
           시작일:
-          <input type='date' value={startDate} onChange={e => handleChange('start', e.target.value)} />
+          <DateInput value={startDate} onChange={value => handleChange('start', value)} />
         </label>
         <label>
           종료일:
-          <input type='date' value={endDate} onChange={e => handleChange('end', e.target.value)} />
+          <DateInput value={endDate} onChange={value => handleChange('end', value)} />
         </label>
       </div>
 
@@ -281,16 +282,14 @@ export default function PlanEdit() {
                       )}
                       {row.hasElectrode && <td>{row.type}</td>}
                       <td>
-                        <input
-                          type='date'
+                        <DateInput
                           value={processPlans[row.key]?.start || ''}
-                          onChange={e => handleProcessChange(row.key, 'start', e.target.value)}
-                        />{' '}
-                        ~{' '}
-                        <input
-                          type='date'
+                          onChange={value => handleProcessChange(row.key, 'start', value)}
+                        />
+                        {' ~ '}
+                        <DateInput
                           value={processPlans[row.key]?.end || ''}
-                          onChange={e => handleProcessChange(row.key, 'end', e.target.value)}
+                          onChange={value => handleProcessChange(row.key, 'end', value)}
                         />
                       </td>
                     </tr>
