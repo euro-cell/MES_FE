@@ -18,7 +18,8 @@
       "Bash(npx tsc:*)",
       "Bash(for dir in batteryDesign dashboard permission process production quality status users)",
       "Bash(do mv \"$dir\" old/)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
