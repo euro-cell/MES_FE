@@ -6,10 +6,12 @@ import styles from '../../../../styles/stock/material/electrode.module.css';
 export default function ElectrodeList() {
   const [materials, setMaterials] = useState<ElectrodeMaterial[]>([]);
   const [loading, setLoading] = useState(true);
+  const [includeZeroStock, setIncludeZeroStock] = useState(false);
 
-  const loadMaterials = async () => {
+  const loadMaterials = async (includeZero: boolean = false) => {
     try {
-      const data = await getElectrodeMaterials();
+      // 백엔드에 파라미터 전달 (서버 사이드 필터링)
+      const data = await getElectrodeMaterials(includeZero);
       setMaterials(data);
     } catch (err) {
       console.error('❌ 전극 자재 조회 실패:', err);
@@ -18,8 +20,14 @@ export default function ElectrodeList() {
     }
   };
 
+  const handleIncludeZeroStockChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    setIncludeZeroStock(checked);
+    loadMaterials(checked);
+  };
+
   useEffect(() => {
-    loadMaterials();
+    loadMaterials(includeZeroStock);
   }, []);
 
   if (loading) return <p>데이터를 불러오는 중...</p>;
@@ -27,7 +35,18 @@ export default function ElectrodeList() {
   return (
     <div className={styles.electrodeList}>
       <div className={styles.header}>
-        <h2>전극 자재 목록</h2>
+        <div className={styles.headerLeft}>
+          <h2>전극 자재 목록</h2>
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={includeZeroStock}
+              onChange={handleIncludeZeroStockChange}
+              className={styles.checkbox}
+            />
+            <span>재고가 없는 자재도 포함</span>
+          </label>
+        </div>
         <button className={styles.addButton}>+ 자재 추가</button>
       </div>
 

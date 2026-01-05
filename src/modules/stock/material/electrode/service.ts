@@ -487,9 +487,9 @@ const DUMMY_ELECTRODE_MATERIALS: ElectrodeMaterial[] = [
   },
 ];
 
-export const getElectrodeMaterials = async (): Promise<ElectrodeMaterial[]> => {
+export const getElectrodeMaterials = async (isZeroStock: boolean = false): Promise<ElectrodeMaterial[]> => {
   // 실제 API 호출로 변경할 예정
-  // return await api.get('/stock/electrode');
+  // return await api.get('/material/electrode', { params: { isZeroStock } });
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(DUMMY_ELECTRODE_MATERIALS);
