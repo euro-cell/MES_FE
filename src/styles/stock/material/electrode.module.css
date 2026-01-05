@@ -1,0 +1,118 @@
+.electrodeList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.addButton {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.addButton:hover {
+  background-color: #45a049;
+}
+
+.tableWrapper {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.electrodeTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.electrodeTable thead {
+  background-color: #f0f0f0;
+  border-bottom: 2px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.electrodeTable th {
+  padding: 12px 8px;
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+  border-right: 1px solid #eee;
+  vertical-align: middle;
+}
+
+.electrodeTable th:last-child {
+  border-right: none;
+}
+
+.electrodeTable tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.electrodeTable tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.electrodeTable td {
+  padding: 12px 10px;
+  border-right: 1px solid #eee;
+  text-align: center;
+}
+
+.electrodeTable td:last-child {
+  border-right: none;
+}
+
+.domesticCell {
+  text-align: center;
+  font-weight: 500;
+}
+
+.priceCell {
+  text-align: center;
+  font-weight: 500;
+}
+
+.inventoryCell {
+  text-align: center;
+  font-weight: 500;
+}
+
+.specCell {
+  max-width: 200px;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.specText {
+  display: block;
+  white-space: normal;
+  cursor: help;
+}
