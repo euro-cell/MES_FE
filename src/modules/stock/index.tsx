@@ -1,7 +1,9 @@
-import { Routes } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { MENU_CONFIG } from '../menuConfig';
 import SubmenuBar from '../../components/SubmenuBar';
 import styles from '../../styles/moduleIndex.module.css';
+import MaterialIndex from './material';
+import CellIndex from './cell';
 
 export default function StockIndex() {
   const { sub } = MENU_CONFIG.stock;
@@ -11,7 +13,10 @@ export default function StockIndex() {
       <SubmenuBar menus={sub} />
 
       <div className='module-content'>
-        <Routes></Routes>
+        <Routes>
+          <Route path='material/*' element={<MaterialIndex />} />
+          <Route path='cell/*' element={<CellIndex />} />
+        </Routes>
       </div>
     </div>
   );
