@@ -84,7 +84,7 @@ export default function ElectrodeList() {
                 <td>{material.company}</td>
                 <td className={styles.domesticCell}>{material.origin}</td>
                 <td>{material.unit}</td>
-                <td className={styles.priceCell}>{(material.price ?? 0).toLocaleString()}</td>
+                <td className={styles.priceCell}>{Math.floor(material.price ?? 0).toLocaleString('ko-KR')}</td>
                 <td>{material.note}</td>
                 <td className={styles.inventoryCell}>{material.stock}</td>
               </tr>
