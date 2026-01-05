@@ -40,8 +40,15 @@ export const updateElectrodeMaterial = async (id: number, material: Omit<Electro
   }
 };
 
-export const deleteElectrodeMaterial = async (id: number) => {
-  // 실제 API 호출
-  // return await api.delete(`/stock/electrode/${id}`);
-  console.log('삭제:', id);
+export const deleteElectrodeMaterial = async (id: number, isHardDelete: boolean = false) => {
+  try {
+    const response = await axios.delete<ElectrodeMaterial>(`${API_BASE}/material/electrode/${id}`, {
+      params: { hardDelete: isHardDelete },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('❌ 전극 자재 삭제 실패:', error);
+    throw error;
+  }
 };

@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
-import { getElectrodeMaterials, createElectrodeMaterial, updateElectrodeMaterial } from './service';
+import {
+  getElectrodeMaterials,
+  createElectrodeMaterial,
+  updateElectrodeMaterial,
+  deleteElectrodeMaterial,
+} from './service';
 import type { ElectrodeMaterial } from './types';
 import AddMaterialModal from './AddMaterialModal';
+import DeleteMaterialModal from './DeleteMaterialModal';
 import styles from '../../../../styles/stock/material/electrode.module.css';
 
 const INITIAL_FORM_DATA: Omit<ElectrodeMaterial, 'id'> = {
@@ -26,7 +32,9 @@ export default function ElectrodeList() {
   const [error, setError] = useState(false);
   const [includeZeroStock, setIncludeZeroStock] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [formData, setFormData] = useState<Omit<ElectrodeMaterial, 'id'>>(INITIAL_FORM_DATA);
 
   const loadMaterials = async (includeZero: boolean = false) => {
@@ -104,6 +112,28 @@ export default function ElectrodeList() {
     } catch (err) {
       console.error('자재 처리 실패:', err);
     }
+  };
+
+  const handleDeleteMaterial = (id: number) => {
+    setDeletingId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async (isHardDelete: boolean) => {
+    if (deletingId === null) return;
+    try {
+      await deleteElectrodeMaterial(deletingId, isHardDelete);
+      loadMaterials(includeZeroStock);
+      setShowDeleteModal(false);
+      setDeletingId(null);
+    } catch (err) {
+      console.error('자재 삭제 실패:', err);
+    }
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeletingId(null);
   };
 
   useEffect(() => {
@@ -192,6 +222,9 @@ export default function ElectrodeList() {
                     <button className={styles.editButton} onClick={() => handleEditMaterial(material)}>
                       수정
                     </button>
+                    <button className={styles.deleteButton} onClick={() => handleDeleteMaterial(material.id)}>
+                      삭제
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -208,6 +241,8 @@ export default function ElectrodeList() {
         onSubmit={handleSubmit}
         onClose={handleCloseModal}
       />
+
+      <DeleteMaterialModal show={showDeleteModal} onConfirm={handleDeleteConfirm} onClose={handleCloseDeleteModal} />
     </div>
   );
 }
