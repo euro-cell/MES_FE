@@ -216,10 +216,10 @@ export default function AssemblyList() {
                   <td className={styles.inventoryCell}>{material.stock}</td>
                   <td className={styles.managementCell}>
                     <button className={styles.editButton} onClick={() => handleEditMaterial(material)}>
-                      ✏️
+                      수정
                     </button>
                     <button className={styles.deleteButton} onClick={() => handleDeleteMaterial(material.id)}>
-                      🗑️
+                      삭제
                     </button>
                   </td>
                 </tr>
