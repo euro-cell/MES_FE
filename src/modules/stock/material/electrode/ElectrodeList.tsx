@@ -1,13 +1,32 @@
 import { useEffect, useState } from 'react';
-import { getElectrodeMaterials } from './service';
+import { getElectrodeMaterials, createElectrodeMaterial } from './service';
 import type { ElectrodeMaterial } from './types';
+import AddMaterialModal from './AddMaterialModal';
 import styles from '../../../../styles/stock/material/electrode.module.css';
+
+const INITIAL_FORM_DATA: Omit<ElectrodeMaterial, 'id'> = {
+  process: '전극',
+  category: '',
+  type: '',
+  purpose: '',
+  name: '',
+  spec: '',
+  lotNo: '',
+  company: '',
+  origin: '국내',
+  unit: '',
+  price: 0,
+  note: '',
+  stock: 0,
+};
 
 export default function ElectrodeList() {
   const [materials, setMaterials] = useState<ElectrodeMaterial[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [includeZeroStock, setIncludeZeroStock] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState<Omit<ElectrodeMaterial, 'id'>>(INITIAL_FORM_DATA);
 
   const loadMaterials = async (includeZero: boolean = false) => {
     try {
@@ -30,6 +49,35 @@ export default function ElectrodeList() {
     loadMaterials(checked);
   };
 
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setFormData(INITIAL_FORM_DATA);
+  };
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'price' || name === 'stock' ? Number(value) : value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createElectrodeMaterial(formData);
+      // 추가 성공 후 목록 새로고침
+      loadMaterials(includeZeroStock);
+      handleCloseModal();
+    } catch (err) {
+      console.error('자재 추가 실패:', err);
+    }
+  };
+
   useEffect(() => {
     loadMaterials(includeZeroStock);
   }, []);
@@ -43,7 +91,7 @@ export default function ElectrodeList() {
           <h2>전극 자재 목록</h2>
           <label className={styles.checkboxLabel}>
             <input
-              type="checkbox"
+              type='checkbox'
               checked={includeZeroStock}
               onChange={handleIncludeZeroStockChange}
               className={styles.checkbox}
@@ -51,7 +99,9 @@ export default function ElectrodeList() {
             <span>재고가 없는 자재도 포함</span>
           </label>
         </div>
-        <button className={styles.addButton}>+ 자재 추가</button>
+        <button className={styles.addButton} onClick={handleOpenModal}>
+          + 추가
+        </button>
       </div>
 
       {error ? (
@@ -61,14 +111,29 @@ export default function ElectrodeList() {
           <table className={styles.electrodeTable}>
             <thead>
               <tr>
-                <th>자재<br />(중분류)</th>
-                <th>종류<br />(소분류)</th>
+                <th>
+                  자재
+                  <br />
+                  (중분류)
+                </th>
+                <th>
+                  종류
+                  <br />
+                  (소분류)
+                </th>
                 <th>용도</th>
                 <th>제품명</th>
                 <th>스펙</th>
                 <th>Lot No.</th>
-                <th>제조<br />공급처</th>
-                <th>국내<br />외</th>
+                <th>
+                  제조
+                  <br />
+                  공급처
+                </th>
+                <th>
+                  국내
+                  <br />외
+                </th>
                 <th>단위</th>
                 <th>가격</th>
                 <th>비고</th>
@@ -100,6 +165,14 @@ export default function ElectrodeList() {
           </table>
         </div>
       )}
+
+      <AddMaterialModal
+        show={showModal}
+        formData={formData}
+        onFormChange={handleFormChange}
+        onSubmit={handleSubmit}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }

@@ -17,9 +17,15 @@ export const getElectrodeMaterials = async (isZeroStock: boolean = false): Promi
 };
 
 export const createElectrodeMaterial = async (material: Omit<ElectrodeMaterial, 'id'>) => {
-  // 실제 API 호출
-  // return await api.post('/stock/electrode', material);
-  console.log('생성:', material);
+  try {
+    const response = await axios.post<ElectrodeMaterial>(`${API_BASE}/material/electrode`, material, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('❌ 전극 자재 생성 실패:', error);
+    throw error;
+  }
 };
 
 export const updateElectrodeMaterial = async (id: number, material: Partial<ElectrodeMaterial>) => {
