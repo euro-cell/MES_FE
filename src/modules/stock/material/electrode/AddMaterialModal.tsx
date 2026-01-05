@@ -90,12 +90,12 @@ export default function AddMaterialModal({
 
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label>스펙</label>
+              <label>규격</label>
               <textarea
                 name="spec"
                 value={formData.spec}
                 onChange={onFormChange}
-                placeholder="스펙 정보"
+                placeholder="규격 정보"
                 rows={2}
               />
             </div>

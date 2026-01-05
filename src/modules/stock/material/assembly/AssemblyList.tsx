@@ -177,7 +177,7 @@ export default function AssemblyList() {
                 </th>
                 <th>용도</th>
                 <th>제품명</th>
-                <th>스펙</th>
+                <th>규격</th>
                 <th>Lot No.</th>
                 <th>
                   제조
@@ -216,10 +216,10 @@ export default function AssemblyList() {
                   <td className={styles.inventoryCell}>{material.stock}</td>
                   <td className={styles.managementCell}>
                     <button className={styles.editButton} onClick={() => handleEditMaterial(material)}>
-                      수정
+                      ✏️
                     </button>
                     <button className={styles.deleteButton} onClick={() => handleDeleteMaterial(material.id)}>
-                      삭제
+                      🗑️
                     </button>
                   </td>
                 </tr>
