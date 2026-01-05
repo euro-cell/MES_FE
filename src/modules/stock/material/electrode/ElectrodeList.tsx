@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getElectrodeMaterials, createElectrodeMaterial } from './service';
+import { getElectrodeMaterials, createElectrodeMaterial, updateElectrodeMaterial } from './service';
 import type { ElectrodeMaterial } from './types';
 import AddMaterialModal from './AddMaterialModal';
 import styles from '../../../../styles/stock/material/electrode.module.css';
@@ -26,6 +26,7 @@ export default function ElectrodeList() {
   const [error, setError] = useState(false);
   const [includeZeroStock, setIncludeZeroStock] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState<Omit<ElectrodeMaterial, 'id'>>(INITIAL_FORM_DATA);
 
   const loadMaterials = async (includeZero: boolean = false) => {
@@ -55,7 +56,28 @@ export default function ElectrodeList() {
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setEditingId(null);
     setFormData(INITIAL_FORM_DATA);
+  };
+
+  const handleEditMaterial = (material: ElectrodeMaterial) => {
+    setEditingId(material.id);
+    setFormData({
+      process: material.process,
+      category: material.category,
+      type: material.type,
+      purpose: material.purpose,
+      name: material.name,
+      spec: material.spec || '',
+      lotNo: material.lotNo || '',
+      company: material.company || '',
+      origin: material.origin,
+      unit: material.unit,
+      price: material.price || 0,
+      note: material.note || '',
+      stock: material.stock || 0,
+    });
+    setShowModal(true);
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -69,12 +91,18 @@ export default function ElectrodeList() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createElectrodeMaterial(formData);
-      // 추가 성공 후 목록 새로고침
+      if (editingId !== null) {
+        // 수정 모드
+        await updateElectrodeMaterial(editingId, formData);
+      } else {
+        // 추가 모드
+        await createElectrodeMaterial(formData);
+      }
+      // 성공 후 목록 새로고침
       loadMaterials(includeZeroStock);
       handleCloseModal();
     } catch (err) {
-      console.error('자재 추가 실패:', err);
+      console.error('자재 처리 실패:', err);
     }
   };
 
@@ -138,6 +166,7 @@ export default function ElectrodeList() {
                 <th>가격</th>
                 <th>비고</th>
                 <th>재고</th>
+                <th>관리</th>
               </tr>
             </thead>
             <tbody>
@@ -159,6 +188,11 @@ export default function ElectrodeList() {
                   <td className={styles.priceCell}>{Math.floor(material.price ?? 0).toLocaleString('ko-KR')}</td>
                   <td>{material.note}</td>
                   <td className={styles.inventoryCell}>{material.stock}</td>
+                  <td className={styles.managementCell}>
+                    <button className={styles.editButton} onClick={() => handleEditMaterial(material)}>
+                      수정
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -168,6 +202,7 @@ export default function ElectrodeList() {
 
       <AddMaterialModal
         show={showModal}
+        isEditing={editingId !== null}
         formData={formData}
         onFormChange={handleFormChange}
         onSubmit={handleSubmit}

@@ -94,8 +94,8 @@
 .formGroup select:focus,
 .formGroup textarea:focus {
   outline: none;
-  border-color: #4caf50;
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+  border-color: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
 }
 
 .modalFooter {
@@ -126,10 +126,10 @@
 }
 
 .submitButton {
-  background-color: #4caf50;
+  background-color: #22c55e;
   color: white;
 }
 
 .submitButton:hover {
-  background-color: #45a049;
+  background-color: #15803d;
 }

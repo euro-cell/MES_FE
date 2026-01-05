@@ -3,6 +3,7 @@ import styles from '../../../../styles/stock/material/addMaterialModal.module.cs
 
 interface AddMaterialModalProps {
   show: boolean;
+  isEditing: boolean;
   formData: Omit<ElectrodeMaterial, 'id'>;
   onFormChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -11,6 +12,7 @@ interface AddMaterialModalProps {
 
 export default function AddMaterialModal({
   show,
+  isEditing,
   formData,
   onFormChange,
   onSubmit,
@@ -22,7 +24,7 @@ export default function AddMaterialModal({
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
-          <h3>자재 추가</h3>
+          <h3>{isEditing ? '자재 수정' : '자재 추가'}</h3>
           <button className={styles.closeButton} onClick={onClose}>
             ×
           </button>
@@ -188,7 +190,7 @@ export default function AddMaterialModal({
               취소
             </button>
             <button type="submit" className={styles.submitButton}>
-              추가
+              {isEditing ? '수정' : '추가'}
             </button>
           </div>
         </form>

@@ -28,10 +28,16 @@ export const createElectrodeMaterial = async (material: Omit<ElectrodeMaterial, 
   }
 };
 
-export const updateElectrodeMaterial = async (id: number, material: Partial<ElectrodeMaterial>) => {
-  // 실제 API 호출
-  // return await api.put(`/stock/electrode/${id}`, material);
-  console.log('수정:', id, material);
+export const updateElectrodeMaterial = async (id: number, material: Omit<ElectrodeMaterial, 'id'>) => {
+  try {
+    const response = await axios.patch<ElectrodeMaterial>(`${API_BASE}/material/electrode/${id}`, material, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('❌ 전극 자재 수정 실패:', error);
+    throw error;
+  }
 };
 
 export const deleteElectrodeMaterial = async (id: number) => {
