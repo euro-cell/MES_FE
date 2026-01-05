@@ -94,7 +94,7 @@
   text-align: center;
   font-weight: 600;
   color: #333;
-  border-right: 1px solid #eee;
+  border-right: 1px solid #ccc;
   vertical-align: middle;
 }
 
@@ -113,7 +113,7 @@
 
 .electrodeTable td {
   padding: 12px 10px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid #ccc;
   text-align: center;
 }
 
