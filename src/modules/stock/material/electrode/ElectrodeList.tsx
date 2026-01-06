@@ -141,6 +141,12 @@ export default function ElectrodeList() {
         await createElectrodeMaterial(formData);
       }
       loadMaterials(includeZeroStock);
+      if (showHistory) {
+        await loadHistory(1);
+      } else {
+        setHistories([]);
+        setCurrentPage(1);
+      }
       handleCloseModal();
     } catch (err) {
       console.error('자재 처리 실패:', err);
