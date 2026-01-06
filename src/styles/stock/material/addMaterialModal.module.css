@@ -98,6 +98,15 @@
   box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
 }
 
+.formGroup input:disabled,
+.formGroup select:disabled,
+.formGroup textarea:disabled {
+  background-color: #d9d9d9;
+  color: #666;
+  cursor: not-allowed;
+  border-color: #bbb;
+}
+
 .modalFooter {
   display: flex;
   gap: 10px;
