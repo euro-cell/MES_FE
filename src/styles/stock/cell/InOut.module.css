@@ -1,0 +1,199 @@
+.inOutContainer {
+  padding: 20px;
+}
+
+
+.formSection {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sectionTitle {
+  margin: 0 0 16px 0;
+  padding: 8px 12px;
+  background-color: #fffacd;
+  border-left: 4px solid #ffd700;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.contentWrapper {
+  display: flex;
+  gap: 30px;
+}
+
+.leftColumn {
+  flex: 0 0 auto;
+  min-width: 300px;
+  border-right: 1px solid #999;
+  padding-right: 30px;
+}
+
+.rightColumn {
+  flex: 1;
+  min-width: 0;
+}
+
+.leftColumn .sectionTitle,
+.rightColumn .sectionTitle {
+  margin-top: 0;
+}
+
+.verticalFormGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.gridContainer4Col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.cellLotInputContainer {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.cellLotInputContainer .formGroup {
+  flex: none;
+}
+
+.cellLotInputContainer .formGroup:last-child {
+  flex: 1;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+}
+
+.formGroup input {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  transition: border-color 0.2s;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+.typeSelect {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.typeSelect:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+.typeSelect:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #ddd;
+}
+
+.formGroup input:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #ddd;
+}
+
+.divider {
+  height: 2px;
+  background-color: #999;
+  margin: 20px 0;
+}
+
+.tableSection {
+  margin-top: 20px;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dataTable thead {
+  background-color: #f9f9f9;
+  border-bottom: 2px solid #ddd;
+}
+
+.dataTable th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.dataTable tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.dataTable tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.dataTable td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #555;
+}
+
+.projectNameCell {
+  font-weight: 600;
+  background-color: #f9f9f9;
+  vertical-align: middle;
+}
+
+.titleRow {
+  background-color: #f0f0f0;
+  border-bottom: 3px solid #ddd;
+}
+
+.titleRow th {
+  text-align: center;
+  padding: 16px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
