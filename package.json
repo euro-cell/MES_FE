@@ -16,6 +16,7 @@
     "date-fns": "^4.1.0",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
+    "hangul-js": "^0.2.6",
     "react": "^19.2.1",
     "react-datepicker": "^9.1.0",
     "react-dom": "^19.2.1",
