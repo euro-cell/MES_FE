@@ -143,11 +143,25 @@ export default function AddMaterialModal({
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <label>가격</label>
-              <input type='number' name='price' value={formData.price} onChange={onFormChange} placeholder='0' />
+              <input
+                type='number'
+                name='price'
+                value={formData.price ? Math.floor(formData.price) : ''}
+                onChange={onFormChange}
+                placeholder='0'
+                step='1'
+              />
             </div>
             <div className={styles.formGroup}>
               <label>재고</label>
-              <input type='number' name='stock' value={formData.stock} onChange={onFormChange} placeholder='0' />
+              <input
+                type='number'
+                name='stock'
+                value={formData.stock ? Math.floor(formData.stock) : ''}
+                onChange={onFormChange}
+                placeholder='0'
+                step='1'
+              />
             </div>
           </div>
 
