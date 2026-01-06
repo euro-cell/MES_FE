@@ -38,6 +38,7 @@ export default function AddAssemblyModal({
                 value={formData.category}
                 onChange={onFormChange}
                 required
+                disabled={isEditing}
               >
                 <option value="">선택</option>
                 <option value="분리막">분리막</option>
@@ -59,6 +60,7 @@ export default function AddAssemblyModal({
                 onChange={onFormChange}
                 placeholder="예시, 타입 등"
                 required
+                disabled={isEditing}
               />
             </div>
           </div>
@@ -86,6 +88,7 @@ export default function AddAssemblyModal({
                 onChange={onFormChange}
                 placeholder="제품명"
                 required
+                disabled={isEditing}
               />
             </div>
           </div>
@@ -112,6 +115,7 @@ export default function AddAssemblyModal({
                 value={formData.lotNo}
                 onChange={onFormChange}
                 placeholder="Lot No."
+                disabled={isEditing}
               />
             </div>
             <div className={styles.formGroup}>
@@ -122,6 +126,7 @@ export default function AddAssemblyModal({
                 value={formData.company}
                 onChange={onFormChange}
                 placeholder="제조/공급처"
+                disabled={isEditing}
               />
             </div>
           </div>
@@ -147,6 +152,7 @@ export default function AddAssemblyModal({
                 onChange={onFormChange}
                 placeholder="kg, m 등"
                 required
+                disabled={isEditing}
               />
             </div>
           </div>

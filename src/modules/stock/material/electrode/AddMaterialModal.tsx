@@ -38,6 +38,7 @@ export default function AddMaterialModal({
                 value={formData.category}
                 onChange={onFormChange}
                 required
+                disabled={isEditing}
               >
                 <option value="">선택</option>
                 <option value="바인더">바인더</option>
@@ -57,6 +58,7 @@ export default function AddMaterialModal({
                 onChange={onFormChange}
                 placeholder="NCM622, LTO 등"
                 required
+                disabled={isEditing}
               />
             </div>
           </div>
@@ -84,6 +86,7 @@ export default function AddMaterialModal({
                 onChange={onFormChange}
                 placeholder="제품명"
                 required
+                disabled={isEditing}
               />
             </div>
           </div>
@@ -110,6 +113,7 @@ export default function AddMaterialModal({
                 value={formData.lotNo}
                 onChange={onFormChange}
                 placeholder="Lot No."
+                disabled={isEditing}
               />
             </div>
             <div className={styles.formGroup}>
@@ -120,6 +124,7 @@ export default function AddMaterialModal({
                 value={formData.company}
                 onChange={onFormChange}
                 placeholder="제조/공급처"
+                disabled={isEditing}
               />
             </div>
           </div>
@@ -145,6 +150,7 @@ export default function AddMaterialModal({
                 onChange={onFormChange}
                 placeholder="kg, m 등"
                 required
+                disabled={isEditing}
               />
             </div>
           </div>
