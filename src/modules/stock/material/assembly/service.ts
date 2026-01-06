@@ -52,3 +52,16 @@ export const deleteAssemblyMaterial = async (id: number, isHardDelete: boolean =
     throw error;
   }
 };
+
+export const getAssemblyHistory = async (page: number = 1, limit: number = 20) => {
+  try {
+    const response = await axios.get(`${API_BASE}/material/history/assembly`, {
+      params: { page, limit },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('❌ 조립 입/출고 이력 조회 실패:', error);
+    throw error;
+  }
+};

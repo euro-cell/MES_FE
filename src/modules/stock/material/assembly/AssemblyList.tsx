@@ -4,8 +4,9 @@ import {
   createAssemblyMaterial,
   updateAssemblyMaterial,
   deleteAssemblyMaterial,
+  getAssemblyHistory,
 } from './service';
-import type { AssemblyMaterial } from './types';
+import type { AssemblyMaterial, MaterialHistory } from './types';
 import AddAssemblyModal from './AddAssemblyModal';
 import DeleteAssemblyModal from './DeleteAssemblyModal';
 import styles from '../../../../styles/stock/material/assembly.module.css';
@@ -28,6 +29,7 @@ const INITIAL_FORM_DATA: Omit<AssemblyMaterial, 'id'> = {
 
 export default function AssemblyList() {
   const [materials, setMaterials] = useState<AssemblyMaterial[]>([]);
+  const [histories, setHistories] = useState<MaterialHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [includeZeroStock, setIncludeZeroStock] = useState(false);
@@ -36,6 +38,9 @@ export default function AssemblyList() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [formData, setFormData] = useState<Omit<AssemblyMaterial, 'id'>>(INITIAL_FORM_DATA);
+  const [showHistory, setShowHistory] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const loadMaterials = async (includeZero: boolean = false) => {
     try {
@@ -48,6 +53,38 @@ export default function AssemblyList() {
       setMaterials([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadHistory = async (page: number = 1) => {
+    try {
+      const response = await getAssemblyHistory(page);
+      setHistories(response.data);
+      setTotalPages(response.totalPages);
+      setCurrentPage(page);
+    } catch (err) {
+      console.error('❌ 조립 입/출고 이력 조회 실패:', err);
+      setHistories([]);
+    }
+  };
+
+  const handleShowHistoryChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    setShowHistory(checked);
+    if (checked && histories.length === 0) {
+      await loadHistory(1);
+    }
+  };
+
+  const handlePreviousPage = async () => {
+    if (currentPage > 1) {
+      await loadHistory(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = async () => {
+    if (currentPage < totalPages) {
+      await loadHistory(currentPage + 1);
     }
   };
 
@@ -143,89 +180,152 @@ export default function AssemblyList() {
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <h2>조립 자재 목록</h2>
+          {!showHistory && (
+            <label className={styles.checkboxLabel}>
+              <input
+                type='checkbox'
+                checked={includeZeroStock}
+                onChange={handleIncludeZeroStockChange}
+                className={styles.checkbox}
+              />
+              <span>재고가 없는 자재도 포함</span>
+            </label>
+          )}
           <label className={styles.checkboxLabel}>
             <input
               type='checkbox'
-              checked={includeZeroStock}
-              onChange={handleIncludeZeroStockChange}
+              checked={showHistory}
+              onChange={handleShowHistoryChange}
               className={styles.checkbox}
             />
-            <span>재고가 없는 자재도 포함</span>
+            <span>입/출고 이력 보기</span>
           </label>
         </div>
-        <button className={styles.addButton} onClick={handleOpenModal}>
-          + 추가
-        </button>
+        {!showHistory && (
+          <button className={styles.addButton} onClick={handleOpenModal}>
+            + 추가
+          </button>
+        )}
       </div>
 
-      {error ? (
-        <p style={{ color: 'red', padding: '20px' }}>데이터 조회 실패</p>
+      {!showHistory ? (
+        error ? (
+          <p style={{ color: 'red', padding: '20px' }}>데이터 조회 실패</p>
+        ) : (
+          <div className={styles.tableWrapper}>
+            <table className={styles.assemblyTable}>
+              <thead>
+                <tr>
+                  <th>
+                    자재
+                    <br />
+                    (중분류)
+                  </th>
+                  <th>
+                    종류
+                    <br />
+                    (소분류)
+                  </th>
+                  <th>용도</th>
+                  <th>제품명</th>
+                  <th>규격</th>
+                  <th>Lot No.</th>
+                  <th>
+                    제조
+                    <br />
+                    공급처
+                  </th>
+                  <th>
+                    국내
+                    <br />외
+                  </th>
+                  <th>단위</th>
+                  <th>가격</th>
+                  <th>비고</th>
+                  <th>재고</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                {materials.map(material => (
+                  <tr key={material.id}>
+                    <td>{material.category}</td>
+                    <td>{material.type}</td>
+                    <td>{material.purpose}</td>
+                    <td>{material.name}</td>
+                    <td className={styles.specCell}>
+                      <span title={material.spec} className={styles.specText}>
+                        {material.spec}
+                      </span>
+                    </td>
+                    <td>{material.lotNo}</td>
+                    <td>{material.company}</td>
+                    <td className={styles.domesticCell}>{material.origin}</td>
+                    <td>{material.unit}</td>
+                    <td className={styles.priceCell}>{Math.floor(material.price ?? 0).toLocaleString('ko-KR')}</td>
+                    <td>{material.note}</td>
+                    <td className={styles.inventoryCell}>{material.stock}</td>
+                    <td className={styles.managementCell}>
+                      <button className={styles.editButton} onClick={() => handleEditMaterial(material)}>
+                        수정
+                      </button>
+                      <button className={styles.deleteButton} onClick={() => handleDeleteMaterial(material.id)}>
+                        삭제
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
       ) : (
         <div className={styles.tableWrapper}>
-          <table className={styles.assemblyTable}>
+          <table className={styles.historyTable}>
             <thead>
               <tr>
-                <th>
-                  자재
-                  <br />
-                  (중분류)
-                </th>
-                <th>
-                  종류
-                  <br />
-                  (소분류)
-                </th>
-                <th>용도</th>
+                <th>날짜</th>
                 <th>제품명</th>
-                <th>규격</th>
                 <th>Lot No.</th>
-                <th>
-                  제조
-                  <br />
-                  공급처
-                </th>
-                <th>
-                  국내
-                  <br />외
-                </th>
-                <th>단위</th>
-                <th>가격</th>
-                <th>비고</th>
-                <th>재고</th>
-                <th>관리</th>
+                <th>수량</th>
+                <th>사유</th>
               </tr>
             </thead>
             <tbody>
-              {materials.map(material => (
-                <tr key={material.id}>
-                  <td>{material.category}</td>
-                  <td>{material.type}</td>
-                  <td>{material.purpose}</td>
-                  <td>{material.name}</td>
-                  <td className={styles.specCell}>
-                    <span title={material.spec} className={styles.specText}>
-                      {material.spec}
-                    </span>
-                  </td>
-                  <td>{material.lotNo}</td>
-                  <td>{material.company}</td>
-                  <td className={styles.domesticCell}>{material.origin}</td>
-                  <td>{material.unit}</td>
-                  <td className={styles.priceCell}>{Math.floor(material.price ?? 0).toLocaleString('ko-KR')}</td>
-                  <td>{material.note}</td>
-                  <td className={styles.inventoryCell}>{material.stock}</td>
-                  <td className={styles.managementCell}>
-                    <button className={styles.editButton} onClick={() => handleEditMaterial(material)}>
-                      수정
-                    </button>
-                    <button className={styles.deleteButton} onClick={() => handleDeleteMaterial(material.id)}>
-                      삭제
-                    </button>
+              {histories.length > 0 ? (
+                histories.map(history => (
+                  <tr key={history.id}>
+                    <td>{new Date(history.createdAt).toLocaleString('ko-KR')}</td>
+                    <td>{history.material?.name || '-'}</td>
+                    <td>{history.material?.lotNo || '-'}</td>
+                    <td>
+                      {history.previousStock} → {history.currentStock}
+                    </td>
+                    <td>{history.type || '-'}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className={styles.emptyMessage}>
+                    입/출고 이력이 없습니다.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
+          {histories.length > 0 && (
+            <div className={styles.pagination}>
+              <button className={styles.pageButton} onClick={handlePreviousPage} disabled={currentPage === 1}>
+                이전
+              </button>
+              <span className={styles.pageInfo}>
+                {currentPage} / {totalPages}
+              </span>
+              <button className={styles.pageButton} onClick={handleNextPage} disabled={currentPage === totalPages}>
+                다음
+              </button>
+            </div>
+          )}
         </div>
       )}
 

@@ -14,3 +14,16 @@ export interface ElectrodeMaterial {
   note?: string; // 비고
   stock?: number; // 재고
 }
+
+export interface MaterialHistory {
+  id: number;
+  materialId: number;
+  type: string; // 입고, 출고, 사용
+  previousStock: number;
+  currentStock: number;
+  createdAt: string;
+  material: {
+    name: string;
+    lotNo?: string;
+  };
+}
