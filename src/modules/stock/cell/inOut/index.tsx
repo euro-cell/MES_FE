@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import hangul from 'hangul-js';
 import styles from '../../../../styles/stock/cell/InOut.module.css';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 interface InOutFormData {
   cellLotType: 'in' | 'out';
@@ -109,32 +111,46 @@ export default function InOutIndex() {
 
   const [tableData, setTableData] = useState<TableData[]>([]);
   const [showLotWarning, setShowLotWarning] = useState(false);
+  const [projectList, setProjectList] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_BASE}/production`);
+        const data = await response.json();
+        const names = data.map((item: any) => item.name || item.projectName);
+        setProjectList(names);
+      } catch (error) {
+        console.error('프로젝트 리스트 로드 실패:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    // cellLot 필드는 한글 감지 시 경고
     if (name === 'cellLot') {
       const hasKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(value);
       if (hasKorean) {
         setShowLotWarning(true);
-        setTimeout(() => setShowLotWarning(false), 2000);
+      } else {
+        setShowLotWarning(false);
       }
     }
-
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleAddToTable = () => {
-    if (!formData.projectName || !formData.grade) {
-      alert('프로젝트명과 등급을 선택해주세요.');
+    if (!formData.projectName) {
+      alert('프로젝트 이름을 입력해주세요');
       return;
     }
 
-    // cellLot의 한글을 영어로 변환
     const convertedLot = convertKoreanToEnglish(formData.cellLot);
 
     const newRow: TableData = {
@@ -149,29 +165,15 @@ export default function InOutIndex() {
 
     setTableData([...tableData, newRow]);
 
-    // cellLot만 초기화, 나머지 필드는 유지
     setFormData(prev => ({
       ...prev,
       cellLot: '',
     }));
-
-    // 변환된 lot을 console에 출력 (백에 보낼 때 이 값 사용)
     console.log('Converted Lot:', convertedLot);
   };
 
   const handleCellLotKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // 모든 keydown 이벤트 로깅 (바코드 스캐너 디버깅용)
-    console.log('KeyDown Event:', {
-      key: e.key,
-      code: e.code,
-      ctrlKey: e.ctrlKey,
-      shiftKey: e.shiftKey,
-      altKey: e.altKey,
-      metaKey: e.metaKey,
-      keyCode: (e as any).keyCode,
-    });
-    // keyCode 16 (Shift 키) 무시
-    if ((e as any).keyCode === 16) {
+    if ((e as any).keyCode === 16 || (e as any).keyCode === 17 || (e as any).keyCode === 229) {
       e.preventDefault();
       return;
     }
@@ -182,12 +184,30 @@ export default function InOutIndex() {
       console.log('Form Data:', { ...formData, cellLot: convertedLot });
       handleAddToTable();
     }
+
+    // 모든 keydown 이벤트 로깅 (바코드 스캐너 디버깅용)
+    console.log('KeyDown Event:', {
+      key: e.key,
+      code: e.code,
+      ctrlKey: e.ctrlKey,
+      shiftKey: e.shiftKey,
+      altKey: e.altKey,
+      metaKey: e.metaKey,
+      keyCode: (e as any).keyCode,
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleAddToTable();
   };
+
+  // 프로젝트가 선택되었는지 확인
+  const isProjectSelected = projectList.includes(formData.projectName);
+
+  // Lot 입력 활성화 조건: 인수자, 인계자, 프로젝트명이 모두 입력되어야 함
+  const isLotInputEnabled =
+    formData.inPerson.trim() !== '' && formData.outPerson.trim() !== '' && formData.projectName.trim() !== '';
 
   // Project Name별로 그룹화된 데이터 생성
   const groupedData = tableData.reduce((acc, row) => {
@@ -238,10 +258,17 @@ export default function InOutIndex() {
                     onKeyDown={handleCellLotKeyDown}
                     placeholder='Lot 입력 또는 바코드 스캔'
                     lang='en'
+                    disabled={!isLotInputEnabled}
                   />
-                  {showLotWarning && (
+                  {!isLotInputEnabled && (
+                    <div style={{ color: '#ff6b6b', fontSize: '12px', marginTop: '4px' }}>
+                      ⚠️ 인수자, 인계자, 프로젝트명을 입력해주세요
+                    </div>
+                  )}
+                  {isLotInputEnabled && showLotWarning && (
                     <div style={{ color: '#ffa500', fontSize: '12px', marginTop: '4px' }}>
-                      ℹ️ 한글이 입력되어 있습니다. 전송 시 영어로 변환됩니다.
+                      ℹ️ [한/영]키가 한글로 되어있습니다. <br /> 원활한 바코드 스캔을 위해 [한/영]키를 영어로
+                      변경해주세요.
                     </div>
                   )}
                 </div>
@@ -289,8 +316,14 @@ export default function InOutIndex() {
                     name='projectName'
                     value={formData.projectName}
                     onChange={handleInputChange}
-                    placeholder='Project Name'
+                    placeholder='Project Name 입력 또는 선택'
+                    list='projectList'
                   />
+                  <datalist id='projectList'>
+                    {projectList.map(name => (
+                      <option key={name} value={name} />
+                    ))}
+                  </datalist>
                 </div>
                 <div className={styles.formGroup}>
                   <label>Model</label>
@@ -300,6 +333,7 @@ export default function InOutIndex() {
                     value={formData.model}
                     onChange={handleInputChange}
                     placeholder='Model'
+                    disabled={isProjectSelected}
                   />
                 </div>
                 <div className={styles.formGroup}>
@@ -374,6 +408,7 @@ export default function InOutIndex() {
                     value={formData.projectNo}
                     onChange={handleInputChange}
                     placeholder='Project No.'
+                    disabled={isProjectSelected}
                   />
                 </div>
                 <div className={styles.formGroup}>
