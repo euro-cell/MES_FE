@@ -1,5 +1,5 @@
 export interface InOutFormData {
-  cellLotType: 'in' | 'out';
+  cellLotType: 'in' | 'out' | 'restock';
   cellLotDate: string;
   cellLot: string;
   inPerson: string;
@@ -12,7 +12,6 @@ export interface InOutFormData {
   storageLocation: string;
   projectNo: string;
   details: string;
-  restriction: string;
 }
 
 export interface TableData {

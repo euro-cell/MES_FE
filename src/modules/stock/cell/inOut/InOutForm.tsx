@@ -41,6 +41,7 @@ export default function InOutForm({
                 >
                   <option value='in'>입고</option>
                   <option value='out'>출고</option>
+                  <option value='restock'>재입고</option>
                 </select>
               </div>
               <div className={styles.formGroup}>
@@ -203,19 +204,6 @@ export default function InOutForm({
                   onChange={onInputChange}
                   placeholder='상세'
                 />
-              </div>
-              <div className={styles.formGroup}>
-                <label>재입고</label>
-                <select
-                  name='restriction'
-                  value={formData.restriction}
-                  onChange={onInputChange}
-                  className={styles.typeSelect}
-                >
-                  <option value=''>선택</option>
-                  <option value='아니오'>아니오</option>
-                  <option value='예'>예</option>
-                </select>
               </div>
             </div>
           </div>

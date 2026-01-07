@@ -22,7 +22,6 @@ export default function InOutIndex() {
     storageLocation: '',
     projectNo: '',
     details: '',
-    restriction: '',
   });
 
   const [tableData, setTableData] = useState<TableData[]>([]);
@@ -54,6 +53,7 @@ export default function InOutIndex() {
         setShowLotWarning(false);
       }
     }
+
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -65,7 +65,7 @@ export default function InOutIndex() {
       grade: formData.grade,
       totalQty: 0,
       holdingQty: 0,
-      inboundQty: formData.cellLotType === 'in' ? 1 : 0,
+      inboundQty: formData.cellLotType === 'in' || formData.cellLotType === 'restock' ? 1 : 0,
       outboundQty: formData.cellLotType === 'out' ? 1 : 0,
       other: '',
     };
