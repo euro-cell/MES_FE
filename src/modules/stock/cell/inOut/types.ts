@@ -1,0 +1,31 @@
+export interface InOutFormData {
+  cellLotType: 'in' | 'out';
+  cellLotDate: string;
+  cellLot: string;
+  inPerson: string;
+  outPerson: string;
+  outStatus: string;
+  projectName: string;
+  model: string;
+  grade: string;
+  ncrGrade: string;
+  storageLocation: string;
+  projectNo: string;
+  details: string;
+  restriction: string;
+}
+
+export interface TableData {
+  projectName: string;
+  grade: string;
+  totalQty: number;
+  holdingQty: number;
+  inboundQty: number;
+  outboundQty: number;
+  other: string;
+}
+
+export interface GroupedTableData {
+  projectName: string;
+  rows: TableData[];
+}
