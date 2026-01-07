@@ -4,7 +4,7 @@ import type { InOutFormData, TableData, GroupedTableData } from './types';
 import InOutForm from './InOutForm';
 import InOutTable from './InOutTable';
 import { getTodayDate, convertKoreanToEnglish, hasKorean, buildCellInventoryPayload } from './utils';
-import { createCellInventory, updateCellInventoryOut } from './InOutService';
+import { createCellInventory, updateCellInventoryOut, updateCellInventoryRestock } from './InOutService';
 import styles from '../../../../styles/stock/cell/InOut.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -69,6 +69,8 @@ export default function InOutIndex() {
         await createCellInventory(payload);
       } else if (formData.cellLotType === 'out') {
         await updateCellInventoryOut(payload);
+      } else if (formData.cellLotType === 'restock') {
+        await updateCellInventoryRestock(payload);
       }
 
       const newRow: TableData = {
@@ -85,7 +87,6 @@ export default function InOutIndex() {
 
       toast.success('✅ 등록되었습니다.');
     } catch (error) {
-      console.error('Cell inventory operation failed:', error);
       alert('❌ ' + (error as any)?.message || '알 수 없는 오류');
     } finally {
       setFormData(prev => ({ ...prev, cellLot: '' }));

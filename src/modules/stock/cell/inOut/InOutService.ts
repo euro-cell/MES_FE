@@ -28,3 +28,16 @@ export const updateCellInventoryOut = async (payload: CellInventoryRequest): Pro
     throw err.response?.data || err;
   }
 };
+
+export const updateCellInventoryRestock = async (payload: CellInventoryRequest): Promise<CellInventoryResponse> => {
+  console.log('🚀 ~ payload:', payload);
+  try {
+    const res = await axios.patch<CellInventoryResponse>(`${API_BASE}/cell-inventory/restock`, payload, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err: any) {
+    console.error('❌ 재입고 실패:', err);
+    throw err.response?.data || err;
+  }
+};
