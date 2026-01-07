@@ -4,7 +4,7 @@ import type { InOutFormData, TableData, GroupedTableData } from './types';
 import InOutForm from './InOutForm';
 import InOutTable from './InOutTable';
 import { getTodayDate, convertKoreanToEnglish, hasKorean, buildCellInventoryPayload } from './utils';
-import { createCellInventory } from './InOutService';
+import { createCellInventory, updateCellInventoryOut } from './InOutService';
 import styles from '../../../../styles/stock/cell/InOut.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -16,7 +16,7 @@ export default function InOutIndex() {
     cellLot: '',
     inPerson: '',
     outPerson: '',
-    outStatus: '',
+    shippingStatus: '',
     projectName: '',
     model: '',
     grade: '양품',
@@ -63,9 +63,12 @@ export default function InOutIndex() {
     const convertedLot = convertKoreanToEnglish(formData.cellLot).toUpperCase();
 
     try {
+      const payload = buildCellInventoryPayload(formData, convertedLot);
+
       if (formData.cellLotType === 'in') {
-        const payload = buildCellInventoryPayload(formData, convertedLot);
         await createCellInventory(payload);
+      } else if (formData.cellLotType === 'out') {
+        await updateCellInventoryOut(payload);
       }
 
       const newRow: TableData = {
@@ -83,7 +86,7 @@ export default function InOutIndex() {
       toast.success('✅ 등록되었습니다.');
     } catch (error) {
       console.error('Cell inventory operation failed:', error);
-      alert('❌ 등록 실패: ' + (error as any)?.message || '알 수 없는 오류');
+      alert('❌ ' + (error as any)?.message || '알 수 없는 오류');
     } finally {
       setFormData(prev => ({ ...prev, cellLot: '' }));
     }

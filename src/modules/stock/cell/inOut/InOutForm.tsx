@@ -103,8 +103,8 @@ export default function InOutForm({
                 <label>출고현황</label>
                 <input
                   type='text'
-                  name='outStatus'
-                  value={formData.outStatus}
+                  name='shippingStatus'
+                  value={formData.shippingStatus}
                   onChange={onInputChange}
                   placeholder='출고현황'
                   disabled={formData.cellLotType === 'in' || formData.cellLotType === 'restock'}

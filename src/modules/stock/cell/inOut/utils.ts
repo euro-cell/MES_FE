@@ -1,5 +1,5 @@
 import hangul from 'hangul-js';
-import type { InOutFormData, CellInventoryRequest } from './types';
+import type { InOutFormData } from './types';
 import { KOREAN_TO_ENGLISH } from './constants';
 
 export const getTodayDate = (): string => {
@@ -36,19 +36,32 @@ export const hasKorean = (str: string): boolean => {
 export const buildCellInventoryPayload = (
   formData: InOutFormData,
   convertedLot: string
-): CellInventoryRequest => {
-  return {
+): any => {
+  const payload: any = {
     lot: convertedLot,
     date: formData.cellLotDate,
     receiver: formData.inPerson,
     deliverer: formData.outPerson,
     projectName: formData.projectName,
-    model: formData.model,
     grade: formData.grade,
-    ncrGrade: formData.ncrGrade,
-    storageLocation: formData.storageLocation,
-    projectNo: formData.projectNo,
-    details: formData.details,
     isRestocked: formData.cellLotType === 'restock',
   };
+
+  // 빈 값이 아닌 필드만 포함
+  if (formData.model) payload.model = formData.model;
+  if (formData.ncrGrade) payload.ncrGrade = formData.ncrGrade;
+  if (formData.projectNo) payload.projectNo = formData.projectNo;
+  if (formData.details) payload.details = formData.details;
+
+  // 출고일 때만 shippingStatus 포함
+  if (formData.cellLotType === 'out' && formData.shippingStatus) {
+    payload.shippingStatus = formData.shippingStatus;
+  }
+
+  // 출고가 아닐 때만 storageLocation 포함
+  if (formData.cellLotType !== 'out' && formData.storageLocation) {
+    payload.storageLocation = formData.storageLocation;
+  }
+
+  return payload;
 };

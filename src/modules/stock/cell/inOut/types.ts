@@ -4,7 +4,7 @@ export interface InOutFormData {
   cellLot: string;
   inPerson: string;
   outPerson: string;
-  outStatus: string;
+  shippingStatus: string;
   projectName: string;
   model: string;
   grade: string;
@@ -35,12 +35,13 @@ export interface CellInventoryRequest {
   receiver: string;
   deliverer: string;
   projectName: string;
-  model: string;
+  model?: string;
   grade: string;
-  ncrGrade: string;
-  storageLocation: string;
-  projectNo: string;
-  details: string;
+  ncrGrade?: string;
+  storageLocation?: string;
+  projectNo?: string;
+  details?: string;
+  shippingStatus?: string;
   isRestocked?: boolean;
 }
 
