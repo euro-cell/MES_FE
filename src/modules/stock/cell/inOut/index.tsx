@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import type { InOutFormData, TableData, GroupedTableData } from './types';
+import type { InOutFormData, GroupedTableData, ProjectStatistics } from './types';
 import InOutForm from './InOutForm';
 import InOutTable from './InOutTable';
-import { getTodayDate, convertKoreanToEnglish, hasKorean, buildCellInventoryPayload } from './utils';
-import { createCellInventory, updateCellInventoryOut, updateCellInventoryRestock } from './InOutService';
+import { getTodayDate, convertKoreanToEnglish, hasKorean, buildCellInventoryPayload, transformStatisticsToTableData } from './utils';
+import { createCellInventory, updateCellInventoryOut, updateCellInventoryRestock, fetchCellInventoryStatistics } from './InOutService';
 import styles from '../../../../styles/stock/cell/InOut.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -26,11 +26,11 @@ export default function InOutIndex() {
     details: '',
   });
 
-  const [tableData, setTableData] = useState<TableData[]>([]);
+  const [statistics, setStatistics] = useState<ProjectStatistics[]>([]);
   const [showLotWarning, setShowLotWarning] = useState(false);
   const [projectList, setProjectList] = useState<string[]>([]);
 
-  // 프로젝트 리스트 조회
+  // 프로젝트 리스트와 통계 조회
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -42,7 +42,18 @@ export default function InOutIndex() {
         console.error('프로젝트 리스트 로드 실패:', error);
       }
     };
+
+    const fetchStatistics = async () => {
+      try {
+        const data = await fetchCellInventoryStatistics();
+        setStatistics(data);
+      } catch (error) {
+        console.error('통계 조회 실패:', error);
+      }
+    };
+
     fetchProjects();
+    fetchStatistics();
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -73,17 +84,9 @@ export default function InOutIndex() {
         await updateCellInventoryRestock(payload);
       }
 
-      const newRow: TableData = {
-        projectName: formData.projectName,
-        grade: formData.grade,
-        totalQty: 0,
-        holdingQty: 0,
-        inboundQty: formData.cellLotType === 'in' || formData.cellLotType === 'restock' ? 1 : 0,
-        outboundQty: formData.cellLotType === 'out' ? 1 : 0,
-        other: '',
-      };
-
-      setTableData([...tableData, newRow]);
+      // 통계 데이터 새로 조회
+      const data = await fetchCellInventoryStatistics();
+      setStatistics(data);
 
       toast.success('✅ 등록되었습니다.');
     } catch (error) {
@@ -127,16 +130,8 @@ export default function InOutIndex() {
   const isLotInputEnabled =
     formData.inPerson.trim() !== '' && formData.outPerson.trim() !== '' && formData.projectName.trim() !== '';
 
-  // 테이블 데이터 그룹화
-  const groupedData: GroupedTableData[] = tableData.reduce((acc, row) => {
-    const existing = acc.find(g => g.projectName === row.projectName);
-    if (existing) {
-      existing.rows.push(row);
-    } else {
-      acc.push({ projectName: row.projectName, rows: [row] });
-    }
-    return acc;
-  }, [] as GroupedTableData[]);
+  // API 통계 데이터를 테이블 형식으로 변환
+  const groupedData: GroupedTableData[] = transformStatisticsToTableData(statistics);
 
   return (
     <div className={styles.inOutContainer}>

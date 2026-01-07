@@ -17,10 +17,10 @@ export interface InOutFormData {
 export interface TableData {
   projectName: string;
   grade: string;
-  totalQty: number;
-  holdingQty: number;
-  inboundQty: number;
-  outboundQty: number;
+  totalQty: number | null;
+  holdingQty: number | null;
+  inboundQty: number | null;
+  outboundQty: number | null;
   other: string;
 }
 
@@ -48,3 +48,18 @@ export interface CellInventoryRequest {
 export interface CellInventoryResponse {
   id: number;
 }
+
+export interface GradeStatistics {
+  grade: '양품' | 'NCR' | 'NG';
+  inStock: number;
+  shipped: number;
+  available: number;
+}
+
+export interface ProjectStatistics {
+  projectName: string;
+  grades: GradeStatistics[];
+  totalAvailable: number;
+}
+
+export type CellInventoryStatisticsResponse = ProjectStatistics[];

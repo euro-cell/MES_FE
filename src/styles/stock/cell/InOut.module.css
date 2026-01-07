@@ -156,12 +156,17 @@
 }
 
 .dataTable th {
-  padding: 12px 16px;
-  text-align: left;
+  padding: 8px 12px;
+  text-align: center;
   font-weight: 600;
   font-size: 13px;
   color: #333;
   white-space: nowrap;
+  border-right: 1px solid #ddd;
+}
+
+.dataTable th:last-child {
+  border-right: none;
 }
 
 .dataTable tbody tr {
@@ -174,15 +179,26 @@
 }
 
 .dataTable td {
-  padding: 12px 16px;
+  padding: 8px 12px;
   font-size: 13px;
   color: #555;
+  border-right: 1px solid #ddd;
+  text-align: center;
+}
+
+.dataTable td:last-child {
+  border-right: none;
 }
 
 .projectNameCell {
   font-weight: 600;
   background-color: #f9f9f9;
   vertical-align: middle;
+  text-align: center;
+}
+
+.totalQtyCell {
+  background-color: #fffacd;
 }
 
 .titleRow {
@@ -192,8 +208,23 @@
 
 .titleRow th {
   text-align: center;
-  padding: 16px 12px;
+  padding: 10px 12px;
   font-size: 14px;
   font-weight: 600;
   color: #333;
+}
+
+.totalRow {
+  background-color: #f0f0f0;
+  border-top: 2px solid #999;
+  font-weight: 600;
+}
+
+.totalRow td {
+  padding: 10px 12px;
+  border-right: 1px solid #ddd;
+}
+
+.totalRow td:last-child {
+  border-right: none;
 }

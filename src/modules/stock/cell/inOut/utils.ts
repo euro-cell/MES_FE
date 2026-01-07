@@ -1,5 +1,5 @@
 import hangul from 'hangul-js';
-import type { InOutFormData } from './types';
+import type { InOutFormData, GroupedTableData, ProjectStatistics } from './types';
 import { KOREAN_TO_ENGLISH } from './constants';
 
 export const getTodayDate = (): string => {
@@ -64,4 +64,19 @@ export const buildCellInventoryPayload = (
   }
 
   return payload;
+};
+
+export const transformStatisticsToTableData = (statistics: ProjectStatistics[]): GroupedTableData[] => {
+  return statistics.map(project => ({
+    projectName: project.projectName,
+    rows: project.grades.map(grade => ({
+      projectName: project.projectName,
+      grade: grade.grade,
+      totalQty: project.totalAvailable,
+      holdingQty: grade.available ?? null,
+      inboundQty: grade.inStock ?? null,
+      outboundQty: grade.shipped ?? null,
+      other: '',
+    })),
+  }));
 };

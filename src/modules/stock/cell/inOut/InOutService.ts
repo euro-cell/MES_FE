@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { CellInventoryRequest, CellInventoryResponse } from './types';
+import type { CellInventoryRequest, CellInventoryResponse, CellInventoryStatisticsResponse } from './types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -38,6 +38,18 @@ export const updateCellInventoryRestock = async (payload: CellInventoryRequest):
     return res.data;
   } catch (err: any) {
     console.error('❌ 재입고 실패:', err);
+    throw err.response?.data || err;
+  }
+};
+
+export const fetchCellInventoryStatistics = async (): Promise<CellInventoryStatisticsResponse> => {
+  try {
+    const res = await axios.get<CellInventoryStatisticsResponse>(`${API_BASE}/cell-inventory/statistics`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err: any) {
+    console.error('❌ 통계 조회 실패:', err);
     throw err.response?.data || err;
   }
 };
