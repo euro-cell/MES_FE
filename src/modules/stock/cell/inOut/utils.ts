@@ -80,3 +80,12 @@ export const transformStatisticsToTableData = (statistics: ProjectStatistics[]):
     })),
   }));
 };
+
+export const getStorageUsageByLocation = (statistics: ProjectStatistics[]): { [key: string]: number } => {
+  const usage: { [key: string]: number } = {};
+
+  // 모든 보관 위치의 사용량 계산 (storageLocation 필드가 있는 데이터 기반)
+  // 통계에서는 보관 위치 정보가 없으므로, 백엔드에서 받아야 함
+  // 일단 빈 객체로 반환
+  return usage;
+};

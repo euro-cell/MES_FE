@@ -1,10 +1,11 @@
-import type { InOutFormData } from './types';
+import type { InOutFormData, StorageUsageResponse } from './types';
 import { NCR_GRADES, STORAGE_LETTERS, STORAGE_NUMBERS } from './constants';
 import styles from '../../../../styles/stock/cell/InOut.module.css';
 
 interface InOutFormProps {
   formData: InOutFormData;
   projectList: string[];
+  storageUsage: StorageUsageResponse;
   showLotWarning: boolean;
   isLotInputEnabled: boolean;
   isProjectSelected: boolean;
@@ -16,6 +17,7 @@ interface InOutFormProps {
 export default function InOutForm({
   formData,
   projectList,
+  storageUsage,
   showLotWarning,
   isLotInputEnabled,
   isProjectSelected,
@@ -178,11 +180,17 @@ export default function InOutForm({
                 >
                   <option value=''>선택</option>
                   {STORAGE_LETTERS.map(letter =>
-                    STORAGE_NUMBERS.map(num => (
-                      <option key={`${letter}-${num}`} value={`${letter}-${num}`}>
-                        {letter}-{num}
-                      </option>
-                    ))
+                    STORAGE_NUMBERS.map(num => {
+                      const locationKey = `${letter}-${num}`;
+                      const usage = storageUsage[locationKey]?.usage || 0;
+                      const isFull = usage === 100;
+                      return (
+                        <option key={locationKey} value={locationKey} disabled={isFull}>
+                          {locationKey}
+                          {isFull ? ' (가득참)' : ''}
+                        </option>
+                      );
+                    })
                   )}
                 </select>
               </div>

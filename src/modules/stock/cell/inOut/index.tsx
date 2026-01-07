@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import type { InOutFormData, GroupedTableData, ProjectStatistics } from './types';
+import type { InOutFormData, GroupedTableData, ProjectStatistics, StorageUsageResponse } from './types';
 import InOutForm from './InOutForm';
 import InOutTable from './InOutTable';
 import { getTodayDate, convertKoreanToEnglish, hasKorean, buildCellInventoryPayload, transformStatisticsToTableData } from './utils';
-import { createCellInventory, updateCellInventoryOut, updateCellInventoryRestock, fetchCellInventoryStatistics } from './InOutService';
+import { createCellInventory, updateCellInventoryOut, updateCellInventoryRestock, fetchCellInventoryStatistics, fetchStorageUsage } from './InOutService';
 import styles from '../../../../styles/stock/cell/InOut.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -27,6 +27,7 @@ export default function InOutIndex() {
   });
 
   const [statistics, setStatistics] = useState<ProjectStatistics[]>([]);
+  const [storageUsage, setStorageUsage] = useState<StorageUsageResponse>({});
   const [showLotWarning, setShowLotWarning] = useState(false);
   const [projectList, setProjectList] = useState<string[]>([]);
 
@@ -52,8 +53,18 @@ export default function InOutIndex() {
       }
     };
 
+    const loadStorageUsage = async () => {
+      try {
+        const data = await fetchStorageUsage();
+        setStorageUsage(data);
+      } catch (error) {
+        console.error('보관 위치 현황 로드 실패:', error);
+      }
+    };
+
     fetchProjects();
     fetchStatistics();
+    loadStorageUsage();
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -73,6 +84,15 @@ export default function InOutIndex() {
   const handleAddToTable = async () => {
     const convertedLot = convertKoreanToEnglish(formData.cellLot).toUpperCase();
 
+    // 입고/재입고 시 보관 위치 용량 검증
+    if ((formData.cellLotType === 'in' || formData.cellLotType === 'restock') && formData.storageLocation) {
+      const locationUsage = storageUsage[formData.storageLocation]?.usage || 0;
+      if (locationUsage === 100) {
+        alert('❌ 선택한 보관 위치 ' + formData.storageLocation + '은(는) 가득 찼습니다.');
+        return;
+      }
+    }
+
     try {
       const payload = buildCellInventoryPayload(formData, convertedLot);
 
@@ -87,6 +107,10 @@ export default function InOutIndex() {
       // 통계 데이터 새로 조회
       const data = await fetchCellInventoryStatistics();
       setStatistics(data);
+
+      // 보관 위치 현황 새로 조회
+      const usage = await fetchStorageUsage();
+      setStorageUsage(usage);
 
       toast.success('✅ 등록되었습니다.');
     } catch (error) {
@@ -138,6 +162,7 @@ export default function InOutIndex() {
       <InOutForm
         formData={formData}
         projectList={projectList}
+        storageUsage={storageUsage}
         showLotWarning={showLotWarning}
         isLotInputEnabled={isLotInputEnabled}
         isProjectSelected={isProjectSelected}

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { CellInventoryRequest, CellInventoryResponse, CellInventoryStatisticsResponse } from './types';
+import type { CellInventoryRequest, CellInventoryResponse, CellInventoryStatisticsResponse, StorageUsageResponse } from './types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -50,6 +50,18 @@ export const fetchCellInventoryStatistics = async (): Promise<CellInventoryStati
     return res.data;
   } catch (err: any) {
     console.error('❌ 통계 조회 실패:', err);
+    throw err.response?.data || err;
+  }
+};
+
+export const fetchStorageUsage = async (): Promise<StorageUsageResponse> => {
+  try {
+    const res = await axios.get<StorageUsageResponse>(`${API_BASE}/cell-inventory/storage-usage`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err: any) {
+    console.error('❌ 보관 위치 현황 조회 실패:', err);
     throw err.response?.data || err;
   }
 };

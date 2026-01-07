@@ -54,3 +54,9 @@ export const NCR_GRADES = [
 
 export const STORAGE_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 export const STORAGE_NUMBERS = [1, 2, 3, 4, 5];
+
+// 보관 위치별 최대 용량
+export const STORAGE_CAPACITY: { [key: string]: number } = {
+  'A': 96, 'B': 96, 'C': 96, 'D': 96, 'E': 96, 'F': 96,
+  'G': 64, 'H': 64, 'I': 64, 'J': 64,
+};

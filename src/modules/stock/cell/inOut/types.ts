@@ -63,3 +63,11 @@ export interface ProjectStatistics {
 }
 
 export type CellInventoryStatisticsResponse = ProjectStatistics[];
+
+export interface StorageUsageItem {
+  count: number;
+  capacity: number;
+  usage: number;
+}
+
+export type StorageUsageResponse = Record<string, StorageUsageItem>;
