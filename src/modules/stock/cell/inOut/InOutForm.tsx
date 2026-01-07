@@ -107,6 +107,7 @@ export default function InOutForm({
                   value={formData.outStatus}
                   onChange={onInputChange}
                   placeholder='출고현황'
+                  disabled={formData.cellLotType === 'in' || formData.cellLotType === 'restock'}
                 />
               </div>
               <div className={styles.formGroup}>
