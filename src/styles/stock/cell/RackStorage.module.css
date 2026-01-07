@@ -1,0 +1,328 @@
+.rackStorageContainer {
+  padding: 15px 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.refreshBtn {
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.refreshBtn:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.refreshBtn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* 그리드 컨테이너 */
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 섹션 래퍼 (좌우 배치) */
+.sectionsWrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* 섹션 그룹 */
+.sectionGroup {
+  display: flex;
+  flex-direction: column;
+  /* gap: 15px; */
+  align-items: center;
+}
+
+.sectionGroup:first-child {
+  border-right: 1px solid #ddd;
+  padding-right: 15px;
+}
+
+.sectionGroup:last-child {
+  padding-left: 15px;
+}
+
+/* 섹션 제목 */
+.sectionTitle {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 그리드 래퍼 */
+.gridWrapper {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+/* 헤더 행 */
+.headerRow {
+  display: contents;
+}
+
+.headerCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+/* 데이터 행 */
+.dataRow {
+  display: contents;
+}
+
+/* 저장소 셀 */
+.storageCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 4px;
+  min-height: 30px;
+  border: 1px solid #999;
+  border-radius: 3px;
+  font-weight: 500;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.cellContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+}
+
+.cellInfoRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.cellInfo {
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.cellInfo:first-child {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.cellInfo:last-child {
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* 범례 */
+.legend {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 15px;
+}
+
+.legendTitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.legendItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #555;
+}
+
+.legendColor {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #999;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* 푸터 */
+.footer {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.updateTime {
+  font-size: 11px;
+  color: #999;
+  margin: 0;
+  text-align: right;
+}
+
+/* 로딩 상태 */
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #999;
+  font-size: 16px;
+}
+
+/* 저장소 셀 호버 효과 */
+.storageCell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .rackStorageContainer {
+    padding: 10px 8px;
+  }
+
+  .header {
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+  }
+
+  .storageCell {
+    min-height: 75px;
+    padding: 3px 1px;
+    font-size: 11px;
+  }
+
+  .locationName {
+    font-size: 11px;
+    margin-bottom: 1px;
+  }
+
+  .locationCount {
+    font-size: 9px;
+    margin-bottom: 1px;
+  }
+
+  .locationUsage {
+    font-size: 12px;
+  }
+
+  .storageTable th {
+    padding: 4px 2px;
+    font-size: 11px;
+  }
+
+  .storageTable tbody td {
+    padding: 1px;
+    width: 48px;
+  }
+
+  .sectionTitle {
+    font-size: 13px;
+    padding: 4px 0;
+    margin: 0;
+  }
+
+  .section {
+    gap: 3px;
+  }
+
+  .gridContainer {
+    gap: 15px;
+  }
+
+  .legend {
+    padding: 8px;
+    margin-top: 12px;
+  }
+
+  .legendTitle {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .legendItems {
+    gap: 8px;
+  }
+
+  .legendItem {
+    font-size: 11px;
+  }
+
+  .legendColor {
+    width: 18px;
+    height: 18px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .refreshBtn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .footer {
+    margin-top: 12px;
+    padding-top: 8px;
+  }
+
+  .updateTime {
+    font-size: 10px;
+  }
+}
