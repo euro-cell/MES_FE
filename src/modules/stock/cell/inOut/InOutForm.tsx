@@ -174,6 +174,7 @@ export default function InOutForm({
                   value={formData.storageLocation}
                   onChange={onInputChange}
                   className={styles.typeSelect}
+                  disabled={formData.cellLotType === 'out'}
                 >
                   <option value=''>선택</option>
                   {STORAGE_LETTERS.map(letter =>
