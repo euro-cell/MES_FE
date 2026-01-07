@@ -9,8 +9,8 @@ interface InOutFormProps {
   isLotInputEnabled: boolean;
   isProjectSelected: boolean;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  onCellLotKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onCellLotKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => Promise<void>;
+  onSubmit: (e: React.FormEvent) => Promise<void>;
 }
 
 export default function InOutForm({

@@ -1,4 +1,5 @@
 import hangul from 'hangul-js';
+import type { InOutFormData, CellInventoryRequest } from './types';
 import { KOREAN_TO_ENGLISH } from './constants';
 
 export const getTodayDate = (): string => {
@@ -30,4 +31,24 @@ export const convertKoreanToEnglish = (str: string): string => {
 
 export const hasKorean = (str: string): boolean => {
   return /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(str);
+};
+
+export const buildCellInventoryPayload = (
+  formData: InOutFormData,
+  convertedLot: string
+): CellInventoryRequest => {
+  return {
+    lot: convertedLot,
+    date: formData.cellLotDate,
+    receiver: formData.inPerson,
+    deliverer: formData.outPerson,
+    projectName: formData.projectName,
+    model: formData.model,
+    grade: formData.grade,
+    ncrGrade: formData.ncrGrade,
+    storageLocation: formData.storageLocation,
+    projectNo: formData.projectNo,
+    details: formData.details,
+    isRestocked: formData.cellLotType === 'restock',
+  };
 };

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import type { InOutFormData, TableData, GroupedTableData } from './types';
 import InOutForm from './InOutForm';
 import InOutTable from './InOutTable';
-import { getTodayDate, convertKoreanToEnglish, hasKorean } from './utils';
+import { getTodayDate, convertKoreanToEnglish, hasKorean, buildCellInventoryPayload } from './utils';
+import { createCellInventory } from './InOutService';
 import styles from '../../../../styles/stock/cell/InOut.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -57,25 +59,37 @@ export default function InOutIndex() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleAddToTable = () => {
-    const convertedLot = convertKoreanToEnglish(formData.cellLot);
+  const handleAddToTable = async () => {
+    const convertedLot = convertKoreanToEnglish(formData.cellLot).toUpperCase();
 
-    const newRow: TableData = {
-      projectName: formData.projectName,
-      grade: formData.grade,
-      totalQty: 0,
-      holdingQty: 0,
-      inboundQty: formData.cellLotType === 'in' || formData.cellLotType === 'restock' ? 1 : 0,
-      outboundQty: formData.cellLotType === 'out' ? 1 : 0,
-      other: '',
-    };
+    try {
+      if (formData.cellLotType === 'in') {
+        const payload = buildCellInventoryPayload(formData, convertedLot);
+        await createCellInventory(payload);
+      }
 
-    setTableData([...tableData, newRow]);
-    setFormData(prev => ({ ...prev, cellLot: '' }));
-    console.log('Converted Lot:', convertedLot);
+      const newRow: TableData = {
+        projectName: formData.projectName,
+        grade: formData.grade,
+        totalQty: 0,
+        holdingQty: 0,
+        inboundQty: formData.cellLotType === 'in' || formData.cellLotType === 'restock' ? 1 : 0,
+        outboundQty: formData.cellLotType === 'out' ? 1 : 0,
+        other: '',
+      };
+
+      setTableData([...tableData, newRow]);
+
+      toast.success('✅ 등록되었습니다.');
+    } catch (error) {
+      console.error('Cell inventory operation failed:', error);
+      alert('❌ 등록 실패: ' + (error as any)?.message || '알 수 없는 오류');
+    } finally {
+      setFormData(prev => ({ ...prev, cellLot: '' }));
+    }
   };
 
-  const handleCellLotKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleCellLotKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if ((e as any).keyCode === 16 || (e as any).keyCode === 17 || (e as any).keyCode === 229) {
       e.preventDefault();
       return;
@@ -83,9 +97,7 @@ export default function InOutIndex() {
 
     if (e.key === 'Enter') {
       e.preventDefault();
-      const convertedLot = convertKoreanToEnglish(formData.cellLot);
-      console.log('Form Data:', { ...formData, cellLot: convertedLot });
-      handleAddToTable();
+      await handleAddToTable();
     }
 
     console.log('KeyDown Event:', {
@@ -99,9 +111,9 @@ export default function InOutIndex() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleAddToTable();
+    await handleAddToTable();
   };
 
   // 프로젝트가 선택되었는지 확인
