@@ -1,0 +1,134 @@
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.ncrTable {
+  border-collapse: collapse;
+  background-color: white;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ncrTable thead {
+  background-color: #f0f0f0;
+  border-top: 2px solid #333;
+  border-bottom: 2px solid #333;
+}
+
+.ncrTable th {
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
+  white-space: nowrap;
+  padding: 4px;
+}
+
+.ncrTable thead tr:first-child th:last-child {
+  border-right: none;
+}
+
+.thCategory {
+  min-width: 50px;
+}
+
+.thNcrType {
+  min-width: 50px;
+}
+
+.thDetails {
+  min-width: 150px;
+}
+
+.thCode {
+  min-width: 50px;
+}
+
+.ncrTable tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.ncrTable tbody tr:hover {
+  background-color: #d0f8be;
+}
+
+.ncrTable td {
+  text-align: center;
+  color: #555;
+  border-right: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+.ncrTable td:last-child {
+  border-right: none;
+}
+
+.tdCategory {
+  text-align: center;
+  font-weight: 600;
+  background-color: #f9f9f9;
+  border-right: 1px solid #ddd;
+}
+
+.tdNcrType {
+  text-align: center;
+  font-weight: 500;
+}
+
+.tdDetails {
+  text-align: left;
+  padding-left: 6px;
+}
+
+.tdCode {
+  text-align: center;
+  font-weight: 500;
+  color: #d32f2f;
+}
+
+.tdValue {
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Subtotal Row */
+.subtotalRow {
+  background-color: #ffeb99;
+  font-weight: 600;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.subtotalLabel {
+  text-align: center;
+  padding: 4px;
+  color: #333;
+}
+
+.subtotalRow td {
+  background-color: #ffeb99;
+  color: #333;
+}
+
+/* Grand Total Row */
+.grandTotalRow {
+  background-color: #ffcccc;
+  font-weight: 700;
+  border-top: 2px solid #333;
+  border-bottom: 2px solid #333;
+}
+
+.grandTotalLabel {
+  text-align: center;
+  padding: 4px;
+  color: #333;
+}
+
+.grandTotalRow td {
+  background-color: #ffcccc;
+  color: #333;
+  padding: 4px;
+}
