@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import styles from '../../../../styles/stock/cell/NCRStatus.module.css';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 interface DetailItem {
   category: string;
@@ -19,16 +22,21 @@ interface ProjectDetail {
   tables: DetailTable[];
 }
 
-// 더미 프로젝트 목록
-const projects = [
-  { id: 'v52', name: 'V5.2' },
-  { id: 'v55', name: 'V5.5' },
-  { id: 'v56', name: 'V5.6' },
-  { id: 'v57', name: 'V5.7' },
-  { id: 'v58', name: 'V5.8' },
-  { id: 'navitas6T', name: 'Navitas 6T' },
-  { id: 'kkk55d25b1', name: '55D25B1-KKK55' },
-];
+interface Project {
+  id: string;
+  name: string;
+}
+
+interface CellInventoryProject {
+  projectName: string;
+  grades: Array<{
+    grade: string;
+    inStock: number | null;
+    shipped: number | null;
+    available: number | null;
+  }>;
+  totalAvailable: number;
+}
 
 // 더미 프로젝트별 세부 데이터
 const projectDetailData: Record<string, ProjectDetail> = {
@@ -219,11 +227,32 @@ const projectDetailData: Record<string, ProjectDetail> = {
 };
 
 export default function NCRDetailSection() {
+  const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
   const [detailData, setDetailData] = useState<ProjectDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedData, setEditedData] = useState<ProjectDetail | null>(null);
+
+  // 프로젝트 리스트 로드 (마운트 시)
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const response = await axios.get<CellInventoryProject[]>(
+          `${API_BASE}/cell-inventory/statistics`,
+          { withCredentials: true }
+        );
+        const projectList: Project[] = response.data.map((item) => ({
+          id: item.projectName,
+          name: item.projectName,
+        }));
+        setProjects(projectList);
+      } catch (err) {
+        console.error('프로젝트 목록 로드 실패:', err);
+      }
+    };
+    loadProjects();
+  }, []);
 
   // 프로젝트 선택 시 상세 데이터 로드
   useEffect(() => {
