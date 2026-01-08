@@ -1,164 +1,162 @@
-import type { NCRStatusData } from './types';
+import type { NCRStatusItemAPI, ProjectHeader } from './types';
 import styles from '../../../../styles/stock/cell/NCRStatus.module.css';
 
 interface NCRStatusTableProps {
-  data: NCRStatusData;
+  items: NCRStatusItemAPI[];
+  projects: ProjectHeader[];
 }
 
 const formatValue = (value: number): string => {
   return value === 0 ? '-' : value.toString();
 };
 
-export default function NCRStatusTable({ data }: NCRStatusTableProps) {
-  // Calculate subtotals
-  const calculateSubtotal = (items: any[]) => ({
-    v52: items.reduce((sum, item) => sum + (item.v52 || 0), 0),
-    v55: items.reduce((sum, item) => sum + (item.v55 || 0), 0),
-    v56: items.reduce((sum, item) => sum + (item.v56 || 0), 0),
-    v57: items.reduce((sum, item) => sum + (item.v57 || 0), 0),
-    v58: items.reduce((sum, item) => sum + (item.v58 || 0), 0),
-    navitas6T: items.reduce((sum, item) => sum + (item.navitas6T || 0), 0),
-    kkk55d25b1: items.reduce((sum, item) => sum + (item.kkk55d25b1 || 0), 0),
+export default function NCRStatusTable({ items, projects }: NCRStatusTableProps) {
+  // 구형 프로젝트 여부 (projectNo가 있으면 2행 헤더, 없으면 1행 헤더)
+  const hasOldProject = projects.some(p => p.projectNo !== null);
+
+  // 카테고리별로 아이템 그룹화
+  const getItemsByCategory = (category: string) => {
+    return items.filter(item => item.category === category);
+  };
+
+  const formationItems = getItemsByCategory('Formation');
+  const inspectionItems = getItemsByCategory('Inspection');
+  const otherItems = getItemsByCategory('Other');
+
+  // 카테고리별 소계 계산
+  const calculateCategoryTotal = (categoryItems: NCRStatusItemAPI[]) => {
+    const total: Record<string, number> = {};
+
+    projects.forEach((project, projectIdx) => {
+      const projectKey = `${project.projectNo}_${project.projectName}`;
+      total[projectKey] = categoryItems.reduce((sum, item) => {
+        return sum + (item.counts[projectIdx]?.count || 0);
+      }, 0);
+    });
+
+    return total;
+  };
+
+  const formationTotal = calculateCategoryTotal(formationItems);
+  const inspectionTotal = calculateCategoryTotal(inspectionItems);
+  const otherTotal = calculateCategoryTotal(otherItems);
+
+  // 전체 합계
+  const grandTotalByProject: Record<string, number> = {};
+  projects.forEach((project, projectIdx) => {
+    const projectKey = `${project.projectNo}_${project.projectName}`;
+    grandTotalByProject[projectKey] = items.reduce((sum, item) => {
+      return sum + (item.counts[projectIdx]?.count || 0);
+    }, 0);
   });
 
-  const formationSubtotal = calculateSubtotal(data.formation);
-  const inspectionSubtotal = calculateSubtotal(data.inspection);
-  const otherSubtotal = calculateSubtotal(data.other);
+  const grandTotal = Object.values(grandTotalByProject).reduce((a, b) => a + b, 0);
 
-  const grandTotal = {
-    v52: formationSubtotal.v52 + inspectionSubtotal.v52 + otherSubtotal.v52,
-    v55: formationSubtotal.v55 + inspectionSubtotal.v55 + otherSubtotal.v55,
-    v56: formationSubtotal.v56 + inspectionSubtotal.v56 + otherSubtotal.v56,
-    v57: formationSubtotal.v57 + inspectionSubtotal.v57 + otherSubtotal.v57,
-    v58: formationSubtotal.v58 + inspectionSubtotal.v58 + otherSubtotal.v58,
-    navitas6T: formationSubtotal.navitas6T + inspectionSubtotal.navitas6T + otherSubtotal.navitas6T,
-    kkk55d25b1: formationSubtotal.kkk55d25b1 + inspectionSubtotal.kkk55d25b1 + otherSubtotal.kkk55d25b1,
-  };
+  // 로우 렌더링 헬퍼 함수
+  const renderItemRow = (
+    item: NCRStatusItemAPI,
+    index: number,
+    category: string,
+    categoryItems: NCRStatusItemAPI[]
+  ) => (
+    <tr key={`${category}-${index}`}>
+      {index === 0 && (
+        <td rowSpan={categoryItems.length} className={styles.tdCategory}>
+          {category === 'Formation' ? 'Formation' : category === 'Inspection' ? 'Inspection' : '기타'}
+        </td>
+      )}
+      <td className={styles.tdNcrType}>{item.ncrType}</td>
+      <td className={styles.tdDetails}>{item.title}</td>
+      <td className={styles.tdCode}>{item.code}</td>
+      {item.counts.map((count, countIdx) => (
+        <td key={`count-${countIdx}`} className={styles.tdValue}>
+          {formatValue(count.count)}
+        </td>
+      ))}
+    </tr>
+  );
 
   return (
     <div className={styles.tableContainer}>
       <table className={styles.ncrTable}>
         <thead>
+          {/* 1행: 분류, NCR 종류, 세부사항, 표기, 프로젝트 이름들 */}
           <tr>
-            <th className={styles.thCategory} rowSpan={2}>
+            <th className={styles.thCategory} rowSpan={hasOldProject ? 2 : 1}>
               분류
             </th>
-            <th className={styles.thNcrType} rowSpan={2}>
+            <th className={styles.thNcrType} rowSpan={hasOldProject ? 2 : 1}>
               NCR 종류
             </th>
-            <th className={styles.thDetails} rowSpan={2}>
+            <th className={styles.thDetails} rowSpan={hasOldProject ? 2 : 1}>
               세부사항
             </th>
-            <th className={styles.thCode} rowSpan={2}>
+            <th className={styles.thCode} rowSpan={hasOldProject ? 2 : 1}>
               표기
             </th>
-            <th className={styles.thProject} colSpan={5}>
-              UFC
-            </th>
-            <th className={styles.thProject} rowSpan={2}>Navitas</th>
-            <th className={styles.thProject} rowSpan={2}>55D25B1-KKK55</th>
+
+            {/* 1행: 프로젝트 이름들 (projectName) */}
+            {projects.map((p) => (
+              <th
+                key={`name-${p.projectNo}_${p.projectName}`}
+                className={styles.thProject}
+                rowSpan={p.projectNo ? 1 : 2}
+              >
+                {p.projectName}
+              </th>
+            ))}
           </tr>
-          <tr>
-            <th className={styles.thProject}>5.2</th>
-            <th className={styles.thProject}>5.5</th>
-            <th className={styles.thProject}>5.6</th>
-            <th className={styles.thProject}>5.7</th>
-            <th className={styles.thProject}>5.8</th>
-          </tr>
+
+          {/* 2행: 프로젝트 번호들 (projectNo) - 구형 프로젝트만 */}
+          {hasOldProject && (
+            <tr>
+              {projects.map((p) =>
+                p.projectNo ? (
+                  <th key={`no-${p.projectNo}_${p.projectName}`} className={styles.thProject}>
+                    {p.projectNo}
+                  </th>
+                ) : null
+              )}
+            </tr>
+          )}
         </thead>
+
         <tbody>
-          {/* Formation Section */}
-          {data.formation.map((item, idx) => (
-            <tr key={`formation-${idx}`}>
-              {idx === 0 && (
-                <td rowSpan={data.formation.length} className={styles.tdCategory}>
-                  Formation
-                </td>
-              )}
-              <td className={styles.tdNcrType}>{item.ncrType}</td>
-              <td className={styles.tdDetails}>{item.details}</td>
-              <td className={styles.tdCode}>{item.code}</td>
-              <td className={styles.tdValue}>{formatValue(item.v52)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v55)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v56)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v57)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v58)}</td>
-              <td className={styles.tdValue}>{formatValue(item.navitas6T)}</td>
-              <td className={styles.tdValue}>{formatValue(item.kkk55d25b1 || 0)}</td>
-            </tr>
-          ))}
+          {/* Formation 섹션 */}
+          {formationItems.map((item, idx) => renderItemRow(item, idx, 'Formation', formationItems))}
 
-          {/* Inspection Section */}
-          {data.inspection.map((item, idx) => (
-            <tr key={`inspection-${idx}`}>
-              {idx === 0 && (
-                <td rowSpan={data.inspection.length} className={styles.tdCategory}>
-                  Inspection
-                </td>
-              )}
-              <td className={styles.tdNcrType}>{item.ncrType}</td>
-              <td className={styles.tdDetails}>{item.details}</td>
-              <td className={styles.tdCode}>{item.code}</td>
-              <td className={styles.tdValue}>{formatValue(item.v52)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v55)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v56)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v57)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v58)}</td>
-              <td className={styles.tdValue}>{formatValue(item.navitas6T)}</td>
-              <td className={styles.tdValue}>{formatValue(item.kkk55d25b1 || 0)}</td>
-            </tr>
-          ))}
+          {/* Inspection 섹션 */}
+          {inspectionItems.map((item, idx) => renderItemRow(item, idx, 'Inspection', inspectionItems))}
 
-          {/* Other Section */}
-          {data.other.map((item, idx) => (
-            <tr key={`other-${idx}`}>
-              {idx === 0 && (
-                <td rowSpan={data.other.length} className={styles.tdCategory}>
-                  기타
-                </td>
-              )}
-              <td className={styles.tdNcrType}>{item.ncrType}</td>
-              <td className={styles.tdDetails}>{item.details}</td>
-              <td className={styles.tdCode}>{item.code}</td>
-              <td className={styles.tdValue}>{formatValue(item.v52)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v55)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v56)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v57)}</td>
-              <td className={styles.tdValue}>{formatValue(item.v58)}</td>
-              <td className={styles.tdValue}>{formatValue(item.navitas6T)}</td>
-              <td className={styles.tdValue}>{formatValue(item.kkk55d25b1 || 0)}</td>
-            </tr>
-          ))}
+          {/* Other 섹션 */}
+          {otherItems.map((item, idx) => renderItemRow(item, idx, 'Other', otherItems))}
 
-          {/* Total */}
+          {/* 중 합 (소계) */}
           <tr className={styles.subtotalRow}>
             <td colSpan={4} className={styles.subtotalLabel}>
-              총 합
+              중 합
             </td>
-            <td className={styles.tdValue}>{formatValue(grandTotal.v52)}</td>
-            <td className={styles.tdValue}>{formatValue(grandTotal.v55)}</td>
-            <td className={styles.tdValue}>{formatValue(grandTotal.v56)}</td>
-            <td className={styles.tdValue}>{formatValue(grandTotal.v57)}</td>
-            <td className={styles.tdValue}>{formatValue(grandTotal.v58)}</td>
-            <td className={styles.tdValue}>{formatValue(grandTotal.navitas6T)}</td>
-            <td className={styles.tdValue}>{formatValue(grandTotal.kkk55d25b1)}</td>
+            {projects.map((project, idx) => {
+              const projectKey = `${project.projectNo}_${project.projectName}`;
+              const subtotal =
+                (formationTotal[projectKey] || 0) +
+                (inspectionTotal[projectKey] || 0) +
+                (otherTotal[projectKey] || 0);
+              return (
+                <td key={`subtotal-${idx}`} className={styles.tdValue}>
+                  {formatValue(subtotal)}
+                </td>
+              );
+            })}
           </tr>
 
-          {/* Grand Total */}
+          {/* NCR 총 합 */}
           <tr className={styles.grandTotalRow}>
             <td colSpan={4} className={styles.grandTotalLabel}>
-              NCR총합
+              NCR 총 합
             </td>
-            <td colSpan={7} className={styles.tdValue}>
-              {formatValue(
-                grandTotal.v52 +
-                  grandTotal.v55 +
-                  grandTotal.v56 +
-                  grandTotal.v57 +
-                  grandTotal.v58 +
-                  grandTotal.navitas6T +
-                  grandTotal.kkk55d25b1
-              )}
+            <td colSpan={projects.length} className={styles.tdValue}>
+              {formatValue(grandTotal)}
             </td>
           </tr>
         </tbody>

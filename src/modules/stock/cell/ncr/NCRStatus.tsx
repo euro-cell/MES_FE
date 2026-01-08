@@ -1,282 +1,96 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 import NCRStatusTable from './NCRStatusTable';
 import NCRDetailSection from './NCRDetailSection';
-import type { NCRStatusData } from './types';
+import type { NCRStatisticsResponse } from './types';
 import styles from '../../../../styles/stock/cell/NCRStatus.module.css';
 
-// 더미 데이터
-// 각 컬럼의 합: V5.2: 40, V5.5: 353, V5.6: 441, V5.7: 24, V5.8: 160, Navitas 6T: 16
-const dummyData: NCRStatusData = {
-  formation: [
-    {
-      ncrType: 'NCR1',
-      details: 'PF 방전용량(Ah)',
-      code: 'F-NCR1',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR2',
-      details: 'Final 실링 두께(㎛)',
-      code: 'F-NCR2',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR3',
-      details: 'Final 실링 Cutting 폭(mm)',
-      code: 'F-NCR3',
-      v52: 0,
-      v55: 244,
-      v56: 17,
-      v57: 6,
-      v58: 12,
-      navitas6T: 0,
-      kkk55d25b1: 5,
-    },
-    {
-      ncrType: 'NCR4',
-      details: 'MF 충전용량(Ah)',
-      code: 'F-NCR4',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR5',
-      details: 'MF OCV1(aging 전, V)',
-      code: 'F-NCR5',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR6',
-      details: 'MF OCV2(aging 후, V)',
-      code: 'F-NCR6',
-      v52: 0,
-      v55: 0,
-      v56: 67,
-      v57: 0,
-      v58: 41,
-      navitas6T: 5,
-      kkk55d25b1: 8,
-    },
-    {
-      ncrType: 'NCR7',
-      details: 'MF OCV2 △V(OCV2-OCV1, V)',
-      code: 'F-NCR7',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR8',
-      details: 'MF 방전용량(Ah)',
-      code: 'F-NCR8',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-  ],
-  inspection: [
-    {
-      ncrType: 'NCR1',
-      details: '기준용량(Ah)',
-      code: 'NCR1',
-      v52: 0,
-      v55: 0,
-      v56: 2,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 3,
-    },
-    {
-      ncrType: 'NCR2',
-      details: '출하충전 OCV3(V)',
-      code: 'NCR2',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR3',
-      details: '보관 후 출하 OCV4 △V ratio(mV/month)',
-      code: 'NCR3',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 5,
-      v58: 27,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR4',
-      details: '가스 발생 육안검사(여/부, 흔들림 지점)',
-      code: 'NCR4',
-      v52: 0,
-      v55: 0,
-      v56: 349,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 15,
-    },
-    {
-      ncrType: 'NCR5',
-      details: '파우치 표면 돌출(직경≤2mm) 수량(개)',
-      code: 'NCR5',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 2,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR6',
-      details: '파우치 표면 긁힘(폭≤0.5mm, 길이＞1mm) 수량(개)',
-      code: 'NCR6',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR7',
-      details: '파우치 표면 찍힘(직경≤1mm) 수량(개)',
-      code: 'NCR7',
-      v52: 26,
-      v55: 109,
-      v56: 2,
-      v57: 0,
-      v58: 0,
-      navitas6T: 11,
-      kkk55d25b1: 12,
-    },
-    {
-      ncrType: 'NCR8',
-      details: '누액 및 부식(여/부)',
-      code: 'NCR8',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR9',
-      details: '전지 size(폭, ㎜)',
-      code: 'NCR9',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR10',
-      details: '전지 두께(mm)',
-      code: 'NCR10',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-    {
-      ncrType: 'NCR11',
-      details: '전지 무게(g)',
-      code: 'NCR11',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 0,
-    },
-  ],
-  other: [
-    {
-      ncrType: '기타',
-      details: '파우치 크랙',
-      code: '기타-1',
-      v52: 14,
-      v55: 0,
-      v56: 355,
-      v57: 18,
-      v58: 107,
-      navitas6T: 0,
-      kkk55d25b1: 20,
-    },
-    {
-      ncrType: '기타',
-      details: '실란트 돌출 후 화성 진행 셀',
-      code: '기타-2',
-      v52: 0,
-      v55: 0,
-      v56: 0,
-      v57: 0,
-      v58: 0,
-      navitas6T: 0,
-      kkk55d25b1: 10,
-    },
-  ],
-};
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export default function NCRStatus() {
+  const [statisticsData, setStatisticsData] = useState<NCRStatisticsResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // API에서 NCR 통계 데이터 로드
+  const loadStatistics = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get<NCRStatisticsResponse>(
+        `${API_BASE}/cell-inventory/ncr/statistics`,
+        { withCredentials: true }
+      );
+      setStatisticsData(response.data);
+      toast.success('✅ NCR 통계가 조회되었습니다.');
+    } catch (err: any) {
+      console.error('NCR 통계 조회 실패:', err);
+      const errorMsg = err.response?.data?.message || '데이터를 불러오는 중 오류가 발생했습니다.';
+      setError(errorMsg);
+      toast.error(`❌ ${errorMsg}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 컴포넌트 마운트 시 데이터 로드
+  useEffect(() => {
+    loadStatistics();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className={styles.ncrContainer}>
+        <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+          <p>데이터를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !statisticsData) {
+    return (
+      <div className={styles.ncrContainer}>
+        <div style={{ padding: '40px', textAlign: 'center', color: '#dc2626' }}>
+          <p>{error || '데이터를 불러올 수 없습니다.'}</p>
+          <button
+            onClick={loadStatistics}
+            style={{
+              marginTop: '20px',
+              padding: '10px 20px',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          >
+            다시 시도
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.ncrContainer}>
-      <div className={styles.ncrHeader}>
-        <h2 className={styles.ncrTitle}>NCR 세부 구분 현황</h2>
+      <div className={styles.header}>
+        <h3 className={styles.title}>NCR 세부 구분 현황</h3>
+        <button
+          className={styles.refreshBtn}
+          onClick={loadStatistics}
+          disabled={loading}
+          title="NCR 통계를 새로고침합니다"
+        >
+          {loading ? '조회 중...' : '🔄 새로고침'}
+        </button>
       </div>
 
       <div className={styles.splitLayout}>
         {/* 좌측 - NCR 현황표 (40%) */}
         <div className={styles.leftPanel}>
-          <NCRStatusTable data={dummyData} />
+          <NCRStatusTable items={statisticsData.data} projects={statisticsData.projects} />
         </div>
 
         {/* 우측 - NCR 세부내역 (60%) */}

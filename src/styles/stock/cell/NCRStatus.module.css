@@ -7,17 +7,42 @@
   background-color: #fafafa;
 }
 
-.ncrHeader {
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 20px;
-  border-bottom: 2px solid #ddd;
+  margin-bottom: 0;
+  border-bottom: 2px solid #eee;
   background-color: white;
 }
 
-.ncrTitle {
+.title {
   margin: 0;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
   color: #333;
+}
+
+.refreshBtn {
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.refreshBtn:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.refreshBtn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 /* 스플릿 레이아웃 */
