@@ -7,10 +7,10 @@ import NcrIndex from './ncr';
 import ProjectIndex from './project';
 
 const CELL_MENUS = [
-  { title: '입/출고 현황', path: '/stock/cell/in-out' },
+  { title: '입/출고 등록', path: '/stock/cell/in-out' },
   { title: 'RACK 보관 현황', path: '/stock/cell/rack-storage' },
   { title: 'NCR 세부 현황', path: '/stock/cell/ncr' },
-  { title: '프로젝트별 현황', path: '/stock/cell/project' },
+  { title: '프로젝트별 입/출고 현황', path: '/stock/cell/project' },
 ];
 
 export default function CellIndex() {
