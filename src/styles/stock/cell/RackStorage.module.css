@@ -9,7 +9,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  padding-bottom: 10px;
+  /* padding-bottom: 10px; */
   border-bottom: 2px solid #eee;
 }
 
@@ -48,33 +48,48 @@
   gap: 20px;
 }
 
-/* 문 래퍼 */
+/* 콘텐츠 래퍼 - 좌측 위아래 배치 */
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* 문 래퍼 - 우측 세로 배치 */
 .doorsWrapper {
   display: flex;
-  gap: 30px;
+  flex-direction: column;
+  gap: 0;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
-  width: 100%;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* 문 스타일 */
 .door {
-  width: 180px;
-  height: 30px;
+  width: 40px;
+  height: 200px;
   background-color: #ff9800;
   border: 2px solid #f57c00;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doorLabel {
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }
 
 /* 섹션 래퍼 (좌우 배치) */
 .sectionsWrapper {
   display: flex;
-  align-items: center;
+  gap: 30px;
+  align-items: stretch;
   justify-content: center;
 }
 
@@ -86,20 +101,14 @@
   align-items: center;
 }
 
-.sectionGroup:first-child {
-  border-right: 1px solid #ddd;
-  padding-right: 15px;
-}
-
 .sectionGroup:last-child {
-  border-right: none;
-  padding-left: 15px;
+  flex-direction: row-reverse;
 }
 
 /* 그리드 섹션 행 */
 .gridSectionsRow {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 5px;
   align-items: center;
 }
@@ -152,8 +161,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4px 4px;
-  min-height: 30px;
+  padding: 0px 35px;
+  min-height: 15px;
   border: 1px solid #999;
   border-radius: 3px;
   font-weight: 500;
@@ -163,10 +172,10 @@
 
 .cellContent {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 4px;
   width: 100%;
 }
 
@@ -192,6 +201,23 @@
 .cellInfo:last-child {
   font-weight: 700;
   font-size: 12px;
+}
+
+/* 바닥 표시 */
+.floorBar {
+  width: 400px;
+  height: 45px;
+  background-color: #999999;
+  margin: 0 auto;
+  transform: translateX(-70px);
+  border: 2px solid #666666;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
 }
 
 /* 범례 */
