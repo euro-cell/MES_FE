@@ -219,25 +219,116 @@ const projectDetailData: Record<string, ProjectDetail> = {
 };
 
 export default function NCRDetailSection() {
-  const [selectedProjectId, setSelectedProjectId] = useState<string>('v52');
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('');
   const [detailData, setDetailData] = useState<ProjectDetail | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedData, setEditedData] = useState<ProjectDetail | null>(null);
 
   // 프로젝트 선택 시 상세 데이터 로드
   useEffect(() => {
+    if (!selectedProjectId) {
+      setDetailData(null);
+      setEditedData(null);
+      setIsEditMode(false);
+      return;
+    }
+
     setLoading(true);
     // 실제로는 여기서 API 호출 필요
     // const data = await fetchNCRDetail(selectedProjectId);
     setTimeout(() => {
       const data = projectDetailData[selectedProjectId];
       setDetailData(data);
+      setEditedData(null);
+      setIsEditMode(false);
       setLoading(false);
     }, 100);
   }, [selectedProjectId]);
 
-  if (!detailData) {
-    return <div className={styles.detailSection}>데이터를 불러오는 중...</div>;
-  }
+  const handleEditClick = () => {
+    if (isEditMode) {
+      // 편집 모드 취소
+      setIsEditMode(false);
+      setEditedData(null);
+    } else {
+      // 편집 모드 시작
+      if (detailData) {
+        setEditedData(JSON.parse(JSON.stringify(detailData))); // Deep copy
+        setIsEditMode(true);
+      }
+    }
+  };
+
+  const handleSave = () => {
+    if (editedData) {
+      setDetailData(editedData);
+      setIsEditMode(false);
+      setEditedData(null);
+    }
+  };
+
+  const handleRowCountChange = (tableIdx: number, rowIdx: number, newCount: number) => {
+    if (editedData) {
+      const updated = JSON.parse(JSON.stringify(editedData));
+      updated.tables[tableIdx].rows[rowIdx].count = newCount;
+      // 합계 자동 계산
+      updated.tables[tableIdx].subtotal = updated.tables[tableIdx].rows.reduce(
+        (sum: number, row: any) => sum + row.count,
+        0
+      );
+      setEditedData(updated);
+    }
+  };
+
+  const handleRowFieldChange = (tableIdx: number, rowIdx: number, field: string, value: string) => {
+    if (editedData) {
+      const updated = JSON.parse(JSON.stringify(editedData));
+      updated.tables[tableIdx].rows[rowIdx][field] = value;
+      setEditedData(updated);
+    }
+  };
+
+  const handleAddRow = (tableIdx: number) => {
+    if (editedData) {
+      const updated = JSON.parse(JSON.stringify(editedData));
+      const newRow = {
+        category: '',
+        range: '',
+        count: 0,
+      };
+      updated.tables[tableIdx].rows.push(newRow);
+      // 합계 자동 계산
+      updated.tables[tableIdx].subtotal = updated.tables[tableIdx].rows.reduce(
+        (sum: number, row: any) => sum + row.count,
+        0
+      );
+      setEditedData(updated);
+    }
+  };
+
+  const handleDeleteRow = (tableIdx: number, rowIdx: number) => {
+    if (editedData) {
+      const updated = JSON.parse(JSON.stringify(editedData));
+      updated.tables[tableIdx].rows.splice(rowIdx, 1);
+      // 합계 자동 계산
+      updated.tables[tableIdx].subtotal = updated.tables[tableIdx].rows.reduce(
+        (sum: number, row: any) => sum + row.count,
+        0
+      );
+      setEditedData(updated);
+    }
+  };
+
+  const handleTableTitleChange = (tableIdx: number, newTitle: string) => {
+    if (editedData) {
+      const updated = JSON.parse(JSON.stringify(editedData));
+      updated.tables[tableIdx].title = newTitle;
+      setEditedData(updated);
+    }
+  };
+
+  const displayData = isEditMode && editedData ? editedData : detailData;
 
   return (
     <div className={styles.detailSection}>
@@ -251,7 +342,9 @@ export default function NCRDetailSection() {
           className={styles.projectSelect}
           value={selectedProjectId}
           onChange={e => setSelectedProjectId(e.target.value)}
+          disabled={isEditMode}
         >
+          <option value="">-- 선택해주세요 --</option>
           {projects.map(project => (
             <option key={project.id} value={project.id}>
               {project.name}
@@ -260,40 +353,177 @@ export default function NCRDetailSection() {
         </select>
       </div>
 
+      {/* 편집/저장 버튼 */}
+      {selectedProjectId && (
+        <div style={{ display: 'flex', gap: '8px', padding: '0 10px 12px 10px' }}>
+          <button
+            className={styles.editButton}
+            onClick={handleEditClick}
+          >
+            {isEditMode ? '취소' : '편집'}
+          </button>
+          {isEditMode && (
+            <button
+              className={styles.editButton}
+              onClick={handleSave}
+              style={{ backgroundColor: '#16a34a', borderColor: '#16a34a' }}
+            >
+              저장
+            </button>
+          )}
+        </div>
+      )}
+
       {/* 세부 내용 */}
       <div className={styles.detailContent}>
-        {loading ? (
+        {!displayData ? (
+          <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>
+            프로젝트를 선택해주세요
+          </div>
+        ) : loading ? (
           <div style={{ padding: '20px', textAlign: 'center' }}>로딩 중...</div>
         ) : (
-          detailData.tables.map((table, tableIdx) => (
+          displayData.tables.map((table, tableIdx) => (
             <div key={tableIdx} className={styles.detailTable}>
-              <h4 className={styles.detailTableTitle}>{table.title}</h4>
+              {isEditMode ? (
+                <input
+                  type="text"
+                  value={table.title}
+                  onChange={e => handleTableTitleChange(tableIdx, e.target.value)}
+                  className={styles.detailTableTitle}
+                  style={{
+                    width: '100%',
+                    padding: '6px 8px',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    border: '1px solid #2563eb',
+                    borderRadius: '4px',
+                    marginBottom: '8px',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              ) : (
+                <h4 className={styles.detailTableTitle}>{table.title}</h4>
+              )}
               <table className={styles.detailDataTable}>
                 <thead>
                   <tr>
                     {table.columns.map(column => (
                       <th key={column}>{column}</th>
                     ))}
+                    {isEditMode && <th style={{ width: '40px', textAlign: 'center' }}>작업</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {table.rows.map((row, rowIdx) => (
                     <tr key={rowIdx}>
-                      <td>{row.category}</td>
-                      <td>{row.range}</td>
-                      <td style={{ textAlign: 'center', fontWeight: 500 }}>
-                        {row.count === 0 ? '-' : row.count}
+                      <td>
+                        {isEditMode ? (
+                          <input
+                            type="text"
+                            value={row.category}
+                            onChange={e => handleRowFieldChange(tableIdx, rowIdx, 'category', e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '4px 6px',
+                              border: '1px solid #2563eb',
+                              borderRadius: '4px',
+                              textAlign: 'center',
+                              boxSizing: 'border-box',
+                            }}
+                          />
+                        ) : (
+                          row.category
+                        )}
                       </td>
+                      <td>
+                        {isEditMode ? (
+                          <input
+                            type="text"
+                            value={row.range}
+                            onChange={e => handleRowFieldChange(tableIdx, rowIdx, 'range', e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '4px 6px',
+                              border: '1px solid #2563eb',
+                              borderRadius: '4px',
+                              textAlign: 'center',
+                              boxSizing: 'border-box',
+                            }}
+                          />
+                        ) : (
+                          row.range
+                        )}
+                      </td>
+                      <td style={{ textAlign: 'center', fontWeight: 500 }}>
+                        {isEditMode ? (
+                          <input
+                            type="number"
+                            value={row.count}
+                            onChange={e => handleRowCountChange(tableIdx, rowIdx, parseInt(e.target.value) || 0)}
+                            style={{
+                              width: '50px',
+                              padding: '4px 6px',
+                              border: '1px solid #2563eb',
+                              borderRadius: '4px',
+                              textAlign: 'center',
+                            }}
+                          />
+                        ) : (
+                          row.count === 0 ? '-' : row.count
+                        )}
+                      </td>
+                      {isEditMode && (
+                        <td style={{ textAlign: 'center' }}>
+                          <button
+                            onClick={() => handleDeleteRow(tableIdx, rowIdx)}
+                            style={{
+                              padding: '4px 8px',
+                              backgroundColor: '#dc2626',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontSize: '12px',
+                              fontWeight: 500,
+                            }}
+                          >
+                            삭제
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                   <tr className={styles.detailSubtotalRow}>
-                    <td colSpan={2} style={{ textAlign: 'right', paddingRight: '10px' }}>
+                    <td colSpan={isEditMode ? 3 : 2} style={{ textAlign: 'center', paddingRight: '10px' }}>
                       합계
                     </td>
                     <td style={{ textAlign: 'center', fontWeight: 600 }}>
                       {table.subtotal}
                     </td>
+                    {isEditMode && <td />}
                   </tr>
+                  {isEditMode && (
+                    <tr>
+                      <td colSpan={isEditMode ? 4 : 3} style={{ textAlign: 'center', padding: '8px' }}>
+                        <button
+                          onClick={() => handleAddRow(tableIdx)}
+                          style={{
+                            padding: '6px 12px',
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: 500,
+                          }}
+                        >
+                          + 행 추가
+                        </button>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
