@@ -1,7 +1,53 @@
+/* NCR 컨테이너 */
+.ncrContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 0;
+  background-color: #fafafa;
+}
+
+.ncrHeader {
+  padding: 20px;
+  border-bottom: 2px solid #ddd;
+  background-color: white;
+}
+
+.ncrTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 스플릿 레이아웃 */
+.splitLayout {
+  display: flex;
+  flex: 1;
+  gap: 0;
+  overflow: hidden;
+}
+
+.leftPanel {
+  flex: 0 0 65%;
+  overflow-y: auto;
+  border-right: 2px solid #ddd;
+  background-color: white;
+  padding: 20px 0px;
+}
+
+.rightPanel {
+  flex: 1;
+  overflow-y: auto;
+  background-color: white;
+  padding: 15px 10px;
+}
+
+/* 테이블 컨테이너 */
 .tableContainer {
   width: 100%;
   overflow-x: auto;
-  margin-top: 20px;
+  margin-top: 0;
 }
 
 .ncrTable {
@@ -131,4 +177,129 @@
   background-color: #ffcccc;
   color: #333;
   padding: 4px;
+}
+
+/* Detail Section - 우측 패널 */
+.detailSection {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.projectSelectContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.projectSelectLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+
+.projectSelect {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  color: #333;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.projectSelect:hover {
+  border-color: #999;
+  background-color: #f9f9f9;
+}
+
+.projectSelect:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.detailContent {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.detailTable {
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.detailTable:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.detailTableTitle {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+.detailDataTable {
+  border-collapse: collapse;
+  font-size: 13px;
+  background-color: white;
+}
+
+.detailDataTable thead {
+  background-color: #f0f0f0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.detailDataTable th {
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 6px 3px;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.detailDataTable th:last-child {
+  border-right: none;
+}
+
+.detailDataTable td {
+  text-align: center;
+  color: #555;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 6px 3px;
+  font-size: 12px;
+}
+
+.detailDataTable td:first-child {
+  text-align: center;
+  font-weight: 500;
+}
+
+.detailDataTable td:last-child {
+  border-right: none;
+}
+
+.detailSubtotalRow {
+  background-color: #fff9e6;
+  font-weight: 600;
+}
+
+.detailSubtotalRow td {
+  background-color: #fff9e6;
+  color: #333;
 }

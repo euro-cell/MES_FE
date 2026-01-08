@@ -1,5 +1,7 @@
 import NCRStatusTable from './NCRStatusTable';
+import NCRDetailSection from './NCRDetailSection';
 import type { NCRStatusData } from './types';
+import styles from '../../../../styles/stock/cell/NCRStatus.module.css';
 
 // 더미 데이터
 // 각 컬럼의 합: V5.2: 40, V5.5: 353, V5.6: 441, V5.7: 24, V5.8: 160, Navitas 6T: 16
@@ -266,9 +268,22 @@ const dummyData: NCRStatusData = {
 
 export default function NCRStatus() {
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>NCR 세부 구분 현황</h2>
-      <NCRStatusTable data={dummyData} />
+    <div className={styles.ncrContainer}>
+      <div className={styles.ncrHeader}>
+        <h2 className={styles.ncrTitle}>NCR 세부 구분 현황</h2>
+      </div>
+
+      <div className={styles.splitLayout}>
+        {/* 좌측 - NCR 현황표 (40%) */}
+        <div className={styles.leftPanel}>
+          <NCRStatusTable data={dummyData} />
+        </div>
+
+        {/* 우측 - NCR 세부내역 (60%) */}
+        <div className={styles.rightPanel}>
+          <NCRDetailSection />
+        </div>
+      </div>
     </div>
   );
 }
