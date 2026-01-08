@@ -41,7 +41,7 @@ export default function RackStorageGrid({ locations }: RackStorageGridProps) {
           color: textColor,
         }}
       >
-        <div className={styles.cellInfoRow}>
+        <div className={styles.cellContent}>
           <span className={styles.cellInfo}>{location.key}</span>
           <span className={styles.cellInfo}>{location.count}/{location.capacity}</span>
           <span className={styles.cellInfo}>{location.usage}%</span>
@@ -54,10 +54,10 @@ export default function RackStorageGrid({ locations }: RackStorageGridProps) {
 
   const GridSection = ({ letters, columns }: { letters: string[]; columns: number }) => (
     <div style={{ width: 'fit-content' }}>
-      <div className={styles.gridWrapper} style={{ gridTemplateColumns: `repeat(${columns}, auto)` }}>
-        {/* 행들 - 각 행마다 letters 순서로 렌더링 */}
-        {numbers.map(num =>
-          letters.map(letter => (
+      <div className={styles.gridWrapper} style={{ gridTemplateColumns: `repeat(${numbers.length}, auto)` }}>
+        {/* 문자별로 행 구성, 각 행은 역순 숫자들 */}
+        {[...letters].reverse().map(letter =>
+          numbers.map(num => (
             <StorageCell key={`${letter}-${num}`} letter={letter} number={num} />
           ))
         )}
@@ -67,19 +67,29 @@ export default function RackStorageGrid({ locations }: RackStorageGridProps) {
 
   return (
     <div className={styles.gridContainer}>
+      {/* 문 배치 */}
+      <div className={styles.doorsWrapper}>
+        <div className={styles.door}></div>
+        <div className={styles.door}></div>
+      </div>
+
       <div className={styles.sectionsWrapper}>
         {/* 좌측: A~F */}
         <div className={styles.sectionGroup}>
           <h3 className={styles.sectionTitle}>A~F (96개 용량)</h3>
-          <GridSection letters={['A', 'B', 'C']} columns={3} />
-          <GridSection letters={['D', 'E', 'F']} columns={3} />
+          <div className={styles.gridSectionsRow}>
+            <GridSection letters={['A', 'B', 'C']} columns={3} />
+            <GridSection letters={['D', 'E', 'F']} columns={3} />
+          </div>
         </div>
 
         {/* 우측: G~J */}
         <div className={styles.sectionGroup}>
           <h3 className={styles.sectionTitle}>G~J (64개 용량)</h3>
-          <GridSection letters={['G', 'H']} columns={2} />
-          <GridSection letters={['I', 'J']} columns={2} />
+          <div className={styles.gridSectionsRow}>
+            <GridSection letters={['G', 'H']} columns={2} />
+            <GridSection letters={['I', 'J']} columns={2} />
+          </div>
         </div>
       </div>
 

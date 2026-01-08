@@ -48,10 +48,33 @@
   gap: 20px;
 }
 
+/* 문 래퍼 */
+.doorsWrapper {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  width: 100%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 문 스타일 */
+.door {
+  width: 180px;
+  height: 30px;
+  background-color: #ff9800;
+  border: 2px solid #f57c00;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
 /* 섹션 래퍼 (좌우 배치) */
 .sectionsWrapper {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
 }
 
@@ -59,7 +82,7 @@
 .sectionGroup {
   display: flex;
   flex-direction: column;
-  /* gap: 15px; */
+  gap: 15px;
   align-items: center;
 }
 
@@ -69,7 +92,16 @@
 }
 
 .sectionGroup:last-child {
+  border-right: none;
   padding-left: 15px;
+}
+
+/* 그리드 섹션 행 */
+.gridSectionsRow {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
 }
 
 /* 섹션 제목 */
