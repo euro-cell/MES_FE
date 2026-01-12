@@ -4,22 +4,26 @@ import styles from '../../../../styles/stock/cell/NCRStatus.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-interface DetailItem {
-  category: string;
-  range: string;
+interface DetailSubItem {
+  id: number;
+  title: string;
+  details: string;
+  type: string;
   count: number;
 }
 
-interface DetailTable {
+interface NCRDetailItem {
+  id: number;
+  code: string;
   title: string;
-  columns: string[];
-  rows: DetailItem[];
-  subtotal: number;
+  category: 'Formation' | 'Inspection' | 'Other';
+  ncrType: string;
+  items: DetailSubItem[];
 }
 
-interface ProjectDetail {
+interface NCRDetailData {
   projectName: string;
-  tables: DetailTable[];
+  ncrDetails: NCRDetailItem[];
 }
 
 interface Project {
@@ -27,222 +31,20 @@ interface Project {
   name: string;
 }
 
-interface CellInventoryProject {
-  projectName: string;
-  grades: Array<{
-    grade: string;
-    inStock: number | null;
-    shipped: number | null;
-    available: number | null;
-  }>;
-  totalAvailable: number;
-}
-
-// 더미 프로젝트별 세부 데이터
-const projectDetailData: Record<string, ProjectDetail> = {
-  v52: {
-    projectName: 'V5.2',
-    tables: [
-      {
-        title: '1. Final 실링 Cutting 폭(7±0.5mm)',
-        columns: ['구분', 'Cutting 폭(mm)', '수량'],
-        rows: [
-          { category: 'BA', range: '4.0-4.9', count: 5 },
-          { category: 'BB', range: '3.0-3.9', count: 3 },
-          { category: 'BC', range: '2.0-2.9', count: 0 },
-        ],
-        subtotal: 8,
-      },
-      {
-        title: '2. 외관 검사',
-        columns: ['구분', '외관 상태', '수량'],
-        rows: [
-          { category: 'BA', range: '양호', count: 12 },
-          { category: 'BB', range: '미흡', count: 2 },
-        ],
-        subtotal: 14,
-      },
-    ],
-  },
-  v55: {
-    projectName: 'V5.5',
-    tables: [
-      {
-        title: '1. Final 실링 Cutting 폭(7±0.5mm)',
-        columns: ['구분', 'Cutting 폭(mm)', '수량'],
-        rows: [
-          { category: 'BA', range: '4.0-4.9', count: 120 },
-          { category: 'BB', range: '3.0-3.9', count: 80 },
-          { category: 'BC', range: '2.0-2.9', count: 44 },
-        ],
-        subtotal: 244,
-      },
-      {
-        title: '2. 파우치 표면 검사',
-        columns: ['구분', '표면 상태', '수량'],
-        rows: [
-          { category: 'BA', range: '정상', count: 200 },
-          { category: 'BB', range: '미세 결함', count: 109 },
-        ],
-        subtotal: 309,
-      },
-    ],
-  },
-  v56: {
-    projectName: 'V5.6',
-    tables: [
-      {
-        title: '1. Final 실링 Cutting 폭(7±0.5mm)',
-        columns: ['구분', 'Cutting 폭(mm)', '수량'],
-        rows: [
-          { category: 'BA', range: '4.0-4.9', count: 150 },
-          { category: 'BB', range: '3.0-3.9', count: 100 },
-          { category: 'BC', range: '2.0-2.9', count: 108 },
-        ],
-        subtotal: 358,
-      },
-      {
-        title: '2. 가스 발생 검사',
-        columns: ['구분', '가스 발생 여부', '수량'],
-        rows: [
-          { category: 'BA', range: '발생함', count: 270 },
-          { category: 'BB', range: '발생 안함', count: 79 },
-        ],
-        subtotal: 349,
-      },
-      {
-        title: '3. 외관 크랙 검사',
-        columns: ['구분', '크랙 유무', '수량'],
-        rows: [
-          { category: 'BA', range: '크랙 있음', count: 355 },
-        ],
-        subtotal: 355,
-      },
-    ],
-  },
-  v57: {
-    projectName: 'V5.7',
-    tables: [
-      {
-        title: '1. 보관 후 OCV4 △V ratio',
-        columns: ['구분', 'mV/month', '수량'],
-        rows: [
-          { category: 'BA', range: '> 10', count: 3 },
-          { category: 'BB', range: '5-10', count: 2 },
-        ],
-        subtotal: 5,
-      },
-      {
-        title: '2. 파우치 표면 결함',
-        columns: ['구분', '결함 유형', '수량'],
-        rows: [
-          { category: 'BA', range: '찍힘', count: 10 },
-          { category: 'BB', range: '돌출', count: 6 },
-        ],
-        subtotal: 16,
-      },
-      {
-        title: '3. 외관 크랙',
-        columns: ['구분', '크랙 위치', '수량'],
-        rows: [
-          { category: 'BA', range: '모서리', count: 18 },
-        ],
-        subtotal: 18,
-      },
-    ],
-  },
-  v58: {
-    projectName: 'V5.8',
-    tables: [
-      {
-        title: '1. MF OCV2 aging 후 검사',
-        columns: ['구분', 'V(volt)', '수량'],
-        rows: [
-          { category: 'BA', range: '2.5-2.8', count: 35 },
-          { category: 'BB', range: '2.1-2.5', count: 6 },
-        ],
-        subtotal: 41,
-      },
-      {
-        title: '2. 파우치 표면 찍힘',
-        columns: ['구분', '직경(mm)', '수량'],
-        rows: [
-          { category: 'BA', range: '≤ 1.0', count: 50 },
-          { category: 'BB', range: '> 1.0', count: 57 },
-        ],
-        subtotal: 107,
-      },
-      {
-        title: '3. 보관 후 OCV4 검사',
-        columns: ['구분', 'ratio(mV/month)', '수량'],
-        rows: [
-          { category: 'BA', range: '> 10', count: 12 },
-          { category: 'BB', range: '5-10', count: 15 },
-        ],
-        subtotal: 27,
-      },
-    ],
-  },
-  navitas6T: {
-    projectName: 'Navitas 6T',
-    tables: [
-      {
-        title: '1. 파우치 표면 찍힘(직경≤1mm)',
-        columns: ['구분', '직경 범위(mm)', '수량'],
-        rows: [
-          { category: 'BA', range: '0.5-1.0', count: 8 },
-          { category: 'BB', range: '< 0.5', count: 3 },
-        ],
-        subtotal: 11,
-      },
-      {
-        title: '2. MF OCV2 검사',
-        columns: ['구분', 'V(volt)', '수량'],
-        rows: [
-          { category: 'BA', range: '2.5-2.8', count: 5 },
-        ],
-        subtotal: 5,
-      },
-    ],
-  },
-  kkk55d25b1: {
-    projectName: '55D25B1-KKK55',
-    tables: [
-      {
-        title: '1. NCR 세부 분석',
-        columns: ['구분', '상세 내용', '수량'],
-        rows: [
-          { category: 'Formation', range: 'Final 실링 Cutting 폭', count: 5 },
-          { category: 'Formation', range: 'MF OCV2 aging 후', count: 8 },
-          { category: 'Inspection', range: '기준용량', count: 3 },
-          { category: 'Inspection', range: '가스 발생 검사', count: 15 },
-          { category: 'Inspection', range: '파우치 표면 찍힘', count: 12 },
-          { category: 'Other', range: '파우치 크랙', count: 20 },
-          { category: 'Other', range: '실란트 돌출', count: 10 },
-        ],
-        subtotal: 73,
-      },
-    ],
-  },
-};
-
 export default function NCRDetailSection() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
-  const [detailData, setDetailData] = useState<ProjectDetail | null>(null);
+  const [detailData, setDetailData] = useState<NCRDetailData | null>(null);
   const [loading, setLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editedData, setEditedData] = useState<ProjectDetail | null>(null);
+  const [editedData, setEditedData] = useState<NCRDetailData | null>(null);
 
-  // 프로젝트 리스트 로드 (마운트 시)
+  // 프로젝트 리스트 로드
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        const response = await axios.get<CellInventoryProject[]>(
-          `${API_BASE}/cell-inventory/statistics`,
-          { withCredentials: true }
-        );
-        const projectList: Project[] = response.data.map((item) => ({
+        const response = await axios.get(`${API_BASE}/cell-inventory/statistics`, { withCredentials: true });
+        const projectList: Project[] = response.data.map((item: any) => ({
           id: item.projectName,
           name: item.projectName,
         }));
@@ -263,27 +65,37 @@ export default function NCRDetailSection() {
       return;
     }
 
-    setLoading(true);
-    // 실제로는 여기서 API 호출 필요
-    // const data = await fetchNCRDetail(selectedProjectId);
-    setTimeout(() => {
-      const data = projectDetailData[selectedProjectId];
-      setDetailData(data);
-      setEditedData(null);
-      setIsEditMode(false);
-      setLoading(false);
-    }, 100);
+    const loadDetail = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get<NCRDetailData>(
+          `${API_BASE}/cell-inventory/ncr/detail?projectName=${selectedProjectId}`,
+          { withCredentials: true }
+        );
+        setDetailData(response.data);
+        setEditedData(null);
+        setIsEditMode(false);
+      } catch (err) {
+        console.error('NCR 상세 데이터 로드 실패:', err);
+        setDetailData({
+          projectName: selectedProjectId,
+          ncrDetails: [],
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDetail();
   }, [selectedProjectId]);
 
   const handleEditClick = () => {
     if (isEditMode) {
-      // 편집 모드 취소
       setIsEditMode(false);
       setEditedData(null);
     } else {
-      // 편집 모드 시작
       if (detailData) {
-        setEditedData(JSON.parse(JSON.stringify(detailData))); // Deep copy
+        setEditedData(JSON.parse(JSON.stringify(detailData)));
         setIsEditMode(true);
       }
     }
@@ -297,83 +109,226 @@ export default function NCRDetailSection() {
     }
   };
 
-  const handleRowCountChange = (tableIdx: number, rowIdx: number, newCount: number) => {
+  const handleRowCountChange = (ncrIdx: number, itemIdx: number, newCount: number) => {
     if (editedData) {
       const updated = JSON.parse(JSON.stringify(editedData));
-      updated.tables[tableIdx].rows[rowIdx].count = newCount;
-      // 합계 자동 계산
-      updated.tables[tableIdx].subtotal = updated.tables[tableIdx].rows.reduce(
-        (sum: number, row: any) => sum + row.count,
-        0
-      );
+      updated.ncrDetails[ncrIdx].items[itemIdx].count = newCount;
       setEditedData(updated);
     }
   };
 
-  const handleRowFieldChange = (tableIdx: number, rowIdx: number, field: string, value: string) => {
+  const handleRowFieldChange = (ncrIdx: number, itemIdx: number, field: string, value: string) => {
     if (editedData) {
       const updated = JSON.parse(JSON.stringify(editedData));
-      updated.tables[tableIdx].rows[rowIdx][field] = value;
+      updated.ncrDetails[ncrIdx].items[itemIdx][field] = value;
       setEditedData(updated);
     }
   };
 
-  const handleAddRow = (tableIdx: number) => {
+  const handleAddRow = (ncrIdx: number) => {
     if (editedData) {
       const updated = JSON.parse(JSON.stringify(editedData));
-      const newRow = {
-        category: '',
-        range: '',
+      updated.ncrDetails[ncrIdx].items.push({
+        id: 0,
+        title: '',
+        details: '',
+        type: '',
         count: 0,
-      };
-      updated.tables[tableIdx].rows.push(newRow);
-      // 합계 자동 계산
-      updated.tables[tableIdx].subtotal = updated.tables[tableIdx].rows.reduce(
-        (sum: number, row: any) => sum + row.count,
-        0
-      );
+      });
       setEditedData(updated);
     }
   };
 
-  const handleDeleteRow = (tableIdx: number, rowIdx: number) => {
+  const handleDeleteRow = (ncrIdx: number, itemIdx: number) => {
     if (editedData) {
       const updated = JSON.parse(JSON.stringify(editedData));
-      updated.tables[tableIdx].rows.splice(rowIdx, 1);
-      // 합계 자동 계산
-      updated.tables[tableIdx].subtotal = updated.tables[tableIdx].rows.reduce(
-        (sum: number, row: any) => sum + row.count,
-        0
-      );
-      setEditedData(updated);
-    }
-  };
-
-  const handleTableTitleChange = (tableIdx: number, newTitle: string) => {
-    if (editedData) {
-      const updated = JSON.parse(JSON.stringify(editedData));
-      updated.tables[tableIdx].title = newTitle;
+      updated.ncrDetails[ncrIdx].items.splice(itemIdx, 1);
       setEditedData(updated);
     }
   };
 
   const displayData = isEditMode && editedData ? editedData : detailData;
 
+  // 아이템 소계 계산
+  const getSubtotal = (items: DetailSubItem[]) => {
+    return items.reduce((sum, item) => sum + item.count, 0);
+  };
+
+  const renderNCRTable = (ncrItem: NCRDetailItem, ncrIdx: number) => {
+    const items = ncrItem.items;
+
+    return (
+      <div key={ncrItem.id} className={styles.detailTable}>
+        <h4 className={styles.detailTableTitle}>
+          {ncrItem.code} - {ncrItem.title}
+        </h4>
+        <table className={styles.detailDataTable}>
+          <thead>
+            <tr>
+              <th>상세내용</th>
+              <th>구분</th>
+              <th>범위</th>
+              <th style={{ width: '80px' }}>수량</th>
+              {isEditMode && <th style={{ width: '40px', textAlign: 'center' }}>작업</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {items.length === 0 ? (
+              <tr>
+                <td colSpan={isEditMode ? 5 : 4} style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
+                  데이터 없음
+                </td>
+              </tr>
+            ) : (
+              items.map((item, itemIdx) => (
+                <tr key={itemIdx}>
+                  <td>
+                    {isEditMode ? (
+                      <input
+                        type='text'
+                        value={item.title}
+                        onChange={e => handleRowFieldChange(ncrIdx, itemIdx, 'title', e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '4px 6px',
+                          border: '1px solid #2563eb',
+                          borderRadius: '4px',
+                          boxSizing: 'border-box',
+                        }}
+                      />
+                    ) : (
+                      item.title
+                    )}
+                  </td>
+                  <td>
+                    {isEditMode ? (
+                      <input
+                        type='text'
+                        value={item.details}
+                        onChange={e => handleRowFieldChange(ncrIdx, itemIdx, 'details', e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '4px 6px',
+                          border: '1px solid #2563eb',
+                          borderRadius: '4px',
+                          textAlign: 'center',
+                          boxSizing: 'border-box',
+                        }}
+                      />
+                    ) : (
+                      item.details
+                    )}
+                  </td>
+                  <td>
+                    {isEditMode ? (
+                      <input
+                        type='text'
+                        value={item.type}
+                        onChange={e => handleRowFieldChange(ncrIdx, itemIdx, 'type', e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '4px 6px',
+                          border: '1px solid #2563eb',
+                          borderRadius: '4px',
+                          textAlign: 'center',
+                          boxSizing: 'border-box',
+                        }}
+                      />
+                    ) : (
+                      item.type
+                    )}
+                  </td>
+                  <td style={{ textAlign: 'center', fontWeight: 500 }}>
+                    {isEditMode ? (
+                      <input
+                        type='number'
+                        value={item.count}
+                        onChange={e => handleRowCountChange(ncrIdx, itemIdx, parseInt(e.target.value) || 0)}
+                        style={{
+                          width: '60px',
+                          padding: '4px 6px',
+                          border: '1px solid #2563eb',
+                          borderRadius: '4px',
+                          textAlign: 'center',
+                        }}
+                      />
+                    ) : item.count === 0 ? (
+                      '-'
+                    ) : (
+                      item.count
+                    )}
+                  </td>
+                  {isEditMode && (
+                    <td style={{ textAlign: 'center' }}>
+                      <button
+                        onClick={() => handleDeleteRow(ncrIdx, itemIdx)}
+                        style={{
+                          padding: '4px 8px',
+                          backgroundColor: '#dc2626',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          fontWeight: 500,
+                        }}
+                      >
+                        삭제
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
+            <tr className={styles.detailSubtotalRow}>
+              <td colSpan={isEditMode ? 4 : 3} style={{ textAlign: 'center', paddingRight: '10px' }}>
+                합계
+              </td>
+              <td style={{ textAlign: 'center', fontWeight: 600 }}>{getSubtotal(items)}</td>
+              {isEditMode && <td />}
+            </tr>
+            {isEditMode && (
+              <tr>
+                <td colSpan={isEditMode ? 5 : 4} style={{ textAlign: 'center', padding: '8px' }}>
+                  <button
+                    onClick={() => handleAddRow(ncrIdx)}
+                    style={{
+                      padding: '6px 12px',
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                      fontWeight: 500,
+                    }}
+                  >
+                    + 행 추가
+                  </button>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
   return (
     <div className={styles.detailSection}>
       {/* 프로젝트 드롭박스 */}
       <div className={styles.projectSelectContainer}>
-        <label htmlFor="project-select" className={styles.projectSelectLabel}>
+        <label htmlFor='project-select' className={styles.projectSelectLabel}>
           프로젝트:
         </label>
         <select
-          id="project-select"
+          id='project-select'
           className={styles.projectSelect}
           value={selectedProjectId}
           onChange={e => setSelectedProjectId(e.target.value)}
           disabled={isEditMode}
         >
-          <option value="">-- 선택해주세요 --</option>
+          <option value=''>-- 선택해주세요 --</option>
           {projects.map(project => (
             <option key={project.id} value={project.id}>
               {project.name}
@@ -385,10 +340,7 @@ export default function NCRDetailSection() {
       {/* 편집/저장 버튼 */}
       {selectedProjectId && (
         <div style={{ display: 'flex', gap: '8px', padding: '0 10px 12px 10px' }}>
-          <button
-            className={styles.editButton}
-            onClick={handleEditClick}
-          >
+          <button className={styles.editButton} onClick={handleEditClick}>
             {isEditMode ? '취소' : '편집'}
           </button>
           {isEditMode && (
@@ -406,157 +358,11 @@ export default function NCRDetailSection() {
       {/* 세부 내용 */}
       <div className={styles.detailContent}>
         {!displayData ? (
-          <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>
-            프로젝트를 선택해주세요
-          </div>
+          <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>프로젝트를 선택해주세요</div>
         ) : loading ? (
           <div style={{ padding: '20px', textAlign: 'center' }}>로딩 중...</div>
         ) : (
-          displayData.tables.map((table, tableIdx) => (
-            <div key={tableIdx} className={styles.detailTable}>
-              {isEditMode ? (
-                <input
-                  type="text"
-                  value={table.title}
-                  onChange={e => handleTableTitleChange(tableIdx, e.target.value)}
-                  className={styles.detailTableTitle}
-                  style={{
-                    width: '100%',
-                    padding: '6px 8px',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    border: '1px solid #2563eb',
-                    borderRadius: '4px',
-                    marginBottom: '8px',
-                    boxSizing: 'border-box',
-                  }}
-                />
-              ) : (
-                <h4 className={styles.detailTableTitle}>{table.title}</h4>
-              )}
-              <table className={styles.detailDataTable}>
-                <thead>
-                  <tr>
-                    {table.columns.map(column => (
-                      <th key={column}>{column}</th>
-                    ))}
-                    {isEditMode && <th style={{ width: '40px', textAlign: 'center' }}>작업</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {table.rows.map((row, rowIdx) => (
-                    <tr key={rowIdx}>
-                      <td>
-                        {isEditMode ? (
-                          <input
-                            type="text"
-                            value={row.category}
-                            onChange={e => handleRowFieldChange(tableIdx, rowIdx, 'category', e.target.value)}
-                            style={{
-                              width: '100%',
-                              padding: '4px 6px',
-                              border: '1px solid #2563eb',
-                              borderRadius: '4px',
-                              textAlign: 'center',
-                              boxSizing: 'border-box',
-                            }}
-                          />
-                        ) : (
-                          row.category
-                        )}
-                      </td>
-                      <td>
-                        {isEditMode ? (
-                          <input
-                            type="text"
-                            value={row.range}
-                            onChange={e => handleRowFieldChange(tableIdx, rowIdx, 'range', e.target.value)}
-                            style={{
-                              width: '100%',
-                              padding: '4px 6px',
-                              border: '1px solid #2563eb',
-                              borderRadius: '4px',
-                              textAlign: 'center',
-                              boxSizing: 'border-box',
-                            }}
-                          />
-                        ) : (
-                          row.range
-                        )}
-                      </td>
-                      <td style={{ textAlign: 'center', fontWeight: 500 }}>
-                        {isEditMode ? (
-                          <input
-                            type="number"
-                            value={row.count}
-                            onChange={e => handleRowCountChange(tableIdx, rowIdx, parseInt(e.target.value) || 0)}
-                            style={{
-                              width: '50px',
-                              padding: '4px 6px',
-                              border: '1px solid #2563eb',
-                              borderRadius: '4px',
-                              textAlign: 'center',
-                            }}
-                          />
-                        ) : (
-                          row.count === 0 ? '-' : row.count
-                        )}
-                      </td>
-                      {isEditMode && (
-                        <td style={{ textAlign: 'center' }}>
-                          <button
-                            onClick={() => handleDeleteRow(tableIdx, rowIdx)}
-                            style={{
-                              padding: '4px 8px',
-                              backgroundColor: '#dc2626',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                              fontSize: '12px',
-                              fontWeight: 500,
-                            }}
-                          >
-                            삭제
-                          </button>
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-                  <tr className={styles.detailSubtotalRow}>
-                    <td colSpan={isEditMode ? 3 : 2} style={{ textAlign: 'center', paddingRight: '10px' }}>
-                      합계
-                    </td>
-                    <td style={{ textAlign: 'center', fontWeight: 600 }}>
-                      {table.subtotal}
-                    </td>
-                    {isEditMode && <td />}
-                  </tr>
-                  {isEditMode && (
-                    <tr>
-                      <td colSpan={isEditMode ? 4 : 3} style={{ textAlign: 'center', padding: '8px' }}>
-                        <button
-                          onClick={() => handleAddRow(tableIdx)}
-                          style={{
-                            padding: '6px 12px',
-                            backgroundColor: '#3b82f6',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '12px',
-                            fontWeight: 500,
-                          }}
-                        >
-                          + 행 추가
-                        </button>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          ))
+          displayData.ncrDetails.map((ncrItem, ncrIdx) => renderNCRTable(ncrItem, ncrIdx))
         )}
       </div>
     </div>
