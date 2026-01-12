@@ -13,7 +13,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
 import SpecEditModal from './SpecEditModal';
-import { getLQCSpecs, saveLQCSpec, type SpecValue } from '../LQCService';
+import { getLQCSpecs, saveLQCSpec, getLQCBinderData, type SpecValue, type BinderData } from '../LQCService';
 
 interface MixingCathodeTableProps {
   projectId: number;
@@ -22,16 +22,12 @@ interface MixingCathodeTableProps {
 // Chart.js 등록
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
 
-interface BinderRow {
-  no: number;
-  manufactureDate: string;
-  lotNo: string;
-  solidContent1: number | null;
-  solidContent2: number | null;
-  solidContent3: number | null;
-  solidContentAvg: number | null;
-  viscosity: number | null;
-}
+// 고형분 평균 계산 헬퍼 함수
+const calcSolidContentAvg = (s1: string, s2: string, s3: string): number | null => {
+  const values = [s1, s2, s3].map(v => parseFloat(v)).filter(v => !isNaN(v));
+  if (values.length === 0) return null;
+  return values.reduce((a, b) => a + b, 0) / values.length;
+};
 
 interface SlurryRow {
   no: number;
@@ -96,6 +92,9 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
   const [binderSpecs, setBinderSpecs] = useState<Record<string, SpecValue>>({});
   const [slurrySpecs, setSlurrySpecs] = useState<Record<string, SpecValue>>({});
 
+  // Binder 측정 데이터 상태
+  const [binderData, setBinderData] = useState<BinderData[]>([]);
+
   // API에서 규격 데이터 로드
   useEffect(() => {
     const loadSpecs = async () => {
@@ -119,6 +118,20 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
     loadSpecs();
   }, [projectId]);
 
+  // API에서 Binder 데이터 로드
+  useEffect(() => {
+    const loadBinderData = async () => {
+      try {
+        const data = await getLQCBinderData(projectId, 'C'); // 양극(Cathode)
+        setBinderData(data);
+      } catch (err) {
+        console.error('Binder 데이터 로드 실패:', err);
+      }
+    };
+
+    loadBinderData();
+  }, [projectId]);
+
   const handleOpenSpecModal = (type: 'binder' | 'slurry') => {
     setEditingSpecType(type);
     setIsSpecModalOpen(true);
@@ -140,24 +153,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
     }
   };
 
-  // 임시 데이터 (나중에 API 연결)
-  const binderData: BinderRow[] = [
-    {
-      no: 1,
-      manufactureDate: '2025.12.01',
-      lotNo: '',
-      solidContent1: 5.6,
-      solidContent2: 5.8,
-      solidContent3: null,
-      solidContentAvg: 5.7,
-      viscosity: 3510,
-    },
-    { no: 2, manufactureDate: '', lotNo: '', solidContent1: null, solidContent2: null, solidContent3: null, solidContentAvg: null, viscosity: null },
-    { no: 3, manufactureDate: '', lotNo: '', solidContent1: null, solidContent2: null, solidContent3: null, solidContentAvg: null, viscosity: null },
-    { no: 4, manufactureDate: '', lotNo: '', solidContent1: null, solidContent2: null, solidContent3: null, solidContentAvg: null, viscosity: null },
-    { no: 5, manufactureDate: '', lotNo: '', solidContent1: null, solidContent2: null, solidContent3: null, solidContentAvg: null, viscosity: null },
-  ];
-
+  // 임시 Slurry 데이터 (나중에 API 연결)
   const slurryData: SlurryRow[] = [
     {
       no: 1,
@@ -178,12 +174,12 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
 
   // Binder 차트 데이터
   const binderChartData = {
-    labels: binderData.map(row => row.no.toString()),
+    labels: binderData.map((_, index) => (index + 1).toString()),
     datasets: [
       {
         type: 'bar' as const,
         label: '고형분',
-        data: binderData.map(row => row.solidContentAvg),
+        data: binderData.map(row => calcSolidContentAvg(row.solidContent1, row.solidContent2, row.solidContent3)),
         backgroundColor: 'rgba(54, 162, 235, 0.8)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
@@ -193,7 +189,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
       {
         type: 'line' as const,
         label: '점도',
-        data: binderData.map(row => row.viscosity),
+        data: binderData.map(row => parseFloat(row.viscosity) || null),
         borderColor: 'rgba(255, 193, 7, 1)',
         backgroundColor: 'rgba(255, 193, 7, 1)',
         pointBackgroundColor: 'rgba(255, 193, 7, 1)',
@@ -363,16 +359,16 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
                   <td colSpan={4}>{formatSpec(binderSpecs.solidContent, 'target-tolerance')}</td>
                   <td>{formatSpec(binderSpecs.viscosity, 'target-tolerance')}</td>
                 </tr>
-                {binderData.map(row => (
-                  <tr key={row.no}>
-                    <td>{row.no}</td>
+                {binderData.map((row, index) => (
+                  <tr key={row.id}>
+                    <td>{index + 1}</td>
                     <td>{row.manufactureDate}</td>
-                    <td>{row.lotNo}</td>
-                    <td>{row.solidContent1 ?? ''}</td>
-                    <td>{row.solidContent2 ?? ''}</td>
-                    <td>{row.solidContent3 ?? ''}</td>
-                    <td>{row.solidContentAvg ?? ''}</td>
-                    <td>{row.viscosity?.toLocaleString() ?? ''}</td>
+                    <td>{row.lot}</td>
+                    <td>{row.solidContent1 || ''}</td>
+                    <td>{row.solidContent2 || ''}</td>
+                    <td>{row.solidContent3 || ''}</td>
+                    <td>{calcSolidContentAvg(row.solidContent1, row.solidContent2, row.solidContent3)?.toFixed(2) ?? ''}</td>
+                    <td>{row.viscosity ? parseFloat(row.viscosity).toLocaleString() : ''}</td>
                   </tr>
                 ))}
               </tbody>

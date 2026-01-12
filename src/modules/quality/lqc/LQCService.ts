@@ -45,6 +45,28 @@ export const getLQCSpecs = async (projectId: number, processType?: string, itemT
   return res.data;
 };
 
+/** Binder 데이터 응답 타입 */
+export interface BinderData {
+  id: number;
+  manufactureDate: string;
+  lot: string;
+  viscosity: string;
+  solidContent1: string;
+  solidContent2: string;
+  solidContent3: string;
+}
+
+/** Binder 데이터 조회 */
+export const getLQCBinderData = async (
+  projectId: number,
+  electrode: 'A' | 'C'
+): Promise<BinderData[]> => {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/binder?electrode=${electrode}`, {
+    withCredentials: true,
+  });
+  return res.data;
+};
+
 /** LQC 규격 저장 */
 export const saveLQCSpec = async (
   projectId: number,
