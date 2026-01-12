@@ -13,7 +13,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
 import SpecEditModal from './SpecEditModal';
-import { getLQCSpecs, saveLQCSpec, getLQCBinderData, type SpecValue, type BinderData } from '../LQCService';
+import { getLQCSpecs, saveLQCSpec, getLQCBinderData, getLQCSlurryData, type SpecValue, type BinderData, type SlurryData } from '../LQCService';
 
 interface MixingCathodeTableProps {
   projectId: number;
@@ -29,17 +29,6 @@ const calcSolidContentAvg = (s1: string, s2: string, s3: string): number | null 
   return values.reduce((a, b) => a + b, 0) / values.length;
 };
 
-interface SlurryRow {
-  no: number;
-  manufactureDate: string;
-  batchLot: string;
-  solidContent1: number | null;
-  solidContent2: number | null;
-  solidContent3: number | null;
-  solidContentAvg: number | null;
-  viscosity: number | null;
-  particleSize: number | null;
-}
 
 // 규격 필드 정의
 const BINDER_SPEC_FIELDS = [
@@ -94,6 +83,9 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
 
   // Binder 측정 데이터 상태
   const [binderData, setBinderData] = useState<BinderData[]>([]);
+
+  // Slurry 측정 데이터 상태
+  const [slurryData, setSlurryData] = useState<SlurryData[]>([]);
 
   // API에서 규격 데이터 로드
   useEffect(() => {
@@ -153,24 +145,19 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
     }
   };
 
-  // 임시 Slurry 데이터 (나중에 API 연결)
-  const slurryData: SlurryRow[] = [
-    {
-      no: 1,
-      manufactureDate: '2025.12.02',
-      batchLot: 'DL02C11',
-      solidContent1: 59.9,
-      solidContent2: 59.8,
-      solidContent3: 59.8,
-      solidContentAvg: 59.8,
-      viscosity: 7160,
-      particleSize: 28,
-    },
-    { no: 2, manufactureDate: '', batchLot: '', solidContent1: null, solidContent2: null, solidContent3: null, solidContentAvg: null, viscosity: null, particleSize: null },
-    { no: 3, manufactureDate: '', batchLot: '', solidContent1: null, solidContent2: null, solidContent3: null, solidContentAvg: null, viscosity: null, particleSize: null },
-    { no: 4, manufactureDate: '', batchLot: '', solidContent1: null, solidContent2: null, solidContent3: null, solidContentAvg: null, viscosity: null, particleSize: null },
-    { no: 5, manufactureDate: '', batchLot: '', solidContent1: null, solidContent2: null, solidContent3: null, solidContentAvg: null, viscosity: null, particleSize: null },
-  ];
+  // API에서 Slurry 데이터 로드
+  useEffect(() => {
+    const loadSlurryData = async () => {
+      try {
+        const data = await getLQCSlurryData(projectId, 'C'); // 양극(Cathode)
+        setSlurryData(data);
+      } catch (err) {
+        console.error('Slurry 데이터 로드 실패:', err);
+      }
+    };
+
+    loadSlurryData();
+  }, [projectId]);
 
   // Binder 차트 데이터
   const binderChartData = {
@@ -203,12 +190,12 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
 
   // Slurry 차트 데이터
   const slurryChartData = {
-    labels: slurryData.map(row => row.no.toString()),
+    labels: slurryData.map((_, index) => (index + 1).toString()),
     datasets: [
       {
         type: 'bar' as const,
         label: '고형분',
-        data: slurryData.map(row => row.solidContentAvg),
+        data: slurryData.map(row => calcSolidContentAvg(row.solidContent1Percentage, row.solidContent2Percentage, row.solidContent3Percentage)),
         backgroundColor: 'rgba(54, 162, 235, 0.8)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
@@ -218,7 +205,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
       {
         type: 'line' as const,
         label: '점도',
-        data: slurryData.map(row => row.viscosity),
+        data: slurryData.map(row => parseFloat(row.viscosityAfterStabilization) || null),
         borderColor: 'rgba(255, 193, 7, 1)',
         backgroundColor: 'rgba(255, 193, 7, 1)',
         pointBackgroundColor: 'rgba(255, 193, 7, 1)',
@@ -230,7 +217,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
       {
         type: 'line' as const,
         label: '입도',
-        data: slurryData.map(row => row.particleSize),
+        data: slurryData.map(row => row.grindGageFineParticle2),
         borderColor: 'rgba(76, 175, 80, 1)',
         backgroundColor: 'rgba(76, 175, 80, 1)',
         pointBackgroundColor: 'rgba(76, 175, 80, 1)',
@@ -279,15 +266,14 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
   };
 
   // Slurry용 Y축 최대값 계산 함수
-  const getSlurryViscosityMax = (specs: Record<string, SpecValue>, data: SlurryRow[], defaultMax: number) => {
+  const getSlurryViscosityMax = (specs: Record<string, SpecValue>, data: SlurryData[], defaultMax: number) => {
     const viscosity = specs.viscosity;
     if (viscosity?.target !== undefined && viscosity?.tolerance !== undefined) {
       const max = viscosity.target + viscosity.tolerance;
       return Math.ceil(max / 1000) * 1000;
     }
-    const validData = data.filter(row => row.viscosity !== null);
-    if (validData.length > 0) {
-      const dataMax = Math.max(...validData.map(row => row.viscosity!));
+    if (data.length > 0) {
+      const dataMax = Math.max(...data.map(row => parseFloat(row.viscosityAfterStabilization) || 0));
       if (dataMax > 0) {
         return Math.ceil(dataMax / 1000) * 1000;
       }
@@ -295,22 +281,36 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
     return defaultMax;
   };
 
-  const getSlurrySolidContentMax = (specs: Record<string, SpecValue>, data: SlurryRow[], defaultMax: number) => {
-    const solidContent = specs.solidContent;
-    if (solidContent?.target !== undefined && solidContent?.tolerance !== undefined) {
-      const max = solidContent.target + solidContent.tolerance;
-      return Math.ceil(max);
+  const getSlurryParticleSizeMax = (specs: Record<string, SpecValue>, data: SlurryData[], defaultMax: number) => {
+    const particleSize = specs.particleSize;
+    if (particleSize?.max !== undefined) {
+      return Math.ceil(particleSize.max);
     }
-    const validData = data.filter(row => row.solidContentAvg !== null);
-    if (validData.length > 0) {
-      const dataMax = Math.max(...validData.map(row => row.solidContentAvg!));
+    if (data.length > 0) {
+      const dataMax = Math.max(...data.map(row => row.grindGageFineParticle2 || 0));
       return Math.ceil(dataMax);
     }
     return defaultMax;
   };
 
-  // 슬러리 데이터 존재 여부 (빈 행 제외)
-  const hasSlurryData = slurryData.some(row => row.viscosity !== null || row.solidContentAvg !== null);
+  const getSlurrySolidContentMax = (specs: Record<string, SpecValue>, data: SlurryData[], defaultMax: number) => {
+    const solidContent = specs.solidContent;
+    if (solidContent?.target !== undefined && solidContent?.tolerance !== undefined) {
+      const max = solidContent.target + solidContent.tolerance;
+      return Math.ceil(max);
+    }
+    if (data.length > 0) {
+      const avgValues = data.map(row => calcSolidContentAvg(row.solidContent1Percentage, row.solidContent2Percentage, row.solidContent3Percentage)).filter((v): v is number => v !== null);
+      if (avgValues.length > 0) {
+        const dataMax = Math.max(...avgValues);
+        return Math.ceil(dataMax);
+      }
+    }
+    return defaultMax;
+  };
+
+  // 슬러리 데이터 존재 여부
+  const hasSlurryData = slurryData.length > 0;
 
   // 규격 설정 여부 확인
   const hasBinderSpecs = Object.keys(binderSpecs).length > 0;
@@ -390,7 +390,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
           text: '고형분(%)/입도(㎛)',
         },
         min: 0,
-        max: getSlurrySolidContentMax(slurrySpecs, slurryData, 70),
+        max: Math.max(getSlurrySolidContentMax(slurrySpecs, slurryData, 70), getSlurryParticleSizeMax(slurrySpecs, slurryData, 50)),
         grid: {
           drawOnChartArea: false,
         },
@@ -472,7 +472,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
                 <tr>
                   <th rowSpan={2}>No.</th>
                   <th rowSpan={2}>제조일자</th>
-                  <th rowSpan={2}>Batch Lot.</th>
+                  <th rowSpan={2}>Lot</th>
                   <th colSpan={4}>고형분(%)</th>
                   <th rowSpan={2}>점도(cps)</th>
                   <th rowSpan={2}>입도(㎛)</th>
@@ -491,17 +491,17 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
                   <td>{formatSpec(slurrySpecs.viscosity, 'target-tolerance')}</td>
                   <td>{formatSpec(slurrySpecs.particleSize, 'max-only')}</td>
                 </tr>
-                {slurryData.map(row => (
-                  <tr key={row.no}>
-                    <td>{row.no}</td>
+                {slurryData.map((row, index) => (
+                  <tr key={row.id}>
+                    <td>{index + 1}</td>
                     <td>{row.manufactureDate}</td>
-                    <td>{row.batchLot}</td>
-                    <td>{row.solidContent1 ?? ''}</td>
-                    <td>{row.solidContent2 ?? ''}</td>
-                    <td>{row.solidContent3 ?? ''}</td>
-                    <td>{row.solidContentAvg ?? ''}</td>
-                    <td>{row.viscosity?.toLocaleString() ?? ''}</td>
-                    <td>{row.particleSize ?? ''}</td>
+                    <td>{row.lot}</td>
+                    <td>{row.solidContent1Percentage || ''}</td>
+                    <td>{row.solidContent2Percentage || ''}</td>
+                    <td>{row.solidContent3Percentage || ''}</td>
+                    <td>{calcSolidContentAvg(row.solidContent1Percentage, row.solidContent2Percentage, row.solidContent3Percentage)?.toFixed(2) ?? ''}</td>
+                    <td>{row.viscosityAfterStabilization ? parseFloat(row.viscosityAfterStabilization).toLocaleString() : ''}</td>
+                    <td>{row.grindGageFineParticle2 ?? ''}</td>
                   </tr>
                 ))}
               </tbody>

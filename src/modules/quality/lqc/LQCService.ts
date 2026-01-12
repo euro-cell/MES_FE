@@ -67,6 +67,29 @@ export const getLQCBinderData = async (
   return res.data;
 };
 
+/** Slurry 데이터 응답 타입 */
+export interface SlurryData {
+  id: number;
+  manufactureDate: string;
+  lot: string;
+  viscosityAfterStabilization: string;
+  solidContent1Percentage: string;
+  solidContent2Percentage: string;
+  solidContent3Percentage: string;
+  grindGageFineParticle2: number;
+}
+
+/** Slurry 데이터 조회 */
+export const getLQCSlurryData = async (
+  projectId: number,
+  electrode: 'A' | 'C'
+): Promise<SlurryData[]> => {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/slurry?electrode=${electrode}`, {
+    withCredentials: true,
+  });
+  return res.data;
+};
+
 /** LQC 규격 저장 */
 export const saveLQCSpec = async (
   projectId: number,
