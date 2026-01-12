@@ -69,7 +69,7 @@ export default function LQCPage() {
         ) : !process ? (
           <div className={styles.placeholder}>세부 공정을 선택하세요.</div>
         ) : process === 'MixingCathode' ? (
-          <MixingCathodeTable />
+          <MixingCathodeTable projectId={Number(projectId)} />
         ) : (
           <div className={styles.placeholder}>{process} LQC 내용</div>
         )}

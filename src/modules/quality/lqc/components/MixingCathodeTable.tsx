@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,6 +12,12 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
+import SpecEditModal from './SpecEditModal';
+import { getLQCSpecs, type SpecValue } from '../LQCService';
+
+interface MixingCathodeTableProps {
+  projectId: number;
+}
 
 // Chart.js 등록
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
@@ -38,7 +45,94 @@ interface SlurryRow {
   particleSize: number | null;
 }
 
-export default function MixingCathodeTable() {
+// 규격 필드 정의
+const BINDER_SPEC_FIELDS = [
+  { key: 'solidContent', label: '고형분', type: 'target-tolerance' as const, unit: '%' },
+  { key: 'viscosity', label: '점도', type: 'target-tolerance' as const, unit: 'cps' },
+];
+
+const SLURRY_SPEC_FIELDS = [
+  { key: 'solidContent', label: '고형분', type: 'target-tolerance' as const, unit: '%' },
+  { key: 'viscosity', label: '점도', type: 'target-tolerance' as const, unit: 'cps' },
+  { key: 'particleSize', label: '입도', type: 'max-only' as const, unit: '㎛' },
+];
+
+// 규격 표시 헬퍼 함수
+const formatSpec = (spec: SpecValue | undefined, type: string): string => {
+  if (!spec) return '미설정';
+
+  switch (type) {
+    case 'target-tolerance':
+      if (spec.target !== undefined && spec.tolerance !== undefined) {
+        return `${spec.target.toLocaleString()}±${spec.tolerance.toLocaleString()}`;
+      }
+      return '미설정';
+    case 'max-only':
+      if (spec.max !== undefined) {
+        return `≤${spec.max}`;
+      }
+      return '미설정';
+    case 'min-only':
+      if (spec.min !== undefined) {
+        return `≥${spec.min}`;
+      }
+      return '미설정';
+    case 'range':
+      if (spec.min !== undefined && spec.max !== undefined) {
+        return `${spec.min} ~ ${spec.max}`;
+      }
+      return '미설정';
+    default:
+      return '미설정';
+  }
+};
+
+export default function MixingCathodeTable({ projectId }: MixingCathodeTableProps) {
+  // 규격 모달 상태
+  const [isSpecModalOpen, setIsSpecModalOpen] = useState(false);
+  const [editingSpecType, setEditingSpecType] = useState<'binder' | 'slurry'>('binder');
+
+  // 규격 데이터 상태
+  const [binderSpecs, setBinderSpecs] = useState<Record<string, SpecValue>>({});
+  const [slurrySpecs, setSlurrySpecs] = useState<Record<string, SpecValue>>({});
+
+  // API에서 규격 데이터 로드
+  useEffect(() => {
+    const loadSpecs = async () => {
+      try {
+        const specs = await getLQCSpecs(projectId, 'MIXING_CATHODE');
+
+        const binderSpec = specs.find(s => s.itemType === 'BINDER');
+        const slurrySpec = specs.find(s => s.itemType === 'SLURRY');
+
+        if (binderSpec) {
+          setBinderSpecs(binderSpec.specs);
+        }
+        if (slurrySpec) {
+          setSlurrySpecs(slurrySpec.specs);
+        }
+      } catch (err) {
+        console.error('규격 데이터 로드 실패:', err);
+      }
+    };
+
+    loadSpecs();
+  }, [projectId]);
+
+  const handleOpenSpecModal = (type: 'binder' | 'slurry') => {
+    setEditingSpecType(type);
+    setIsSpecModalOpen(true);
+  };
+
+  const handleSaveSpecs = (specs: Record<string, SpecValue>) => {
+    if (editingSpecType === 'binder') {
+      setBinderSpecs(specs);
+    } else {
+      setSlurrySpecs(specs);
+    }
+    // TODO: 저장 API 연결
+  };
+
   // 임시 데이터 (나중에 API 연결)
   const binderData: BinderRow[] = [
     {
@@ -232,7 +326,12 @@ export default function MixingCathodeTable() {
     <div className={styles.tableContainer}>
       {/* Binder Solution Mixing 검사 */}
       <div className={styles.tableSection}>
-        <h3 className={styles.tableTitle}>Binder Solution Mixing 검사 (양극)</h3>
+        <div className={styles.tableTitleRow}>
+          <h3 className={styles.tableTitle}>Binder Solution Mixing 검사 (양극)</h3>
+          <button className={styles.specButton} onClick={() => handleOpenSpecModal('binder')}>
+            규격 설정
+          </button>
+        </div>
         <div className={styles.tableChartWrapper}>
           <div className={styles.tableWrapper}>
             <table className={styles.lqcTable}>
@@ -254,8 +353,8 @@ export default function MixingCathodeTable() {
               <tbody>
                 <tr className={styles.specRow}>
                   <td colSpan={3}>규격</td>
-                  <td colSpan={4}>6.00±0.18</td>
-                  <td>1,200±3,000</td>
+                  <td colSpan={4}>{formatSpec(binderSpecs.solidContent, 'target-tolerance')}</td>
+                  <td>{formatSpec(binderSpecs.viscosity, 'target-tolerance')}</td>
                 </tr>
                 {binderData.map(row => (
                   <tr key={row.no}>
@@ -280,7 +379,12 @@ export default function MixingCathodeTable() {
 
       {/* Slurry Mixing 검사 */}
       <div className={styles.tableSection}>
-        <h3 className={styles.tableTitle}>Slurry Mixing 검사 (양극)</h3>
+        <div className={styles.tableTitleRow}>
+          <h3 className={styles.tableTitle}>Slurry Mixing 검사 (양극)</h3>
+          <button className={styles.specButton} onClick={() => handleOpenSpecModal('slurry')}>
+            규격 설정
+          </button>
+        </div>
         <div className={styles.tableChartWrapper}>
           <div className={styles.tableWrapper}>
             <table className={styles.lqcTable}>
@@ -303,9 +407,9 @@ export default function MixingCathodeTable() {
               <tbody>
                 <tr className={styles.specRow}>
                   <td colSpan={3}>규격</td>
-                  <td colSpan={4}>59.5±1.7</td>
-                  <td>7,000±3,000</td>
-                  <td>≤28</td>
+                  <td colSpan={4}>{formatSpec(slurrySpecs.solidContent, 'target-tolerance')}</td>
+                  <td>{formatSpec(slurrySpecs.viscosity, 'target-tolerance')}</td>
+                  <td>{formatSpec(slurrySpecs.particleSize, 'max-only')}</td>
                 </tr>
                 {slurryData.map(row => (
                   <tr key={row.no}>
@@ -328,6 +432,16 @@ export default function MixingCathodeTable() {
           </div>
         </div>
       </div>
+
+      {/* 규격 설정 모달 */}
+      <SpecEditModal
+        isOpen={isSpecModalOpen}
+        onClose={() => setIsSpecModalOpen(false)}
+        onSave={handleSaveSpecs}
+        title={editingSpecType === 'binder' ? 'Binder Solution Mixing' : 'Slurry Mixing'}
+        specs={editingSpecType === 'binder' ? binderSpecs : slurrySpecs}
+        specFields={editingSpecType === 'binder' ? BINDER_SPEC_FIELDS : SLURRY_SPEC_FIELDS}
+      />
     </div>
   );
 }

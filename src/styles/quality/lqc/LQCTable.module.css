@@ -11,11 +11,36 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.tableTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
 .tableTitle {
-  margin: 0 0 16px 0;
+  margin: 0;
   font-size: 16px;
   font-weight: 600;
   color: #1e293b;
+}
+
+.specButton {
+  padding: 6px 12px;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  background: #eff6ff;
+  color: #3b82f6;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.specButton:hover {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
 }
 
 .lqcTable {

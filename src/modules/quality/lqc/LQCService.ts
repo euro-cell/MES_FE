@@ -14,3 +14,33 @@ export const getLQCProject = async (projectId: number): Promise<LQCProject | nul
   const projects = await getLQCProjects();
   return projects.find(p => p.id === projectId) || null;
 };
+
+/** 규격 값 타입 */
+export interface SpecValue {
+  target?: number;
+  tolerance?: number;
+  min?: number;
+  max?: number;
+  unit: string;
+}
+
+/** 규격 응답 타입 */
+export interface LQCSpec {
+  id: number;
+  processType: string;
+  itemType: string;
+  specs: Record<string, SpecValue>;
+}
+
+/** LQC 규격 조회 */
+export const getLQCSpecs = async (projectId: number, processType?: string, itemType?: string): Promise<LQCSpec[]> => {
+  const params = new URLSearchParams();
+  if (processType) params.append('processType', processType);
+  if (itemType) params.append('itemType', itemType);
+
+  const queryString = params.toString();
+  const url = `${API_BASE}/quality/lqc/${projectId}/spec${queryString ? `?${queryString}` : ''}`;
+
+  const res = await axios.get(url, { withCredentials: true });
+  return res.data;
+};
