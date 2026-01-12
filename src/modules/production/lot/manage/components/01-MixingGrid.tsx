@@ -83,25 +83,25 @@ export default function MixingGrid({ data }: MixingGridProps) {
         </thead>
         <tbody>
           {data.map(row => {
-            const { temp, humi } = parseTempHumi(row.slurry.tempHumi);
+            const { temp, humi } = parseTempHumi(row.slurry?.tempHumi);
             return (
               <tr key={row.id}>
                 <td className={`${styles.stickyCol} ${styles.stickyFirst} ${styles.groupBasic}`}>{row.processDate}</td>
                 <td className={`${styles.lotNumber} ${styles.stickyCol} ${styles.stickySecond} ${styles.groupBasic}`} style={{ left: secondColLeft }}>{row.lot}</td>
                 <td>{temp}</td>
                 <td className={styles.groupMixingEnd}>{humi}</td>
-                <td className={styles.groupInputEnd}>{row.slurry.activeMaterialInput}</td>
-                <td>{row.slurry.viscosityAfterMixing} cp</td>
-                <td>{row.slurry.viscosityAfterDefoaming} cp</td>
-                <td className={styles.groupViscosityEnd}>{row.slurry.viscosityAfterStabilization} cp</td>
-                <td>{row.slurry.grindGage}</td>
-                <td>{row.slurry.solidContent1}%</td>
-                <td>{row.slurry.solidContent2}%</td>
-                <td className={styles.groupElectrodeEnd}>{row.slurry.solidContent3}%</td>
-                <td>{row.binder.viscosity !== null ? `${row.binder.viscosity} cp` : '-'}</td>
-                <td>{row.binder.solidContent1}%</td>
-                <td>{row.binder.solidContent2}%</td>
-                <td>{row.binder.solidContent3 !== null ? `${row.binder.solidContent3}%` : '-'}</td>
+                <td className={styles.groupInputEnd}>{row.slurry?.activeMaterialInput ?? '-'}</td>
+                <td>{row.slurry?.viscosityAfterMixing != null ? `${row.slurry.viscosityAfterMixing} cp` : '-'}</td>
+                <td>{row.slurry?.viscosityAfterDefoaming != null ? `${row.slurry.viscosityAfterDefoaming} cp` : '-'}</td>
+                <td className={styles.groupViscosityEnd}>{row.slurry?.viscosityAfterStabilization != null ? `${row.slurry.viscosityAfterStabilization} cp` : '-'}</td>
+                <td>{row.slurry?.grindGage ?? '-'}</td>
+                <td>{row.slurry?.solidContent1 != null ? `${row.slurry.solidContent1}%` : '-'}</td>
+                <td>{row.slurry?.solidContent2 != null ? `${row.slurry.solidContent2}%` : '-'}</td>
+                <td className={styles.groupElectrodeEnd}>{row.slurry?.solidContent3 != null ? `${row.slurry.solidContent3}%` : '-'}</td>
+                <td>{row.binder?.viscosity != null ? `${row.binder.viscosity} cp` : '-'}</td>
+                <td>{row.binder?.solidContent1 != null ? `${row.binder.solidContent1}%` : '-'}</td>
+                <td>{row.binder?.solidContent2 != null ? `${row.binder.solidContent2}%` : '-'}</td>
+                <td>{row.binder?.solidContent3 != null ? `${row.binder.solidContent3}%` : '-'}</td>
               </tr>
             );
           })}
