@@ -2,6 +2,7 @@ export interface ProcessInfo {
   id: string;
   category: string;
   title: string;
+  electrode?: 'C' | 'A'; // C: Cathode(양극), A: Anode(음극)
 }
 
 export const CATEGORIES = [
@@ -12,14 +13,14 @@ export const CATEGORIES = [
 
 export const PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
   Electrode: [
-    { id: 'MixingCathode', category: 'Electrode', title: 'Mixing(Cathode)' },
-    { id: 'CoatingCathode', category: 'Electrode', title: 'Coating(Cathode)' },
-    { id: 'PressCathode', category: 'Electrode', title: 'Press(Cathode)' },
-    { id: 'VDCathode', category: 'Electrode', title: 'VD(Cathode)' },
-    { id: 'MixingAnode', category: 'Electrode', title: 'Mixing(Anode)' },
-    { id: 'CoatingAnode', category: 'Electrode', title: 'Coating(Anode)' },
-    { id: 'PressAnode', category: 'Electrode', title: 'Press(Anode)' },
-    { id: 'VDAnode', category: 'Electrode', title: 'VD(Anode)' },
+    { id: 'MixingCathode', category: 'Electrode', title: 'Mixing(Cathode)', electrode: 'C' },
+    { id: 'CoatingCathode', category: 'Electrode', title: 'Coating(Cathode)', electrode: 'C' },
+    { id: 'PressCathode', category: 'Electrode', title: 'Press(Cathode)', electrode: 'C' },
+    { id: 'VDCathode', category: 'Electrode', title: 'VD(Cathode)', electrode: 'C' },
+    { id: 'MixingAnode', category: 'Electrode', title: 'Mixing(Anode)', electrode: 'A' },
+    { id: 'CoatingAnode', category: 'Electrode', title: 'Coating(Anode)', electrode: 'A' },
+    { id: 'PressAnode', category: 'Electrode', title: 'Press(Anode)', electrode: 'A' },
+    { id: 'VDAnode', category: 'Electrode', title: 'VD(Anode)', electrode: 'A' },
   ],
   Assembly: [],
   Formation: [],
@@ -41,5 +42,6 @@ export const createProcessMenus = (projectId: number, category: string) => {
   return processes.map(process => ({
     title: process.title,
     path: `/quality/lqc/${projectId}?category=${category}&process=${process.id}`,
+    electrode: process.electrode,
   }));
 };
