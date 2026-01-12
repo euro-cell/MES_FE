@@ -44,3 +44,18 @@ export const getLQCSpecs = async (projectId: number, processType?: string, itemT
   const res = await axios.get(url, { withCredentials: true });
   return res.data;
 };
+
+/** LQC 규격 저장 */
+export const saveLQCSpec = async (
+  projectId: number,
+  processType: string,
+  itemType: string,
+  specs: Record<string, SpecValue>
+): Promise<LQCSpec> => {
+  const res = await axios.post(
+    `${API_BASE}/quality/lqc/${projectId}/spec`,
+    { processType, itemType, specs },
+    { withCredentials: true }
+  );
+  return res.data;
+};

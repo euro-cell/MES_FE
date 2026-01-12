@@ -13,7 +13,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
 import SpecEditModal from './SpecEditModal';
-import { getLQCSpecs, type SpecValue } from '../LQCService';
+import { getLQCSpecs, saveLQCSpec, type SpecValue } from '../LQCService';
 
 interface MixingCathodeTableProps {
   projectId: number;
@@ -124,13 +124,20 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
     setIsSpecModalOpen(true);
   };
 
-  const handleSaveSpecs = (specs: Record<string, SpecValue>) => {
-    if (editingSpecType === 'binder') {
-      setBinderSpecs(specs);
-    } else {
-      setSlurrySpecs(specs);
+  const handleSaveSpecs = async (specs: Record<string, SpecValue>) => {
+    const itemType = editingSpecType === 'binder' ? 'BINDER' : 'SLURRY';
+
+    try {
+      await saveLQCSpec(projectId, 'MIXING_CATHODE', itemType, specs);
+
+      if (editingSpecType === 'binder') {
+        setBinderSpecs(specs);
+      } else {
+        setSlurrySpecs(specs);
+      }
+    } catch (err) {
+      console.error('규격 저장 실패:', err);
     }
-    // TODO: 저장 API 연결
   };
 
   // 임시 데이터 (나중에 API 연결)
