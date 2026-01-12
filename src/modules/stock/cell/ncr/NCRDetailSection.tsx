@@ -101,11 +101,22 @@ export default function NCRDetailSection() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (editedData) {
-      setDetailData(editedData);
-      setIsEditMode(false);
-      setEditedData(null);
+      try {
+        await axios.patch(
+          `${API_BASE}/cell-inventory/ncr/detail?projectName=${selectedProjectId}`,
+          editedData,
+          { withCredentials: true }
+        );
+        setDetailData(editedData);
+        setIsEditMode(false);
+        setEditedData(null);
+        alert('저장되었습니다.');
+      } catch (err) {
+        console.error('저장 실패:', err);
+        alert('저장에 실패했습니다.');
+      }
     }
   };
 
@@ -165,7 +176,6 @@ export default function NCRDetailSection() {
         <table className={styles.detailDataTable}>
           <thead>
             <tr>
-              <th>상세내용</th>
               <th>구분</th>
               <th>범위</th>
               <th style={{ width: '80px' }}>수량</th>
@@ -175,31 +185,13 @@ export default function NCRDetailSection() {
           <tbody>
             {items.length === 0 ? (
               <tr>
-                <td colSpan={isEditMode ? 5 : 4} style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
+                <td colSpan={isEditMode ? 4 : 3} style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
                   데이터 없음
                 </td>
               </tr>
             ) : (
               items.map((item, itemIdx) => (
                 <tr key={itemIdx}>
-                  <td>
-                    {isEditMode ? (
-                      <input
-                        type='text'
-                        value={item.title}
-                        onChange={e => handleRowFieldChange(ncrIdx, itemIdx, 'title', e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '4px 6px',
-                          border: '1px solid #2563eb',
-                          borderRadius: '4px',
-                          boxSizing: 'border-box',
-                        }}
-                      />
-                    ) : (
-                      item.title
-                    )}
-                  </td>
                   <td>
                     {isEditMode ? (
                       <input
@@ -281,7 +273,7 @@ export default function NCRDetailSection() {
               ))
             )}
             <tr className={styles.detailSubtotalRow}>
-              <td colSpan={isEditMode ? 4 : 3} style={{ textAlign: 'center', paddingRight: '10px' }}>
+              <td colSpan={isEditMode ? 3 : 2} style={{ textAlign: 'center', paddingRight: '10px' }}>
                 합계
               </td>
               <td style={{ textAlign: 'center', fontWeight: 600 }}>{getSubtotal(items)}</td>
@@ -289,7 +281,7 @@ export default function NCRDetailSection() {
             </tr>
             {isEditMode && (
               <tr>
-                <td colSpan={isEditMode ? 5 : 4} style={{ textAlign: 'center', padding: '8px' }}>
+                <td colSpan={isEditMode ? 4 : 3} style={{ textAlign: 'center', padding: '8px' }}>
                   <button
                     onClick={() => handleAddRow(ncrIdx)}
                     style={{
