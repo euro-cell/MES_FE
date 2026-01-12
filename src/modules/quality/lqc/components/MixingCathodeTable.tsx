@@ -432,18 +432,24 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
                   <td colSpan={4}>{formatSpec(binderSpecs.solidContent, 'target-tolerance')}</td>
                   <td>{formatSpec(binderSpecs.viscosity, 'target-tolerance')}</td>
                 </tr>
-                {binderData.map((row, index) => (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>{row.manufactureDate}</td>
-                    <td>{row.lot}</td>
-                    <td>{row.solidContent1 || ''}</td>
-                    <td>{row.solidContent2 || ''}</td>
-                    <td>{row.solidContent3 || ''}</td>
-                    <td>{calcSolidContentAvg(row.solidContent1, row.solidContent2, row.solidContent3)?.toFixed(2) ?? ''}</td>
-                    <td>{row.viscosity ? parseFloat(row.viscosity).toLocaleString() : ''}</td>
+                {binderData.length > 0 ? (
+                  binderData.map((row, index) => (
+                    <tr key={row.id}>
+                      <td>{index + 1}</td>
+                      <td>{row.manufactureDate}</td>
+                      <td>{row.lot}</td>
+                      <td>{row.solidContent1 || ''}</td>
+                      <td>{row.solidContent2 || ''}</td>
+                      <td>{row.solidContent3 || ''}</td>
+                      <td>{calcSolidContentAvg(row.solidContent1, row.solidContent2, row.solidContent3)?.toFixed(2) ?? ''}</td>
+                      <td>{row.viscosity ? parseFloat(row.viscosity).toLocaleString() : ''}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} className={styles.noDataRow}>데이터 없음</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -491,19 +497,25 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
                   <td>{formatSpec(slurrySpecs.viscosity, 'target-tolerance')}</td>
                   <td>{formatSpec(slurrySpecs.particleSize, 'max-only')}</td>
                 </tr>
-                {slurryData.map((row, index) => (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>{row.manufactureDate}</td>
-                    <td>{row.lot}</td>
-                    <td>{row.solidContent1Percentage || ''}</td>
-                    <td>{row.solidContent2Percentage || ''}</td>
-                    <td>{row.solidContent3Percentage || ''}</td>
-                    <td>{calcSolidContentAvg(row.solidContent1Percentage, row.solidContent2Percentage, row.solidContent3Percentage)?.toFixed(2) ?? ''}</td>
-                    <td>{row.viscosityAfterStabilization ? parseFloat(row.viscosityAfterStabilization).toLocaleString() : ''}</td>
-                    <td>{row.grindGageFineParticle2 ?? ''}</td>
+                {slurryData.length > 0 ? (
+                  slurryData.map((row, index) => (
+                    <tr key={row.id}>
+                      <td>{index + 1}</td>
+                      <td>{row.manufactureDate}</td>
+                      <td>{row.lot}</td>
+                      <td>{row.solidContent1Percentage || ''}</td>
+                      <td>{row.solidContent2Percentage || ''}</td>
+                      <td>{row.solidContent3Percentage || ''}</td>
+                      <td>{calcSolidContentAvg(row.solidContent1Percentage, row.solidContent2Percentage, row.solidContent3Percentage)?.toFixed(2) ?? ''}</td>
+                      <td>{row.viscosityAfterStabilization ? parseFloat(row.viscosityAfterStabilization).toLocaleString() : ''}</td>
+                      <td>{row.grindGageFineParticle2 ?? ''}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={9} className={styles.noDataRow}>데이터 없음</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
