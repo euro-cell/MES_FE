@@ -13,7 +13,15 @@ import {
 import { Bar } from 'react-chartjs-2';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
 import SpecEditModal from './SpecEditModal';
-import { getLQCSpecs, saveLQCSpec, getLQCBinderData, getLQCSlurryData, type SpecValue, type BinderData, type SlurryData } from '../LQCService';
+import {
+  getLQCSpecs,
+  saveLQCSpec,
+  getLQCBinderData,
+  getLQCSlurryData,
+  type SpecValue,
+  type BinderData,
+  type SlurryData,
+} from '../LQCService';
 
 interface MixingCathodeTableProps {
   projectId: number;
@@ -28,7 +36,6 @@ const calcSolidContentAvg = (s1: string, s2: string, s3: string): number | null 
   if (values.length === 0) return null;
   return values.reduce((a, b) => a + b, 0) / values.length;
 };
-
 
 // 규격 필드 정의
 const BINDER_SPEC_FIELDS = [
@@ -195,7 +202,9 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
       {
         type: 'bar' as const,
         label: '고형분',
-        data: slurryData.map(row => calcSolidContentAvg(row.solidContent1Percentage, row.solidContent2Percentage, row.solidContent3Percentage)),
+        data: slurryData.map(row =>
+          calcSolidContentAvg(row.solidContent1Percentage, row.solidContent2Percentage, row.solidContent3Percentage)
+        ),
         backgroundColor: 'rgba(54, 162, 235, 0.8)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
@@ -248,21 +257,8 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
     return defaultMax;
   };
 
-  const getSolidContentMax = (specs: Record<string, SpecValue>, data: BinderData[], defaultMax: number) => {
-    const solidContent = specs.solidContent;
-    if (solidContent?.target !== undefined && solidContent?.tolerance !== undefined) {
-      const max = solidContent.target + solidContent.tolerance;
-      return Math.ceil(max); // 1 단위 올림
-    }
-    // 규격 없으면 실데이터 최대값 기준
-    if (data.length > 0) {
-      const avgValues = data.map(row => calcSolidContentAvg(row.solidContent1, row.solidContent2, row.solidContent3)).filter((v): v is number => v !== null);
-      if (avgValues.length > 0) {
-        const dataMax = Math.max(...avgValues);
-        return Math.ceil(dataMax); // 1 단위 올림
-      }
-    }
-    return defaultMax;
+  const getSolidContentMax = () => {
+    return 10;
   };
 
   // Slurry용 Y축 최대값 계산 함수
@@ -294,16 +290,22 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
   };
 
   const getSlurrySolidContentMax = (specs: Record<string, SpecValue>, data: SlurryData[], defaultMax: number) => {
+    const roundUpWithPadding = (value: number) => Math.ceil(value / 10) * 10 + 10;
+
     const solidContent = specs.solidContent;
     if (solidContent?.target !== undefined && solidContent?.tolerance !== undefined) {
       const max = solidContent.target + solidContent.tolerance;
-      return Math.ceil(max);
+      return roundUpWithPadding(max);
     }
     if (data.length > 0) {
-      const avgValues = data.map(row => calcSolidContentAvg(row.solidContent1Percentage, row.solidContent2Percentage, row.solidContent3Percentage)).filter((v): v is number => v !== null);
+      const avgValues = data
+        .map(row =>
+          calcSolidContentAvg(row.solidContent1Percentage, row.solidContent2Percentage, row.solidContent3Percentage)
+        )
+        .filter((v): v is number => v !== null);
       if (avgValues.length > 0) {
         const dataMax = Math.max(...avgValues);
-        return Math.ceil(dataMax);
+        return roundUpWithPadding(dataMax);
       }
     }
     return defaultMax;
@@ -349,7 +351,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
           text: '고형분(%)',
         },
         min: 0,
-        max: getSolidContentMax(binderSpecs, binderData, 6),
+        max: getSolidContentMax(),
         grid: {
           drawOnChartArea: false,
         },
@@ -390,7 +392,10 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
           text: '고형분(%)/입도(㎛)',
         },
         min: 0,
-        max: Math.max(getSlurrySolidContentMax(slurrySpecs, slurryData, 70), getSlurryParticleSizeMax(slurrySpecs, slurryData, 50)),
+        max: Math.max(
+          getSlurrySolidContentMax(slurrySpecs, slurryData, 70),
+          getSlurryParticleSizeMax(slurrySpecs, slurryData, 50)
+        ),
         grid: {
           drawOnChartArea: false,
         },
@@ -441,13 +446,17 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
                       <td>{row.solidContent1 || ''}</td>
                       <td>{row.solidContent2 || ''}</td>
                       <td>{row.solidContent3 || ''}</td>
-                      <td>{calcSolidContentAvg(row.solidContent1, row.solidContent2, row.solidContent3)?.toFixed(2) ?? ''}</td>
+                      <td>
+                        {calcSolidContentAvg(row.solidContent1, row.solidContent2, row.solidContent3)?.toFixed(2) ?? ''}
+                      </td>
                       <td>{row.viscosity ? parseFloat(row.viscosity).toLocaleString() : ''}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className={styles.noDataRow}>데이터 없음</td>
+                    <td colSpan={8} className={styles.noDataRow}>
+                      데이터 없음
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -506,14 +515,26 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
                       <td>{row.solidContent1Percentage || ''}</td>
                       <td>{row.solidContent2Percentage || ''}</td>
                       <td>{row.solidContent3Percentage || ''}</td>
-                      <td>{calcSolidContentAvg(row.solidContent1Percentage, row.solidContent2Percentage, row.solidContent3Percentage)?.toFixed(2) ?? ''}</td>
-                      <td>{row.viscosityAfterStabilization ? parseFloat(row.viscosityAfterStabilization).toLocaleString() : ''}</td>
+                      <td>
+                        {calcSolidContentAvg(
+                          row.solidContent1Percentage,
+                          row.solidContent2Percentage,
+                          row.solidContent3Percentage
+                        )?.toFixed(2) ?? ''}
+                      </td>
+                      <td>
+                        {row.viscosityAfterStabilization
+                          ? parseFloat(row.viscosityAfterStabilization).toLocaleString()
+                          : ''}
+                      </td>
                       <td>{row.grindGageFineParticle2 ?? ''}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={9} className={styles.noDataRow}>데이터 없음</td>
+                    <td colSpan={9} className={styles.noDataRow}>
+                      데이터 없음
+                    </td>
                   </tr>
                 )}
               </tbody>
