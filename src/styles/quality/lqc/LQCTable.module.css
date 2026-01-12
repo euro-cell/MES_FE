@@ -1,0 +1,55 @@
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.tableSection {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tableTitle {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.lqcTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.lqcTable th,
+.lqcTable td {
+  border: 1px solid #e2e8f0;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.lqcTable th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #334155;
+}
+
+.lqcTable td {
+  color: #475569;
+}
+
+.lqcTable tbody tr:hover {
+  background: #f8fafc;
+}
+
+.specRow {
+  background: #fef3c7 !important;
+  font-weight: 500;
+}
+
+.specRow td {
+  color: #92400e !important;
+}
