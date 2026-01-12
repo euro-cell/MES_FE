@@ -53,3 +53,20 @@
 .specRow td {
   color: #92400e !important;
 }
+
+.tableChartWrapper {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.tableWrapper {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.chartWrapper {
+  flex: 0 0 400px;
+  height: 300px;
+}
