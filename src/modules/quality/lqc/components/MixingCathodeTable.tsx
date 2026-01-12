@@ -243,6 +243,79 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
     ],
   };
 
+  // 규격에서 차트 Y축 최대값 계산 (올림 처리)
+  // 규격이 없으면 실데이터 최대값 기준으로 계산
+  const getViscosityMax = (specs: Record<string, SpecValue>, data: BinderData[], defaultMax: number) => {
+    const viscosity = specs.viscosity;
+    if (viscosity?.target !== undefined && viscosity?.tolerance !== undefined) {
+      const max = viscosity.target + viscosity.tolerance;
+      return Math.ceil(max / 1000) * 1000; // 1000 단위 올림
+    }
+    // 규격 없으면 실데이터 최대값 기준
+    if (data.length > 0) {
+      const dataMax = Math.max(...data.map(row => parseFloat(row.viscosity) || 0));
+      if (dataMax > 0) {
+        return Math.ceil(dataMax / 1000) * 1000; // 1000 단위 올림
+      }
+    }
+    return defaultMax;
+  };
+
+  const getSolidContentMax = (specs: Record<string, SpecValue>, data: BinderData[], defaultMax: number) => {
+    const solidContent = specs.solidContent;
+    if (solidContent?.target !== undefined && solidContent?.tolerance !== undefined) {
+      const max = solidContent.target + solidContent.tolerance;
+      return Math.ceil(max); // 1 단위 올림
+    }
+    // 규격 없으면 실데이터 최대값 기준
+    if (data.length > 0) {
+      const avgValues = data.map(row => calcSolidContentAvg(row.solidContent1, row.solidContent2, row.solidContent3)).filter((v): v is number => v !== null);
+      if (avgValues.length > 0) {
+        const dataMax = Math.max(...avgValues);
+        return Math.ceil(dataMax); // 1 단위 올림
+      }
+    }
+    return defaultMax;
+  };
+
+  // Slurry용 Y축 최대값 계산 함수
+  const getSlurryViscosityMax = (specs: Record<string, SpecValue>, data: SlurryRow[], defaultMax: number) => {
+    const viscosity = specs.viscosity;
+    if (viscosity?.target !== undefined && viscosity?.tolerance !== undefined) {
+      const max = viscosity.target + viscosity.tolerance;
+      return Math.ceil(max / 1000) * 1000;
+    }
+    const validData = data.filter(row => row.viscosity !== null);
+    if (validData.length > 0) {
+      const dataMax = Math.max(...validData.map(row => row.viscosity!));
+      if (dataMax > 0) {
+        return Math.ceil(dataMax / 1000) * 1000;
+      }
+    }
+    return defaultMax;
+  };
+
+  const getSlurrySolidContentMax = (specs: Record<string, SpecValue>, data: SlurryRow[], defaultMax: number) => {
+    const solidContent = specs.solidContent;
+    if (solidContent?.target !== undefined && solidContent?.tolerance !== undefined) {
+      const max = solidContent.target + solidContent.tolerance;
+      return Math.ceil(max);
+    }
+    const validData = data.filter(row => row.solidContentAvg !== null);
+    if (validData.length > 0) {
+      const dataMax = Math.max(...validData.map(row => row.solidContentAvg!));
+      return Math.ceil(dataMax);
+    }
+    return defaultMax;
+  };
+
+  // 슬러리 데이터 존재 여부 (빈 행 제외)
+  const hasSlurryData = slurryData.some(row => row.viscosity !== null || row.solidContentAvg !== null);
+
+  // 규격 설정 여부 확인
+  const hasBinderSpecs = Object.keys(binderSpecs).length > 0;
+  const hasSlurrySpecs = Object.keys(slurrySpecs).length > 0;
+
   // Binder 차트 옵션
   const binderChartOptions = {
     responsive: true,
@@ -266,7 +339,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
           text: '점도(cps)',
         },
         min: 0,
-        max: 4000,
+        max: getViscosityMax(binderSpecs, binderData, 4000),
       },
       y1: {
         type: 'linear' as const,
@@ -276,7 +349,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
           text: '고형분(%)',
         },
         min: 0,
-        max: 6,
+        max: getSolidContentMax(binderSpecs, binderData, 6),
         grid: {
           drawOnChartArea: false,
         },
@@ -307,7 +380,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
           text: '점도(cps)',
         },
         min: 0,
-        max: 8000,
+        max: getSlurryViscosityMax(slurrySpecs, slurryData, 8000),
       },
       y1: {
         type: 'linear' as const,
@@ -317,7 +390,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
           text: '고형분(%)/입도(㎛)',
         },
         min: 0,
-        max: 70,
+        max: getSlurrySolidContentMax(slurrySpecs, slurryData, 70),
         grid: {
           drawOnChartArea: false,
         },
@@ -332,7 +405,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
         <div className={styles.tableTitleRow}>
           <h3 className={styles.tableTitle}>Binder Solution Mixing 검사 (양극)</h3>
           <button className={styles.specButton} onClick={() => handleOpenSpecModal('binder')}>
-            규격 설정
+            {hasBinderSpecs ? '규격 수정' : '규격 설정'}
           </button>
         </div>
         <div className={styles.tableChartWrapper}>
@@ -374,9 +447,13 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
               </tbody>
             </table>
           </div>
-          <div className={styles.chartWrapper}>
-            <Bar data={binderChartData as any} options={binderChartOptions} />
-          </div>
+          {binderData.length > 0 ? (
+            <div className={styles.chartWrapper}>
+              <Bar data={binderChartData as any} options={binderChartOptions} />
+            </div>
+          ) : (
+            <div className={styles.noDataChart}>데이터 없음</div>
+          )}
         </div>
       </div>
 
@@ -385,7 +462,7 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
         <div className={styles.tableTitleRow}>
           <h3 className={styles.tableTitle}>Slurry Mixing 검사 (양극)</h3>
           <button className={styles.specButton} onClick={() => handleOpenSpecModal('slurry')}>
-            규격 설정
+            {hasSlurrySpecs ? '규격 수정' : '규격 설정'}
           </button>
         </div>
         <div className={styles.tableChartWrapper}>
@@ -430,9 +507,13 @@ export default function MixingCathodeTable({ projectId }: MixingCathodeTableProp
               </tbody>
             </table>
           </div>
-          <div className={styles.chartWrapper}>
-            <Bar data={slurryChartData as any} options={slurryChartOptions} />
-          </div>
+          {hasSlurryData ? (
+            <div className={styles.chartWrapper}>
+              <Bar data={slurryChartData as any} options={slurryChartOptions} />
+            </div>
+          ) : (
+            <div className={styles.noDataChart}>데이터 없음</div>
+          )}
         </div>
       </div>
 

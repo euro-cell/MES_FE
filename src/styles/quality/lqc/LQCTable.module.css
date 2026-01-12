@@ -95,3 +95,16 @@
   flex: 0 0 400px;
   height: 300px;
 }
+
+.noDataChart {
+  flex: 0 0 400px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 14px;
+}
