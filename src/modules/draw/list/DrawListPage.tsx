@@ -1,13 +1,21 @@
 import { useLocation } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/quality/lqc/LQCPage.module.css';
+import PdfViewer from './components/PdfViewer';
+import { getDrawingUrl } from './DrawService';
 
 const FACTORY_MENUS = [{ title: '오산 공장', path: '/draw/list?factory=osan' }];
+
+const OSAN_FLOOR_MENUS = [
+  { title: '1층', path: '/draw/list?factory=osan&floor=floor1' },
+  { title: '2층', path: '/draw/list?factory=osan&floor=floor2' },
+];
 
 export default function DrawListPage() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const factory = searchParams.get('factory');
+  const floor = searchParams.get('floor');
 
   return (
     <div>
@@ -18,8 +26,15 @@ export default function DrawListPage() {
           <div className={styles.placeholder}>메뉴를 선택하세요.</div>
         ) : factory === 'osan' ? (
           <div>
-            <h3>오산 공장 도면</h3>
-            <p>1층, 2층 도면이 여기에 표시됩니다.</p>
+            <SubmenuBar menus={OSAN_FLOOR_MENUS} />
+            {!floor ? (
+              <div className={styles.placeholder}>층을 선택하세요.</div>
+            ) : (
+              <PdfViewer
+                pdfUrl={getDrawingUrl('factory', 'osan', floor)}
+                title={`오산 공장 ${floor === 'floor1' ? '1' : '2'}층 도면`}
+              />
+            )}
           </div>
         ) : (
           <div className={styles.placeholder}>알 수 없는 메뉴입니다.</div>
