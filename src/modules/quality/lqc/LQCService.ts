@@ -168,3 +168,33 @@ export const getLQCPressData = async (
   });
   return res.data;
 };
+
+/** VD 데이터 응답 타입 */
+export interface VDData {
+  id: number;
+  workDate: string; // 작업일자
+  division: string; // 구분
+  // 전극 수분함량 검사 (평균은 프론트에서 계산)
+  moisture1: number | null;
+  moisture2: number | null;
+  moisture3: number | null;
+  // 전극 Lot no. (최대 7개)
+  lot1: string | null;
+  lot2: string | null;
+  lot3: string | null;
+  lot4: string | null;
+  lot5: string | null;
+  lot6: string | null;
+  lot7: string | null;
+}
+
+/** VD 데이터 조회 */
+export const getLQCVDData = async (
+  projectId: number,
+  electrode: 'A' | 'C'
+): Promise<VDData[]> => {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/vd?electrode=${electrode}`, {
+    withCredentials: true,
+  });
+  return res.data;
+};
