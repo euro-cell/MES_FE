@@ -198,3 +198,43 @@ export const getLQCVDData = async (
   });
   return res.data;
 };
+
+/** Assembly J/R 데이터 응답 타입 */
+export interface AssemblyJRData {
+  id: number;
+  workDate: string; // 작업일자
+  lot: string; // Lot no.
+  shift: string; // Shift (오전/오후)
+  // J/R 무게 (g) - 10개 측정값 (평균은 프론트에서 계산)
+  weight1: number | null;
+  weight2: number | null;
+  weight3: number | null;
+  weight4: number | null;
+  weight5: number | null;
+  weight6: number | null;
+  weight7: number | null;
+  weight8: number | null;
+  weight9: number | null;
+  weight10: number | null;
+  // J/R 직경 (㎜) - 10개 측정값 (평균은 프론트에서 계산)
+  diameter1: number | null;
+  diameter2: number | null;
+  diameter3: number | null;
+  diameter4: number | null;
+  diameter5: number | null;
+  diameter6: number | null;
+  diameter7: number | null;
+  diameter8: number | null;
+  diameter9: number | null;
+  diameter10: number | null;
+}
+
+/** Assembly J/R 데이터 조회 */
+export const getLQCAssemblyJRData = async (
+  projectId: number
+): Promise<AssemblyJRData[]> => {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/assembly/jr`, {
+    withCredentials: true,
+  });
+  return res.data;
+};

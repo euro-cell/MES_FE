@@ -12,6 +12,7 @@ import PressCathodeTable from './components/PressCathodeTable';
 import PressAnodeTable from './components/PressAnodeTable';
 import VDCathodeTable from './components/VDCathodeTable';
 import VDAnodeTable from './components/VDAnodeTable';
+import AssemblyJRTable from './components/AssemblyJRTable';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCPage() {
@@ -62,8 +63,8 @@ export default function LQCPage() {
       {/* 공정 카테고리 탭 메뉴 */}
       <SubmenuBar menus={categoryMenus} />
 
-      {/* 세부 공정 탭 메뉴 */}
-      {category && processMenus.length > 0 && (
+      {/* 세부 공정 탭 메뉴 (조립공정은 서브메뉴 없음) */}
+      {category && category !== 'Assembly' && processMenus.length > 0 && (
         <div style={{ marginTop: '10px' }}>
           <SubmenuBar menus={processMenus} />
         </div>
@@ -73,6 +74,8 @@ export default function LQCPage() {
       <div className={styles.content}>
         {!category ? (
           <div className={styles.placeholder}>공정을 선택하세요.</div>
+        ) : category === 'Assembly' ? (
+          <AssemblyJRTable projectId={Number(projectId)} />
         ) : !process ? (
           <div className={styles.placeholder}>세부 공정을 선택하세요.</div>
         ) : process === 'MixingCathode' ? (
