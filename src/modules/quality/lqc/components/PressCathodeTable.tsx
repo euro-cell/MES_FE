@@ -29,9 +29,6 @@ interface PressCathodeTableProps {
 // 규격 필드 정의
 const PRESS_SPEC_FIELDS = [
   { key: 'doubleSideDensity', label: '양면 면적밀도', type: 'target-tolerance' as const, unit: 'mg/cm²' },
-  { key: 'coatingWidth', label: '코팅폭', type: 'target-tolerance' as const, unit: 'mm' },
-  { key: 'uncoatedArea', label: '무지부', type: 'target-tolerance' as const, unit: 'mm' },
-  { key: 'slittingWidth', label: '슬리팅폭', type: 'target-tolerance' as const, unit: 'mm' },
   { key: 'thickness', label: '전극 두께', type: 'target-tolerance' as const, unit: '㎛' },
 ];
 
@@ -181,10 +178,6 @@ export default function PressCathodeTable({ projectId }: PressCathodeTableProps)
     doubleSideTop: { avg: calcAvg(pressData.map(d => d.doubleSideTop)), max: calcMax(pressData.map(d => d.doubleSideTop)), min: calcMin(pressData.map(d => d.doubleSideTop)), stdev: calcStdev(pressData.map(d => d.doubleSideTop)) },
     doubleSideMiddle: { avg: calcAvg(pressData.map(d => d.doubleSideMiddle)), max: calcMax(pressData.map(d => d.doubleSideMiddle)), min: calcMin(pressData.map(d => d.doubleSideMiddle)), stdev: calcStdev(pressData.map(d => d.doubleSideMiddle)) },
     doubleSideBottom: { avg: calcAvg(pressData.map(d => d.doubleSideBottom)), max: calcMax(pressData.map(d => d.doubleSideBottom)), min: calcMin(pressData.map(d => d.doubleSideBottom)), stdev: calcStdev(pressData.map(d => d.doubleSideBottom)) },
-    // 전극 치수
-    coatingWidth: { avg: calcAvg(pressData.map(d => d.coatingWidth)), max: calcMax(pressData.map(d => d.coatingWidth)), min: calcMin(pressData.map(d => d.coatingWidth)), stdev: calcStdev(pressData.map(d => d.coatingWidth)) },
-    uncoatedArea: { avg: calcAvg(pressData.map(d => d.uncoatedArea)), max: calcMax(pressData.map(d => d.uncoatedArea)), min: calcMin(pressData.map(d => d.uncoatedArea)), stdev: calcStdev(pressData.map(d => d.uncoatedArea)) },
-    slittingWidth: { avg: calcAvg(pressData.map(d => d.slittingWidth)), max: calcMax(pressData.map(d => d.slittingWidth)), min: calcMin(pressData.map(d => d.slittingWidth)), stdev: calcStdev(pressData.map(d => d.slittingWidth)) },
     // 전극 두께 (평균은 프론트에서 계산)
     thicknessAvg: { avg: calcAvg(rowAvgValues.map(d => d.thicknessAvg)), max: calcMax(rowAvgValues.map(d => d.thicknessAvg)), min: calcMin(rowAvgValues.map(d => d.thicknessAvg)), stdev: calcStdev(rowAvgValues.map(d => d.thicknessAvg)) },
     thicknessTop: { avg: calcAvg(pressData.map(d => d.thicknessTop)), max: calcMax(pressData.map(d => d.thicknessTop)), min: calcMin(pressData.map(d => d.thicknessTop)), stdev: calcStdev(pressData.map(d => d.thicknessTop)) },
@@ -310,7 +303,7 @@ export default function PressCathodeTable({ projectId }: PressCathodeTableProps)
 
   return (
     <div className={styles.tableContainer}>
-      {/* Press 전극 검사 테이블 */}
+      {/* Press 전극 검사 - 테이블과 차트 좌우 배치 */}
       <div className={styles.tableSection}>
         <div className={styles.tableTitleRow}>
           <h3 className={styles.tableTitle}>Press 전극 검사 (양극)</h3>
@@ -318,149 +311,132 @@ export default function PressCathodeTable({ projectId }: PressCathodeTableProps)
             규격 설정
           </button>
         </div>
-        <div className={styles.tableWrapper}>
-          <table className={styles.lqcTable}>
-            <thead>
-              {/* 1행: 대분류 헤더 */}
-              <tr>
-                <th rowSpan={2}>No.</th>
-                <th rowSpan={2}>Lot no.</th>
-                <th rowSpan={2}>구분</th>
-                <th colSpan={4}>양면(A+B) 면적밀도(mg/㎠)</th>
-                <th colSpan={3}>전극 치수 검사 (mm)</th>
-                <th colSpan={4}>전극 두께 검사 (㎛)</th>
-              </tr>
-              {/* 2행: 소분류 헤더 */}
-              <tr>
-                <th>평균</th>
-                <th>상단</th>
-                <th>중단</th>
-                <th>하단</th>
-                <th>코팅폭</th>
-                <th>무지부</th>
-                <th>슬리팅폭</th>
-                <th>평균</th>
-                <th>상단</th>
-                <th>중단</th>
-                <th>하단</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* 규격 행 */}
-              <tr className={styles.specRow}>
-                <td colSpan={3}>규격</td>
-                <td colSpan={4}>{formatSpec(pressSpecs.doubleSideDensity, 'target-tolerance')}</td>
-                <td>{formatSpec(pressSpecs.coatingWidth, 'target-tolerance')}</td>
-                <td>{formatSpec(pressSpecs.uncoatedArea, 'target-tolerance')}</td>
-                <td>{formatSpec(pressSpecs.slittingWidth, 'target-tolerance')}</td>
-                <td colSpan={4}>{formatSpec(pressSpecs.thickness, 'target-tolerance')}</td>
-              </tr>
-              {/* 평균 행 */}
-              <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
-                <td colSpan={3}>Ave.</td>
-                <td>{formatNumber(stats.doubleSideAvg.avg)}</td>
-                <td>{formatNumber(stats.doubleSideTop.avg)}</td>
-                <td>{formatNumber(stats.doubleSideMiddle.avg)}</td>
-                <td>{formatNumber(stats.doubleSideBottom.avg)}</td>
-                <td>{formatNumber(stats.coatingWidth.avg, 1)}</td>
-                <td>{formatNumber(stats.uncoatedArea.avg, 1)}</td>
-                <td>{formatNumber(stats.slittingWidth.avg, 1)}</td>
-                <td>{formatNumber(stats.thicknessAvg.avg, 0)}</td>
-                <td>{formatNumber(stats.thicknessTop.avg, 0)}</td>
-                <td>{formatNumber(stats.thicknessMiddle.avg, 0)}</td>
-                <td>{formatNumber(stats.thicknessBottom.avg, 0)}</td>
-              </tr>
-              {/* 최대값 행 */}
-              <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
-                <td colSpan={3}>Max.</td>
-                <td>{formatNumber(stats.doubleSideAvg.max)}</td>
-                <td>{formatNumber(stats.doubleSideTop.max)}</td>
-                <td>{formatNumber(stats.doubleSideMiddle.max)}</td>
-                <td>{formatNumber(stats.doubleSideBottom.max)}</td>
-                <td>{formatNumber(stats.coatingWidth.max, 1)}</td>
-                <td>{formatNumber(stats.uncoatedArea.max, 1)}</td>
-                <td>{formatNumber(stats.slittingWidth.max, 1)}</td>
-                <td>{formatNumber(stats.thicknessAvg.max, 0)}</td>
-                <td>{formatNumber(stats.thicknessTop.max, 0)}</td>
-                <td>{formatNumber(stats.thicknessMiddle.max, 0)}</td>
-                <td>{formatNumber(stats.thicknessBottom.max, 0)}</td>
-              </tr>
-              {/* 최소값 행 */}
-              <tr className={`${styles.summaryRow} ${styles.minRow}`}>
-                <td colSpan={3}>Min.</td>
-                <td>{formatNumber(stats.doubleSideAvg.min)}</td>
-                <td>{formatNumber(stats.doubleSideTop.min)}</td>
-                <td>{formatNumber(stats.doubleSideMiddle.min)}</td>
-                <td>{formatNumber(stats.doubleSideBottom.min)}</td>
-                <td>{formatNumber(stats.coatingWidth.min, 1)}</td>
-                <td>{formatNumber(stats.uncoatedArea.min, 1)}</td>
-                <td>{formatNumber(stats.slittingWidth.min, 1)}</td>
-                <td>{formatNumber(stats.thicknessAvg.min, 0)}</td>
-                <td>{formatNumber(stats.thicknessTop.min, 0)}</td>
-                <td>{formatNumber(stats.thicknessMiddle.min, 0)}</td>
-                <td>{formatNumber(stats.thicknessBottom.min, 0)}</td>
-              </tr>
-              {/* 표준편차 행 */}
-              <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
-                <td colSpan={3}>Stdev.</td>
-                <td>{formatNumber(stats.doubleSideAvg.stdev, 3)}</td>
-                <td>{formatNumber(stats.doubleSideTop.stdev, 3)}</td>
-                <td>{formatNumber(stats.doubleSideMiddle.stdev, 3)}</td>
-                <td>{formatNumber(stats.doubleSideBottom.stdev, 3)}</td>
-                <td>{formatNumber(stats.coatingWidth.stdev, 3)}</td>
-                <td>{formatNumber(stats.uncoatedArea.stdev, 3)}</td>
-                <td>{formatNumber(stats.slittingWidth.stdev, 3)}</td>
-                <td>{formatNumber(stats.thicknessAvg.stdev, 3)}</td>
-                <td>{formatNumber(stats.thicknessTop.stdev, 3)}</td>
-                <td>{formatNumber(stats.thicknessMiddle.stdev, 3)}</td>
-                <td>{formatNumber(stats.thicknessBottom.stdev, 3)}</td>
-              </tr>
-              {/* 데이터 행 */}
-              {hasData ? (
-                pressData.map((row, index) => (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>{row.lot}</td>
-                    <td>{row.division}</td>
-                    <td>{formatNumber(calcRowAvg(row.doubleSideTop, row.doubleSideMiddle, row.doubleSideBottom))}</td>
-                    <td>{formatNumber(row.doubleSideTop)}</td>
-                    <td>{formatNumber(row.doubleSideMiddle)}</td>
-                    <td>{formatNumber(row.doubleSideBottom)}</td>
-                    <td>{formatNumber(row.coatingWidth, 1)}</td>
-                    <td>{formatNumber(row.uncoatedArea, 1)}</td>
-                    <td>{formatNumber(row.slittingWidth, 1)}</td>
-                    <td>{formatNumber(calcRowAvg(row.thicknessTop, row.thicknessMiddle, row.thicknessBottom), 0)}</td>
-                    <td>{formatNumber(row.thicknessTop, 0)}</td>
-                    <td>{formatNumber(row.thicknessMiddle, 0)}</td>
-                    <td>{formatNumber(row.thicknessBottom, 0)}</td>
-                  </tr>
-                ))
-              ) : (
+        <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+          {/* 테이블 */}
+          <div style={{ flex: 1, overflow: 'auto' }}>
+            <table className={styles.lqcTable}>
+              <thead>
+                {/* 1행: 대분류 헤더 */}
                 <tr>
-                  <td colSpan={14} className={styles.noDataRow}>
-                    데이터 없음
-                  </td>
+                  <th rowSpan={2}>No.</th>
+                  <th rowSpan={2}>Lot no.</th>
+                  <th rowSpan={2}>구분</th>
+                  <th colSpan={4}>양면(A+B) 면적밀도(mg/㎠)</th>
+                  <th colSpan={4}>전극 두께 검사 (㎛)</th>
                 </tr>
+                {/* 2행: 소분류 헤더 */}
+                <tr>
+                  <th>평균</th>
+                  <th>상단</th>
+                  <th>중단</th>
+                  <th>하단</th>
+                  <th>평균</th>
+                  <th>상단</th>
+                  <th>중단</th>
+                  <th>하단</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* 규격 행 */}
+                <tr className={styles.specRow}>
+                  <td colSpan={3}>규격</td>
+                  <td colSpan={4}>{formatSpec(pressSpecs.doubleSideDensity, 'target-tolerance')}</td>
+                  <td colSpan={4}>{formatSpec(pressSpecs.thickness, 'target-tolerance')}</td>
+                </tr>
+                {/* 평균 행 */}
+                <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
+                  <td colSpan={3}>Ave.</td>
+                  <td>{formatNumber(stats.doubleSideAvg.avg)}</td>
+                  <td>{formatNumber(stats.doubleSideTop.avg)}</td>
+                  <td>{formatNumber(stats.doubleSideMiddle.avg)}</td>
+                  <td>{formatNumber(stats.doubleSideBottom.avg)}</td>
+                  <td>{formatNumber(stats.thicknessAvg.avg, 0)}</td>
+                  <td>{formatNumber(stats.thicknessTop.avg, 0)}</td>
+                  <td>{formatNumber(stats.thicknessMiddle.avg, 0)}</td>
+                  <td>{formatNumber(stats.thicknessBottom.avg, 0)}</td>
+                </tr>
+                {/* 최대값 행 */}
+                <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
+                  <td colSpan={3}>Max.</td>
+                  <td>{formatNumber(stats.doubleSideAvg.max)}</td>
+                  <td>{formatNumber(stats.doubleSideTop.max)}</td>
+                  <td>{formatNumber(stats.doubleSideMiddle.max)}</td>
+                  <td>{formatNumber(stats.doubleSideBottom.max)}</td>
+                  <td>{formatNumber(stats.thicknessAvg.max, 0)}</td>
+                  <td>{formatNumber(stats.thicknessTop.max, 0)}</td>
+                  <td>{formatNumber(stats.thicknessMiddle.max, 0)}</td>
+                  <td>{formatNumber(stats.thicknessBottom.max, 0)}</td>
+                </tr>
+                {/* 최소값 행 */}
+                <tr className={`${styles.summaryRow} ${styles.minRow}`}>
+                  <td colSpan={3}>Min.</td>
+                  <td>{formatNumber(stats.doubleSideAvg.min)}</td>
+                  <td>{formatNumber(stats.doubleSideTop.min)}</td>
+                  <td>{formatNumber(stats.doubleSideMiddle.min)}</td>
+                  <td>{formatNumber(stats.doubleSideBottom.min)}</td>
+                  <td>{formatNumber(stats.thicknessAvg.min, 0)}</td>
+                  <td>{formatNumber(stats.thicknessTop.min, 0)}</td>
+                  <td>{formatNumber(stats.thicknessMiddle.min, 0)}</td>
+                  <td>{formatNumber(stats.thicknessBottom.min, 0)}</td>
+                </tr>
+                {/* 표준편차 행 */}
+                <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
+                  <td colSpan={3}>Stdev.</td>
+                  <td>{formatNumber(stats.doubleSideAvg.stdev, 3)}</td>
+                  <td>{formatNumber(stats.doubleSideTop.stdev, 3)}</td>
+                  <td>{formatNumber(stats.doubleSideMiddle.stdev, 3)}</td>
+                  <td>{formatNumber(stats.doubleSideBottom.stdev, 3)}</td>
+                  <td>{formatNumber(stats.thicknessAvg.stdev, 3)}</td>
+                  <td>{formatNumber(stats.thicknessTop.stdev, 3)}</td>
+                  <td>{formatNumber(stats.thicknessMiddle.stdev, 3)}</td>
+                  <td>{formatNumber(stats.thicknessBottom.stdev, 3)}</td>
+                </tr>
+                {/* 데이터 행 */}
+                {hasData ? (
+                  pressData.map((row, index) => (
+                    <tr key={row.id}>
+                      <td>{index + 1}</td>
+                      <td>{row.lot}</td>
+                      <td>{row.division}</td>
+                      <td>{formatNumber(calcRowAvg(row.doubleSideTop, row.doubleSideMiddle, row.doubleSideBottom))}</td>
+                      <td>{formatNumber(row.doubleSideTop)}</td>
+                      <td>{formatNumber(row.doubleSideMiddle)}</td>
+                      <td>{formatNumber(row.doubleSideBottom)}</td>
+                      <td>{formatNumber(calcRowAvg(row.thicknessTop, row.thicknessMiddle, row.thicknessBottom), 0)}</td>
+                      <td>{formatNumber(row.thicknessTop, 0)}</td>
+                      <td>{formatNumber(row.thicknessMiddle, 0)}</td>
+                      <td>{formatNumber(row.thicknessBottom, 0)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={11} className={styles.noDataRow}>
+                      데이터 없음
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          {/* 차트 */}
+          <div style={{ flex: '0 0 350px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ height: '200px' }}>
+              {hasData ? (
+                <Bar data={thicknessChartData} options={thicknessChartOptions} />
+              ) : (
+                <div className={styles.noDataChart}>데이터 없음</div>
               )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* 차트 */}
-      {hasData && (
-        <div className={styles.tableSection}>
-          <h3 className={styles.tableTitle}>압연 결과 차트</h3>
-          <div style={{ display: 'flex', gap: '20px', marginTop: '16px' }}>
-            <div style={{ flex: 1, height: '250px' }}>
-              <Bar data={thicknessChartData} options={thicknessChartOptions} />
             </div>
-            <div style={{ flex: 1, height: '250px' }}>
-              <Bar data={doubleSideChartData} options={doubleSideChartOptions} />
+            <div style={{ height: '200px' }}>
+              {hasData ? (
+                <Bar data={doubleSideChartData} options={doubleSideChartOptions} />
+              ) : (
+                <div className={styles.noDataChart}>데이터 없음</div>
+              )}
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* 규격 설정 모달 */}
       <SpecEditModal
