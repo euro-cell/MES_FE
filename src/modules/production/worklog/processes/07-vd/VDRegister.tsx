@@ -65,6 +65,11 @@ export default function VdRegister() {
     const payload: VdWorklogPayload = {
       workDate: formValues.workDate || '',
       round: Number(formValues.round) || 0,
+      manufactureDate: formValues.manufactureDate || '',
+      worker: formValues.worker || '',
+      line: formValues.line || '',
+      plant: formValues.plant || '',
+      shift: formValues.shift || '',
 
       // A. 자재 투입 정보 - 양극 매거진
       cathodeMagazineLot1: formValues.cathodeMagazineLot1,

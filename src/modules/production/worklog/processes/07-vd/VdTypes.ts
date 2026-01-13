@@ -9,6 +9,11 @@ export interface VdWorklog {
   writer: string;
   createdAt: string;
   updatedAt: string;
+  manufactureDate: string;
+  worker: string;
+  line: string;
+  plant: string;
+  shift: string;
 
   // ===== A. 자재 투입 정보 (Material Input) =====
   // 양극 매거진 LOT
@@ -97,6 +102,11 @@ export interface VdWorklog {
 export interface VdWorklogPayload {
   workDate: string;
   round: number;
+  manufactureDate: string;
+  worker: string;
+  line: string;
+  plant: string;
+  shift: string;
 
   // ===== A. 자재 투입 정보 =====
   // 양극 매거진 LOT

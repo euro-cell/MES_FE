@@ -55,6 +55,11 @@ export default function VdEdit() {
         const values: Record<string, any> = {
           workDate: data.workDate,
           round: data.round,
+          manufactureDate: data.manufactureDate ?? '',
+          worker: data.worker ?? '',
+          line: data.line ?? '',
+          plant: data.plant ?? '',
+          shift: data.shift ?? '',
 
           // A. 자재 투입 정보
           cathodeMagazineLot1: data.cathodeMagazineLot1 ?? '',
@@ -148,6 +153,11 @@ export default function VdEdit() {
     const payload: VdWorklogPayload = {
       workDate: formValues.workDate || '',
       round: Number(formValues.round) || 0,
+      manufactureDate: formValues.manufactureDate || '',
+      worker: formValues.worker || '',
+      line: formValues.line || '',
+      plant: formValues.plant || '',
+      shift: formValues.shift || '',
 
       // A. 자재 투입 정보
       cathodeMagazineLot1: formValues.cathodeMagazineLot1,
