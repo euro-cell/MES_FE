@@ -115,3 +115,45 @@
   color: #94a3b8;
   font-size: 14px;
 }
+
+/* 요약 행 스타일 */
+.summaryRow {
+  background: #f8fafc !important;
+  font-weight: 500;
+}
+
+.summaryRow td {
+  color: #334155 !important;
+}
+
+.avgRow {
+  background: #eff6ff !important;
+}
+
+.avgRow td {
+  color: #1d4ed8 !important;
+}
+
+.maxRow {
+  background: #fef2f2 !important;
+}
+
+.maxRow td {
+  color: #dc2626 !important;
+}
+
+.minRow {
+  background: #f0fdf4 !important;
+}
+
+.minRow td {
+  color: #16a34a !important;
+}
+
+.stdevRow {
+  background: #faf5ff !important;
+}
+
+.stdevRow td {
+  color: #7c3aed !important;
+}

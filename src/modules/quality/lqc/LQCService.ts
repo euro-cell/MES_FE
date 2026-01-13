@@ -104,3 +104,37 @@ export const saveLQCSpec = async (
   );
   return res.data;
 };
+
+/** Coating 데이터 응답 타입 */
+export interface CoatingData {
+  id: number;
+  lot: string;
+  division: string; // 구분 (전/후)
+  // 단면(A) 면적밀도 (평균은 프론트에서 계산)
+  singleSideTop: number | null;
+  singleSideMiddle: number | null;
+  singleSideBottom: number | null;
+  // 양면(A+B) 면적밀도 (평균은 프론트에서 계산)
+  doubleSideTop: number | null;
+  doubleSideMiddle: number | null;
+  doubleSideBottom: number | null;
+  // 전극 치수 검사
+  coatingWidth: number | null;
+  uncoatedArea: number | null;
+  mismatch: number | null;
+  // 전극 두께 검사 (평균은 프론트에서 계산)
+  thicknessTop: number | null;
+  thicknessMiddle: number | null;
+  thicknessBottom: number | null;
+}
+
+/** Coating 데이터 조회 */
+export const getLQCCoatingData = async (
+  projectId: number,
+  electrode: 'A' | 'C'
+): Promise<CoatingData[]> => {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/coating?electrode=${electrode}`, {
+    withCredentials: true,
+  });
+  return res.data;
+};

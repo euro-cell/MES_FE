@@ -5,6 +5,7 @@ import styles from '../../../styles/quality/lqc/LQCPage.module.css';
 import { getLQCProject } from './LQCService';
 import { createCategoryMenus, createProcessMenus } from './processConfig';
 import MixingCathodeTable from './components/MixingCathodeTable';
+import CoatingCathodeTable from './components/CoatingCathodeTable';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCPage() {
@@ -70,6 +71,8 @@ export default function LQCPage() {
           <div className={styles.placeholder}>세부 공정을 선택하세요.</div>
         ) : process === 'MixingCathode' ? (
           <MixingCathodeTable projectId={Number(projectId)} />
+        ) : process === 'CoatingCathode' ? (
+          <CoatingCathodeTable projectId={Number(projectId)} />
         ) : (
           <div className={styles.placeholder}>{process} LQC 내용</div>
         )}
