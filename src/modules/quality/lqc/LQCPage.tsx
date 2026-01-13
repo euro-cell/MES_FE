@@ -9,7 +9,9 @@ import MixingAnodeTable from './components/MixingAnodeTable';
 import CoatingCathodeTable from './components/CoatingCathodeTable';
 import CoatingAnodeTable from './components/CoatingAnodeTable';
 import PressCathodeTable from './components/PressCathodeTable';
+import PressAnodeTable from './components/PressAnodeTable';
 import VDCathodeTable from './components/VDCathodeTable';
+import VDAnodeTable from './components/VDAnodeTable';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCPage() {
@@ -85,6 +87,10 @@ export default function LQCPage() {
           <MixingAnodeTable projectId={Number(projectId)} />
         ) : process === 'CoatingAnode' ? (
           <CoatingAnodeTable projectId={Number(projectId)} />
+        ) : process === 'PressAnode' ? (
+          <PressAnodeTable projectId={Number(projectId)} />
+        ) : process === 'VDAnode' ? (
+          <VDAnodeTable projectId={Number(projectId)} />
         ) : (
           <div className={styles.placeholder}>{process} LQC 내용</div>
         )}
