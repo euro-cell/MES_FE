@@ -7,6 +7,7 @@ import { createCategoryMenus, createProcessMenus } from './processConfig';
 import MixingCathodeTable from './components/MixingCathodeTable';
 import MixingAnodeTable from './components/MixingAnodeTable';
 import CoatingCathodeTable from './components/CoatingCathodeTable';
+import CoatingAnodeTable from './components/CoatingAnodeTable';
 import PressCathodeTable from './components/PressCathodeTable';
 import VDCathodeTable from './components/VDCathodeTable';
 import type { LQCProject } from './LQCTypes';
@@ -82,6 +83,8 @@ export default function LQCPage() {
           <VDCathodeTable projectId={Number(projectId)} />
         ) : process === 'MixingAnode' ? (
           <MixingAnodeTable projectId={Number(projectId)} />
+        ) : process === 'CoatingAnode' ? (
+          <CoatingAnodeTable projectId={Number(projectId)} />
         ) : (
           <div className={styles.placeholder}>{process} LQC 내용</div>
         )}
