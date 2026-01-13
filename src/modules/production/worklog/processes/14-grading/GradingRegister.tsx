@@ -12,6 +12,18 @@ import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
+// 호기 선택 옵션
+const UNIT_NUMBER_OPTIONS = ['11호기', '12호기', '13호기', '14호기', '15호기', '16호기'];
+
+// grading1~5UnitNumber 필드에 대한 selectFields 설정
+const GRADING_SELECT_FIELDS: Record<string, string[]> = {
+  grading1UnitNumber: UNIT_NUMBER_OPTIONS,
+  grading2UnitNumber: UNIT_NUMBER_OPTIONS,
+  grading3UnitNumber: UNIT_NUMBER_OPTIONS,
+  grading4UnitNumber: UNIT_NUMBER_OPTIONS,
+  grading5UnitNumber: UNIT_NUMBER_OPTIONS,
+};
+
 export default function GradingRegister() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
@@ -130,6 +142,7 @@ export default function GradingRegister() {
           multilineFields={['remark']}
           numericFields={GRADING_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          selectFields={GRADING_SELECT_FIELDS}
         />
       </div>
 

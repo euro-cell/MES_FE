@@ -67,6 +67,7 @@ interface ExcelRendererProps {
   timeFields?: string[];
   numericFields?: string[];
   readOnlyFields?: string[];
+  selectFields?: Record<string, string[]>;
 }
 
 function decodeAddress(addr: string) {
@@ -238,6 +239,7 @@ export default function ExcelRenderer({
   timeFields = [],
   numericFields = [],
   readOnlyFields = [],
+  selectFields = {},
 }: ExcelRendererProps) {
   const sheetData = useMemo((): SheetData | null => {
     if (!workbook) return null;
@@ -430,6 +432,17 @@ export default function ExcelRenderer({
                           onChange={(value) => handleInputChange(rangeName, value)}
                           placeholder={cellValue || '입력...'}
                         />
+                      ) : selectFields[rangeName] ? (
+                        <select
+                          className={styles.cellInput}
+                          value={cellValues[rangeName] ?? ''}
+                          onChange={e => handleInputChange(rangeName, e.target.value)}
+                        >
+                          <option value=''>선택...</option>
+                          {selectFields[rangeName].map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
                       ) : timeFields.includes(rangeName) ? (
                         <input
                           type='time'
