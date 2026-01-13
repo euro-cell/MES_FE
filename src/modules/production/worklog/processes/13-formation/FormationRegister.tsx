@@ -12,6 +12,23 @@ import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import styles from '../../../../../styles/production/worklog/common.module.css';
 
+// 호기 선택 옵션
+const UNIT_NUMBER_OPTIONS = ['11호기', '12호기', '13호기', '14호기', '15호기', '16호기'];
+
+// preFormation1~5UnitNumber, mainFormation1~5UnitNumber 필드에 대한 selectFields 설정
+const FORMATION_SELECT_FIELDS: Record<string, string[]> = {
+  preFormation1UnitNumber: UNIT_NUMBER_OPTIONS,
+  preFormation2UnitNumber: UNIT_NUMBER_OPTIONS,
+  preFormation3UnitNumber: UNIT_NUMBER_OPTIONS,
+  preFormation4UnitNumber: UNIT_NUMBER_OPTIONS,
+  preFormation5UnitNumber: UNIT_NUMBER_OPTIONS,
+  mainFormation1UnitNumber: UNIT_NUMBER_OPTIONS,
+  mainFormation2UnitNumber: UNIT_NUMBER_OPTIONS,
+  mainFormation3UnitNumber: UNIT_NUMBER_OPTIONS,
+  mainFormation4UnitNumber: UNIT_NUMBER_OPTIONS,
+  mainFormation5UnitNumber: UNIT_NUMBER_OPTIONS,
+};
+
 export default function FormationRegister() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
@@ -130,6 +147,7 @@ export default function FormationRegister() {
           multilineFields={['remark']}
           numericFields={FORMATION_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          selectFields={FORMATION_SELECT_FIELDS}
         />
       </div>
 
