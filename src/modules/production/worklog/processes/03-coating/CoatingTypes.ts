@@ -32,6 +32,7 @@ export interface CoatingWorklog {
   monoPumpRear1: number;
   coatingSpeedFront1: number;
   coatingSpeedRear1: number;
+  uncoatedWidth1: number;
   weightPerAreaFront1M: number;
   weightPerAreaFront1C: number;
   weightPerAreaFront1D: number;
@@ -53,6 +54,7 @@ export interface CoatingWorklog {
   monoPumpRear2: number;
   coatingSpeedFront2: number;
   coatingSpeedRear2: number;
+  uncoatedWidth2: number;
   weightPerAreaFront2M: number;
   weightPerAreaFront2C: number;
   weightPerAreaFront2D: number;
@@ -74,6 +76,7 @@ export interface CoatingWorklog {
   monoPumpRear3: number;
   coatingSpeedFront3: number;
   coatingSpeedRear3: number;
+  uncoatedWidth3: number;
   weightPerAreaFront3M: number;
   weightPerAreaFront3C: number;
   weightPerAreaFront3D: number;
@@ -95,6 +98,7 @@ export interface CoatingWorklog {
   monoPumpRear4: number;
   coatingSpeedFront4: number;
   coatingSpeedRear4: number;
+  uncoatedWidth4: number;
   weightPerAreaFront4M: number;
   weightPerAreaFront4C: number;
   weightPerAreaFront4D: number;
@@ -171,6 +175,7 @@ export interface CoatingWorklogPayload {
   monoPumpRear1?: number;
   coatingSpeedFront1?: number;
   coatingSpeedRear1?: number;
+  uncoatedWidth1?: number;
   weightPerAreaFront1M?: number;
   weightPerAreaFront1C?: number;
   weightPerAreaFront1D?: number;
@@ -192,6 +197,7 @@ export interface CoatingWorklogPayload {
   monoPumpRear2?: number;
   coatingSpeedFront2?: number;
   coatingSpeedRear2?: number;
+  uncoatedWidth2?: number;
   weightPerAreaFront2M?: number;
   weightPerAreaFront2C?: number;
   weightPerAreaFront2D?: number;
@@ -213,6 +219,7 @@ export interface CoatingWorklogPayload {
   monoPumpRear3?: number;
   coatingSpeedFront3?: number;
   coatingSpeedRear3?: number;
+  uncoatedWidth3?: number;
   weightPerAreaFront3M?: number;
   weightPerAreaFront3C?: number;
   weightPerAreaFront3D?: number;
@@ -234,6 +241,7 @@ export interface CoatingWorklogPayload {
   monoPumpRear4?: number;
   coatingSpeedFront4?: number;
   coatingSpeedRear4?: number;
+  uncoatedWidth4?: number;
   weightPerAreaFront4M?: number;
   weightPerAreaFront4C?: number;
   weightPerAreaFront4D?: number;
