@@ -250,7 +250,7 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
                 <th rowSpan={2}>작업일자</th>
                 <th rowSpan={2}>구분</th>
                 <th colSpan={4}>전극 수분함량 검사 (ppm)</th>
-                <th colSpan={7}>전극 Lot no.</th>
+                <th colSpan={5}>전극 Lot no.</th>
               </tr>
               {/* 2행: 소분류 헤더 */}
               <tr>
@@ -263,8 +263,6 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
                 <th>3</th>
                 <th>4</th>
                 <th>5</th>
-                <th>6</th>
-                <th>7</th>
               </tr>
             </thead>
             <tbody>
@@ -272,7 +270,7 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
               <tr className={styles.specRow}>
                 <td colSpan={3}>규격</td>
                 <td colSpan={4}>{formatSpec(vdSpecs.moisture, 'max-only')}</td>
-                <td colSpan={7}></td>
+                <td colSpan={5}></td>
               </tr>
               {/* 평균 행 */}
               <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
@@ -281,7 +279,7 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
                 <td>{formatNumber(stats.moisture1.avg)}</td>
                 <td>{formatNumber(stats.moisture2.avg)}</td>
                 <td>{formatNumber(stats.moisture3.avg)}</td>
-                <td colSpan={7}></td>
+                <td colSpan={5}></td>
               </tr>
               {/* 최대값 행 */}
               <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
@@ -290,7 +288,7 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
                 <td>{formatNumber(stats.moisture1.max)}</td>
                 <td>{formatNumber(stats.moisture2.max)}</td>
                 <td>{formatNumber(stats.moisture3.max)}</td>
-                <td colSpan={7}></td>
+                <td colSpan={5}></td>
               </tr>
               {/* 최소값 행 */}
               <tr className={`${styles.summaryRow} ${styles.minRow}`}>
@@ -299,7 +297,7 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
                 <td>{formatNumber(stats.moisture1.min)}</td>
                 <td>{formatNumber(stats.moisture2.min)}</td>
                 <td>{formatNumber(stats.moisture3.min)}</td>
-                <td colSpan={7}></td>
+                <td colSpan={5}></td>
               </tr>
               {/* 표준편차 행 */}
               <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
@@ -308,7 +306,7 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
                 <td>{formatNumber(stats.moisture1.stdev, 3)}</td>
                 <td>{formatNumber(stats.moisture2.stdev, 3)}</td>
                 <td>{formatNumber(stats.moisture3.stdev, 3)}</td>
-                <td colSpan={7}></td>
+                <td colSpan={5}></td>
               </tr>
               {/* 데이터 행 */}
               {hasData ? (
@@ -326,13 +324,11 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
                     <td>{row.lot3 || '-'}</td>
                     <td>{row.lot4 || '-'}</td>
                     <td>{row.lot5 || '-'}</td>
-                    <td>{row.lot6 || '-'}</td>
-                    <td>{row.lot7 || '-'}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={14} className={styles.noDataRow}>
+                  <td colSpan={12} className={styles.noDataRow}>
                     데이터 없음
                   </td>
                 </tr>
