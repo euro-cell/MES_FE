@@ -1,0 +1,177 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 상단 영역 */
+.topSection {
+  display: flex;
+  gap: 24px;
+}
+
+.projectOverview {
+  flex: 0 0 auto;
+}
+
+.gradeClassification {
+  flex: 0 0 auto;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1565c0;
+  margin-bottom: 8px;
+}
+
+/* 프로젝트 개요 테이블 */
+.infoTable {
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #fff;
+  border: 1px solid #000;
+}
+
+.infoTable thead th {
+  background: #1565c0;
+  color: #fff;
+  padding: 6px 12px;
+  border: 1px solid #000;
+  text-align: center;
+  font-weight: 600;
+}
+
+.infoTable tbody th {
+  background: #bbdefb;
+  padding: 6px 12px;
+  border: 1px solid #000;
+  text-align: center;
+  font-weight: 500;
+  color: #000;
+  white-space: nowrap;
+}
+
+.infoTable tbody td {
+  padding: 6px 12px;
+  border: 1px solid #000;
+  text-align: left;
+  color: #000;
+  min-width: 200px;
+}
+
+/* 등급 구분 테이블 */
+.gradeTable {
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #fff;
+  border: 1px solid #000;
+}
+
+.gradeTable thead th {
+  background: #1565c0;
+  color: #fff;
+  padding: 6px 12px;
+  border: 1px solid #000;
+  text-align: center;
+  font-weight: 600;
+}
+
+.gradeTable tbody td {
+  padding: 6px 12px;
+  border: 1px solid #000;
+  color: #000;
+}
+
+.gradeCellCenter {
+  text-align: center;
+  font-weight: 600;
+}
+
+/* 등급별 색상 */
+.gradeGreen {
+  background: #4caf50;
+}
+
+.gradeYellow {
+  background: #ffeb3b;
+}
+
+.gradeRed {
+  background: #f44336;
+  color: #fff;
+}
+
+.gradeRed td {
+  color: #fff;
+}
+
+/* OQC List 테이블 */
+.oqcSection {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.oqcTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #fff;
+  border: 1px solid #000;
+}
+
+.oqcTable th,
+.oqcTable td {
+  padding: 6px 8px;
+  border: 1px solid #000;
+  text-align: center;
+}
+
+.oqcTable thead th {
+  background: #1565c0;
+  color: #fff;
+  font-weight: 600;
+}
+
+.oqcTable tbody td {
+  color: #000;
+}
+
+.categoryCell {
+  background: #bbdefb;
+  font-weight: 600;
+  color: #000;
+  vertical-align: middle;
+}
+
+.itemCell {
+  text-align: left;
+}
+
+.passCell {
+  background: #4caf50;
+  color: #fff;
+  font-weight: 500;
+}
+
+.failCell {
+  background: #f44336;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* 반응형 */
+@media (max-width: 1200px) {
+  .topSection {
+    flex-direction: column;
+  }
+
+  .oqcTable {
+    font-size: 11px;
+  }
+
+  .oqcTable th,
+  .oqcTable td {
+    padding: 4px 6px;
+  }
+}
