@@ -31,72 +31,72 @@ export interface VdWorklog {
   anodeMagazineLot5?: string;
 
   // ===== B. 생산 정보 (Production Info - 5회 반복) =====
-  // 1차 - 양극
-  cathodeLot1?: string;
-  cathodeInputQuantity1?: number;
-  cathodeInputOutputTime1?: string;
-  cathodeMoistureMeasurement1?: number;
+  // 1차 - 상단
+  upperLot1?: string;
+  upperInputQuantity1?: number;
+  upperInputOutputTime1?: string;
+  upperMoistureMeasurement1?: number;
 
-  // 1차 - 음극
-  anodeLot1?: string;
-  anodeInputQuantity1?: number;
-  anodeInputOutputTime1?: string;
-  anodeMoistureMeasurement1?: number;
+  // 1차 - 하단
+  lowerLot1?: string;
+  lowerInputQuantity1?: number;
+  lowerInputOutputTime1?: string;
+  lowerMoistureMeasurement1?: number;
 
-  // 2차 - 양극
-  cathodeLot2?: string;
-  cathodeInputQuantity2?: number;
-  cathodeInputOutputTime2?: string;
-  cathodeMoistureMeasurement2?: number;
+  // 2차 - 상단
+  upperLot2?: string;
+  upperInputQuantity2?: number;
+  upperInputOutputTime2?: string;
+  upperMoistureMeasurement2?: number;
 
-  // 2차 - 음극
-  anodeLot2?: string;
-  anodeInputQuantity2?: number;
-  anodeInputOutputTime2?: string;
-  anodeMoistureMeasurement2?: number;
+  // 2차 - 하단
+  lowerLot2?: string;
+  lowerInputQuantity2?: number;
+  lowerInputOutputTime2?: string;
+  lowerMoistureMeasurement2?: number;
 
-  // 3차 - 양극
-  cathodeLot3?: string;
-  cathodeInputQuantity3?: number;
-  cathodeInputOutputTime3?: string;
-  cathodeMoistureMeasurement3?: number;
+  // 3차 - 상단
+  upperLot3?: string;
+  upperInputQuantity3?: number;
+  upperInputOutputTime3?: string;
+  upperMoistureMeasurement3?: number;
 
-  // 3차 - 음극
-  anodeLot3?: string;
-  anodeInputQuantity3?: number;
-  anodeInputOutputTime3?: string;
-  anodeMoistureMeasurement3?: number;
+  // 3차 - 하단
+  lowerLot3?: string;
+  lowerInputQuantity3?: number;
+  lowerInputOutputTime3?: string;
+  lowerMoistureMeasurement3?: number;
 
-  // 4차 - 양극
-  cathodeLot4?: string;
-  cathodeInputQuantity4?: number;
-  cathodeInputOutputTime4?: string;
-  cathodeMoistureMeasurement4?: number;
+  // 4차 - 상단
+  upperLot4?: string;
+  upperInputQuantity4?: number;
+  upperInputOutputTime4?: string;
+  upperMoistureMeasurement4?: number;
 
-  // 4차 - 음극
-  anodeLot4?: string;
-  anodeInputQuantity4?: number;
-  anodeInputOutputTime4?: string;
-  anodeMoistureMeasurement4?: number;
+  // 4차 - 하단
+  lowerLot4?: string;
+  lowerInputQuantity4?: number;
+  lowerInputOutputTime4?: string;
+  lowerMoistureMeasurement4?: number;
 
-  // 5차 - 양극
-  cathodeLot5?: string;
-  cathodeInputQuantity5?: number;
-  cathodeInputOutputTime5?: string;
-  cathodeMoistureMeasurement5?: number;
+  // 5차 - 상단
+  upperLot5?: string;
+  upperInputQuantity5?: number;
+  upperInputOutputTime5?: string;
+  upperMoistureMeasurement5?: number;
 
-  // 5차 - 음극
-  anodeLot5?: string;
-  anodeInputQuantity5?: number;
-  anodeInputOutputTime5?: string;
-  anodeMoistureMeasurement5?: number;
+  // 5차 - 하단
+  lowerLot5?: string;
+  lowerInputQuantity5?: number;
+  lowerInputOutputTime5?: string;
+  lowerMoistureMeasurement5?: number;
 
   // ===== C. 공정 조건 (Process Conditions) =====
   vacuumDegreeSetting?: number;
-  cathodeSetTemperature?: number;
-  anodeSetTemperature?: number;
-  cathodeTimerTime?: number;
-  anodeTimerTime?: number;
+  upperSetTemperature?: number;
+  lowerSetTemperature?: number;
+  upperTimerTime?: number;
+  lowerTimerTime?: number;
 }
 
 export interface VdWorklogPayload {
@@ -124,70 +124,70 @@ export interface VdWorklogPayload {
   anodeMagazineLot5?: string;
 
   // ===== B. 생산 정보 =====
-  // 1차 - 양극
-  cathodeLot1?: string;
-  cathodeInputQuantity1?: number;
-  cathodeInputOutputTime1?: string;
-  cathodeMoistureMeasurement1?: number;
+  // 1차 - 상단
+  upperLot1?: string;
+  upperInputQuantity1?: number;
+  upperInputOutputTime1?: string;
+  upperMoistureMeasurement1?: number;
 
-  // 1차 - 음극
-  anodeLot1?: string;
-  anodeInputQuantity1?: number;
-  anodeInputOutputTime1?: string;
-  anodeMoistureMeasurement1?: number;
+  // 1차 - 하단
+  lowerLot1?: string;
+  lowerInputQuantity1?: number;
+  lowerInputOutputTime1?: string;
+  lowerMoistureMeasurement1?: number;
 
-  // 2차 - 양극
-  cathodeLot2?: string;
-  cathodeInputQuantity2?: number;
-  cathodeInputOutputTime2?: string;
-  cathodeMoistureMeasurement2?: number;
+  // 2차 - 상단
+  upperLot2?: string;
+  upperInputQuantity2?: number;
+  upperInputOutputTime2?: string;
+  upperMoistureMeasurement2?: number;
 
-  // 2차 - 음극
-  anodeLot2?: string;
-  anodeInputQuantity2?: number;
-  anodeInputOutputTime2?: string;
-  anodeMoistureMeasurement2?: number;
+  // 2차 - 하단
+  lowerLot2?: string;
+  lowerInputQuantity2?: number;
+  lowerInputOutputTime2?: string;
+  lowerMoistureMeasurement2?: number;
 
-  // 3차 - 양극
-  cathodeLot3?: string;
-  cathodeInputQuantity3?: number;
-  cathodeInputOutputTime3?: string;
-  cathodeMoistureMeasurement3?: number;
+  // 3차 - 상단
+  upperLot3?: string;
+  upperInputQuantity3?: number;
+  upperInputOutputTime3?: string;
+  upperMoistureMeasurement3?: number;
 
-  // 3차 - 음극
-  anodeLot3?: string;
-  anodeInputQuantity3?: number;
-  anodeInputOutputTime3?: string;
-  anodeMoistureMeasurement3?: number;
+  // 3차 - 하단
+  lowerLot3?: string;
+  lowerInputQuantity3?: number;
+  lowerInputOutputTime3?: string;
+  lowerMoistureMeasurement3?: number;
 
-  // 4차 - 양극
-  cathodeLot4?: string;
-  cathodeInputQuantity4?: number;
-  cathodeInputOutputTime4?: string;
-  cathodeMoistureMeasurement4?: number;
+  // 4차 - 상단
+  upperLot4?: string;
+  upperInputQuantity4?: number;
+  upperInputOutputTime4?: string;
+  upperMoistureMeasurement4?: number;
 
-  // 4차 - 음극
-  anodeLot4?: string;
-  anodeInputQuantity4?: number;
-  anodeInputOutputTime4?: string;
-  anodeMoistureMeasurement4?: number;
+  // 4차 - 하단
+  lowerLot4?: string;
+  lowerInputQuantity4?: number;
+  lowerInputOutputTime4?: string;
+  lowerMoistureMeasurement4?: number;
 
-  // 5차 - 양극
-  cathodeLot5?: string;
-  cathodeInputQuantity5?: number;
-  cathodeInputOutputTime5?: string;
-  cathodeMoistureMeasurement5?: number;
+  // 5차 - 상단
+  upperLot5?: string;
+  upperInputQuantity5?: number;
+  upperInputOutputTime5?: string;
+  upperMoistureMeasurement5?: number;
 
-  // 5차 - 음극
-  anodeLot5?: string;
-  anodeInputQuantity5?: number;
-  anodeInputOutputTime5?: string;
-  anodeMoistureMeasurement5?: number;
+  // 5차 - 하단
+  lowerLot5?: string;
+  lowerInputQuantity5?: number;
+  lowerInputOutputTime5?: string;
+  lowerMoistureMeasurement5?: number;
 
   // ===== C. 공정 조건 =====
   vacuumDegreeSetting?: number;
-  cathodeSetTemperature?: number;
-  anodeSetTemperature?: number;
-  cathodeTimerTime?: number;
-  anodeTimerTime?: number;
+  upperSetTemperature?: number;
+  lowerSetTemperature?: number;
+  upperTimerTime?: number;
+  lowerTimerTime?: number;
 }

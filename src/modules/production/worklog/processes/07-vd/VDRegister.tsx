@@ -85,92 +85,92 @@ export default function VdRegister() {
       anodeMagazineLot4: formValues.anodeMagazineLot4,
       anodeMagazineLot5: formValues.anodeMagazineLot5,
 
-      // B. 생산 정보 - 1차 양극
-      cathodeLot1: formValues.cathodeLot1,
-      cathodeInputQuantity1: formValues.cathodeInputQuantity1 ? Number(formValues.cathodeInputQuantity1) : undefined,
-      cathodeInputOutputTime1: formValues.cathodeInputOutputTime1,
-      cathodeMoistureMeasurement1: formValues.cathodeMoistureMeasurement1
-        ? Number(formValues.cathodeMoistureMeasurement1)
+      // B. 생산 정보 - 1차 상단
+      upperLot1: formValues.upperLot1,
+      upperInputQuantity1: formValues.upperInputQuantity1 ? Number(formValues.upperInputQuantity1) : undefined,
+      upperInputOutputTime1: formValues.upperInputOutputTime1,
+      upperMoistureMeasurement1: formValues.upperMoistureMeasurement1
+        ? Number(formValues.upperMoistureMeasurement1)
         : undefined,
 
-      // B. 생산 정보 - 1차 음극
-      anodeLot1: formValues.anodeLot1,
-      anodeInputQuantity1: formValues.anodeInputQuantity1 ? Number(formValues.anodeInputQuantity1) : undefined,
-      anodeInputOutputTime1: formValues.anodeInputOutputTime1,
-      anodeMoistureMeasurement1: formValues.anodeMoistureMeasurement1
-        ? Number(formValues.anodeMoistureMeasurement1)
+      // B. 생산 정보 - 1차 하단
+      lowerLot1: formValues.lowerLot1,
+      lowerInputQuantity1: formValues.lowerInputQuantity1 ? Number(formValues.lowerInputQuantity1) : undefined,
+      lowerInputOutputTime1: formValues.lowerInputOutputTime1,
+      lowerMoistureMeasurement1: formValues.lowerMoistureMeasurement1
+        ? Number(formValues.lowerMoistureMeasurement1)
         : undefined,
 
-      // B. 생산 정보 - 2차 양극
-      cathodeLot2: formValues.cathodeLot2,
-      cathodeInputQuantity2: formValues.cathodeInputQuantity2 ? Number(formValues.cathodeInputQuantity2) : undefined,
-      cathodeInputOutputTime2: formValues.cathodeInputOutputTime2,
-      cathodeMoistureMeasurement2: formValues.cathodeMoistureMeasurement2
-        ? Number(formValues.cathodeMoistureMeasurement2)
+      // B. 생산 정보 - 2차 상단
+      upperLot2: formValues.upperLot2,
+      upperInputQuantity2: formValues.upperInputQuantity2 ? Number(formValues.upperInputQuantity2) : undefined,
+      upperInputOutputTime2: formValues.upperInputOutputTime2,
+      upperMoistureMeasurement2: formValues.upperMoistureMeasurement2
+        ? Number(formValues.upperMoistureMeasurement2)
         : undefined,
 
-      // B. 생산 정보 - 2차 음극
-      anodeLot2: formValues.anodeLot2,
-      anodeInputQuantity2: formValues.anodeInputQuantity2 ? Number(formValues.anodeInputQuantity2) : undefined,
-      anodeInputOutputTime2: formValues.anodeInputOutputTime2,
-      anodeMoistureMeasurement2: formValues.anodeMoistureMeasurement2
-        ? Number(formValues.anodeMoistureMeasurement2)
+      // B. 생산 정보 - 2차 하단
+      lowerLot2: formValues.lowerLot2,
+      lowerInputQuantity2: formValues.lowerInputQuantity2 ? Number(formValues.lowerInputQuantity2) : undefined,
+      lowerInputOutputTime2: formValues.lowerInputOutputTime2,
+      lowerMoistureMeasurement2: formValues.lowerMoistureMeasurement2
+        ? Number(formValues.lowerMoistureMeasurement2)
         : undefined,
 
-      // B. 생산 정보 - 3차 양극
-      cathodeLot3: formValues.cathodeLot3,
-      cathodeInputQuantity3: formValues.cathodeInputQuantity3 ? Number(formValues.cathodeInputQuantity3) : undefined,
-      cathodeInputOutputTime3: formValues.cathodeInputOutputTime3,
-      cathodeMoistureMeasurement3: formValues.cathodeMoistureMeasurement3
-        ? Number(formValues.cathodeMoistureMeasurement3)
+      // B. 생산 정보 - 3차 상단
+      upperLot3: formValues.upperLot3,
+      upperInputQuantity3: formValues.upperInputQuantity3 ? Number(formValues.upperInputQuantity3) : undefined,
+      upperInputOutputTime3: formValues.upperInputOutputTime3,
+      upperMoistureMeasurement3: formValues.upperMoistureMeasurement3
+        ? Number(formValues.upperMoistureMeasurement3)
         : undefined,
 
-      // B. 생산 정보 - 3차 음극
-      anodeLot3: formValues.anodeLot3,
-      anodeInputQuantity3: formValues.anodeInputQuantity3 ? Number(formValues.anodeInputQuantity3) : undefined,
-      anodeInputOutputTime3: formValues.anodeInputOutputTime3,
-      anodeMoistureMeasurement3: formValues.anodeMoistureMeasurement3
-        ? Number(formValues.anodeMoistureMeasurement3)
+      // B. 생산 정보 - 3차 하단
+      lowerLot3: formValues.lowerLot3,
+      lowerInputQuantity3: formValues.lowerInputQuantity3 ? Number(formValues.lowerInputQuantity3) : undefined,
+      lowerInputOutputTime3: formValues.lowerInputOutputTime3,
+      lowerMoistureMeasurement3: formValues.lowerMoistureMeasurement3
+        ? Number(formValues.lowerMoistureMeasurement3)
         : undefined,
 
-      // B. 생산 정보 - 4차 양극
-      cathodeLot4: formValues.cathodeLot4,
-      cathodeInputQuantity4: formValues.cathodeInputQuantity4 ? Number(formValues.cathodeInputQuantity4) : undefined,
-      cathodeInputOutputTime4: formValues.cathodeInputOutputTime4,
-      cathodeMoistureMeasurement4: formValues.cathodeMoistureMeasurement4
-        ? Number(formValues.cathodeMoistureMeasurement4)
+      // B. 생산 정보 - 4차 상단
+      upperLot4: formValues.upperLot4,
+      upperInputQuantity4: formValues.upperInputQuantity4 ? Number(formValues.upperInputQuantity4) : undefined,
+      upperInputOutputTime4: formValues.upperInputOutputTime4,
+      upperMoistureMeasurement4: formValues.upperMoistureMeasurement4
+        ? Number(formValues.upperMoistureMeasurement4)
         : undefined,
 
-      // B. 생산 정보 - 4차 음극
-      anodeLot4: formValues.anodeLot4,
-      anodeInputQuantity4: formValues.anodeInputQuantity4 ? Number(formValues.anodeInputQuantity4) : undefined,
-      anodeInputOutputTime4: formValues.anodeInputOutputTime4,
-      anodeMoistureMeasurement4: formValues.anodeMoistureMeasurement4
-        ? Number(formValues.anodeMoistureMeasurement4)
+      // B. 생산 정보 - 4차 하단
+      lowerLot4: formValues.lowerLot4,
+      lowerInputQuantity4: formValues.lowerInputQuantity4 ? Number(formValues.lowerInputQuantity4) : undefined,
+      lowerInputOutputTime4: formValues.lowerInputOutputTime4,
+      lowerMoistureMeasurement4: formValues.lowerMoistureMeasurement4
+        ? Number(formValues.lowerMoistureMeasurement4)
         : undefined,
 
-      // B. 생산 정보 - 5차 양극
-      cathodeLot5: formValues.cathodeLot5,
-      cathodeInputQuantity5: formValues.cathodeInputQuantity5 ? Number(formValues.cathodeInputQuantity5) : undefined,
-      cathodeInputOutputTime5: formValues.cathodeInputOutputTime5,
-      cathodeMoistureMeasurement5: formValues.cathodeMoistureMeasurement5
-        ? Number(formValues.cathodeMoistureMeasurement5)
+      // B. 생산 정보 - 5차 상단
+      upperLot5: formValues.upperLot5,
+      upperInputQuantity5: formValues.upperInputQuantity5 ? Number(formValues.upperInputQuantity5) : undefined,
+      upperInputOutputTime5: formValues.upperInputOutputTime5,
+      upperMoistureMeasurement5: formValues.upperMoistureMeasurement5
+        ? Number(formValues.upperMoistureMeasurement5)
         : undefined,
 
-      // B. 생산 정보 - 5차 음극
-      anodeLot5: formValues.anodeLot5,
-      anodeInputQuantity5: formValues.anodeInputQuantity5 ? Number(formValues.anodeInputQuantity5) : undefined,
-      anodeInputOutputTime5: formValues.anodeInputOutputTime5,
-      anodeMoistureMeasurement5: formValues.anodeMoistureMeasurement5
-        ? Number(formValues.anodeMoistureMeasurement5)
+      // B. 생산 정보 - 5차 하단
+      lowerLot5: formValues.lowerLot5,
+      lowerInputQuantity5: formValues.lowerInputQuantity5 ? Number(formValues.lowerInputQuantity5) : undefined,
+      lowerInputOutputTime5: formValues.lowerInputOutputTime5,
+      lowerMoistureMeasurement5: formValues.lowerMoistureMeasurement5
+        ? Number(formValues.lowerMoistureMeasurement5)
         : undefined,
 
       // C. 공정 조건
       vacuumDegreeSetting: formValues.vacuumDegreeSetting ? Number(formValues.vacuumDegreeSetting) : undefined,
-      cathodeSetTemperature: formValues.cathodeSetTemperature ? Number(formValues.cathodeSetTemperature) : undefined,
-      anodeSetTemperature: formValues.anodeSetTemperature ? Number(formValues.anodeSetTemperature) : undefined,
-      cathodeTimerTime: formValues.cathodeTimerTime ? Number(formValues.cathodeTimerTime) : undefined,
-      anodeTimerTime: formValues.anodeTimerTime ? Number(formValues.anodeTimerTime) : undefined,
+      upperSetTemperature: formValues.upperSetTemperature ? Number(formValues.upperSetTemperature) : undefined,
+      lowerSetTemperature: formValues.lowerSetTemperature ? Number(formValues.lowerSetTemperature) : undefined,
+      upperTimerTime: formValues.upperTimerTime ? Number(formValues.upperTimerTime) : undefined,
+      lowerTimerTime: formValues.lowerTimerTime ? Number(formValues.lowerTimerTime) : undefined,
     };
 
     setSubmitting(true);

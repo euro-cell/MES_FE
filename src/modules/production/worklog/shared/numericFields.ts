@@ -235,17 +235,17 @@ export const NOTCHING_NUMERIC_FIELDS = [
 export const VD_NUMERIC_FIELDS = [
   // 생산 정보 1~5차
   ...['1', '2', '3', '4', '5'].flatMap(n => [
-    `cathodeInputQuantity${n}`,
-    `cathodeMoistureMeasurement${n}`,
-    `anodeInputQuantity${n}`,
-    `anodeMoistureMeasurement${n}`,
+    `upperInputQuantity${n}`,
+    `upperMoistureMeasurement${n}`,
+    `lowerInputQuantity${n}`,
+    `lowerMoistureMeasurement${n}`,
   ]),
   // 공정 조건
   'vacuumDegreeSetting',
-  'cathodeSetTemperature',
-  'anodeSetTemperature',
-  'cathodeTimerTime',
-  'anodeTimerTime',
+  'upperSetTemperature',
+  'lowerSetTemperature',
+  'upperTimerTime',
+  'lowerTimerTime',
 ];
 
 // Forming 숫자 필드
