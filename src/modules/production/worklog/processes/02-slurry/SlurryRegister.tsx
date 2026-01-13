@@ -164,6 +164,7 @@ export default function SlurryRegister() {
           timeFields={SLURRY_TIME_FIELDS}
           numericFields={SLURRY_NUMERIC_FIELDS}
           readOnlyFields={SLURRY_READONLY_FIELDS}
+          dateFields={['manufactureDate']}
         />
       </div>
 

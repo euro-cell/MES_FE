@@ -143,6 +143,7 @@ export default function GradingRegister() {
           numericFields={GRADING_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
           selectFields={GRADING_SELECT_FIELDS}
+          dateFields={['manufactureDate']}
         />
       </div>
 

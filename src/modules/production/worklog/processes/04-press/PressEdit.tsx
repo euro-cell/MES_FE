@@ -124,6 +124,7 @@ export default function PressEdit() {
         className={styles.excelRenderer}
         numericFields={PRESS_NUMERIC_FIELDS}
         readOnlyFields={COMMON_READONLY_FIELDS}
+        dateFields={['manufactureDate']}
       />
     </div>
   );

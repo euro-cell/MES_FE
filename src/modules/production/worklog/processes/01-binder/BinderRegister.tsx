@@ -144,6 +144,7 @@ export default function BinderRegister() {
           ]}
           numericFields={BINDER_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          dateFields={['manufactureDate']}
         />
       </div>
 

@@ -109,6 +109,7 @@ export default function NotchingRegister() {
         className={styles.excelRenderer}
         numericFields={NOTCHING_NUMERIC_FIELDS}
         readOnlyFields={COMMON_READONLY_FIELDS}
+        dateFields={['manufactureDate']}
       />
     </div>
   );

@@ -132,6 +132,7 @@ export default function StackingRegister() {
           timeFields={['jr1WorkTime', 'jr2WorkTime', 'jr3WorkTime', 'jr4WorkTime']}
           numericFields={STACKING_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          dateFields={['manufactureDate']}
         />
       </div>
 

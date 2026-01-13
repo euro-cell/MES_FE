@@ -274,6 +274,7 @@ export default function VdEdit() {
         className={styles.excelRenderer}
         numericFields={VD_NUMERIC_FIELDS}
         readOnlyFields={COMMON_READONLY_FIELDS}
+        dateFields={['manufactureDate']}
       />
     </div>
   );

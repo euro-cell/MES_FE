@@ -162,6 +162,7 @@ export default function FormingRegister() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
         readOnlyFields={COMMON_READONLY_FIELDS}
+        dateFields={['manufactureDate']}
       />
     </div>
   );

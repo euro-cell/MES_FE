@@ -220,6 +220,7 @@ export default function VdRegister() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
         readOnlyFields={COMMON_READONLY_FIELDS}
+        dateFields={['manufactureDate']}
       />
     </div>
   );

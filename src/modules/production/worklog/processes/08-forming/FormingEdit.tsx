@@ -212,6 +212,7 @@ export default function FormingEdit() {
         className={styles.excelRenderer}
         numericFields={FORMING_NUMERIC_FIELDS}
         readOnlyFields={COMMON_READONLY_FIELDS}
+        dateFields={['manufactureDate']}
       />
     </div>
   );

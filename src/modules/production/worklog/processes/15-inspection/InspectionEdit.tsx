@@ -149,6 +149,7 @@ export default function InspectionEdit() {
           multilineFields={['remark']}
           numericFields={INSPECTION_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          dateFields={['manufactureDate']}
         />
       </div>
 

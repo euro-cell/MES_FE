@@ -65,6 +65,7 @@ interface ExcelRendererProps {
   className?: string;
   multilineFields?: string[];
   timeFields?: string[];
+  dateFields?: string[];
   numericFields?: string[];
   readOnlyFields?: string[];
   selectFields?: Record<string, string[]>;
@@ -237,6 +238,7 @@ export default function ExcelRenderer({
   className = '',
   multilineFields = [],
   timeFields = [],
+  dateFields = [],
   numericFields = [],
   readOnlyFields = [],
   selectFields = {},
@@ -443,6 +445,13 @@ export default function ExcelRenderer({
                             <option key={option} value={option}>{option}</option>
                           ))}
                         </select>
+                      ) : dateFields.includes(rangeName) ? (
+                        <input
+                          type='date'
+                          className={styles.cellInput}
+                          value={cellValues[rangeName] ?? ''}
+                          onChange={e => handleInputChange(rangeName, e.target.value)}
+                        />
                       ) : timeFields.includes(rangeName) ? (
                         <input
                           type='time'

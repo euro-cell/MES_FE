@@ -131,6 +131,7 @@ export default function WeldingRegister() {
           multilineFields={['remark', 'preWeldingDefectRemark', 'mainWeldingDefectRemark', 'hipot2DefectRemark', 'tapingDefectRemark']}
           numericFields={WELDING_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          dateFields={['manufactureDate']}
         />
       </div>
 

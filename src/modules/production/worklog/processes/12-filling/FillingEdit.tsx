@@ -149,6 +149,7 @@ export default function FillingEdit() {
           multilineFields={['remark']}
           numericFields={FILLING_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          dateFields={['manufactureDate']}
         />
       </div>
 

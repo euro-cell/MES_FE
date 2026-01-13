@@ -149,6 +149,7 @@ export default function CoatingEdit() {
           timeFields={[]}
           numericFields={COATING_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          dateFields={['manufactureDate']}
         />
       </div>
 

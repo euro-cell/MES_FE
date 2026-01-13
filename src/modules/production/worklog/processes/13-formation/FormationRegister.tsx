@@ -148,6 +148,7 @@ export default function FormationRegister() {
           numericFields={FORMATION_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
           selectFields={FORMATION_SELECT_FIELDS}
+          dateFields={['manufactureDate']}
         />
       </div>
 
