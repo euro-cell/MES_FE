@@ -138,3 +138,33 @@ export const getLQCCoatingData = async (
   });
   return res.data;
 };
+
+/** Press 데이터 응답 타입 */
+export interface PressData {
+  id: number;
+  lot: string;
+  division: string; // 구분 (전/후)
+  // 양면(A+B) 면적밀도 (평균은 프론트에서 계산)
+  doubleSideTop: number | null;
+  doubleSideMiddle: number | null;
+  doubleSideBottom: number | null;
+  // 전극 치수 검사
+  coatingWidth: number | null;
+  uncoatedArea: number | null;
+  slittingWidth: number | null;
+  // 전극 두께 검사 (평균은 프론트에서 계산)
+  thicknessTop: number | null;
+  thicknessMiddle: number | null;
+  thicknessBottom: number | null;
+}
+
+/** Press 데이터 조회 */
+export const getLQCPressData = async (
+  projectId: number,
+  electrode: 'A' | 'C'
+): Promise<PressData[]> => {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/press?electrode=${electrode}`, {
+    withCredentials: true,
+  });
+  return res.data;
+};
