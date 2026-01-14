@@ -23,7 +23,6 @@ export default function DrawIndex() {
         <Routes>
           <Route path='factory' element={<DrawListPage />} />
           <Route path='cell' element={<PlaceholderPage title='셀 도면' />} />
-          <Route path='register' element={<PlaceholderPage title='도면 등록' />} />
           <Route path='list' element={<PlaceholderPage title='도면 관리 대장' />} />
         </Routes>
       </div>

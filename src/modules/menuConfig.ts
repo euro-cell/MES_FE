@@ -48,7 +48,6 @@ export const MENU_CONFIG = {
     sub: [
       { title: '공장 도면', path: '/draw/factory' },
       { title: '셀 도면', path: '/draw/cell' },
-      { title: '도면 등록', path: '/draw/register' },
       { title: '도면 관리 대장', path: '/draw/list' },
     ],
   },
