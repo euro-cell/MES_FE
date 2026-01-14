@@ -33,9 +33,11 @@ export const createEquipment = async (payload: EquipmentPayload): Promise<Equipm
   return res.data;
 };
 
-/** 설비 수정 - TODO: API 연동 필요 */
-export const updateEquipment = async (_id: number, _payload: EquipmentPayload): Promise<Equipment> => {
-  throw new Error('수정 API 미구현');
+/** 설비 수정 */
+export const updateEquipment = async (id: number, payload: EquipmentPayload): Promise<Equipment> => {
+  const sanitized = sanitizePayload(payload);
+  const res = await axios.patch(`${API_BASE}/equipment/${id}`, sanitized, { withCredentials: true });
+  return res.data;
 };
 
 /** 설비 삭제 - TODO: API 연동 필요 */
