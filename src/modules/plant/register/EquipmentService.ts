@@ -40,7 +40,7 @@ export const updateEquipment = async (id: number, payload: EquipmentPayload): Pr
   return res.data;
 };
 
-/** 설비 삭제 - TODO: API 연동 필요 */
-export const deleteEquipment = async (_id: number): Promise<void> => {
-  throw new Error('삭제 API 미구현');
+/** 설비 삭제 */
+export const deleteEquipment = async (id: number): Promise<void> => {
+  await axios.delete(`${API_BASE}/equipment/${id}`, { withCredentials: true });
 };
