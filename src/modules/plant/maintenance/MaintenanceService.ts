@@ -27,10 +27,14 @@ export const createMaintenanceRecord = async (payload: MaintenancePayload): Prom
 
 /** 유지보수 기록 수정 */
 export const updateMaintenanceRecord = async (
-  _id: number,
-  _payload: MaintenancePayload
+  id: number,
+  payload: MaintenancePayload
 ): Promise<MaintenanceRecord> => {
-  throw new Error('Not implemented');
+  const sanitized = sanitizePayload(payload);
+  const res = await axios.patch(`${API_BASE}/equipment/maintenance/${id}`, sanitized, {
+    withCredentials: true,
+  });
+  return res.data;
 };
 
 /** 유지보수 기록 삭제 */
