@@ -4,7 +4,7 @@ import React from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { ROLE_LABELS } from '../modules/old/users/userRoleMap';
+import { ROLE_LABELS } from '../modules/etc/user/userRoleMap';
 import { MENU_CONFIG } from '../modules/menuConfig';
 import styles from '../styles/topbar.module.css';
 
@@ -31,19 +31,7 @@ const Topbar: React.FC = () => {
   const currentMenu = allMenus.find(menu => location.pathname.startsWith(menu.path)) || null;
 
   // ✅ 기본 페이지명
-  const pageTitle =
-    currentMenu?.title ||
-    (() => {
-      // 기존 modules용 라우트도 표시 가능하게 보완
-      if (location.pathname.startsWith('/dashboard')) return '대시보드';
-      if (location.pathname.startsWith('/users')) return '인원관리';
-      if (location.pathname.startsWith('/production')) return '생산관리';
-      if (location.pathname.startsWith('/specification')) return '전지설계';
-      if (location.pathname.startsWith('/material')) return '자재관리';
-      if (location.pathname.startsWith('/status')) return '공정현황';
-      if (location.pathname.startsWith('/permission')) return '메뉴접근관리';
-      return '유로셀 MES';
-    })();
+  const pageTitle = currentMenu?.title || '유로셀 MES';
 
   return (
     <div className={styles.topBar}>

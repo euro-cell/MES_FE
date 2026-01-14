@@ -15,11 +15,6 @@ import Plant from './modules/plant';
 import Draw from './modules/draw';
 import Etc from './modules/etc';
 
-// ✅ Old 모듈 (임시 유지)
-import MaterialOld from './modules/old/material';
-import StatusOld from './modules/old/status';
-import UsersOld from './modules/old/users';
-import PermissionOld from './modules/old/permission';
 
 function ProtectedRoute({ children }: { children: ReactElement }) {
   const { isAuthenticated, loading } = useAuth();
@@ -122,51 +117,6 @@ function App() {
           <ProtectedRoute>
             <BaseLayout>
               <Etc />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      {/* ✅ Old 메뉴 라우팅 (임시 유지) */}
-      <Route
-        path='/material/*'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <MaterialOld />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path='/status/*'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <StatusOld />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path='/users/*'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <UsersOld />
-            </BaseLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path='/permission/*'
-        element={
-          <ProtectedRoute>
-            <BaseLayout>
-              <PermissionOld />
             </BaseLayout>
           </ProtectedRoute>
         }

@@ -21,7 +21,7 @@ export default function PlantIndex() {
 
       <div className='module-content'>
         <Routes>
-          <Route path='production' element={<PlantProductionPage />} />
+          <Route path='production/*' element={<PlantProductionPage />} />
           <Route path='development' element={<PlaceholderPage title='개발' />} />
           <Route path='measurement' element={<PlaceholderPage title='측정' />} />
           <Route path='register' element={<PlaceholderPage title='설비 등록' />} />

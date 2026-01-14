@@ -70,7 +70,6 @@ export default function UserForm({ user, onClose }: Props) {
             required
           />
 
-          {/* ✅ 직급 선택 */}
           <div>
             <select name='position' value={form.position} onChange={handleChange} size={5}>
               {Object.entries(ROLE_LABELS).map(([key, label]) => (
@@ -81,7 +80,6 @@ export default function UserForm({ user, onClose }: Props) {
             </select>
           </div>
 
-          {/* ✅ 비밀번호 입력 (수정 시 선택 사항) */}
           <input
             type='password'
             name='password'

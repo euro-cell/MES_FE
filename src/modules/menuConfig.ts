@@ -58,8 +58,8 @@ export const MENU_CONFIG = {
     title: '기타',
     path: '/etc',
     sub: [
-      { title: '인원등록', path: '/etc/user' },
-      { title: '메뉴접근관리', path: '/etc/perm' },
+      { title: '인원등록', path: '/etc/users' },
+      { title: '메뉴접근관리', path: '/etc/permission' },
       { title: '환경관리', path: '/etc/condition' },
       { title: '고객 코드 관리 대장', path: '/etc/customer' },
     ],

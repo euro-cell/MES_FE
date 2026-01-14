@@ -1,4 +1,3 @@
-// 📄 src/modules/users/userService.ts
 import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -23,7 +22,6 @@ const fromBackend = (user: any): User => ({
   createdAt: user.createdAt,
 });
 
-// ✅ position → role로 매핑 (등록/수정 시 백엔드로 보낼 때)
 const toBackend = (user: Partial<User>) => ({
   ...user,
   role: user.position,

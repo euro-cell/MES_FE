@@ -35,15 +35,6 @@ const Sidebar: React.FC = () => {
           </li>
         ))}
 
-        <hr />
-
-        {/* ✅ 기존 메뉴 (임시 유지) */}
-        <li onClick={() => navigate('/material')}>자재관리</li>
-        <li></li>
-        <li onClick={() => navigate('/status')}>공정현황</li>
-        <li></li>
-        <li onClick={() => navigate('/users')}>인원관리</li>
-        <li onClick={() => navigate('/permission')}>메뉴접근관리</li>
       </ul>
     </aside>
   );

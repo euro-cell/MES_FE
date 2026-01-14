@@ -22,7 +22,6 @@ export default function UserPermission() {
   const [menus, setMenus] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
-  /** ✅ 사용자별 권한 전체 조회 */
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -30,13 +29,12 @@ export default function UserPermission() {
       setUsers(res.data.users);
       setMenus(res.data.menus);
     } catch (err) {
-      console.error('❌ 사용자별 권한 조회 실패:', err);
+      console.error('사용자별 권한 조회 실패:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  /** ✅ 체크박스 상태 토글 */
   const toggle = (userId: number, menu: string, field: keyof PermissionCell) => {
     setUsers(prev =>
       prev.map(u =>
@@ -56,14 +54,13 @@ export default function UserPermission() {
     );
   };
 
-  /** ✅ 변경사항 저장 */
   const handleSave = async () => {
     try {
       await axios.put(`${API_BASE}/permission/user`, users, { withCredentials: true });
-      alert('✅ 사용자별 권한이 저장되었습니다.');
+      alert('사용자별 권한이 저장되었습니다.');
     } catch (err) {
-      console.error('❌ 사용자별 권한 저장 실패:', err);
-      alert('❌ 저장 실패');
+      console.error('사용자별 권한 저장 실패:', err);
+      alert('저장 실패');
     }
   };
 

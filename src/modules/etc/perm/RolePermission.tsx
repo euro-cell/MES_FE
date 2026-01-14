@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from '../../../styles/permission.module.css';
-import { ROLE_LABELS } from '../users/userRoleMap';
+import { ROLE_LABELS } from '../user/userRoleMap';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -24,7 +24,6 @@ export default function RolePermission() {
   const [permissions, setPermissions] = useState<RoleMenuPermission[]>([]);
   const [loading, setLoading] = useState(true);
 
-  /** ✅ 전체 직급별 권한 조회 */
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -34,13 +33,12 @@ export default function RolePermission() {
       setPermissions(res.data.roles);
       setRoles(res.data.roles.map((r: any) => r.role));
     } catch (err) {
-      console.error('❌ 직급별 권한 조회 실패:', err);
+      console.error('직급별 권한 조회 실패:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  /** ✅ 체크박스 토글 */
   const toggle = (role: RoleType, menu: string, field: keyof PermissionCell) => {
     setPermissions(prev =>
       prev.map(r =>
@@ -60,14 +58,13 @@ export default function RolePermission() {
     );
   };
 
-  /** ✅ 변경사항 저장 */
   const handleSave = async () => {
     try {
       await axios.put(`${API_BASE}/permission/role`, permissions, { withCredentials: true });
-      alert('✅ 직급별 권한이 저장되었습니다.');
+      alert('직급별 권한이 저장되었습니다.');
     } catch (err) {
-      console.error('❌ 직급별 권한 저장 실패:', err);
-      alert('❌ 저장 실패');
+      console.error('직급별 권한 저장 실패:', err);
+      alert('저장 실패');
     }
   };
 

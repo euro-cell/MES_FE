@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUsers, deleteUser, toggleUserActive } from './userService'; // ✅ 추가
+import { getUsers, deleteUser, toggleUserActive } from './userService';
 import type { User } from './userService';
 import { ROLE_LABELS } from './userRoleMap';
 import UserForm from './UserForm';
@@ -51,9 +51,9 @@ export default function UserList() {
       setUsers(prev => prev.map(u => (u.id === user.id ? { ...u, isActive: !u.isActive } : u)));
 
       if (newState) {
-        alert(`✅ ${user.name}님의 계정이 활성화되었습니다.`);
+        alert(`${user.name}님의 계정이 활성화되었습니다.`);
       } else {
-        alert(`⚠️ ${user.name}님의 계정이 비활성화되었습니다.`);
+        alert(`${user.name}님의 계정이 비활성화되었습니다.`);
       }
     } catch (err) {
       console.error('활성 상태 변경 실패:', err);
@@ -66,7 +66,7 @@ export default function UserList() {
   return (
     <div className={styles.userListContainer}>
       <div className={styles.userListHeader}>
-        <h2>👥 인원 전체 리스트</h2>
+        <h2>인원 전체 리스트</h2>
         <button className={styles.btnPrimary} onClick={() => setShowForm(true)}>
           + 인원 추가
         </button>
@@ -101,14 +101,13 @@ export default function UserList() {
                 <td>{u.department}</td>
                 <td>{ROLE_LABELS[u.position] || u.position}</td>
 
-                {/* ✅ 활성 상태 토글 */}
                 <td
                   className={styles.activeStatus}
                   onClick={() => handleToggleActive(u)}
                   style={{ cursor: 'pointer' }}
                   title='클릭하여 상태 변경'
                 >
-                  {u.isActive ? '✅' : '❌'}
+                  {u.isActive ? 'O' : 'X'}
                 </td>
 
                 <td>{new Date(u.createdAt).toLocaleDateString()}</td>
