@@ -1,8 +1,11 @@
 export type EquipmentCategory = '생산' | '개발' | '측정';
 
+export type EquipmentProcess = '전극' | '조립' | '화성';
+
 export interface Equipment {
   id: number;
   category: EquipmentCategory;
+  processType?: EquipmentProcess; // 공정 (전극/조립/화성)
 
   // 공통 필드
   assetNo: string;           // 자산번호

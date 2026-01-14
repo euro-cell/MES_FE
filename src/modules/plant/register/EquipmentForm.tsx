@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from '../../../styles/plant/Equipment.module.css';
 import { createEquipment, updateEquipment } from './EquipmentService';
-import type { Equipment, EquipmentCategory, EquipmentPayload } from './EquipmentTypes';
+import type { Equipment, EquipmentCategory, EquipmentPayload, EquipmentProcess } from './EquipmentTypes';
 
 const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
   '생산': '생산 설비',
@@ -10,8 +10,9 @@ const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
   '측정': '측정 설비',
 };
 
+const PROCESS_TYPES: EquipmentProcess[] = ['전극', '조립', '화성'];
 const GRADES = ['A', 'B', 'C'];
-const MAINTENANCE_METHODS = ['정기점검', '수시점검', '교정', '자체점검'];
+const MAINTENANCE_METHODS = ['사전', '사후', '폐기', '폐기예정'];
 
 export default function EquipmentForm() {
   const navigate = useNavigate();
@@ -21,13 +22,14 @@ export default function EquipmentForm() {
   const isEdit = !!editingEquipment;
 
   const [formData, setFormData] = useState<Omit<EquipmentPayload, 'category'>>({
+    processType: editingEquipment?.processType || undefined,
     assetNo: editingEquipment?.assetNo || '',
     equipmentNo: editingEquipment?.equipmentNo || '',
     name: editingEquipment?.name || '',
     manufacturer: editingEquipment?.manufacturer || '',
     purchaseDate: editingEquipment?.purchaseDate || '',
     grade: editingEquipment?.grade || 'A',
-    maintenanceMethod: editingEquipment?.maintenanceMethod || '정기점검',
+    maintenanceMethod: editingEquipment?.maintenanceMethod || '',
     remark: editingEquipment?.remark || '',
     deviceNo: editingEquipment?.deviceNo || '',
     calibrationDate: editingEquipment?.calibrationDate || '',
@@ -35,7 +37,7 @@ export default function EquipmentForm() {
     calibrationAgency: editingEquipment?.calibrationAgency || '',
   });
 
-  const handleChange = (field: keyof typeof formData, value: string) => {
+  const handleChange = (field: keyof typeof formData, value: string | undefined) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -74,6 +76,19 @@ export default function EquipmentForm() {
       </div>
 
       <div className={styles.formGrid}>
+        <div className={styles.formGroup}>
+          <label>공정</label>
+          <select
+            value={formData.processType || ''}
+            onChange={e => handleChange('processType', e.target.value || undefined)}
+          >
+            <option value="">선택 안함</option>
+            {PROCESS_TYPES.map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+        </div>
+
         <div className={styles.formGroup}>
           <label>자산번호 *</label>
           <input
@@ -137,14 +152,18 @@ export default function EquipmentForm() {
 
         <div className={styles.formGroup}>
           <label>보전방법</label>
-          <select
+          <input
+            type="text"
+            list="maintenanceMethodList"
             value={formData.maintenanceMethod}
             onChange={e => handleChange('maintenanceMethod', e.target.value)}
-          >
+            placeholder="선택 또는 직접 입력"
+          />
+          <datalist id="maintenanceMethodList">
             {MAINTENANCE_METHODS.map(method => (
-              <option key={method} value={method}>{method}</option>
+              <option key={method} value={method} />
             ))}
-          </select>
+          </datalist>
         </div>
 
         {isMeasurement && (

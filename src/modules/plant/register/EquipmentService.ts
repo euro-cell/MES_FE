@@ -1,10 +1,14 @@
+import axios from 'axios';
 import type { Equipment, EquipmentPayload, EquipmentCategory } from './EquipmentTypes';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 // Mock 데이터
 let mockEquipments: Equipment[] = [
   {
     id: 1,
     category: '생산',
+    processType: '전극',
     assetNo: 'A-2024-001',
     equipmentNo: 'EQ-P-001',
     name: 'Coating Machine #1',
@@ -17,6 +21,7 @@ let mockEquipments: Equipment[] = [
   {
     id: 2,
     category: '생산',
+    processType: '조립',
     assetNo: 'A-2024-002',
     equipmentNo: 'EQ-P-002',
     name: 'Press Machine #1',
@@ -28,6 +33,7 @@ let mockEquipments: Equipment[] = [
   {
     id: 3,
     category: '개발',
+    processType: '화성',
     assetNo: 'A-2024-003',
     equipmentNo: 'EQ-D-001',
     name: 'Test Chamber',
@@ -68,8 +74,6 @@ let mockEquipments: Equipment[] = [
   },
 ];
 
-let nextId = 6;
-
 /** 설비 목록 조회 */
 export const getEquipments = async (category?: EquipmentCategory): Promise<Equipment[]> => {
   await delay(300);
@@ -85,15 +89,18 @@ export const getEquipment = async (id: number): Promise<Equipment | undefined> =
   return mockEquipments.find(e => e.id === id);
 };
 
+/** 빈 문자열을 null로 변환 */
+const sanitizePayload = (payload: EquipmentPayload) => {
+  return Object.fromEntries(
+    Object.entries(payload).map(([key, value]) => [key, value === '' ? null : value])
+  );
+};
+
 /** 설비 등록 */
 export const createEquipment = async (payload: EquipmentPayload): Promise<Equipment> => {
-  await delay(300);
-  const newEquipment: Equipment = {
-    ...payload,
-    id: nextId++,
-  };
-  mockEquipments.push(newEquipment);
-  return newEquipment;
+  const sanitized = sanitizePayload(payload);
+  const res = await axios.post(`${API_BASE}/equipment`, sanitized, { withCredentials: true });
+  return res.data;
 };
 
 /** 설비 수정 */
