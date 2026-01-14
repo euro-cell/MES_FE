@@ -1,4 +1,7 @@
+import axios from 'axios';
 import type { MaintenanceRecord, MaintenancePayload } from './MaintenanceTypes';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 // Mock 데이터
 let mockRecords: MaintenanceRecord[] = [
@@ -30,46 +33,34 @@ let mockRecords: MaintenanceRecord[] = [
   },
 ];
 
-let nextId = 3;
+/** 빈 문자열을 null로 변환 */
+const sanitizePayload = (payload: MaintenancePayload) => {
+  return Object.fromEntries(Object.entries(payload).map(([key, value]) => [key, value === '' ? null : value]));
+};
 
-/** 딜레이 유틸 */
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-/** 유지보수 기록 목록 조회 */
+/** 유지보수 기록 목록 조회 (Mock) */
 export const getMaintenanceRecords = async (): Promise<MaintenanceRecord[]> => {
-  await delay(300);
   return [...mockRecords];
 };
 
 /** 유지보수 기록 등록 */
 export const createMaintenanceRecord = async (payload: MaintenancePayload): Promise<MaintenanceRecord> => {
-  await delay(300);
-  const newRecord: MaintenanceRecord = {
-    ...payload,
-    id: nextId++,
-  };
-  mockRecords.push(newRecord);
-  return newRecord;
+  const sanitized = sanitizePayload(payload);
+  const res = await axios.post(`${API_BASE}/equipment/maintenance`, sanitized, {
+    withCredentials: true,
+  });
+  return res.data;
 };
 
 /** 유지보수 기록 수정 */
-export const updateMaintenanceRecord = async (id: number, payload: MaintenancePayload): Promise<MaintenanceRecord> => {
-  await delay(300);
-  const index = mockRecords.findIndex(r => r.id === id);
-  if (index === -1) {
-    throw new Error('기록을 찾을 수 없습니다.');
-  }
-  const updated: MaintenanceRecord = { ...mockRecords[index], ...payload, id };
-  mockRecords[index] = updated;
-  return updated;
+export const updateMaintenanceRecord = async (
+  _id: number,
+  _payload: MaintenancePayload
+): Promise<MaintenanceRecord> => {
+  throw new Error('Not implemented');
 };
 
 /** 유지보수 기록 삭제 */
-export const deleteMaintenanceRecord = async (id: number): Promise<void> => {
-  await delay(300);
-  const index = mockRecords.findIndex(r => r.id === id);
-  if (index === -1) {
-    throw new Error('기록을 찾을 수 없습니다.');
-  }
-  mockRecords.splice(index, 1);
+export const deleteMaintenanceRecord = async (_id: number): Promise<void> => {
+  throw new Error('Not implemented');
 };
