@@ -4,6 +4,14 @@ import SubmenuBar from '../../components/SubmenuBar';
 import styles from '../../styles/moduleIndex.module.css';
 import DrawListPage from './list/DrawListPage';
 
+// 임시 플레이스홀더 컴포넌트
+const PlaceholderPage = ({ title }: { title: string }) => (
+  <div style={{ padding: '20px' }}>
+    <h2>{title}</h2>
+    <p>준비 중입니다.</p>
+  </div>
+);
+
 export default function DrawIndex() {
   const { sub } = MENU_CONFIG.draw;
 
@@ -13,7 +21,10 @@ export default function DrawIndex() {
 
       <div className='module-content'>
         <Routes>
-          <Route path='list' element={<DrawListPage />} />
+          <Route path='factory' element={<DrawListPage />} />
+          <Route path='cell' element={<PlaceholderPage title='셀 도면' />} />
+          <Route path='register' element={<PlaceholderPage title='도면 등록' />} />
+          <Route path='list' element={<PlaceholderPage title='도면 관리 대장' />} />
         </Routes>
       </div>
     </div>

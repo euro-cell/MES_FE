@@ -4,17 +4,17 @@ import styles from '../../../styles/quality/lqc/LQCPage.module.css';
 import PdfViewer from './components/PdfViewer';
 import { getDrawingUrl } from './DrawService';
 
-const FACTORY_MENUS = [{ title: '오산 공장', path: '/draw/list?factory=osan' }];
+const FACTORY_MENUS = [{ title: '오산 공장', path: '/draw/factory?location=osan' }];
 
 const OSAN_FLOOR_MENUS = [
-  { title: '1층', path: '/draw/list?factory=osan&floor=floor1' },
-  { title: '2층', path: '/draw/list?factory=osan&floor=floor2' },
+  { title: '1층', path: '/draw/factory?location=osan&floor=1' },
+  { title: '2층', path: '/draw/factory?location=osan&floor=2' },
 ];
 
 export default function DrawListPage() {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const factory = searchParams.get('factory');
+  const routerLocation = useLocation();
+  const searchParams = new URLSearchParams(routerLocation.search);
+  const location = searchParams.get('location');
   const floor = searchParams.get('floor');
 
   return (
@@ -22,17 +22,17 @@ export default function DrawListPage() {
       <SubmenuBar menus={FACTORY_MENUS} />
 
       <div className={styles.content}>
-        {!factory ? (
+        {!location ? (
           <div className={styles.placeholder}>메뉴를 선택하세요.</div>
-        ) : factory === 'osan' ? (
+        ) : location === 'osan' ? (
           <div>
             <SubmenuBar menus={OSAN_FLOOR_MENUS} />
             {!floor ? (
               <div className={styles.placeholder}>층을 선택하세요.</div>
             ) : (
               <PdfViewer
-                pdfUrl={getDrawingUrl('factory', 'osan', floor)}
-                title={`오산 공장 ${floor === 'floor1' ? '1' : '2'}층 도면`}
+                pdfUrl={getDrawingUrl('factory', 'osan', `floor${floor}`)}
+                title={`오산 공장 ${floor}층 도면`}
               />
             )}
           </div>

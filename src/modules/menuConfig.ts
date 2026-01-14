@@ -36,15 +36,22 @@ export const MENU_CONFIG = {
     title: '설비 관리',
     path: '/plant',
     sub: [
-      { title: '설비 이력 카드', path: '/plant/history' },
-      { title: '설비 관리 대장', path: '/plant/list' },
+      { title: '생산', path: '/plant/production' },
+      { title: '개발', path: '/plant/development' },
+      { title: '측정', path: '/plant/measurement' },
+      { title: '설비 등록', path: '/plant/register' },
     ],
   },
 
   draw: {
     title: '도면 관리',
     path: '/draw',
-    sub: [{ title: '도면 관리 대장', path: '/draw/list' }],
+    sub: [
+      { title: '공장 도면', path: '/draw/factory' },
+      { title: '셀 도면', path: '/draw/cell' },
+      { title: '도면 등록', path: '/draw/register' },
+      { title: '도면 관리 대장', path: '/draw/list' },
+    ],
   },
 
   etc: {
