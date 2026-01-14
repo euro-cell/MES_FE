@@ -38,6 +38,8 @@ export const updateMaintenanceRecord = async (
 };
 
 /** 유지보수 기록 삭제 */
-export const deleteMaintenanceRecord = async (_id: number): Promise<void> => {
-  throw new Error('Not implemented');
+export const deleteMaintenanceRecord = async (id: number): Promise<void> => {
+  await axios.delete(`${API_BASE}/equipment/maintenance/${id}`, {
+    withCredentials: true,
+  });
 };
