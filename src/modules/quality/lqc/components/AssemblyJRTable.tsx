@@ -438,7 +438,7 @@ export default function AssemblyJRTable({ projectId }: AssemblyJRTableProps) {
               {/* 데이터 행 */}
               {hasData ? (
                 data.map((row, index) => (
-                  <tr key={row.id}>
+                  <tr key={`${row.id}-${index}`}>
                     <td>{index + 1}</td>
                     <td>{row.workDate}</td>
                     <td>{row.lot}</td>

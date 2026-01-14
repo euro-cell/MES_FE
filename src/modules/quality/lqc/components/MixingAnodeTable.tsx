@@ -437,7 +437,7 @@ export default function MixingAnodeTable({ projectId }: MixingAnodeTableProps) {
                 </tr>
                 {binderData.length > 0 ? (
                   binderData.map((row, index) => (
-                    <tr key={row.id}>
+                    <tr key={`${row.id}-${index}`}>
                       <td>{index + 1}</td>
                       <td>{row.manufactureDate}</td>
                       <td>{row.lot}</td>
@@ -506,7 +506,7 @@ export default function MixingAnodeTable({ projectId }: MixingAnodeTableProps) {
                 </tr>
                 {slurryData.length > 0 ? (
                   slurryData.map((row, index) => (
-                    <tr key={row.id}>
+                    <tr key={`${row.id}-${index}`}>
                       <td>{index + 1}</td>
                       <td>{row.manufactureDate}</td>
                       <td>{row.lot}</td>

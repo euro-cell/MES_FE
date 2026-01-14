@@ -394,7 +394,7 @@ export default function PressAnodeTable({ projectId }: PressAnodeTableProps) {
                 {/* 데이터 행 */}
                 {hasData ? (
                   pressData.map((row, index) => (
-                    <tr key={row.id}>
+                    <tr key={`${row.id}-${index}`}>
                       <td>{index + 1}</td>
                       <td>{row.lot}</td>
                       <td>{row.division}</td>
