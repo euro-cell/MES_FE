@@ -3,14 +3,8 @@ import { MENU_CONFIG } from '../menuConfig';
 import SubmenuBar from '../../components/SubmenuBar';
 import styles from '../../styles/moduleIndex.module.css';
 import PlantProductionPage from './production/PlantProductionPage';
-
-// 임시 플레이스홀더 컴포넌트
-const PlaceholderPage = ({ title }: { title: string }) => (
-  <div style={{ padding: '20px' }}>
-    <h2>{title}</h2>
-    <p>준비 중입니다.</p>
-  </div>
-);
+import EquipmentList from './register/EquipmentList';
+import EquipmentForm from './register/EquipmentForm';
 
 export default function PlantIndex() {
   const { sub } = MENU_CONFIG.plant;
@@ -21,10 +15,16 @@ export default function PlantIndex() {
 
       <div className='module-content'>
         <Routes>
+          {/* 생산 설비 - 하위 메뉴 있음 */}
           <Route path='production/*' element={<PlantProductionPage />} />
-          <Route path='development' element={<PlaceholderPage title='개발' />} />
-          <Route path='measurement' element={<PlaceholderPage title='측정' />} />
-          <Route path='register' element={<PlaceholderPage title='설비 등록' />} />
+
+          {/* 개발 설비 */}
+          <Route path='development' element={<EquipmentList category='개발' />} />
+          <Route path='development/form' element={<EquipmentForm />} />
+
+          {/* 측정 설비 */}
+          <Route path='measurement' element={<EquipmentList category='측정' />} />
+          <Route path='measurement/form' element={<EquipmentForm />} />
         </Routes>
       </div>
     </div>

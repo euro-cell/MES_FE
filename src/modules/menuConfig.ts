@@ -39,7 +39,6 @@ export const MENU_CONFIG = {
       { title: '생산', path: '/plant/production' },
       { title: '개발', path: '/plant/development' },
       { title: '측정', path: '/plant/measurement' },
-      { title: '설비 등록', path: '/plant/register' },
     ],
   },
 

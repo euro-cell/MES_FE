@@ -1,0 +1,308 @@
+/* ======================
+  설비 등록 페이지
+====================== */
+.equipmentPage {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #1e293b;
+}
+
+/* ======================
+  탭 필터
+====================== */
+.tabFilter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 12px;
+}
+
+.tabFilter button {
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tabFilter button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.tabFilter button.active {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
+}
+
+/* ======================
+  테이블
+====================== */
+.equipmentTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.equipmentTable th {
+  background: #f1f5f9;
+  padding: 10px;
+  border-bottom: 2px solid #e2e8f0;
+  text-align: center;
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.equipmentTable td {
+  padding: 8px 10px;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.equipmentTable tr:hover td {
+  background: #f8fafc;
+}
+
+/* ======================
+  액션 버튼
+====================== */
+.actionButtons {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.registerBtn {
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.registerBtn:hover {
+  background: #2563eb;
+}
+
+.editBtn,
+.deleteBtn {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.editBtn {
+  background: #f59e0b;
+}
+
+.editBtn:hover {
+  background: #d97706;
+}
+
+.deleteBtn {
+  background: #ef4444;
+}
+
+.deleteBtn:hover {
+  background: #dc2626;
+}
+
+/* ======================
+  폼 스타일
+====================== */
+.formPage {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.formHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #1e293b;
+}
+
+.backBtn {
+  padding: 8px 14px;
+  background: #64748b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.backBtn:hover {
+  background: #475569;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroup.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.formGroup label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1e293b;
+  transition: border-color 0.2s;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ======================
+  교정 필드 섹션
+====================== */
+.calibrationSection {
+  grid-column: 1 / -1;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.calibrationSection h4 {
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  color: #64748b;
+}
+
+.calibrationFields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 24px;
+}
+
+/* ======================
+  폼 버튼
+====================== */
+.formActions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.cancelBtn {
+  padding: 10px 20px;
+  background: #fff;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelBtn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.saveBtn {
+  padding: 10px 24px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.saveBtn:hover {
+  background: #2563eb;
+}
+
+/* ======================
+  빈 상태
+====================== */
+.emptyState {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
+}
+
+/* ======================
+  로딩 상태
+====================== */
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
