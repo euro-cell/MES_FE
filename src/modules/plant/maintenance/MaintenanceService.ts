@@ -43,3 +43,36 @@ export const deleteMaintenanceRecord = async (id: number): Promise<void> => {
     withCredentials: true,
   });
 };
+
+/** 유지보수 기록 엑셀 다운로드 */
+export const downloadMaintenanceExcel = async (): Promise<void> => {
+  const res = await axios.get(`${API_BASE}/equipment/maintenance/export`, {
+    withCredentials: true,
+    responseType: 'blob',
+  });
+
+  // 파일명 추출 (Content-Disposition 헤더에서)
+  const contentDisposition = res.headers['content-disposition'];
+  let filename = '유지보수_관리대장.xlsx';
+  if (contentDisposition) {
+    const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+    if (filenameMatch && filenameMatch[1]) {
+      filename = filenameMatch[1].replace(/['"]/g, '');
+      // URL 디코딩 (한글 파일명 처리)
+      filename = decodeURIComponent(filename);
+    }
+  }
+
+  // Blob으로 다운로드 트리거
+  const blob = new Blob([res.data], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
+};

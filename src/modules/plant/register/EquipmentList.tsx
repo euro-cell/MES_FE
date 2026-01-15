@@ -56,15 +56,30 @@ export default function EquipmentList({ category }: Props) {
     navigate('form', { state: { category } });
   };
 
+  const handleDownload = async () => {
+    try {
+      const { downloadEquipmentExcel } = await import('./EquipmentService');
+      await downloadEquipmentExcel(category);
+    } catch (error) {
+      console.error('엑셀 다운로드 실패:', error);
+      alert('엑셀 다운로드에 실패했습니다.');
+    }
+  };
+
   const isMeasurement = category === '측정';
 
   return (
     <div className={styles.equipmentPage}>
       <div className={styles.header}>
         <h3>{CATEGORY_LABELS[category]}</h3>
-        <button className={styles.registerBtn} onClick={handleRegister}>
-          + 설비 등록
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className={styles.downloadBtn} onClick={handleDownload}>
+            📥 엑셀 다운로드
+          </button>
+          <button className={styles.registerBtn} onClick={handleRegister}>
+            + 설비 등록
+          </button>
+        </div>
       </div>
 
       {loading ? (

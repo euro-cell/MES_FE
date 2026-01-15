@@ -42,13 +42,28 @@ export default function MaintenanceList() {
     navigate('form', { state: { record } });
   };
 
+  const handleDownload = async () => {
+    try {
+      const { downloadMaintenanceExcel } = await import('./MaintenanceService');
+      await downloadMaintenanceExcel();
+    } catch (error) {
+      console.error('엑셀 다운로드 실패:', error);
+      alert('엑셀 다운로드에 실패했습니다.');
+    }
+  };
+
   return (
     <div className={styles.equipmentPage}>
       <div className={styles.header}>
         <h3>유지보수 관리 대장</h3>
-        <button className={styles.registerBtn} onClick={() => navigate('form')}>
-          + 유지보수 등록
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className={styles.downloadBtn} onClick={handleDownload}>
+            📥 엑셀 다운로드
+          </button>
+          <button className={styles.registerBtn} onClick={() => navigate('form')}>
+            + 유지보수 등록
+          </button>
+        </div>
       </div>
 
       {loading ? (
