@@ -175,6 +175,16 @@ export default function AssemblyList() {
     setDeletingId(null);
   };
 
+  const handleDownload = async () => {
+    try {
+      const { downloadAssemblyExcel } = await import('./service');
+      await downloadAssemblyExcel();
+    } catch (error) {
+      console.error('엑셀 다운로드 실패:', error);
+      alert('엑셀 다운로드에 실패했습니다.');
+    }
+  };
+
   useEffect(() => {
     loadMaterials(includeZeroStock);
   }, []);
@@ -208,9 +218,14 @@ export default function AssemblyList() {
           </label>
         </div>
         {!showHistory && (
-          <button className={styles.addButton} onClick={handleOpenModal}>
-            + 추가
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button className={styles.downloadButton} onClick={handleDownload}>
+              📥 엑셀 다운로드
+            </button>
+            <button className={styles.addButton} onClick={handleOpenModal}>
+              + 추가
+            </button>
+          </div>
         )}
       </div>
 
