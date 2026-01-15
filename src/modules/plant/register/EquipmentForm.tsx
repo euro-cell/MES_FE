@@ -42,7 +42,7 @@ export default function EquipmentForm() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.assetNo || !formData.equipmentNo || !formData.name || !formData.manufacturer || !formData.purchaseDate) {
+    if (!formData.equipmentNo || !formData.name || !formData.manufacturer) {
       alert('필수 항목을 모두 입력해주세요.');
       return;
     }
@@ -90,7 +90,7 @@ export default function EquipmentForm() {
         </div>
 
         <div className={styles.formGroup}>
-          <label>자산번호 *</label>
+          <label>자산번호</label>
           <input
             type="text"
             value={formData.assetNo}
@@ -130,7 +130,7 @@ export default function EquipmentForm() {
         </div>
 
         <div className={styles.formGroup}>
-          <label>구입일자 *</label>
+          <label>구입일자</label>
           <input
             type="date"
             value={formData.purchaseDate}
