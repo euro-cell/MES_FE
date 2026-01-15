@@ -106,41 +106,41 @@ export default function MaintenanceForm() {
 
         <div className={styles.formGroup}>
           <label>교체 이력</label>
-          <input
-            type="text"
+          <textarea
             value={formData.replacementHistory}
             onChange={e => handleChange('replacementHistory', e.target.value)}
             placeholder="예: 베어링 교체"
+            rows={3}
           />
         </div>
 
         <div className={styles.formGroup}>
           <label>사용 부품</label>
-          <input
-            type="text"
+          <textarea
             value={formData.usedParts}
             onChange={e => handleChange('usedParts', e.target.value)}
             placeholder="예: 베어링 SKF-6205"
+            rows={3}
           />
         </div>
 
         <div className={styles.formGroup}>
           <label>보수자 *</label>
-          <input
-            type="text"
+          <textarea
             value={formData.maintainer}
             onChange={e => handleChange('maintainer', e.target.value)}
             placeholder="보수자명"
+            rows={3}
           />
         </div>
 
         <div className={styles.formGroup}>
           <label>확인자 *</label>
-          <input
-            type="text"
+          <textarea
             value={formData.verifier}
             onChange={e => handleChange('verifier', e.target.value)}
             placeholder="확인자명"
+            rows={3}
           />
         </div>
 

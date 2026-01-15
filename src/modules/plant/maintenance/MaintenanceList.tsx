@@ -78,11 +78,11 @@ export default function MaintenanceList() {
                 <td>{record.assetNo}</td>
                 <td>{record.equipmentNo}</td>
                 <td>{record.equipmentName}</td>
-                <td>{record.replacementHistory}</td>
-                <td>{record.usedParts}</td>
-                <td>{record.maintainer}</td>
-                <td>{record.verifier}</td>
-                <td>{record.remark || '-'}</td>
+                <td className={styles.multiline}>{record.replacementHistory}</td>
+                <td className={styles.multiline}>{record.usedParts}</td>
+                <td className={styles.multiline}>{record.maintainer}</td>
+                <td className={styles.multiline}>{record.verifier}</td>
+                <td className={styles.multiline}>{record.remark || '-'}</td>
                 <td>
                   <div className={styles.actionButtons}>
                     <button className={styles.editBtn} onClick={() => handleEdit(record)}>
