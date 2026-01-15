@@ -4,7 +4,7 @@ import SubmenuBar from '../../components/SubmenuBar';
 import styles from '../../styles/moduleIndex.module.css';
 import DrawListPage from './list/DrawListPage';
 import CellDrawingIndex from './cell';
-import DrawingLedgerPage from './ledger/DrawingLedgerPage';
+import DrawingLedgerIndex from './ledger';
 
 export default function DrawIndex() {
   const { sub } = MENU_CONFIG.draw;
@@ -17,7 +17,7 @@ export default function DrawIndex() {
         <Routes>
           <Route path='factory' element={<DrawListPage />} />
           <Route path='cell/*' element={<CellDrawingIndex />} />
-          <Route path='list' element={<DrawingLedgerPage />} />
+          <Route path='list' element={<DrawingLedgerIndex />} />
         </Routes>
       </div>
     </div>

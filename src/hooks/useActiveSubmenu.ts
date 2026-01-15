@@ -26,7 +26,10 @@ export function useActiveSubmenu(subMenus: SubmenuItem[]) {
       }
       return false;
     }
-    return location.pathname === m.path || location.pathname.startsWith(m.path + '/');
+    // 쿼리 파라미터가 없는 메뉴는 현재 location에도 쿼리가 없어야 active
+    const pathnameMatches = location.pathname === m.path || location.pathname.startsWith(m.path + '/');
+    const hasNoQuery = location.search === '';
+    return pathnameMatches && hasNoQuery;
   })?.path;
 
   const handleNavigate = (path: string) => {
