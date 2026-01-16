@@ -67,16 +67,23 @@ export const buildCellInventoryPayload = (
 };
 
 export const transformStatisticsToTableData = (statistics: ProjectStatistics[]): GroupedTableData[] => {
-  return statistics.map(project => ({
-    projectName: project.projectName,
-    rows: project.grades.map(grade => ({
-      projectName: project.projectName,
-      grade: grade.grade,
-      totalQty: project.totalAvailable,
-      holdingQty: grade.available ?? null,
-      inboundQty: grade.inStock ?? null,
-      outboundQty: grade.shipped ?? null,
-      other: '',
-    })),
-  }));
+  return statistics.map(project => {
+    // projectNo가 있으면 "projectName(projectNo)" 형식, 없으면 projectName만 표시
+    const displayName = project.projectNo
+      ? `${project.projectName}(${project.projectNo})`
+      : project.projectName;
+
+    return {
+      projectName: displayName,
+      rows: project.grades.map(grade => ({
+        projectName: displayName,
+        grade: grade.grade,
+        totalQty: project.totalAvailable,
+        holdingQty: grade.available ?? null,
+        inboundQty: grade.inStock ?? null,
+        outboundQty: grade.shipped ?? null,
+        other: '',
+      })),
+    };
+  });
 };

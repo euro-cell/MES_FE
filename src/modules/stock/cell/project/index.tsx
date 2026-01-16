@@ -27,10 +27,11 @@ export default function ProjectIndex() {
 
   if (loading) return <p>데이터를 불러오는 중...</p>;
 
-  // 프로젝트 목록을 메뉴 형식으로 변환
-  const projectMenus = projects.map(project => ({
-    title: project.projectName,
-    path: `/stock/cell/project/${encodeURIComponent(project.projectName)}`,
+  // 프로젝트 목록을 메뉴 형식으로 변환 (projectName 기준 중복 제거)
+  const uniqueProjectNames = [...new Set(projects.map(p => p.projectName))];
+  const projectMenus = uniqueProjectNames.map(name => ({
+    title: name,
+    path: `/stock/cell/project/${encodeURIComponent(name)}`,
   }));
 
   return (

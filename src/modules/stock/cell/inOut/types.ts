@@ -58,6 +58,7 @@ export interface GradeStatistics {
 
 export interface ProjectStatistics {
   projectName: string;
+  projectNo: string | null;
   grades: GradeStatistics[];
   totalAvailable: number;
 }
