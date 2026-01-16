@@ -65,3 +65,36 @@ export const fetchStorageUsage = async (): Promise<StorageUsageResponse> => {
     throw err.response?.data || err;
   }
 };
+
+/** 셀 관리 엑셀 다운로드 (입/출고, NCR, 프로젝트별 - 3개 시트) */
+export const downloadCellExcel = async (): Promise<void> => {
+  const res = await axios.get(`${API_BASE}/cell-inventory/export`, {
+    withCredentials: true,
+    responseType: 'blob',
+  });
+
+  // 파일명 추출 (Content-Disposition 헤더에서)
+  const contentDisposition = res.headers['content-disposition'];
+  let filename = '셀 보관 현황.xlsx';
+  if (contentDisposition) {
+    const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+    if (filenameMatch && filenameMatch[1]) {
+      filename = filenameMatch[1].replace(/['"]/g, '');
+      // URL 디코딩 (한글 파일명 처리)
+      filename = decodeURIComponent(filename);
+    }
+  }
+
+  // Blob으로 다운로드 트리거
+  const blob = new Blob([res.data], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
+};

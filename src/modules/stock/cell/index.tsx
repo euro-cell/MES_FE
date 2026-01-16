@@ -13,10 +13,25 @@ const CELL_MENUS = [
   { title: '프로젝트별 입/출고 현황', path: '/stock/cell/project' },
 ];
 
+const handleDownload = async () => {
+  try {
+    const { downloadCellExcel } = await import('./inOut/InOutService');
+    await downloadCellExcel();
+  } catch (error) {
+    console.error('엑셀 다운로드 실패:', error);
+    alert('엑셀 다운로드에 실패했습니다.');
+  }
+};
+
 export default function CellIndex() {
   return (
     <div className={styles.modulePage}>
-      <SubmenuBar menus={CELL_MENUS} />
+      <div className={styles.submenuWrapper}>
+        <SubmenuBar menus={CELL_MENUS} />
+        <button className={styles.downloadBtn} onClick={handleDownload}>
+          📥 엑셀 다운로드
+        </button>
+      </div>
 
       <div className='module-content'>
         <Routes>
