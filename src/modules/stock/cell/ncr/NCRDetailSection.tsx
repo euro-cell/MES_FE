@@ -29,6 +29,8 @@ interface NCRDetailData {
 interface Project {
   id: string;
   name: string;
+  projectName: string;
+  projectNo: string | null;
 }
 
 export default function NCRDetailSection() {
@@ -45,8 +47,10 @@ export default function NCRDetailSection() {
       try {
         const response = await axios.get(`${API_BASE}/cell-inventory/statistics`, { withCredentials: true });
         const projectList: Project[] = response.data.map((item: any) => ({
-          id: item.projectName,
-          name: item.projectName,
+          id: item.projectNo ? `${item.projectName}|${item.projectNo}` : item.projectName,
+          name: item.projectNo ? `${item.projectName}(${item.projectNo})` : item.projectName,
+          projectName: item.projectName,
+          projectNo: item.projectNo || null,
         }));
         setProjects(projectList);
       } catch (err) {
@@ -67,9 +71,18 @@ export default function NCRDetailSection() {
 
     const loadDetail = async () => {
       setLoading(true);
+      const selectedProject = projects.find(p => p.id === selectedProjectId);
+      if (!selectedProject) return;
+
+      const params = new URLSearchParams();
+      params.append('projectName', selectedProject.projectName);
+      if (selectedProject.projectNo) {
+        params.append('projectNo', selectedProject.projectNo);
+      }
+
       try {
         const response = await axios.get<NCRDetailData>(
-          `${API_BASE}/cell-inventory/ncr/detail?projectName=${selectedProjectId}`,
+          `${API_BASE}/cell-inventory/ncr/detail?${params.toString()}`,
           { withCredentials: true }
         );
         setDetailData(response.data);
@@ -78,7 +91,7 @@ export default function NCRDetailSection() {
       } catch (err) {
         console.error('NCR 상세 데이터 로드 실패:', err);
         setDetailData({
-          projectName: selectedProjectId,
+          projectName: selectedProject.projectName,
           ncrDetails: [],
         });
       } finally {
@@ -87,7 +100,7 @@ export default function NCRDetailSection() {
     };
 
     loadDetail();
-  }, [selectedProjectId]);
+  }, [selectedProjectId, projects]);
 
   const handleEditClick = () => {
     if (isEditMode) {
@@ -103,9 +116,18 @@ export default function NCRDetailSection() {
 
   const handleSave = async () => {
     if (editedData) {
+      const selectedProject = projects.find(p => p.id === selectedProjectId);
+      if (!selectedProject) return;
+
+      const params = new URLSearchParams();
+      params.append('projectName', selectedProject.projectName);
+      if (selectedProject.projectNo) {
+        params.append('projectNo', selectedProject.projectNo);
+      }
+
       try {
         await axios.patch(
-          `${API_BASE}/cell-inventory/ncr/detail?projectName=${selectedProjectId}`,
+          `${API_BASE}/cell-inventory/ncr/detail?${params.toString()}`,
           editedData,
           { withCredentials: true }
         );
