@@ -81,10 +81,9 @@ export default function NCRDetailSection() {
       }
 
       try {
-        const response = await axios.get<NCRDetailData>(
-          `${API_BASE}/cell-inventory/ncr/detail?${params.toString()}`,
-          { withCredentials: true }
-        );
+        const response = await axios.get<NCRDetailData>(`${API_BASE}/cell-inventory/ncr/detail?${params.toString()}`, {
+          withCredentials: true,
+        });
         setDetailData(response.data);
         setEditedData(null);
         setIsEditMode(false);
@@ -115,6 +114,7 @@ export default function NCRDetailSection() {
   };
 
   const handleSave = async () => {
+    console.log('🚀 ~ editedData:', editedData);
     if (editedData) {
       const selectedProject = projects.find(p => p.id === selectedProjectId);
       if (!selectedProject) return;
@@ -126,11 +126,9 @@ export default function NCRDetailSection() {
       }
 
       try {
-        await axios.patch(
-          `${API_BASE}/cell-inventory/ncr/detail?${params.toString()}`,
-          editedData,
-          { withCredentials: true }
-        );
+        await axios.patch(`${API_BASE}/cell-inventory/ncr/detail?${params.toString()}`, editedData, {
+          withCredentials: true,
+        });
         setDetailData(editedData);
         setIsEditMode(false);
         setEditedData(null);
@@ -161,9 +159,10 @@ export default function NCRDetailSection() {
   const handleAddRow = (ncrIdx: number) => {
     if (editedData) {
       const updated = JSON.parse(JSON.stringify(editedData));
+      const currentNcrType = updated.ncrDetails[ncrIdx].ncrType || '';
       updated.ncrDetails[ncrIdx].items.push({
         id: 0,
-        title: '',
+        title: currentNcrType,
         details: '',
         type: '',
         count: 0,
@@ -180,6 +179,18 @@ export default function NCRDetailSection() {
     }
   };
 
+  const handleNcrTypeChange = (ncrIdx: number, value: string) => {
+    if (editedData) {
+      const updated = JSON.parse(JSON.stringify(editedData));
+      updated.ncrDetails[ncrIdx].ncrType = value;
+      // 모든 items의 title에도 범위 값 저장
+      updated.ncrDetails[ncrIdx].items.forEach((item: DetailSubItem) => {
+        item.title = value;
+      });
+      setEditedData(updated);
+    }
+  };
+
   const displayData = isEditMode && editedData ? editedData : detailData;
 
   // 아이템 소계 계산
@@ -189,6 +200,8 @@ export default function NCRDetailSection() {
 
   const renderNCRTable = (ncrItem: NCRDetailItem, ncrIdx: number) => {
     const items = ncrItem.items;
+    // 범위 값: items의 첫 번째 title 또는 ncrType 또는 기본값 '범위'
+    const rangeValue = items[0]?.title || ncrItem.ncrType || '범위';
 
     return (
       <div key={ncrItem.id} className={styles.detailTable}>
@@ -199,7 +212,26 @@ export default function NCRDetailSection() {
           <thead>
             <tr>
               <th>구분</th>
-              <th>범위</th>
+              <th>
+                {isEditMode ? (
+                  <input
+                    type='text'
+                    value={rangeValue}
+                    onChange={e => handleNcrTypeChange(ncrIdx, e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '4px 6px',
+                      border: '1px solid #2563eb',
+                      borderRadius: '4px',
+                      textAlign: 'center',
+                      boxSizing: 'border-box',
+                      fontWeight: 600,
+                    }}
+                  />
+                ) : (
+                  rangeValue
+                )}
+              </th>
               <th style={{ width: '80px' }}>수량</th>
               {isEditMode && <th style={{ width: '40px', textAlign: 'center' }}>작업</th>}
             </tr>
