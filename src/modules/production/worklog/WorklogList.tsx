@@ -4,6 +4,8 @@ import styles from '../../../styles/production/worklog/WorklogList.module.css';
 import TooltipButton from '../../../components/TooltipButton';
 import { getWorklogs } from './WorklogService';
 import type { WorklogEntry } from './WorklogTypes';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 import { getBinderWorklogs, deleteBinderWorklog } from './processes/01-binder/BinderService';
 import { getSlurryWorklogs, deleteSlurryWorklog } from './processes/02-slurry/SlurryService';
 import { getCoatingWorklogs, deleteCoatingWorklog } from './processes/03-coating/CoatingService';
@@ -29,6 +31,9 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
   const navigate = useNavigate();
   const [worklogs, setWorklogs] = useState<WorklogEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [downloading, setDownloading] = useState(false);
 
   const loadWorklogs = async () => {
     setLoading(true);
@@ -267,17 +272,86 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
     }
   };
 
+  // 모달 열기
+  const openModal = () => {
+    setSelectedIds([]);
+    setIsModalOpen(true);
+  };
+
+  // 체크박스 토글
+  const toggleSelect = (id: number) => {
+    setSelectedIds(prev => (prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]));
+  };
+
+  // 전체 선택/해제
+  const toggleSelectAll = () => {
+    if (selectedIds.length === worklogs.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(worklogs.map(w => w.id));
+    }
+  };
+
+  // 엑셀 다운로드
+  const handleDownload = async () => {
+    if (selectedIds.length === 0) return;
+
+    setDownloading(true);
+    try {
+      const response = await fetch(`${API_BASE}/worklog/${processId.toLowerCase()}/export`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ projectId, worklogIds: selectedIds }),
+      });
+
+      if (!response.ok) {
+        throw new Error('다운로드 실패');
+      }
+
+      const blob = await response.blob();
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = 'worklog.xlsx';
+
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="([^"]+)"/);
+        if (match) {
+          filename = decodeURIComponent(match[1]);
+        }
+      }
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error('다운로드 실패:', err);
+      alert('다운로드 실패: ' + err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   if (loading) return <p>작업일지를 불러오는 중...</p>;
 
   return (
     <div className={styles.worklogList}>
       <div className={styles.header}>
         <h3>{processTitle} 작업일지</h3>
-        <TooltipButton
-          label='등록'
-          variant='register'
-          onClick={() => navigate(`/prod/log/${projectId}/${processId.toLowerCase()}/register`)}
-        />
+        <div className={styles.headerButtons}>
+          <button className={styles.downloadBtn} onClick={openModal}>
+            📥 엑셀 다운로드
+          </button>
+          <TooltipButton
+            label='등록'
+            variant='register'
+            onClick={() => navigate(`/prod/log/${projectId}/${processId.toLowerCase()}/register`)}
+          />
+        </div>
       </div>
 
       <table className={styles.worklogTable}>
@@ -320,6 +394,64 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           )}
         </tbody>
       </table>
+
+      {/* 엑셀 다운로드 모달 */}
+      {isModalOpen && (
+        <div className={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>작업일지 선택</h3>
+              <button className={styles.modalCloseBtn} onClick={() => setIsModalOpen(false)}>
+                &times;
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              {worklogs.length === 0 ? (
+                <p className={styles.emptyMessage}>다운로드할 작업일지가 없습니다.</p>
+              ) : (
+                <>
+                  <div className={styles.selectAllRow}>
+                    <label>
+                      <input
+                        type='checkbox'
+                        checked={selectedIds.length === worklogs.length}
+                        onChange={toggleSelectAll}
+                      />
+                      전체 선택 ({selectedIds.length}/{worklogs.length})
+                    </label>
+                  </div>
+                  <div className={styles.worklogCheckList}>
+                    {worklogs.map(log => (
+                      <label key={log.id} className={styles.checkItem}>
+                        <input
+                          type='checkbox'
+                          checked={selectedIds.includes(log.id)}
+                          onChange={() => toggleSelect(log.id)}
+                        />
+                        <span className={styles.checkItemDate}>{log.workDate}</span>
+                        <span className={styles.checkItemRound}>{log.round}회차</span>
+                        <span className={styles.checkItemWriter}>{log.createdBy}</span>
+                      </label>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+            <div className={styles.modalFooter}>
+              <button className={styles.modalCancelBtn} onClick={() => setIsModalOpen(false)}>
+                취소
+              </button>
+              <button
+                className={styles.modalDownloadBtn}
+                onClick={handleDownload}
+                disabled={selectedIds.length === 0 || downloading}
+              >
+                {downloading ? '다운로드 중...' : `다운로드 (${selectedIds.length}건)`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
