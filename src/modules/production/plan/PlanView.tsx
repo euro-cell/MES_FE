@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getProductionPlan } from './PlanService';
-import { exportHtmlTableToExcel } from './exportExcel';
+import { exportPlanToStyledExcel } from './exportExcel';
 import styles from '../../../styles/production/plan/PlanView.module.css';
 
 interface Cell {
@@ -52,7 +52,6 @@ export default function PlanView() {
   const productionId = project?.id;
 
   const [planData, setPlanData] = useState<PlanResponse | null>(null);
-  const tableRef = useRef<HTMLTableElement>(null);
 
   useEffect(() => {
     if (!productionId) return;
@@ -83,7 +82,7 @@ export default function PlanView() {
         <h3>📊 생산 일정 조회 - {project?.name}</h3>
         <div className={styles.actions}>
           <button
-            onClick={() => exportHtmlTableToExcel(tableRef.current!.outerHTML, project?.name || 'Schedule')}
+            onClick={() => exportPlanToStyledExcel(planData!, project?.name || 'Schedule')}
             className={styles.excelBtn}
           >
             📥 엑셀 다운로드
@@ -94,7 +93,7 @@ export default function PlanView() {
         </div>
       </div>
 
-      <table ref={tableRef} className={styles.planTable}>
+      <table className={styles.planTable}>
         <thead>
           <tr>
             <th rowSpan={2} colSpan={3}>
