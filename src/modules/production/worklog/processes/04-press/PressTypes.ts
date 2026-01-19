@@ -4,7 +4,7 @@ export interface PressWorklog {
   id: number;
   projectId: number;
   processId: string;
-  manufactureDate: string;
+  workDate: string;
   worker: string;
   line: string;
   plant: string;
@@ -125,7 +125,7 @@ export interface PressWorklog {
 }
 
 export interface PressWorklogPayload {
-  manufactureDate: string;
+  workDate: string;
   worker: string;
   line: string;
   plant: string;
