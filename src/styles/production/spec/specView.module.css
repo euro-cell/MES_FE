@@ -41,6 +41,13 @@
   background: #f9fafc;
 }
 
+.headerActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 .backBtn {
   background: #1a73e8;
   color: #fff;
@@ -53,6 +60,20 @@
 }
 .backBtn:hover {
   background: #155bc1;
+}
+
+.excelBtn {
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+.excelBtn:hover {
+  background-color: #15803d;
 }
 
 .materialSection {

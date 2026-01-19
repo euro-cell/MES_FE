@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getSpecificationByProject } from './SpecService';
 import { getMaterialsByProduction } from '../material/MaterialService';
+import { exportSpecToExcel } from './exportExcel';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
 import styles from '../../../../styles/production/spec/specView.module.css';
@@ -59,9 +60,17 @@ export default function SpecView() {
 
   return (
     <div className={styles.specView}>
-      <button className={styles.backBtn} onClick={() => navigate(-1)}>
-        ← 목록으로
-      </button>
+      <div className={styles.headerActions}>
+        <button className={styles.backBtn} onClick={() => navigate(-1)}>
+          ← 목록으로
+        </button>
+        <button
+          className={styles.excelBtn}
+          onClick={() => exportSpecToExcel(form, materials, project.name)}
+        >
+          📥 엑셀 다운로드
+        </button>
+      </div>
 
       <h2>{project.name} 전지 설계 조회</h2>
 
