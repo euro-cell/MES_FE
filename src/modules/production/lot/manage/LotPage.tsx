@@ -37,6 +37,7 @@ import StackingGrid from './components/06-StackingGrid';
 import WeldingGrid from './components/07-WeldingGrid';
 import SealingGrid from './components/08-SealingGrid';
 import FormationGrid from './components/09-FormationGrid';
+import LowDataGrid from './components/10-LowDataGrid';
 import styles from '../../../../styles/production/lot/LotPage.module.css';
 
 // 상대 시간 포맷 함수
@@ -99,6 +100,9 @@ export default function LotPage() {
     const loadProcessData = async () => {
       if (!projectId || !process) return;
 
+      // LowData는 클라이언트에서 엑셀 업로드로 처리하므로 API 호출 불필요
+      if (process === 'LowData') return;
+
       setIsRefreshing(true);
       try {
         // Sync 상태 조회
@@ -148,7 +152,7 @@ export default function LotPage() {
 
   // 데이터 갱신 핸들러 (버튼 클릭 시)
   const handleRefresh = async () => {
-    if (!projectId || !process) return;
+    if (!projectId || !process || process === 'LowData') return;
 
     setIsRefreshing(true);
     try {
@@ -230,6 +234,8 @@ export default function LotPage() {
         return <SealingGrid data={sealingData} />;
       case 'Formation':
         return <FormationGrid data={formationData} />;
+      case 'LowData':
+        return <LowDataGrid projectId={Number(projectId)} />;
       default:
         return (
           <div className={styles.placeholder}>
@@ -264,8 +270,8 @@ export default function LotPage() {
           )}
         </div>
 
-        {/* 갱신 버튼 */}
-        {currentProcess && (
+        {/* 갱신 버튼 (LowData는 제외) */}
+        {currentProcess && process !== 'LowData' && (
           <div className={styles.refreshSection}>
             <button className={styles.refreshButton} onClick={handleRefresh} disabled={isRefreshing}>
               {isRefreshing ? (

@@ -1,0 +1,186 @@
+.container {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+/* 드롭존 */
+.dropZone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  background: #f8fafc;
+}
+
+.dropZone:hover,
+.dragging {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.uploadIcon {
+  width: 48px;
+  height: 48px;
+  stroke: #64748b;
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.uploadText {
+  color: #475569;
+  font-size: 14px;
+}
+
+.fileTypes {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* 파일 정보 */
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 12px 16px;
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.fileName {
+  font-weight: 500;
+  color: #334155;
+}
+
+.rowCount {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.clearButton {
+  margin-left: auto;
+  padding: 6px 12px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.clearButton:hover {
+  background: #dc2626;
+}
+
+/* 테이블 */
+.tableWrapper {
+  overflow-x: auto;
+  max-height: 600px;
+  overflow-y: auto;
+  margin-top: 16px;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.dataTable th,
+.dataTable td {
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.dataTable th {
+  background: #1e40af;
+  color: white;
+  font-weight: 600;
+  position: sticky;
+  z-index: 1;
+}
+
+/* 1행 헤더 (대분류) */
+.dataTable thead tr:first-child th {
+  top: 0;
+  background: #1e3a8a;
+  text-align: center;
+  border-bottom: 2px solid #3b82f6;
+}
+
+/* 2행 헤더 (소분류) */
+.dataTable thead tr:nth-child(2) th {
+  top: 37px; /* 1행 높이만큼 */
+  background: #1e40af;
+}
+
+/* 대분류 그룹 스타일 */
+.headerGroup {
+  font-size: 13px;
+}
+
+.dataTable tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.dataTable tbody tr:hover td {
+  background: #e0f2fe;
+}
+
+/* 상태 메시지 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px;
+  color: #3b82f6;
+  font-size: 14px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  text-align: center;
+  padding: 16px;
+  color: #dc2626;
+  background: #fef2f2;
+  border-radius: 6px;
+  margin-top: 16px;
+}
+
+.noData {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
