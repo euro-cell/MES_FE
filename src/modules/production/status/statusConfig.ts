@@ -70,15 +70,12 @@ interface ProjectForMonthMenu {
 
 // 월 메뉴 생성
 export function createMonthMenus(projectId: number, category: string, project: ProjectForMonthMenu | null) {
-  console.log('🔍 createMonthMenus 호출:', { projectId, category, project, plan: project?.plan });
-
   if (!project?.plan?.startDate) {
     console.warn('⚠️ plan.startDate가 없습니다. 월 메뉴를 생성할 수 없습니다.');
     return [];
   }
 
   const months = getMonthsBetween(project.plan.startDate, project.plan.endDate || new Date().toISOString());
-  console.log('📅 생성된 월 목록:', months);
 
   return months.map((m, idx) => {
     const previousYear = idx > 0 ? months[idx - 1].year : undefined;
