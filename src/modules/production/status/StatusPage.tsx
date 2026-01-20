@@ -9,6 +9,7 @@ import {
   getProductionStatusInfo,
   updateTargetQuantity,
 } from './StatusService';
+import { exportStatusToExcel } from './exportStatusExcel';
 import { parseMonthParam } from './utils/dateUtils';
 import type { MonthlyStatusData, ProductionStatusInfo } from './StatusTypes';
 import styles from '../../../styles/production/status/StatusPage.module.css';
@@ -45,6 +46,7 @@ export default function StatusPage() {
   const [monthlyData, setMonthlyData] = useState<MonthlyStatusData | null>(null);
   const [realData, setRealData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [excelDownloading, setExcelDownloading] = useState(false);
 
   // 목표수량 변경 모달 상태
   const [targetModal, setTargetModal] = useState<{
@@ -211,6 +213,25 @@ export default function StatusPage() {
     setTargetInputValue('');
   };
 
+  // 엑셀 다운로드
+  const handleExcelDownload = async () => {
+    if (!projectId || !category || !statusInfo) return;
+
+    setExcelDownloading(true);
+    try {
+      await exportStatusToExcel({
+        projectId: Number(projectId),
+        projectName: statusInfo.name,
+        category,
+      });
+    } catch (error) {
+      console.error('엑셀 다운로드 실패:', error);
+      alert('엑셀 다운로드에 실패했습니다.');
+    } finally {
+      setExcelDownloading(false);
+    }
+  };
+
   if (loading) return <p>데이터를 불러오는 중...</p>;
   if (!statusInfo) return <p>프로젝트를 찾을 수 없습니다.</p>;
 
@@ -241,7 +262,18 @@ export default function StatusPage() {
       </div>
 
       {/* 1단계: 카테고리 선택 */}
-      <SubmenuBar menus={categoryMenus} />
+      <div className={styles.categoryRow}>
+        <SubmenuBar menus={categoryMenus} />
+        {category && (
+          <button
+            className={styles.downloadBtn}
+            onClick={handleExcelDownload}
+            disabled={excelDownloading}
+          >
+            {excelDownloading ? '다운로드 중...' : '📥 엑셀 다운로드'}
+          </button>
+        )}
+      </div>
 
       {/* 2단계: 월 선택 */}
       {category && (
