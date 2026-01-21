@@ -26,9 +26,16 @@ export function useActiveSubmenu(subMenus: SubmenuItem[]) {
       }
       return false;
     }
-    // 쿼리 파라미터가 없는 메뉴는 pathname만 매칭되면 active
-    const pathnameMatches = location.pathname === m.path || location.pathname.startsWith(m.path + '/');
-    return pathnameMatches;
+    // 쿼리 파라미터가 없는 메뉴
+    const exactMatch = location.pathname === m.path;
+    const prefixMatch = location.pathname.startsWith(m.path + '/');
+
+    if (exactMatch) {
+      // pathname이 정확히 일치하면 쿼리 파라미터가 없어야 active
+      return !location.search;
+    }
+    // 하위 경로면 쿼리 파라미터 상관없이 active
+    return prefixMatch;
   })?.path;
 
   const handleNavigate = (path: string) => {

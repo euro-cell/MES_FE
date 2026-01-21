@@ -1,16 +1,14 @@
 import { useLocation } from 'react-router-dom';
-import styles from '../../../styles/draw/DrawingLedger.module.css';
-import { MOCK_DRAWING_LEDGER } from './DrawingLedgerMockData';
-import type { DrawingCategory } from './DrawingLedgerTypes';
+import styles from '../../styles/draw/DrawingLedger.module.css';
+import { MOCK_DRAWING_LEDGER } from './DrawMockData';
+import type { DrawingCategory } from './DrawTypes';
 
-export default function DrawingLedgerPage() {
+export default function DrawPage() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const category = searchParams.get('category') as DrawingCategory | null;
 
-  const filteredData = category
-    ? MOCK_DRAWING_LEDGER.filter(item => item.category === category)
-    : MOCK_DRAWING_LEDGER;
+  const filteredData = category ? MOCK_DRAWING_LEDGER.filter(item => item.category === category) : MOCK_DRAWING_LEDGER;
 
   const formatDate = (dateStr: string) => {
     if (dateStr.length === 6) {
@@ -25,9 +23,7 @@ export default function DrawingLedgerPage() {
 
   return (
     <div className={styles.ledgerPage}>
-      <div className={styles.header}>
-        <h3>도면 관리 대장</h3>
-      </div>
+      <div className={styles.header}></div>
 
       <table className={styles.ledgerTable}>
         <thead>

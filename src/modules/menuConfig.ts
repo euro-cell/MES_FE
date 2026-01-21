@@ -46,9 +46,11 @@ export const MENU_CONFIG = {
     title: '도면 관리',
     path: '/draw',
     sub: [
-      { title: '공장 도면', path: '/draw/factory' },
-      { title: '셀 도면', path: '/draw/cell' },
-      { title: '도면 관리 대장', path: '/draw/list' },
+      { title: '전체', path: '/draw/list' },
+      { title: '공장', path: '/draw/list?category=공장' },
+      { title: '설비', path: '/draw/list?category=설비' },
+      { title: '제품', path: '/draw/list?category=제품' },
+      { title: 'OEM/ODM', path: '/draw/list?category=OEM/ODM' },
     ],
   },
 

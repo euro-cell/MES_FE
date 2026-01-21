@@ -1,4 +1,4 @@
-import type { DrawingLedgerItem } from './DrawingLedgerTypes';
+import type { DrawingLedgerItem } from './DrawTypes';
 
 export const MOCK_DRAWING_LEDGER: DrawingLedgerItem[] = [
   { id: 1, category: '공장', registeredDate: '190806', projectName: '오산 공장 건물 Layout', drawingNo: 'Eurocell-FD01', version: 'V1.0', description: '오산 공장 건물 배치 도면' },
