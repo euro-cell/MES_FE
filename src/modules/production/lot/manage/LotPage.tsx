@@ -72,6 +72,7 @@ export default function LotPage() {
   const [formationData, setFormationData] = useState<FormationData[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const searchParams = new URLSearchParams(location.search);
   const category = searchParams.get('category');
@@ -149,6 +150,22 @@ export default function LotPage() {
 
     loadProcessData();
   }, [projectId, process]);
+
+  // 엑셀 다운로드 핸들러
+  const handleDownload = async () => {
+    if (!projectId) return;
+
+    setIsDownloading(true);
+    try {
+      const { downloadLotExcel } = await import('./LotService');
+      await downloadLotExcel(Number(projectId), projectInfo?.name || '');
+    } catch (error) {
+      console.error('엑셀 다운로드 실패:', error);
+      alert('엑셀 다운로드에 실패했습니다.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   // 데이터 갱신 핸들러 (버튼 클릭 시)
   const handleRefresh = async () => {
@@ -270,39 +287,46 @@ export default function LotPage() {
           )}
         </div>
 
-        {/* 갱신 버튼 (LowData는 제외) */}
-        {currentProcess && process !== 'LowData' && (
-          <div className={styles.refreshSection}>
-            <button className={styles.refreshButton} onClick={handleRefresh} disabled={isRefreshing}>
-              {isRefreshing ? (
-                '갱신 중...'
-              ) : (
-                <>
-                  <svg
-                    className={styles.refreshIcon}
-                    width='16'
-                    height='16'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <path d='M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8' />
-                    <path d='M3 3v5h5' />
-                    <path d='M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16' />
-                    <path d='M16 21h5v-5' />
-                  </svg>
-                  데이터 갱신
-                </>
-              )}
+        {/* 다운로드 버튼 + 갱신 버튼 */}
+        <div className={styles.refreshSection}>
+          <div className={styles.buttonGroup}>
+            <button className={styles.downloadButton} onClick={handleDownload} disabled={isDownloading}>
+              {isDownloading ? '다운로드 중...' : '📥 엑셀 다운로드'}
             </button>
+            {currentProcess && process !== 'LowData' && (
+              <button className={styles.refreshButton} onClick={handleRefresh} disabled={isRefreshing}>
+                {isRefreshing ? (
+                  '갱신 중...'
+                ) : (
+                  <>
+                    <svg
+                      className={styles.refreshIcon}
+                      width='16'
+                      height='16'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    >
+                      <path d='M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8' />
+                      <path d='M3 3v5h5' />
+                      <path d='M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16' />
+                      <path d='M16 21h5v-5' />
+                    </svg>
+                    데이터 갱신
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+          {currentProcess && process !== 'LowData' && (
             <span className={styles.lastUpdated}>
               최근 업데이트 : {lastUpdated ? formatRelativeTime(lastUpdated) : '없음'}
             </span>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* 안내 메시지 */}

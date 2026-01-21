@@ -16,6 +16,31 @@
   font-weight: 600;
 }
 
+.headerButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.downloadButton {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.downloadButton:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.downloadButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
 .backButton {
   background-color: #475569;
   color: white;
@@ -52,6 +77,11 @@
   align-items: flex-end;
   gap: 4px;
   flex-shrink: 0;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 8px;
 }
 
 .refreshButton {
