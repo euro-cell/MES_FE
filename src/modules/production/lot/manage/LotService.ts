@@ -214,3 +214,28 @@ export async function getFormationData(projectId: number): Promise<FormationData
   }
 }
 
+// LowData 등록 응답 타입
+export interface RegisterLowDataResponse {
+  success: boolean;
+  message: string;
+  results: {
+    total: number;
+    updated: number;
+    created: number;
+    skipped: number;
+  };
+}
+
+// LowData 등록
+export async function registerLowData(
+  projectId: number,
+  headers: string[],
+  data: Record<string, any>[],
+): Promise<RegisterLowDataResponse> {
+  const response = await axios.post(
+    `${API_BASE}/production/${projectId}/lot/lowdata`,
+    { headers, data },
+    { withCredentials: true },
+  );
+  return response.data;
+}

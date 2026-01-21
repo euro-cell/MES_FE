@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import ExcelJS from 'exceljs';
 import styles from '../../../../../styles/production/lot/10-LowDataGrid.module.css';
+import { registerLowData } from '../LotService';
 
 // 백분율 열 판별 (For.Eff_, SOC)
 const isPercentColumn = (key: string): boolean => {
@@ -74,13 +75,15 @@ interface ParsedExcelData {
   rows: ExcelRow[];
 }
 
-export default function LowDataGrid({ projectId: _projectId }: LowDataGridProps) {
+export default function LowDataGrid({ projectId }: LowDataGridProps) {
   const [excelData, setExcelData] = useState<ParsedExcelData | null>(null);
   const [fileName, setFileName] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -128,9 +131,9 @@ export default function LowDataGrid({ projectId: _projectId }: LowDataGridProps)
         throw new Error('워크시트를 찾을 수 없습니다.');
       }
 
-      // 열 범위: C(3) ~ AC(29)
+      // 열 범위: C(3) ~ AF(32)
       const START_COL = 3; // C열
-      const END_COL = 29; // AC열
+      const END_COL = 32; // AF열
 
       // 헤더 파싱
       const wsRow3 = worksheet.getRow(3);
@@ -248,11 +251,33 @@ export default function LowDataGrid({ projectId: _projectId }: LowDataGridProps)
     setExcelData(null);
     setFileName('');
     setError(null);
+    setSuccessMessage(null);
     // 파일 input 리셋 (같은 파일 재업로드 가능하도록)
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   }, []);
+
+  // 등록 핸들러
+  const handleRegister = useCallback(async () => {
+    if (!excelData) return;
+
+    setIsRegistering(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    try {
+      const response = await registerLowData(projectId, excelData.dataKeys, excelData.rows);
+      setSuccessMessage(response.message);
+      // 5초 후 성공 메시지 숨김
+      setTimeout(() => setSuccessMessage(null), 5000);
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || '등록에 실패했습니다.';
+      setError(errorMessage);
+    } finally {
+      setIsRegistering(false);
+    }
+  }, [excelData, projectId]);
 
   return (
     <div className={styles.container}>
@@ -301,6 +326,17 @@ export default function LowDataGrid({ projectId: _projectId }: LowDataGridProps)
           <div className={styles.fileInfo}>
             <span className={styles.fileName}>{fileName}</span>
             <span className={styles.rowCount}>총 {excelData.rows.length}행</span>
+            {successMessage && <span className={styles.successMessage}>{successMessage}</span>}
+            <button onClick={handleRegister} className={styles.registerButton} disabled={isRegistering}>
+              {isRegistering ? (
+                <>
+                  <span className={styles.buttonSpinner}></span>
+                  등록 중...
+                </>
+              ) : (
+                '등록'
+              )}
+            </button>
             <button onClick={handleClear} className={styles.clearButton}>
               초기화
             </button>
@@ -328,9 +364,7 @@ export default function LowDataGrid({ projectId: _projectId }: LowDataGridProps)
                 {excelData.rows.map((row, rowIdx) => (
                   <tr key={rowIdx}>
                     {excelData.dataKeys.map((key, colIdx) => (
-                      <td key={colIdx}>
-                        {isPercentColumn(key) ? formatPercent(row[key]) : (row[key] ?? '')}
-                      </td>
+                      <td key={colIdx}>{isPercentColumn(key) ? formatPercent(row[key]) : (row[key] ?? '')}</td>
                     ))}
                   </tr>
                 ))}
