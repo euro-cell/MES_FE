@@ -3,8 +3,20 @@ import toast from 'react-hot-toast';
 import type { InOutFormData, GroupedTableData, ProjectStatistics, StorageUsageResponse } from './types';
 import InOutForm from './InOutForm';
 import InOutTable from './InOutTable';
-import { getTodayDate, convertKoreanToEnglish, hasKorean, buildCellInventoryPayload, transformStatisticsToTableData } from './utils';
-import { createCellInventory, updateCellInventoryOut, updateCellInventoryRestock, fetchCellInventoryStatistics, fetchStorageUsage } from './InOutService';
+import {
+  getTodayDate,
+  convertKoreanToEnglish,
+  hasKorean,
+  buildCellInventoryPayload,
+  transformStatisticsToTableData,
+} from './utils';
+import {
+  createCellInventory,
+  updateCellInventoryOut,
+  updateCellInventoryRestock,
+  fetchCellInventoryStatistics,
+  fetchStorageUsage,
+} from './InOutService';
 import styles from '../../../../styles/stock/cell/InOut.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -112,7 +124,7 @@ export default function InOutIndex() {
       const usage = await fetchStorageUsage();
       setStorageUsage(usage);
 
-      toast.success('✅ 등록되었습니다.');
+      toast.success('등록되었습니다.');
     } catch (error) {
       alert('❌ ' + (error as any)?.message || '알 수 없는 오류');
     } finally {

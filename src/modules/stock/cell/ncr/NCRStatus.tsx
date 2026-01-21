@@ -18,17 +18,16 @@ export default function NCRStatus() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get<NCRStatisticsResponse>(
-        `${API_BASE}/cell-inventory/ncr/statistics`,
-        { withCredentials: true }
-      );
+      const response = await axios.get<NCRStatisticsResponse>(`${API_BASE}/cell-inventory/ncr/statistics`, {
+        withCredentials: true,
+      });
       setStatisticsData(response.data);
-      toast.success('✅ NCR 통계가 조회되었습니다.');
+      toast.success('NCR 통계가 조회되었습니다.');
     } catch (err: any) {
       console.error('NCR 통계 조회 실패:', err);
       const errorMsg = err.response?.data?.message || '데이터를 불러오는 중 오류가 발생했습니다.';
       setError(errorMsg);
-      toast.error(`❌ ${errorMsg}`);
+      toast.error(`${errorMsg}`);
     } finally {
       setLoading(false);
     }
@@ -81,7 +80,7 @@ export default function NCRStatus() {
           className={styles.refreshBtn}
           onClick={loadStatistics}
           disabled={loading}
-          title="NCR 통계를 새로고침합니다"
+          title='NCR 통계를 새로고침합니다'
         >
           {loading ? '조회 중...' : '🔄 새로고침'}
         </button>

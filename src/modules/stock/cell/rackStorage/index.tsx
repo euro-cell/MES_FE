@@ -14,10 +14,10 @@ export default function RackStorageIndex() {
     try {
       const data = await fetchRackStorageData();
       setRackData(data);
-      toast.success('✅ 보관 현황이 업데이트 되었습니다.');
+      toast.success('보관 현황이 업데이트 되었습니다.');
     } catch (error) {
       console.error('RACK 데이터 로드 실패:', error);
-      toast.error('❌ 보관 현황 조회 실패');
+      toast.error('보관 현황 조회 실패');
     } finally {
       setIsLoading(false);
     }
@@ -45,9 +45,7 @@ export default function RackStorageIndex() {
         <>
           <RackStorageGrid locations={rackData.locations} />
           <div className={styles.footer}>
-            <p className={styles.updateTime}>
-              마지막 업데이트: {new Date(rackData.updatedAt).toLocaleString('ko-KR')}
-            </p>
+            <p className={styles.updateTime}>마지막 업데이트: {new Date(rackData.updatedAt).toLocaleString('ko-KR')}</p>
           </div>
         </>
       ) : (
