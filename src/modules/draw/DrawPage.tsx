@@ -4,7 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import styles from '../../styles/draw/Drawing.module.css';
 import { getDrawings, createDrawing } from './DrawService';
-import type { Drawing, DrawingCategory, DrawingCreatePayload } from './DrawTypes';
+import type { DrawingListItem, DrawingCategory, DrawingCreatePayload } from './DrawTypes';
 import TooltipButton from '../../components/TooltipButton';
 
 const CATEGORY_OPTIONS: DrawingCategory[] = ['공장', '설비', '제품', 'OEM/ODM'];
@@ -28,7 +28,7 @@ export default function DrawPage() {
   const searchParams = new URLSearchParams(location.search);
   const category = searchParams.get('category') as DrawingCategory | null;
 
-  const [drawings, setDrawings] = useState<Drawing[]>([]);
+  const [drawings, setDrawings] = useState<DrawingListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -39,7 +39,7 @@ export default function DrawPage() {
 
   // 프로젝트명(중분류) 기준으로 그룹핑
   const groupedDrawings = useMemo(() => {
-    const groups: Record<string, Drawing[]> = {};
+    const groups: Record<string, DrawingListItem[]> = {};
     if (!Array.isArray(drawings)) return groups;
     drawings.forEach(d => {
       if (!groups[d.projectName]) {
@@ -141,14 +141,6 @@ export default function DrawPage() {
     setIsAddMode(false);
   };
 
-  const getLatestRegistrationDate = (drawing: Drawing) => {
-    if (drawing.versions.length === 0) return '-';
-    const sorted = [...drawing.versions].sort(
-      (a, b) => new Date(b.registrationDate).getTime() - new Date(a.registrationDate).getTime()
-    );
-    return sorted[0].registrationDate;
-  };
-
   return (
     <div className={styles.ledgerPage}>
       <div className={styles.header}>
@@ -219,10 +211,10 @@ export default function DrawPage() {
                   {expandedGroups.has(projectName) && items.map((item, idx) => (
                     <tr key={item.id} className={styles.groupItem}>
                       <td>{idx + 1}</td>
-                      <td>{getLatestRegistrationDate(item)}</td>
+                      <td>{item.latestRegistrationDate}</td>
                       <td>{item.division || '-'}</td>
                       <td>{item.drawingNumber}</td>
-                      <td>v{item.currentVersion.toFixed(1)}</td>
+                      <td>v{Number(item.currentVersion).toFixed(1)}</td>
                       <td>{item.description || '-'}</td>
                       <td>
                         <div className={styles.actionButtons}>

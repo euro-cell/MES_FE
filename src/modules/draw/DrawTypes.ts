@@ -9,6 +9,19 @@ export interface DrawingVersion {
   changeNote: string | null;
 }
 
+/** 목록 조회용 (versions 없음) */
+export interface DrawingListItem {
+  id: number;
+  category: DrawingCategory;
+  projectName: string;
+  division: string;
+  drawingNumber: string;
+  description: string | null;
+  currentVersion: number;
+  latestRegistrationDate: string;
+}
+
+/** 상세 조회용 (versions 포함) */
 export interface Drawing {
   id: number;
   category: DrawingCategory;

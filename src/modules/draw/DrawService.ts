@@ -1,23 +1,24 @@
 import axios from 'axios';
-import type { Drawing, DrawingListParams, DrawingCreatePayload } from './DrawTypes';
+import type { Drawing, DrawingListItem, DrawingListParams, DrawingCreatePayload } from './DrawTypes';
 import mockDrawings from './mockDrawings.json';
 
-const API_BASE = '/drawing';
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-/** 도면 목록 조회 (목데이터) */
-export const getDrawings = async (params?: DrawingListParams): Promise<Drawing[]> => {
+/** 도면 목록 조회 */
+export const getDrawings = async (params?: DrawingListParams): Promise<DrawingListItem[]> => {
+  const response = await axios.get<DrawingListItem[]>(`${API_BASE}/drawing`, { params, withCredentials: true });
+  return response.data;
+};
+
+/** 도면 상세 조회 (TODO: API 완성 후 연동) */
+export const getDrawingById = async (id: number): Promise<Drawing | null> => {
   // TODO: API 완성 후 실제 API 호출로 변경
-  // const response = await axios.get<Drawing[]>(API_BASE, { params });
+  // const response = await axios.get<Drawing>(`${API_BASE}/drawing/${id}`, { withCredentials: true });
   // return response.data;
 
   await new Promise(resolve => setTimeout(resolve, 300));
-  let data = mockDrawings as Drawing[];
-
-  if (params?.category) {
-    data = data.filter(d => d.category === params.category);
-  }
-
-  return data;
+  const drawings = mockDrawings as Drawing[];
+  return drawings.find(d => d.id === id) || null;
 };
 
 /** 도면 등록 */
@@ -46,10 +47,11 @@ export const createDrawing = async (payload: DrawingCreatePayload): Promise<Draw
     });
   }
 
-  const response = await axios.post<Drawing>(API_BASE, formData, {
+  const response = await axios.post<Drawing>(`${API_BASE}/drawing`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
+    withCredentials: true,
   });
 
   return response.data;
@@ -72,8 +74,9 @@ export const addVersion = async (drawingId: number, payload: VersionAddPayload):
   // if (payload.changeNote) formData.append('changeNote', payload.changeNote);
   // if (payload.drawingFile) formData.append('drawingFile', payload.drawingFile);
   // if (payload.pdfFiles) payload.pdfFiles.forEach(f => formData.append('pdfFiles', f));
-  // const response = await axios.post<Drawing>(`${API_BASE}/${drawingId}/version`, formData, {
+  // const response = await axios.post<Drawing>(`${API_BASE}/drawing/${drawingId}/version`, formData, {
   //   headers: { 'Content-Type': 'multipart/form-data' },
+  //   withCredentials: true,
   // });
   // return response.data;
 

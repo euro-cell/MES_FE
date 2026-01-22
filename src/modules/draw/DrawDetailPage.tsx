@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
 import styles from '../../styles/draw/Drawing.module.css';
-import { getDrawings, addVersion } from './DrawService';
+import { getDrawingById, addVersion } from './DrawService';
 import type { Drawing } from './DrawTypes';
 import TooltipButton from '../../components/TooltipButton';
 import PdfViewer from '../../components/PdfViewer';
@@ -42,9 +42,8 @@ export default function DrawDetailPage() {
   useEffect(() => {
     const loadDrawing = async () => {
       try {
-        const drawings = await getDrawings();
-        const found = drawings.find(d => d.id === Number(id));
-        setDrawing(found || null);
+        const drawing = await getDrawingById(Number(id));
+        setDrawing(drawing);
       } catch (err) {
         console.error('도면 조회 실패:', err);
       } finally {
@@ -195,7 +194,7 @@ export default function DrawDetailPage() {
           </div>
           <div className={styles.infoItem}>
             <span className={styles.infoLabel}>현재 버전</span>
-            <span className={styles.infoValue}>v{drawing.currentVersion.toFixed(1)}</span>
+            <span className={styles.infoValue}>v{Number(drawing.currentVersion).toFixed(1)}</span>
           </div>
           <div className={`${styles.infoItem} ${styles.fullWidth}`}>
             <span className={styles.infoLabel}>도면 내용</span>
@@ -222,7 +221,7 @@ export default function DrawDetailPage() {
           <tbody>
             {sortedVersions.map(ver => (
               <tr key={ver.id}>
-                <td>v{ver.version.toFixed(1)}</td>
+                <td>v{Number(ver.version).toFixed(1)}</td>
                 <td>{ver.registrationDate}</td>
                 <td>{ver.changeNote || '-'}</td>
                 <td>
@@ -269,7 +268,7 @@ export default function DrawDetailPage() {
                   className={`${styles.pdfTab} ${selectedPdfIndex === idx ? styles.active : ''}`}
                   onClick={() => setSelectedPdfIndex(idx)}
                 >
-                  [v{pdf.version.toFixed(1)}] {pdf.fileName}
+                  [v{Number(pdf.version).toFixed(1)}] {pdf.fileName}
                 </button>
               ))}
             </div>
