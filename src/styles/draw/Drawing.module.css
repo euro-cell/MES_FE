@@ -39,11 +39,6 @@
   text-align: center;
 }
 
-.ledgerTable td:nth-child(4),
-.ledgerTable td:nth-child(7) {
-  text-align: left;
-}
-
 .ledgerTable tr:hover td {
   background: #f8fafc;
 }
@@ -121,7 +116,7 @@
 .modal {
   background: #fff;
   border-radius: 12px;
-  width: 500px;
+  width: 700px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
@@ -159,8 +154,18 @@
   padding: 20px;
 }
 
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+}
+
 .formRow {
-  margin-bottom: 16px;
+  margin-bottom: 0;
+}
+
+.formRow.fullWidth {
+  grid-column: 1 / -1;
 }
 
 .formRow label {
@@ -241,4 +246,214 @@
 .submitButton:disabled {
   background: #94a3b8;
   cursor: not-allowed;
+}
+
+/* 그룹 헤더 스타일 */
+.groupHeader {
+  background: #f8fafc;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.groupHeader:hover {
+  background: #f1f5f9;
+}
+
+.groupHeader td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.groupHeader td:first-child {
+  width: 40px;
+  text-align: center;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.groupHeader .projectName {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.groupHeader .itemCount {
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* 그룹 아이템 스타일 */
+.groupItem {
+  background: #fff;
+}
+
+.groupItem td {
+  padding: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.groupItem td:first-child {
+  padding-left: 24px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* 관리 버튼 */
+.actionButtons {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.actionButton {
+  padding: 4px 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actionButton:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.deleteButton {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.deleteButton:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* 상세 페이지 */
+.detailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.detailHeader h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.backButton {
+  padding: 8px 16px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backButton:hover {
+  background: #2563eb;
+}
+
+.detailSection {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.detailSection h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoItem.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.infoLabel {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.infoValue {
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.fileList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+/* PDF 뷰어 섹션 */
+.pdfTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.pdfTab {
+  padding: 8px 16px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pdfTab:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.pdfTab.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.noPdf {
+  padding: 40px;
+  text-align: center;
+  color: #94a3b8;
+  background: #f8fafc;
+  border-radius: 8px;
 }

@@ -68,3 +68,42 @@
 .documentWrapper.dragging {
   cursor: grabbing;
 }
+
+.noFile {
+  padding: 60px 20px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 14px;
+  background: #f8fafc;
+  border: 2px dashed #e2e8f0;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.pdfSelector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.pdfTab {
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.pdfTab:hover {
+  background: #f1f5f9;
+}
+
+.pdfTab.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}

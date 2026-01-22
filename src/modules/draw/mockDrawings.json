@@ -1,0 +1,113 @@
+[
+  {
+    "id": 1,
+    "category": "공장",
+    "projectName": "오산",
+    "division": "1층",
+    "drawingNumber": "OS-F1-001",
+    "description": "오산 공장 1층 배치도",
+    "currentVersion": 1.0,
+    "versions": [
+      {
+        "id": 1,
+        "version": 1.0,
+        "drawingFileName": "KCDE022269B1_L01_V1.0 (중국 창주 공장 Layout).dwg",
+        "pdfFileNames": ["floor1.pdf"],
+        "registrationDate": "2024-01-15",
+        "changeNote": "최초 등록"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "category": "공장",
+    "projectName": "오산",
+    "division": "2층",
+    "drawingNumber": "OS-F2-001",
+    "description": "오산 공장 2층 배치도",
+    "currentVersion": 1.0,
+    "versions": [
+      {
+        "id": 2,
+        "version": 1.0,
+        "drawingFileName": "KCDE022269B1_PD01_V1.0 (전극 공정 도면).dwg",
+        "pdfFileNames": ["floor2.pdf"],
+        "registrationDate": "2024-01-16",
+        "changeNote": null
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "category": "공장",
+    "projectName": "화성",
+    "division": "A동",
+    "drawingNumber": "HS-A-001",
+    "description": "화성 공장 A동 도면",
+    "currentVersion": 1.1,
+    "versions": [
+      {
+        "id": 3,
+        "version": 1.0,
+        "drawingFileName": "HYTC-MC01_V1.0 (Pouch Forming MC).dwg",
+        "pdfFileNames": ["claude.pdf"],
+        "registrationDate": "2024-01-10",
+        "changeNote": "최초 등록"
+      },
+      {
+        "id": 4,
+        "version": 1.1,
+        "drawingFileName": "HYTC-MC01_Mold_V1.0 (Forming Mold).dwg",
+        "pdfFileNames": ["Invoice-ETXR9CHY-0005.pdf", "Receipt-2474-0535-1609.pdf"],
+        "registrationDate": "2024-01-18",
+        "changeNote": "레이아웃 수정"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "category": "설비",
+    "projectName": "프레스",
+    "division": "1호기",
+    "drawingNumber": "EQ-PR-001",
+    "description": "프레스 1호기 설비 도면",
+    "currentVersion": 1.0,
+    "versions": [
+      {
+        "id": 5,
+        "version": 1.0,
+        "drawingFileName": "HYTC-MC01_JIG_V1.0 (Forming pouch folding jig).dwg",
+        "pdfFileNames": ["floor1.pdf", "claude.pdf"],
+        "registrationDate": "2024-01-20",
+        "changeNote": null
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "category": "제품",
+    "projectName": "배터리셀",
+    "division": "Type-A",
+    "drawingNumber": "PD-BC-001",
+    "description": "배터리셀 Type-A 제품 도면",
+    "currentVersion": 2.0,
+    "versions": [
+      {
+        "id": 6,
+        "version": 1.0,
+        "drawingFileName": "한엔지니어링-JIG_V1.0 (Sealing JIG).dwg",
+        "pdfFileNames": ["Receipt-2474-0535-1609.pdf"],
+        "registrationDate": "2024-01-05",
+        "changeNote": "최초 등록"
+      },
+      {
+        "id": 7,
+        "version": 2.0,
+        "drawingFileName": "한엔지니어링-Mold_V1.0 (Top & side sealing bar mold).dwg",
+        "pdfFileNames": ["floor2.pdf", "Invoice-ETXR9CHY-0005.pdf"],
+        "registrationDate": "2024-01-22",
+        "changeNote": "규격 변경"
+      }
+    ]
+  }
+]

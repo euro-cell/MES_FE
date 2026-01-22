@@ -2,9 +2,9 @@ export type DrawingCategory = '공장' | '설비' | '제품' | 'OEM/ODM';
 
 export interface DrawingVersion {
   id: number;
-  version: string;
-  drawingFileName: string;
-  pdfFileName: string | null;
+  version: number;
+  drawingFileName: string | null;
+  pdfFileNames: string[];
   registrationDate: string;
   changeNote: string | null;
 }
@@ -13,9 +13,10 @@ export interface Drawing {
   id: number;
   category: DrawingCategory;
   projectName: string;
+  division: string;
   drawingNumber: string;
   description: string | null;
-  currentVersion: string;
+  currentVersion: number;
   versions: DrawingVersion[];
 }
 
@@ -28,11 +29,12 @@ export interface DrawingListParams {
 export interface DrawingCreatePayload {
   category: DrawingCategory;
   projectName: string;
+  division: string;
   drawingNumber: string;
   description?: string;
-  version: string;
+  version: number;
   registrationDate: string;
   changeNote?: string;
-  drawingFile: File;
-  pdfFile?: File;
+  drawingFile?: File;
+  pdfFiles?: File[];
 }
