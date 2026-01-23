@@ -8,7 +8,7 @@ import { MENU_CONFIG } from './modules/menuConfig'; // ✅ 중앙 메뉴 설정 
 
 // ✅ 현재 모듈
 import Dashboard from './modules/dashboard';
-import Production from './modules/production';
+import Project from './modules/project';
 import Stock from './modules/stock';
 import Quality from './modules/quality';
 import Plant from './modules/plant';
@@ -57,11 +57,11 @@ function App() {
       />
 
       <Route
-        path={`${MENU_CONFIG.production.path}/*`}
+        path={`${MENU_CONFIG.project.path}/*`}
         element={
           <ProtectedRoute>
             <BaseLayout>
-              <Production />
+              <Project />
             </BaseLayout>
           </ProtectedRoute>
         }

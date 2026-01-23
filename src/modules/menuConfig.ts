@@ -1,16 +1,16 @@
 export const MENU_CONFIG = {
   dashboard: { title: '프로젝트 현황 및 등록', path: '/main' },
 
-  production: {
+  project: {
     title: '생산 관리',
-    path: '/prod',
+    path: '/project',
     sub: [
-      { title: '생산계획', path: '/prod/plan' },
-      { title: '설계 및 자재 소요량', path: '/prod/spec' },
-      { title: '작업 일지', path: '/prod/log' },
-      { title: '생산 현황 (수율)', path: '/prod/status' },
-      { title: 'Lot 관리', path: '/prod/lot' },
-      { title: 'Lot 검색', path: '/prod/search' },
+      { title: '생산계획', path: '/project/plan' },
+      { title: '설계 및 자재 소요량', path: '/project/spec' },
+      { title: '작업 일지', path: '/project/log' },
+      { title: '생산 현황 (수율)', path: '/project/status' },
+      { title: 'Lot 관리', path: '/project/lot' },
+      { title: 'Lot 검색', path: '/project/search' },
     ],
   },
 
