@@ -45,11 +45,11 @@ export default function WeldingView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Assembly&process=Welding`);
+    navigate(`/project/log/${projectId}?category=Assembly&process=Welding`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/welding/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/welding/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) {

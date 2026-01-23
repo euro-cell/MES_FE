@@ -43,7 +43,7 @@ export const getProcessesByCategory = (category: string): ProcessInfo[] => {
 export const createCategoryMenus = (projectId: number) => {
   return CATEGORIES.map(category => ({
     title: category.title,
-    path: `/prod/log/${projectId}?category=${category.id}`,
+    path: `/project/log/${projectId}?category=${category.id}`,
   }));
 };
 
@@ -51,6 +51,6 @@ export const createProcessMenus = (projectId: number, category: string) => {
   const processes = getProcessesByCategory(category);
   return processes.map(process => ({
     title: process.title,
-    path: `/prod/log/${projectId}?category=${category}&process=${process.id}`,
+    path: `/project/log/${projectId}?category=${category}&process=${process.id}`,
   }));
 };

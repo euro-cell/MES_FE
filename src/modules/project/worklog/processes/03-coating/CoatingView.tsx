@@ -64,11 +64,11 @@ export default function CoatingView() {
   }, [projectId, worklogId, namedRanges, project]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Electrode&process=Coating`);
+    navigate(`/project/log/${projectId}?category=Electrode&process=Coating`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/coating/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/coating/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) {

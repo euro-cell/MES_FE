@@ -83,7 +83,7 @@ export default function PressEdit() {
       const payload = mapFormToPayload(formValues, namedRanges, PRESS_NUMERIC_FIELDS) as PressWorklogPayload;
       await updatePressWorklog(Number(projectId), Number(worklogId), payload);
       alert('Press 작업일지가 수정되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Electrode&process=Press`);
+      navigate(`/project/log/${projectId}?category=Electrode&process=Press`);
     } catch (err) {
       console.error('수정 실패:', err);
       alert('수정 실패: ' + err);
@@ -106,7 +106,7 @@ export default function PressEdit() {
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
         </div>
         <div className={styles.actions}>
-          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Press`)}>
+          <button className={styles.btnCancel} onClick={() => navigate(`/project/log/${projectId}?category=Electrode&process=Press`)}>
             취소
           </button>
           <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>

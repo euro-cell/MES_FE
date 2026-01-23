@@ -45,11 +45,11 @@ export default function BinderView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Electrode&process=Binder`);
+    navigate(`/project/log/${projectId}?category=Electrode&process=Binder`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/binder/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/binder/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) {

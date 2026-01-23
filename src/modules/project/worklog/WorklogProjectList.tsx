@@ -37,7 +37,7 @@ export default function WorklogProjectList() {
         <tbody>
           {projects.map(project => (
             <tr key={project.id}>
-              <td className={styles.projectName} onClick={() => navigate(`/prod/log/${project.id}`)}>
+              <td className={styles.projectName} onClick={() => navigate(`/project/log/${project.id}`)}>
                 {project.name}
               </td>
             </tr>

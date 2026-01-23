@@ -56,7 +56,7 @@ export function createCategoryMenus(projectId: number) {
 
   return CATEGORIES.map(cat => ({
     title: cat.title,
-    path: `/prod/status/${projectId}?category=${cat.id}`,
+    path: `/project/status/${projectId}?category=${cat.id}`,
   }));
 }
 
@@ -84,7 +84,7 @@ export function createMonthMenus(projectId: number, category: string, project: P
 
     return {
       title,
-      path: `/prod/status/${projectId}?category=${category}&month=${monthStr}`,
+      path: `/project/status/${projectId}?category=${category}&month=${monthStr}`,
     };
   });
 }
@@ -93,6 +93,6 @@ export function createMonthMenus(projectId: number, category: string, project: P
 export function createElectrodeTypeMenus(projectId: number, monthParam: string) {
   return ELECTRODE_TYPES.map(type => ({
     title: type.title,
-    path: `/prod/status/${projectId}?category=Electrode&month=${monthParam}&type=${type.id}`,
+    path: `/project/status/${projectId}?category=Electrode&month=${monthParam}&type=${type.id}`,
   }));
 }

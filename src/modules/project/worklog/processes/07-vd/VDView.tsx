@@ -127,11 +127,11 @@ export default function VdView() {
   }, [projectId, worklogId]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Assembly&process=VD`);
+    navigate(`/project/log/${projectId}?category=Assembly&process=VD`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/vd/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/vd/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) return <p>데이터를 불러오는 중...</p>;

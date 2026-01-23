@@ -68,11 +68,11 @@ export default function PressView() {
   }, [projectId, worklogId, namedRanges, project]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Electrode&process=Press`);
+    navigate(`/project/log/${projectId}?category=Electrode&process=Press`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/press/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/press/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) return <p>데이터를 불러오는 중...</p>;

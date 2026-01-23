@@ -28,7 +28,7 @@ export const LOT_CATEGORIES: CategoryInfo[] = [
 export const createCategoryMenus = (projectId: number) => {
   return LOT_CATEGORIES.map(category => ({
     title: category.title,
-    path: `/prod/lot/${projectId}?category=${category.id}`,
+    path: `/project/lot/${projectId}?category=${category.id}`,
   }));
 };
 
@@ -36,7 +36,7 @@ export const createProcessMenus = (projectId: number, category: string) => {
   const processes = LOT_PROCESS_CONFIG[category] || [];
   return processes.map(process => ({
     title: process.title,
-    path: `/prod/lot/${projectId}?category=${category}&process=${process.id}`,
+    path: `/project/lot/${projectId}?category=${category}&process=${process.id}`,
   }));
 };
 

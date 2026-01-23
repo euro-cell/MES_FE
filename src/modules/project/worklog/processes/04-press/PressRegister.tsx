@@ -183,7 +183,7 @@ export default function PressRegister() {
     try {
       await createPressWorklog(Number(projectId), payload);
       alert('Press 작업일지가 등록되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Electrode&process=Press`);
+      navigate(`/project/log/${projectId}?category=Electrode&process=Press`);
     } catch (err) {
       console.error('등록 실패:', err);
       alert('등록 실패: ' + err);
@@ -208,7 +208,7 @@ export default function PressRegister() {
         <div className={styles.actions}>
           <button
             className={styles.btnCancel}
-            onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Press`)}
+            onClick={() => navigate(`/project/log/${projectId}?category=Electrode&process=Press`)}
           >
             취소
           </button>

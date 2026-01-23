@@ -97,7 +97,7 @@ export default function SlurryRegister() {
       const payload = mapFormToPayload(formValues, namedRanges, SLURRY_NUMERIC_FIELDS) as SlurryWorklogPayload;
       await createSlurryWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Electrode&process=Slurry`);
+      navigate(`/project/log/${projectId}?category=Electrode&process=Slurry`);
     } catch (err) {
       alert('저장 실패: ' + err);
       console.error('Save error:', err);
@@ -108,7 +108,7 @@ export default function SlurryRegister() {
 
   const handleCancel = () => {
     if (confirm('입력한 내용이 사라집니다. 취소하시겠습니까?')) {
-      navigate(`/prod/log/${projectId}?category=Electrode&process=Slurry`);
+      navigate(`/project/log/${projectId}?category=Electrode&process=Slurry`);
     }
   };
 

@@ -119,7 +119,7 @@ export default function FormingRegister() {
     try {
       await createFormingWorklog(Number(projectId), payload);
       alert('Forming 작업일지가 등록되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Assembly&process=Forming`);
+      navigate(`/project/log/${projectId}?category=Assembly&process=Forming`);
     } catch (err) {
       console.error('등록 실패:', err);
       alert('등록 실패: ' + err);
@@ -144,7 +144,7 @@ export default function FormingRegister() {
         <div className={styles.actions}>
           <button
             className={styles.btnCancel}
-            onClick={() => navigate(`/prod/log/${projectId}?category=Assembly&process=Forming`)}
+            onClick={() => navigate(`/project/log/${projectId}?category=Assembly&process=Forming`)}
           >
             취소
           </button>

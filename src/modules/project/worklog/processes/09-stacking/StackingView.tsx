@@ -45,11 +45,11 @@ export default function StackingView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Assembly&process=Stacking`);
+    navigate(`/project/log/${projectId}?category=Assembly&process=Stacking`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/stacking/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/stacking/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) {

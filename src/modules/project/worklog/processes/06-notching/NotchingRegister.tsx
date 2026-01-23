@@ -65,7 +65,7 @@ export default function NotchingRegister() {
       const payload = mapFormToPayload(formValues, namedRanges, NOTCHING_NUMERIC_FIELDS) as NotchingWorklogPayload;
       await createNotchingWorklog(Number(projectId), payload);
       alert('Notching 작업일지가 등록되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Electrode&process=Notching`);
+      navigate(`/project/log/${projectId}?category=Electrode&process=Notching`);
     } catch (err) {
       console.error('등록 실패:', err);
       alert('등록 실패: ' + err);
@@ -90,7 +90,7 @@ export default function NotchingRegister() {
         <div className={styles.actions}>
           <button
             className={styles.btnCancel}
-            onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Notching`)}
+            onClick={() => navigate(`/project/log/${projectId}?category=Electrode&process=Notching`)}
           >
             취소
           </button>

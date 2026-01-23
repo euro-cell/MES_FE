@@ -45,11 +45,11 @@ export default function SealingView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Assembly&process=Sealing`);
+    navigate(`/project/log/${projectId}?category=Assembly&process=Sealing`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/sealing/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/sealing/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) {

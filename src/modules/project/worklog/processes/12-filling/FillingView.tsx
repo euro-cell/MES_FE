@@ -45,11 +45,11 @@ export default function FillingView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Assembly&process=Filling`);
+    navigate(`/project/log/${projectId}?category=Assembly&process=Filling`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/filling/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/filling/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) {

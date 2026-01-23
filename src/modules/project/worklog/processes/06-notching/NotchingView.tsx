@@ -68,11 +68,11 @@ export default function NotchingView() {
   }, [projectId, worklogId, namedRanges, project]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Electrode&process=Notching`);
+    navigate(`/project/log/${projectId}?category=Electrode&process=Notching`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/notching/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/notching/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) return <p>데이터를 불러오는 중...</p>;

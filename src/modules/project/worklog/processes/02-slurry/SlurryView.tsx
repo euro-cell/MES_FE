@@ -46,11 +46,11 @@ export default function SlurryView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Electrode&process=Slurry`);
+    navigate(`/project/log/${projectId}?category=Electrode&process=Slurry`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/slurry/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/slurry/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) {

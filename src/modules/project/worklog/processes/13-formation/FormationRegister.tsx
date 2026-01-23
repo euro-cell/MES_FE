@@ -81,7 +81,7 @@ export default function FormationRegister() {
       const payload = mapFormToPayload(formValues, namedRanges, FORMATION_NUMERIC_FIELDS) as FormationWorklogPayload;
       await createFormationWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Formation&process=Formation`);
+      navigate(`/project/log/${projectId}?category=Formation&process=Formation`);
     } catch (err) {
       alert('저장 실패: ' + err);
       console.error('Save error:', err);
@@ -92,7 +92,7 @@ export default function FormationRegister() {
 
   const handleCancel = () => {
     if (confirm('입력한 내용이 사라집니다. 취소하시겠습니까?')) {
-      navigate(`/prod/log/${projectId}?category=Formation&process=Formation`);
+      navigate(`/project/log/${projectId}?category=Formation&process=Formation`);
     }
   };
 

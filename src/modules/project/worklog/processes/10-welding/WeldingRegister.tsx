@@ -65,7 +65,7 @@ export default function WeldingRegister() {
       const payload = mapFormToPayload(formValues, namedRanges, WELDING_NUMERIC_FIELDS) as WeldingWorklogPayload;
       await createWeldingWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Assembly&process=Welding`);
+      navigate(`/project/log/${projectId}?category=Assembly&process=Welding`);
     } catch (err) {
       alert('저장 실패: ' + err);
       console.error('Save error:', err);
@@ -76,7 +76,7 @@ export default function WeldingRegister() {
 
   const handleCancel = () => {
     if (confirm('입력한 내용이 사라집니다. 취소하시겠습니까?')) {
-      navigate(`/prod/log/${projectId}?category=Assembly&process=Welding`);
+      navigate(`/project/log/${projectId}?category=Assembly&process=Welding`);
     }
   };
 

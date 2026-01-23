@@ -177,7 +177,7 @@ export default function VdRegister() {
     try {
       await createVdWorklog(Number(projectId), payload);
       alert('VD 작업일지가 등록되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Assembly&process=VD`);
+      navigate(`/project/log/${projectId}?category=Assembly&process=VD`);
     } catch (err) {
       console.error('등록 실패:', err);
       alert('등록 실패: ' + err);
@@ -202,7 +202,7 @@ export default function VdRegister() {
         <div className={styles.actions}>
           <button
             className={styles.btnCancel}
-            onClick={() => navigate(`/prod/log/${projectId}?category=Assembly&process=VD`)}
+            onClick={() => navigate(`/project/log/${projectId}?category=Assembly&process=VD`)}
           >
             취소
           </button>

@@ -45,11 +45,11 @@ export default function FormationView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Formation&process=Formation`);
+    navigate(`/project/log/${projectId}?category=Formation&process=Formation`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/formation/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/formation/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) {

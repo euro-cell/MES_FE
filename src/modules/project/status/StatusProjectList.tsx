@@ -37,7 +37,7 @@ export default function StatusProjectList() {
         <tbody>
           {projects.map(project => (
             <tr key={project.id}>
-              <td className={styles.projectName} onClick={() => navigate(`/prod/status/${project.id}`)}>
+              <td className={styles.projectName} onClick={() => navigate(`/project/status/${project.id}`)}>
                 {project.name}
               </td>
             </tr>

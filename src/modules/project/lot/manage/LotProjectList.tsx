@@ -39,7 +39,7 @@ export default function LotProjectList() {
         <tbody>
           {projects.map(project => (
             <tr key={project.id}>
-              <td className={styles.projectName} onClick={() => navigate(`/prod/lot/${project.id}`)}>
+              <td className={styles.projectName} onClick={() => navigate(`/project/lot/${project.id}`)}>
                 {project.name}
               </td>
               <td>{project.startDate || '-'}</td>

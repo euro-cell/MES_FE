@@ -45,11 +45,11 @@ export default function InspectionView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Formation&process=Inspection`);
+    navigate(`/project/log/${projectId}?category=Formation&process=Inspection`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/inspection/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/inspection/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) {

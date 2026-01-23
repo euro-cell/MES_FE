@@ -93,11 +93,11 @@ export default function FormingView() {
   }, [projectId, worklogId]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Assembly&process=Forming`);
+    navigate(`/project/log/${projectId}?category=Assembly&process=Forming`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/forming/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/forming/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) return <p>데이터를 불러오는 중...</p>;

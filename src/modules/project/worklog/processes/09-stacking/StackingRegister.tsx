@@ -65,7 +65,7 @@ export default function StackingRegister() {
       const payload = mapFormToPayload(formValues, namedRanges, STACKING_NUMERIC_FIELDS) as StackingWorklogPayload;
       await createStackingWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Assembly&process=Stacking`);
+      navigate(`/project/log/${projectId}?category=Assembly&process=Stacking`);
     } catch (err) {
       alert('저장 실패: ' + err);
       console.error('Save error:', err);
@@ -76,7 +76,7 @@ export default function StackingRegister() {
 
   const handleCancel = () => {
     if (confirm('입력한 내용이 사라집니다. 취소하시겠습니까?')) {
-      navigate(`/prod/log/${projectId}?category=Assembly&process=Stacking`);
+      navigate(`/project/log/${projectId}?category=Assembly&process=Stacking`);
     }
   };
 

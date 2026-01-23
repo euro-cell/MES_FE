@@ -83,7 +83,7 @@ export default function NotchingEdit() {
       const payload = mapFormToPayload(formValues, namedRanges, NOTCHING_NUMERIC_FIELDS) as NotchingWorklogPayload;
       await updateNotchingWorklog(Number(projectId), Number(worklogId), payload);
       alert('Notching 작업일지가 수정되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Electrode&process=Notching`);
+      navigate(`/project/log/${projectId}?category=Electrode&process=Notching`);
     } catch (err) {
       console.error('수정 실패:', err);
       alert('수정 실패: ' + err);
@@ -106,7 +106,7 @@ export default function NotchingEdit() {
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
         </div>
         <div className={styles.actions}>
-          <button className={styles.btnCancel} onClick={() => navigate(`/prod/log/${projectId}?category=Electrode&process=Notching`)}>
+          <button className={styles.btnCancel} onClick={() => navigate(`/project/log/${projectId}?category=Electrode&process=Notching`)}>
             취소
           </button>
           <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>

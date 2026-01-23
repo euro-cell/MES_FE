@@ -45,11 +45,11 @@ export default function GradingView() {
   }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
-    navigate(`/prod/log/${projectId}?category=Formation&process=Grading`);
+    navigate(`/project/log/${projectId}?category=Formation&process=Grading`);
   };
 
   const handleEdit = () => {
-    navigate(`/prod/log/${projectId}/grading/edit/${worklogId}`);
+    navigate(`/project/log/${projectId}/grading/edit/${worklogId}`);
   };
 
   if (templateLoading || loading) {

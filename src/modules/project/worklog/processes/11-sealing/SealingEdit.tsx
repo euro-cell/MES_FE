@@ -83,7 +83,7 @@ export default function SealingEdit() {
       const payload = mapFormToPayload(formValues, namedRanges, SEALING_NUMERIC_FIELDS) as Partial<SealingWorklogPayload>;
       await updateSealingWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
-      navigate(`/prod/log/${projectId}?category=Assembly&process=Sealing`);
+      navigate(`/project/log/${projectId}?category=Assembly&process=Sealing`);
     } catch (err) {
       alert('수정 실패: ' + err);
       console.error('Update error:', err);
@@ -94,7 +94,7 @@ export default function SealingEdit() {
 
   const handleCancel = () => {
     if (confirm('수정한 내용이 사라집니다. 취소하시겠습니까?')) {
-      navigate(`/prod/log/${projectId}?category=Assembly&process=Sealing`);
+      navigate(`/project/log/${projectId}?category=Assembly&process=Sealing`);
     }
   };
 

@@ -349,7 +349,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           <TooltipButton
             label='등록'
             variant='register'
-            onClick={() => navigate(`/prod/log/${projectId}/${processId.toLowerCase()}/register`)}
+            onClick={() => navigate(`/project/log/${projectId}/${processId.toLowerCase()}/register`)}
           />
         </div>
       </div>
@@ -379,12 +379,12 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
                     <TooltipButton
                       label='조회'
                       variant='view'
-                      onClick={() => navigate(`/prod/log/${projectId}/${processId.toLowerCase()}/view/${log.id}`)}
+                      onClick={() => navigate(`/project/log/${projectId}/${processId.toLowerCase()}/view/${log.id}`)}
                     />
                     <TooltipButton
                       label='수정'
                       variant='edit'
-                      onClick={() => navigate(`/prod/log/${projectId}/${processId.toLowerCase()}/edit/${log.id}`)}
+                      onClick={() => navigate(`/project/log/${projectId}/${processId.toLowerCase()}/edit/${log.id}`)}
                     />
                     <TooltipButton label='삭제' variant='delete' onClick={() => handleDelete(log.id)} />
                   </div>
