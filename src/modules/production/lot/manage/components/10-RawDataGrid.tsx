@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import ExcelJS from 'exceljs';
-import styles from '../../../../../styles/production/lot/10-LowDataGrid.module.css';
-import { registerLowData } from '../LotService';
+import styles from '../../../../../styles/production/lot/10-RawDataGrid.module.css';
+import { registerRawData } from '../LotService';
 
 // 백분율 열 판별 (For.Eff_, SOC)
 const isPercentColumn = (key: string): boolean => {
@@ -17,13 +17,13 @@ const formatPercent = (value: string | number | null): string => {
   return (num * 100).toFixed(1) + '%';
 };
 
-// LowData 전용 셀 값 포맷 함수 (소수점 3자리)
-const formatLowDataCellValue = (value: any): string => {
+// RawData 전용 셀 값 포맷 함수 (소수점 3자리)
+const formatRawDataCellValue = (value: any): string => {
   if (value === null || value === undefined) return '';
 
   // 수식 결과 처리
   if (typeof value === 'object' && 'result' in value) {
-    return formatLowDataCellValue(value.result);
+    return formatRawDataCellValue(value.result);
   }
 
   // 숫자 처리 (소수점 3자리까지 반올림)
@@ -54,7 +54,7 @@ const formatLowDataCellValue = (value: any): string => {
   return String(value);
 };
 
-interface LowDataGridProps {
+interface RawDataGridProps {
   projectId: number;
 }
 
@@ -75,7 +75,7 @@ interface ParsedExcelData {
   rows: ExcelRow[];
 }
 
-export default function LowDataGrid({ projectId }: LowDataGridProps) {
+export default function RawDataGrid({ projectId }: RawDataGridProps) {
   const [excelData, setExcelData] = useState<ParsedExcelData | null>(null);
   const [fileName, setFileName] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -144,7 +144,7 @@ export default function LowDataGrid({ projectId }: LowDataGridProps) {
       let lastVal3 = '';
       for (let col = START_COL; col <= END_COL; col++) {
         const cell3 = wsRow3.getCell(col);
-        const val3 = formatLowDataCellValue(cell3.value);
+        const val3 = formatRawDataCellValue(cell3.value);
         // 병합된 셀은 첫 번째 셀에만 값이 있고 나머지는 빈 값
         // 빈 값이면 이전 값을 유지
         if (val3) {
@@ -157,7 +157,7 @@ export default function LowDataGrid({ projectId }: LowDataGridProps) {
       const headerRow2: string[] = [];
       for (let col = START_COL; col <= END_COL; col++) {
         const cell4 = wsRow4.getCell(col);
-        const val4 = formatLowDataCellValue(cell4.value);
+        const val4 = formatRawDataCellValue(cell4.value);
         headerRow2.push(val4 || `col_${col}`);
       }
 
@@ -193,14 +193,14 @@ export default function LowDataGrid({ projectId }: LowDataGridProps) {
 
         // C열(3번째)에 값이 없으면 종료
         const cellC = row.getCell(START_COL);
-        const cellCValue = formatLowDataCellValue(cellC.value);
+        const cellCValue = formatRawDataCellValue(cellC.value);
         if (!cellCValue) break;
 
         const rowData: ExcelRow = {};
         for (let col = START_COL; col <= END_COL; col++) {
           const cell = row.getCell(col);
           const key = dataKeys[col - START_COL];
-          rowData[key] = formatLowDataCellValue(cell.value);
+          rowData[key] = formatRawDataCellValue(cell.value);
         }
         rows.push(rowData);
       }
@@ -267,7 +267,7 @@ export default function LowDataGrid({ projectId }: LowDataGridProps) {
     setSuccessMessage(null);
 
     try {
-      const response = await registerLowData(projectId, excelData.dataKeys, excelData.rows);
+      const response = await registerRawData(projectId, excelData.dataKeys, excelData.rows);
       setSuccessMessage(response.message);
       // 5초 후 성공 메시지 숨김
       setTimeout(() => setSuccessMessage(null), 5000);
@@ -304,7 +304,7 @@ export default function LowDataGrid({ projectId }: LowDataGridProps) {
             <line x1='9' y1='15' x2='12' y2='12' />
             <line x1='15' y1='15' x2='12' y2='12' />
           </svg>
-          <span className={styles.uploadText}>LowData 파일을 드래그하거나 클릭하여 업로드</span>
+          <span className={styles.uploadText}>Raw Data 파일을 드래그하거나 클릭하여 업로드</span>
           <span className={styles.fileTypes}>.xlsx, .xls 파일 지원</span>
         </label>
       </div>
@@ -375,7 +375,7 @@ export default function LowDataGrid({ projectId }: LowDataGridProps) {
       )}
 
       {/* 데이터 없음 */}
-      {!excelData && !isLoading && !error && <div className={styles.noData}>LowData 파일을 업로드하세요.</div>}
+      {!excelData && !isLoading && !error && <div className={styles.noData}>Raw Data 파일을 업로드하세요.</div>}
     </div>
   );
 }

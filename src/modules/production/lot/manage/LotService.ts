@@ -214,8 +214,8 @@ export async function getFormationData(projectId: number): Promise<FormationData
   }
 }
 
-// LowData 등록 응답 타입
-export interface RegisterLowDataResponse {
+// RawData 등록 응답 타입
+export interface RegisterRawDataResponse {
   success: boolean;
   message: string;
   results: {
@@ -226,14 +226,14 @@ export interface RegisterLowDataResponse {
   };
 }
 
-// LowData 등록
-export async function registerLowData(
+// RawData 등록
+export async function registerRawData(
   projectId: number,
   headers: string[],
   data: Record<string, any>[],
-): Promise<RegisterLowDataResponse> {
+): Promise<RegisterRawDataResponse> {
   const response = await axios.post(
-    `${API_BASE}/production/${projectId}/lot/lowdata`,
+    `${API_BASE}/production/${projectId}/lot/rawdata`,
     { headers, data },
     { withCredentials: true },
   );
