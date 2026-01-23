@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import Chart from 'chart.js/auto';
 import { renderProcessChart } from './chartUtils';
-import { getAllProductions, getProductionPlan, createProduction, getProductionProgress } from './dashboardService';
-import type {
-  DashboardProject,
-  DashboardProgressData,
-  DashboardFormState,
-  DashboardProjectWithPlan,
-} from './types';
+import { createProduction, getProductionProgress } from './dashboardService';
+import { useDashboardProjects } from './useDashboardQueries';
+import type { DashboardProject, DashboardProgressData, DashboardFormState } from './types';
 import DashboardSummary from './DashboardSummary';
 import DashboardProgress from './DashboardProgress';
 import DashboardProjectManager from './DashboardProjectManager';
@@ -15,8 +12,12 @@ import DashboardSchedule from './DashboardSchedule';
 import styles from '../../styles/dashboard/layout.module.css';
 
 export default function DashboardContent() {
-  const [projects, setProjects] = useState<DashboardProject[]>([]);
-  const [plans, setPlans] = useState<DashboardProjectWithPlan[]>([]);
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useDashboardProjects();
+
+  const projects = data?.projects ?? [];
+  const plans = data?.plans ?? [];
+
   const [chart, setChart] = useState<Chart | null>(null);
   const [progress, setProgress] = useState<DashboardProgressData>({
     electrode: '-',
@@ -44,7 +45,6 @@ export default function DashboardContent() {
       setProgress(progressData);
     } catch (err) {
       console.error('프로젝트 진행률 로드 실패:', err);
-      // 에러 발생 시 기본값으로 설정
       setProgress({
         electrode: '-',
         assembly: '-',
@@ -53,32 +53,13 @@ export default function DashboardContent() {
     }
   };
 
-  const fetchProjectsAndPlans = async () => {
-    try {
-      const prods = await getAllProductions();
-      const planData = await Promise.all(
-        prods.map(async p => {
-          const plan = await getProductionPlan(p.id);
-          let progressValue: number | undefined;
-          try {
-            const progressData = await getProductionProgress(p.id);
-            progressValue = progressData.overall;
-          } catch {
-            progressValue = undefined; // 진행률 로드 실패 시 undefined
-          }
-          return { project: p, plan, progress: progressValue };
-        })
-      );
-      setProjects(prods);
-      setPlans(planData);
-    } catch (err) {
-      console.error('프로젝트 및 계획 로드 실패:', err);
-    }
+  const refreshProjects = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['dashboard', 'projects'] });
   };
 
-  useEffect(() => {
-    fetchProjectsAndPlans();
-  }, []);
+  if (isLoading) {
+    return <div className={styles.dashboardContent}>로딩 중...</div>;
+  }
 
   return (
     <div className={styles.dashboardContent}>
@@ -89,7 +70,7 @@ export default function DashboardContent() {
           form={form}
           setForm={setForm}
           onSubmit={createProduction}
-          refreshProjects={fetchProjectsAndPlans}
+          refreshProjects={refreshProjects}
           projects={projects}
         />
       </div>
