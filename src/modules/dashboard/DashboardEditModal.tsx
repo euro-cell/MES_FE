@@ -62,7 +62,7 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
   };
 
   return (
-    <div className={`${styles.modalOverlay} ${styles.wide}`}>
+    <div className={styles.modalOverlay}>
       <div className={`${styles.modal} ${styles.large}`}>
         <h3>프로젝트 수정</h3>
         <div className={styles.editModalLayout}>
@@ -143,7 +143,12 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
                 </div>
               </div>
             ) : (
-              <p className={styles.emptyMsg}>수정할 프로젝트를 선택하세요.</p>
+              <div className={styles.emptyState}>
+                <p className={styles.emptyMsg}>수정할 프로젝트를 선택하세요.</p>
+                <button className={styles.cancelBtn} onClick={onClose}>
+                  닫기
+                </button>
+              </div>
             )}
           </div>
         </div>
