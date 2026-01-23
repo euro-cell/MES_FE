@@ -92,7 +92,7 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
                   <label>회사 유형</label>
                   <select name='mode' value={form.mode} onChange={handleChange}>
                     <option value=''>선택</option>
-                    <option value='OME'>OME (E)</option>
+                    <option value='OEM'>OEM (E)</option>
                     <option value='ODM'>ODM (D)</option>
                   </select>
                 </div>
