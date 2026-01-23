@@ -51,3 +51,26 @@ export interface DashboardFormState {
   capacity: string | number;
   targetQuantity: number;
 }
+
+/** ✅ Batch API 응답: 대시보드 요약 */
+export interface DashboardSummaryItem {
+  id: number;
+  name: string;
+  company: string;
+  mode: string;
+  year: number;
+  month: number;
+  round: number;
+  batteryType: string;
+  capacity: number;
+  targetQuantity: number;
+  isPlan: boolean;
+  startDate: string | null;
+  endDate: string | null;
+  progress: {
+    electrode: number;
+    assembly: number;
+    formation: number;
+    overall?: number;
+  };
+}

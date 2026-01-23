@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllProductions, getProductionPlan, getProductionProgress } from './dashboardService';
+import { getDashboardSummary, getProductionProgress } from './dashboardService';
 import type { DashboardProject, DashboardProjectWithPlan } from './types';
 
 export const useDashboardProjects = () => {
@@ -9,23 +9,40 @@ export const useDashboardProjects = () => {
       projects: DashboardProject[];
       plans: DashboardProjectWithPlan[];
     }> => {
-      const projects = await getAllProductions();
+      const summaryItems = await getDashboardSummary();
 
-      // 모든 프로젝트의 plan과 progress를 병렬로 조회
-      const plans = await Promise.all(
-        projects.map(async (project) => {
-          const [plan, progressData] = await Promise.all([
-            getProductionPlan(project.id),
-            getProductionProgress(project.id).catch(() => null),
-          ]);
+      // Batch API 응답을 기존 타입에 맞게 변환
+      const projects: DashboardProject[] = summaryItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        company: item.company,
+        mode: item.mode,
+        year: item.year,
+        month: item.month,
+        round: item.round,
+        batteryType: item.batteryType,
+        capacity: item.capacity,
+        targetQuantity: item.targetQuantity,
+      }));
 
-          return {
-            project,
-            plan,
-            progress: progressData?.overall,
-          };
-        })
-      );
+      const plans: DashboardProjectWithPlan[] = summaryItems.map((item) => ({
+        project: {
+          id: item.id,
+          name: item.name,
+          company: item.company,
+          mode: item.mode,
+          year: item.year,
+          month: item.month,
+          round: item.round,
+          batteryType: item.batteryType,
+          capacity: item.capacity,
+          targetQuantity: item.targetQuantity,
+        },
+        plan: item.isPlan
+          ? { startDate: item.startDate ?? '', endDate: item.endDate ?? undefined }
+          : null,
+        progress: item.progress.overall,
+      }));
 
       return { projects, plans };
     },
