@@ -7,6 +7,15 @@ import TooltipButton from '../../components/TooltipButton';
 import PdfViewer from '../../components/PdfViewer';
 import toast from 'react-hot-toast';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+/** data/ 경로를 URL로 변환 */
+const toFileUrl = (filePath: string) => {
+  // 백슬래시를 슬래시로 변환 후 data/ 제거
+  const normalized = filePath.replace(/\\/g, '/');
+  return `${API_BASE}/${normalized.replace('data/', '')}`;
+};
+
 interface PdfFile {
   version: number;
   fileName: string;
@@ -57,7 +66,7 @@ export default function DrawDetailPage() {
   const sortedVersions = useMemo(() => {
     if (!drawing) return [];
     return [...drawing.versions].sort(
-      (a, b) => new Date(b.registrationDate).getTime() - new Date(a.registrationDate).getTime()
+      (a, b) => new Date(b.registrationDate).getTime() - new Date(a.registrationDate).getTime(),
     );
   }, [drawing]);
 
@@ -65,11 +74,15 @@ export default function DrawDetailPage() {
   const allPdfFiles: PdfFile[] = useMemo(() => {
     const files: PdfFile[] = [];
     sortedVersions.forEach(ver => {
-      ver.pdfFileNames.forEach(fileName => {
+      console.log('pdfFilePaths:', ver.pdfFilePaths);
+      ver.pdfFileNames.forEach((fileName, idx) => {
+        const filePath = ver.pdfFilePaths[idx];
+        const url = filePath ? toFileUrl(filePath) : '';
+        console.log('filePath:', filePath, '-> url:', url);
         files.push({
           version: ver.version,
           fileName,
-          fileUrl: `/drawings/pdf/${fileName}`,
+          fileUrl: url,
         });
       });
     });
@@ -77,14 +90,23 @@ export default function DrawDetailPage() {
   }, [sortedVersions]);
 
   // 파일 다운로드 함수
-  const handleDownload = (fileName: string, type: 'dwg' | 'pdf') => {
-    const path = `/drawings/${type}/${fileName}`;
-    const link = document.createElement('a');
-    link.href = path;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async (fileName: string, filePath: string) => {
+    try {
+      const url = toFileUrl(filePath);
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error('파일 다운로드 실패:', err);
+      toast.error('파일 다운로드에 실패했습니다.');
+    }
   };
 
   const selectedPdf = allPdfFiles[selectedPdfIndex] || null;
@@ -225,11 +247,11 @@ export default function DrawDetailPage() {
                 <td>{ver.registrationDate}</td>
                 <td>{ver.changeNote || '-'}</td>
                 <td>
-                  {ver.drawingFileName ? (
+                  {ver.drawingFileName && ver.drawingFilePath ? (
                     <TooltipButton
                       label={ver.drawingFileName}
                       variant='view'
-                      onClick={() => handleDownload(ver.drawingFileName!, 'dwg')}
+                      onClick={() => handleDownload(ver.drawingFileName!, ver.drawingFilePath!)}
                     />
                   ) : (
                     '-'
@@ -243,7 +265,7 @@ export default function DrawDetailPage() {
                           key={idx}
                           label={name}
                           variant='view'
-                          onClick={() => handleDownload(name, 'pdf')}
+                          onClick={() => handleDownload(name, ver.pdfFilePaths[idx])}
                         />
                       ))}
                     </div>
@@ -325,20 +347,11 @@ export default function DrawDetailPage() {
                 </div>
                 <div className={styles.formRow}>
                   <label>도면 파일 (.dwg)</label>
-                  <input
-                    type='file'
-                    accept='.dwg'
-                    onChange={e => handleFileChange(e, 'drawingFile')}
-                  />
+                  <input type='file' accept='.dwg' onChange={e => handleFileChange(e, 'drawingFile')} />
                 </div>
                 <div className={styles.formRow}>
                   <label>PDF 파일 (복수 선택 가능)</label>
-                  <input
-                    type='file'
-                    accept='.pdf'
-                    multiple
-                    onChange={e => handleFileChange(e, 'pdfFiles')}
-                  />
+                  <input type='file' accept='.pdf' multiple onChange={e => handleFileChange(e, 'pdfFiles')} />
                 </div>
               </div>
               <div className={styles.modalActions}>

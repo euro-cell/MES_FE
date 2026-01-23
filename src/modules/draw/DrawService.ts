@@ -10,15 +10,10 @@ export const getDrawings = async (params?: DrawingListParams): Promise<DrawingLi
   return response.data;
 };
 
-/** 도면 상세 조회 (TODO: API 완성 후 연동) */
-export const getDrawingById = async (id: number): Promise<Drawing | null> => {
-  // TODO: API 완성 후 실제 API 호출로 변경
-  // const response = await axios.get<Drawing>(`${API_BASE}/drawing/${id}`, { withCredentials: true });
-  // return response.data;
-
-  await new Promise(resolve => setTimeout(resolve, 300));
-  const drawings = mockDrawings as Drawing[];
-  return drawings.find(d => d.id === id) || null;
+/** 도면 상세 조회 */
+export const getDrawingById = async (id: number): Promise<Drawing> => {
+  const response = await axios.get<Drawing>(`${API_BASE}/drawing/${id}`, { withCredentials: true });
+  return response.data;
 };
 
 /** 도면 등록 */
@@ -90,7 +85,9 @@ export const addVersion = async (drawingId: number, payload: VersionAddPayload):
     id: Date.now(),
     version: payload.version,
     drawingFileName: payload.drawingFile?.name || null,
+    drawingFilePath: null,
     pdfFileNames: payload.pdfFiles?.map(f => f.name) || [],
+    pdfFilePaths: [],
     registrationDate: payload.registrationDate,
     changeNote: payload.changeNote || null,
   };

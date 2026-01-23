@@ -4,7 +4,9 @@ export interface DrawingVersion {
   id: number;
   version: number;
   drawingFileName: string | null;
+  drawingFilePath: string | null;
   pdfFileNames: string[];
+  pdfFilePaths: string[];
   registrationDate: string;
   changeNote: string | null;
 }
