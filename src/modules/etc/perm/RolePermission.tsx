@@ -19,7 +19,6 @@ interface RoleMenuPermission {
 }
 
 export default function RolePermission() {
-  const [roles, setRoles] = useState<RoleType[]>([]);
   const [menus, setMenus] = useState<string[]>([]);
   const [permissions, setPermissions] = useState<RoleMenuPermission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +30,6 @@ export default function RolePermission() {
 
       setMenus(res.data.menus);
       setPermissions(res.data.roles);
-      setRoles(res.data.roles.map((r: any) => r.role));
     } catch (err) {
       console.error('직급별 권한 조회 실패:', err);
     } finally {

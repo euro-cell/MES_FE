@@ -54,7 +54,7 @@ export default function RackStorageGrid({ locations }: RackStorageGridProps) {
 
   const numbers = [5, 4, 3, 2, 1];
 
-  const GridSection = ({ letters, columns }: { letters: string[]; columns: number }) => (
+  const GridSection = ({ letters }: { letters: string[] }) => (
     <div style={{ width: 'fit-content' }}>
       <div className={styles.gridWrapper} style={{ gridTemplateColumns: `repeat(${letters.length}, auto)` }}>
         {/* 숫자별로 행 구성, 각 행은 문자 순서대로 */}
@@ -73,16 +73,16 @@ export default function RackStorageGrid({ locations }: RackStorageGridProps) {
           {/* A~F */}
           <div className={styles.sectionGroup}>
             <div className={styles.gridSectionsRow}>
-              <GridSection letters={['A', 'B', 'C']} columns={3} />
-              <GridSection letters={['D', 'E', 'F']} columns={3} />
+              <GridSection letters={['A', 'B', 'C']} />
+              <GridSection letters={['D', 'E', 'F']} />
             </div>
           </div>
 
           {/* G~J */}
           <div className={styles.sectionGroup}>
             <div className={styles.gridSectionsRow}>
-              <GridSection letters={['G', 'H']} columns={2} />
-              <GridSection letters={['I', 'J']} columns={2} />
+              <GridSection letters={['G', 'H']} />
+              <GridSection letters={['I', 'J']} />
             </div>
           </div>
         </div>

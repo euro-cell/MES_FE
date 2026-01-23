@@ -6,7 +6,6 @@ import type {
   DashboardProject,
   DashboardProgressData,
   DashboardFormState,
-  DashboardProjectPlan,
   DashboardProjectWithPlan,
 } from './types';
 import DashboardSummary from './DashboardSummary';

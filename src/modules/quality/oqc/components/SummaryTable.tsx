@@ -4,7 +4,7 @@ interface SummaryTableProps {
   projectId: number;
 }
 
-export default function SummaryTable({ projectId }: SummaryTableProps) {
+export default function SummaryTable({ projectId: _projectId }: SummaryTableProps) {
   // TODO: API 연동 후 실제 데이터로 교체
   const projectInfo = {
     projectName: '나비타스향 사전생산 전극 품질검증',
