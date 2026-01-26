@@ -83,3 +83,10 @@ export const updateDrawing = async (id: number, payload: DrawingUpdatePayload): 
   });
   return response.data;
 };
+
+/** 도면 삭제 */
+export const deleteDrawing = async (id: number): Promise<void> => {
+  await axios.delete(`${API_BASE}/drawing/${id}`, {
+    withCredentials: true,
+  });
+};

@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import styles from '../../styles/draw/Drawing.module.css';
-import { getDrawings } from './DrawService';
+import { getDrawings, deleteDrawing } from './DrawService';
 import type { DrawingListItem, DrawingCategory } from './DrawTypes';
 import TooltipButton from '../../components/TooltipButton';
 import DrawingRegisterModal from './DrawingRegisterModal';
@@ -92,6 +93,21 @@ export default function DrawPage() {
     setShowEditModal(true);
   };
 
+  // 삭제 처리
+  const handleDelete = async (item: DrawingListItem) => {
+    if (!window.confirm(`"${item.drawingNumber}" 도면을 삭제하시겠습니까?`)) {
+      return;
+    }
+    try {
+      await deleteDrawing(item.id);
+      toast.success('도면이 삭제되었습니다.');
+      loadDrawings();
+    } catch (err) {
+      console.error('도면 삭제 실패:', err);
+      toast.error('도면 삭제에 실패했습니다.');
+    }
+  };
+
   return (
     <div className={styles.ledgerPage}>
       <div className={styles.header}>
@@ -163,7 +179,7 @@ export default function DrawPage() {
                           <div className={styles.actionButtons}>
                             <TooltipButton label='조회' variant='view' onClick={() => navigate(`/draw/detail/${item.id}`)} />
                             <TooltipButton label='수정' variant='edit' onClick={() => handleOpenEditModal(item)} />
-                            <TooltipButton label='삭제' variant='delete' />
+                            <TooltipButton label='삭제' variant='delete' onClick={() => handleDelete(item)} />
                           </div>
                         </td>
                       </tr>
