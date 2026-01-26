@@ -40,10 +40,13 @@ export default function NotchingRegister() {
   // 초기 폼 값 설정
   useEffect(() => {
     if (Object.keys(namedRanges).length > 0) {
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 형식
       const initialValues: Record<string, any> = {};
       Object.keys(namedRanges).forEach(rangeName => {
         if (rangeName === 'productionId' && project) {
           initialValues[rangeName] = project.name;
+        } else if (rangeName === 'manufactureDate') {
+          initialValues[rangeName] = today;
         } else {
           const defaultValue = namedRanges[rangeName]?.value;
           initialValues[rangeName] = defaultValue ?? '';
