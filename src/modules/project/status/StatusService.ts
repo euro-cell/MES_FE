@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { getPlanProjects, getProductionPlan } from '../plan/PlanService';
 import { getProcessesByCategory } from './statusConfig';
-import type { StatusProject, MonthlyStatusData, ElectrodeType, ProductionStatusInfo, UpdateTargetRequest } from './StatusTypes';
+import type {
+  StatusProject,
+  MonthlyStatusData,
+  ElectrodeType,
+  ProductionStatusInfo,
+  UpdateTargetRequest,
+} from './StatusTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -23,7 +29,7 @@ export async function getStatusProjects(): Promise<StatusProject[]> {
           console.warn(`프로젝트 ${project.id}의 계획 데이터가 없습니다.`);
           return { ...project, plan: null };
         }
-      })
+      }),
     );
 
     return projectsWithPlan;
@@ -52,12 +58,8 @@ export async function getRealMonthlyData(
   category: string,
   electrodeType: string | null,
   year: number,
-  month: number
+  month: number,
 ): Promise<any> {
-  console.log(
-    `실제 데이터 조회: projectId=${projectId}, category=${category}, type=${electrodeType}, ${year}-${month}`
-  );
-
   try {
     const params = new URLSearchParams({
       month: `${year}-${String(month).padStart(2, '0')}`,
@@ -67,8 +69,6 @@ export async function getRealMonthlyData(
     const response = await axios.get(`${API_BASE}/production/${projectId}/status/${category}?${params}`, {
       withCredentials: true,
     });
-
-    console.log('🔍 실제 API 응답:', response.data);
     return response.data;
   } catch (error) {
     console.error('❌ 실제 데이터 조회 실패:', error);
@@ -82,21 +82,14 @@ export async function getMonthlyStatusData(
   category: string,
   electrodeType: string | null,
   year: number,
-  month: number
+  month: number,
 ): Promise<MonthlyStatusData> {
-  console.log(
-    `월간 현황 조회: projectId=${projectId}, category=${category}, type=${electrodeType}, ${year}-${month}`
-  );
-
   // 목 데이터 반환
   return getMockMonthlyData(projectId, category, electrodeType, year, month);
 }
 
 // 목표수량 수정 API
-export async function updateTargetQuantity(
-  productionId: number,
-  request: UpdateTargetRequest
-): Promise<void> {
+export async function updateTargetQuantity(productionId: number, request: UpdateTargetRequest): Promise<void> {
   try {
     await axios.patch(`${API_BASE}/production/${productionId}/status/target`, request, {
       withCredentials: true,
@@ -149,7 +142,7 @@ function getMockMonthlyData(
   category: string,
   electrodeType: string | null,
   year: number,
-  month: number
+  month: number,
 ): MonthlyStatusData {
   const processes = getProcessesByCategory(category);
 
@@ -158,7 +151,7 @@ function getMockMonthlyData(
 
   const overallTotal = mockProcesses.reduce(
     (sum, p) => sum + p.subItems.reduce((s, item) => s + item.totalProduction, 0),
-    0
+    0,
   );
 
   return {

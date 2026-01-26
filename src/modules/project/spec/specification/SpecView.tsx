@@ -34,7 +34,6 @@ export default function SpecView() {
         setForm(safeSpec);
 
         const materialData = await getMaterialsByProduction(project.id);
-        console.log('🚀 ~ materialData:', materialData);
         setMaterials(materialData.materials ?? {});
       } catch (err: any) {
         console.error('❌ 조회 실패:', err);
@@ -64,10 +63,7 @@ export default function SpecView() {
         <button className={styles.backBtn} onClick={() => navigate(-1)}>
           ← 목록으로
         </button>
-        <button
-          className={styles.excelBtn}
-          onClick={() => exportSpecToExcel(form, materials, project.name)}
-        >
+        <button className={styles.excelBtn} onClick={() => exportSpecToExcel(form, materials, project.name)}>
           📥 엑셀 다운로드
         </button>
       </div>
@@ -260,14 +256,14 @@ export default function SpecView() {
                         item.shortage < 0
                           ? styles.shortageCell
                           : item.shortage === 0
-                          ? styles.shortageNeutral
-                          : styles.shortageOk
+                            ? styles.shortageNeutral
+                            : styles.shortageOk
                       }
                     >
                       {item.shortage < 0 ? `부족` : item.shortage === 0 ? `적정` : `충분`}
                     </td>
                   </tr>
-                ))
+                )),
               )}
             </tbody>
           </table>

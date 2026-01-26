@@ -1,10 +1,14 @@
 import axios from 'axios';
-import type { CellInventoryRequest, CellInventoryResponse, CellInventoryStatisticsResponse, StorageUsageResponse } from './types';
+import type {
+  CellInventoryRequest,
+  CellInventoryResponse,
+  CellInventoryStatisticsResponse,
+  StorageUsageResponse,
+} from './types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export const createCellInventory = async (payload: CellInventoryRequest): Promise<CellInventoryResponse> => {
-  console.log('🚀 ~ payload:', payload);
   try {
     const res = await axios.post<CellInventoryResponse>(`${API_BASE}/cell-inventory`, payload, {
       withCredentials: true,
@@ -17,7 +21,6 @@ export const createCellInventory = async (payload: CellInventoryRequest): Promis
 };
 
 export const updateCellInventoryOut = async (payload: CellInventoryRequest): Promise<CellInventoryResponse> => {
-  console.log('🚀 ~ payload:', payload);
   try {
     const res = await axios.patch<CellInventoryResponse>(`${API_BASE}/cell-inventory`, payload, {
       withCredentials: true,
@@ -30,7 +33,6 @@ export const updateCellInventoryOut = async (payload: CellInventoryRequest): Pro
 };
 
 export const updateCellInventoryRestock = async (payload: CellInventoryRequest): Promise<CellInventoryResponse> => {
-  console.log('🚀 ~ payload:', payload);
   try {
     const res = await axios.patch<CellInventoryResponse>(`${API_BASE}/cell-inventory/restock`, payload, {
       withCredentials: true,

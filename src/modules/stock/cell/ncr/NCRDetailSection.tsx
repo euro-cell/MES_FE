@@ -114,7 +114,6 @@ export default function NCRDetailSection() {
   };
 
   const handleSave = async () => {
-    console.log('🚀 ~ editedData:', editedData);
     if (editedData) {
       const selectedProject = projects.find(p => p.id === selectedProjectId);
       if (!selectedProject) return;

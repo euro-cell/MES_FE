@@ -41,8 +41,6 @@ export default function PlanEdit() {
         const res = await getProductionPlan(project.id);
         const data = Array.isArray(res) ? res[0] : res;
 
-        console.log('✅ Loaded Plan Data:', data);
-
         setStartDate(data.startDate.split('T')[0]);
         setEndDate(data.endDate.split('T')[0]);
 
@@ -200,7 +198,7 @@ export default function PlanEdit() {
           type,
           key: `${group.group}_${item.name}_${type}`,
           hasElectrode: true,
-        })
+        }),
       );
     });
   });
@@ -219,7 +217,7 @@ export default function PlanEdit() {
         const sameName = sameGroup.filter(r => r.name === name);
         const nameCount = sameName.length;
         const startIndex = tableData.findIndex(
-          r => r.group === group && r.name === name && r.type === sameName[0].type
+          r => r.group === group && r.name === name && r.type === sameName[0].type,
         );
         spans[startIndex] = { groupSpan: 0, nameSpan: nameCount };
         if (j === 0) spans[startIndex].groupSpan = groupCount;
