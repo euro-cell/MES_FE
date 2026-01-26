@@ -61,3 +61,9 @@ export interface DrawingUpdatePayload {
   drawingNumber?: string;
   description?: string;
 }
+
+export interface VersionUpdatePayload {
+  changeNote?: string;
+  drawingFile?: File;
+  pdfFiles?: File[];
+}

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Drawing, DrawingListItem, DrawingListParams, DrawingCreatePayload, DrawingUpdatePayload } from './DrawTypes';
+import type { Drawing, DrawingListItem, DrawingListParams, DrawingCreatePayload, DrawingUpdatePayload, VersionUpdatePayload } from './DrawTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -89,4 +89,26 @@ export const deleteDrawing = async (id: number): Promise<void> => {
   await axios.delete(`${API_BASE}/drawing/${id}`, {
     withCredentials: true,
   });
+};
+
+/** 버전 수정 */
+export const updateVersion = async (drawingId: number, versionId: number, payload: VersionUpdatePayload): Promise<Drawing> => {
+  const formData = new FormData();
+  if (payload.changeNote !== undefined) formData.append('changeNote', payload.changeNote);
+  if (payload.drawingFile) formData.append('drawingFile', payload.drawingFile);
+  if (payload.pdfFiles) payload.pdfFiles.forEach(f => formData.append('pdfFiles', f));
+
+  const response = await axios.patch<Drawing>(`${API_BASE}/drawing/${drawingId}/version/${versionId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    withCredentials: true,
+  });
+  return response.data;
+};
+
+/** 버전 삭제 */
+export const deleteVersion = async (drawingId: number, versionId: number): Promise<Drawing> => {
+  const response = await axios.delete<Drawing>(`${API_BASE}/drawing/${drawingId}/version/${versionId}`, {
+    withCredentials: true,
+  });
+  return response.data;
 };

@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
 import styles from '../../styles/draw/Drawing.module.css';
-import { getDrawingById, addVersion } from './DrawService';
-import type { Drawing } from './DrawTypes';
+import { getDrawingById, addVersion, updateVersion, deleteVersion } from './DrawService';
+import type { Drawing, DrawingVersion } from './DrawTypes';
 import TooltipButton from '../../components/TooltipButton';
 import PdfViewer from '../../components/PdfViewer';
 import toast from 'react-hot-toast';
@@ -47,6 +47,15 @@ export default function DrawDetailPage() {
   const [showVersionModal, setShowVersionModal] = useState(false);
   const [versionForm, setVersionForm] = useState<VersionFormData>(initialVersionForm);
   const [submitting, setSubmitting] = useState(false);
+
+  // 버전 수정 모달 관련 state
+  const [showEditVersionModal, setShowEditVersionModal] = useState(false);
+  const [editingVersion, setEditingVersion] = useState<DrawingVersion | null>(null);
+  const [editVersionForm, setEditVersionForm] = useState<{
+    changeNote: string;
+    drawingFile: File | null;
+    pdfFiles: File[];
+  }>({ changeNote: '', drawingFile: null, pdfFiles: [] });
 
   useEffect(() => {
     const loadDrawing = async () => {
@@ -171,6 +180,78 @@ export default function DrawDetailPage() {
     }
   };
 
+  // 버전 수정 모달 열기
+  const openEditVersionModal = (version: DrawingVersion) => {
+    setEditingVersion(version);
+    setEditVersionForm({
+      changeNote: version.changeNote || '',
+      drawingFile: null,
+      pdfFiles: [],
+    });
+    setShowEditVersionModal(true);
+  };
+
+  // 버전 수정 모달 닫기
+  const closeEditVersionModal = () => {
+    setShowEditVersionModal(false);
+    setEditingVersion(null);
+    setEditVersionForm({ changeNote: '', drawingFile: null, pdfFiles: [] });
+  };
+
+  // 버전 수정 폼 입력 핸들러
+  const handleEditVersionInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setEditVersionForm(prev => ({ ...prev, changeNote: e.target.value }));
+  };
+
+  // 버전 수정 파일 선택 핸들러
+  const handleEditVersionFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'drawingFile' | 'pdfFiles') => {
+    const files = e.target.files;
+    if (!files) return;
+    if (field === 'drawingFile') {
+      setEditVersionForm(prev => ({ ...prev, drawingFile: files[0] || null }));
+    } else {
+      setEditVersionForm(prev => ({ ...prev, pdfFiles: Array.from(files) }));
+    }
+  };
+
+  // 버전 수정 제출
+  const handleEditVersionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!drawing || !editingVersion) return;
+
+    setSubmitting(true);
+    try {
+      const updated = await updateVersion(drawing.id, editingVersion.id, {
+        changeNote: editVersionForm.changeNote || undefined,
+        drawingFile: editVersionForm.drawingFile || undefined,
+        pdfFiles: editVersionForm.pdfFiles.length > 0 ? editVersionForm.pdfFiles : undefined,
+      });
+      setDrawing(updated);
+      closeEditVersionModal();
+      toast.success('버전이 수정되었습니다.');
+    } catch (err) {
+      console.error('버전 수정 실패:', err);
+      toast.error('버전 수정에 실패했습니다.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // 버전 삭제
+  const handleDeleteVersion = async (version: DrawingVersion) => {
+    if (!drawing) return;
+    if (!window.confirm(`v${Number(version.version).toFixed(1)} 버전을 삭제하시겠습니까?`)) return;
+
+    try {
+      const updated = await deleteVersion(drawing.id, version.id);
+      setDrawing(updated);
+      toast.success('버전이 삭제되었습니다.');
+    } catch (err) {
+      console.error('버전 삭제 실패:', err);
+      toast.error('버전 삭제에 실패했습니다.');
+    }
+  };
+
   if (loading) {
     return <div className={styles.loading}>로딩 중...</div>;
   }
@@ -238,6 +319,7 @@ export default function DrawDetailPage() {
               <th>변경사유</th>
               <th>도면 파일</th>
               <th>PDF 파일</th>
+              <th>관리</th>
             </tr>
           </thead>
           <tbody>
@@ -272,6 +354,12 @@ export default function DrawDetailPage() {
                   ) : (
                     '-'
                   )}
+                </td>
+                <td>
+                  <div className={styles.actionButtons}>
+                    <TooltipButton label='수정' variant='edit' onClick={() => openEditVersionModal(ver)} />
+                    <TooltipButton label='삭제' variant='delete' onClick={() => handleDeleteVersion(ver)} />
+                  </div>
                 </td>
               </tr>
             ))}
@@ -360,6 +448,56 @@ export default function DrawDetailPage() {
                 </button>
                 <button type='submit' className={styles.submitButton} disabled={submitting}>
                   {submitting ? '추가 중...' : '추가'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 버전 수정 모달 */}
+      {showEditVersionModal && editingVersion && (
+        <div className={styles.modalOverlay} onClick={closeEditVersionModal}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>버전 수정 (v{Number(editingVersion.version).toFixed(1)})</h3>
+              <button className={styles.closeButton} onClick={closeEditVersionModal}>
+                ×
+              </button>
+            </div>
+            <form className={styles.modalForm} onSubmit={handleEditVersionSubmit}>
+              <div className={styles.formGrid}>
+                <div className={`${styles.formRow} ${styles.fullWidth}`}>
+                  <label>변경사유</label>
+                  <textarea
+                    name='changeNote'
+                    value={editVersionForm.changeNote}
+                    onChange={handleEditVersionInputChange}
+                    placeholder='변경 사유를 입력하세요'
+                    rows={2}
+                  />
+                </div>
+                <div className={styles.formRow}>
+                  <label>도면 파일 교체 (.dwg)</label>
+                  <input type='file' accept='.dwg' onChange={e => handleEditVersionFileChange(e, 'drawingFile')} />
+                  {editingVersion.drawingFileName && (
+                    <span className={styles.currentFile}>현재: {editingVersion.drawingFileName}</span>
+                  )}
+                </div>
+                <div className={styles.formRow}>
+                  <label>PDF 파일 교체 (복수 선택 가능)</label>
+                  <input type='file' accept='.pdf' multiple onChange={e => handleEditVersionFileChange(e, 'pdfFiles')} />
+                  {editingVersion.pdfFileNames.length > 0 && (
+                    <span className={styles.currentFile}>현재: {editingVersion.pdfFileNames.join(', ')}</span>
+                  )}
+                </div>
+              </div>
+              <div className={styles.modalActions}>
+                <button type='button' className={styles.cancelButton} onClick={closeEditVersionModal}>
+                  취소
+                </button>
+                <button type='submit' className={styles.submitButton} disabled={submitting}>
+                  {submitting ? '수정 중...' : '수정'}
                 </button>
               </div>
             </form>
