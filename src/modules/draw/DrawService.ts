@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Drawing, DrawingListItem, DrawingListParams, DrawingCreatePayload } from './DrawTypes';
+import type { Drawing, DrawingListItem, DrawingListParams, DrawingCreatePayload, DrawingUpdatePayload } from './DrawTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -73,5 +73,13 @@ export const addVersion = async (drawingId: number, payload: VersionAddPayload):
     withCredentials: true,
   });
 
+  return response.data;
+};
+
+/** 도면 수정 */
+export const updateDrawing = async (id: number, payload: DrawingUpdatePayload): Promise<Drawing> => {
+  const response = await axios.patch<Drawing>(`${API_BASE}/drawing/${id}`, payload, {
+    withCredentials: true,
+  });
   return response.data;
 };

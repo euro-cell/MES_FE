@@ -53,3 +53,11 @@ export interface DrawingCreatePayload {
   drawingFile?: File;
   pdfFiles?: File[];
 }
+
+export interface DrawingUpdatePayload {
+  category?: DrawingCategory;
+  projectName?: string;
+  division?: string;
+  drawingNumber?: string;
+  description?: string;
+}

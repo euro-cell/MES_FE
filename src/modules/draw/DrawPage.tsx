@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import styles from '../../styles/draw/Drawing.module.css';
-import { getDrawings, createDrawing } from './DrawService';
-import type { DrawingListItem, DrawingCategory, DrawingCreatePayload } from './DrawTypes';
+import { getDrawings, createDrawing, updateDrawing } from './DrawService';
+import type { DrawingListItem, DrawingCategory, DrawingCreatePayload, DrawingUpdatePayload } from './DrawTypes';
 import TooltipButton from '../../components/TooltipButton';
 
 const CATEGORY_OPTIONS: DrawingCategory[] = ['공장', '설비', '제품', 'OEM/ODM'];
@@ -36,6 +36,17 @@ export default function DrawPage() {
   const [submitting, setSubmitting] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const [isAddMode, setIsAddMode] = useState(false);
+
+  // 수정 모달 관련 state
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<DrawingListItem | null>(null);
+  const [editFormData, setEditFormData] = useState<DrawingUpdatePayload>({
+    category: '공장',
+    projectName: '',
+    division: '',
+    drawingNumber: '',
+    description: '',
+  });
 
   // 프로젝트명(중분류) 기준으로 그룹핑
   const groupedDrawings = useMemo(() => {
@@ -141,6 +152,50 @@ export default function DrawPage() {
     setIsAddMode(false);
   };
 
+  // 수정 모달 열기
+  const handleOpenEditModal = (item: DrawingListItem) => {
+    setEditingItem(item);
+    setEditFormData({
+      category: item.category,
+      projectName: item.projectName,
+      division: item.division,
+      drawingNumber: item.drawingNumber,
+      description: item.description || '',
+    });
+    setShowEditModal(true);
+  };
+
+  // 수정 모달 닫기
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setEditingItem(null);
+  };
+
+  // 수정 폼 입력 핸들러
+  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // 수정 제출
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingItem) return;
+
+    try {
+      setSubmitting(true);
+      await updateDrawing(editingItem.id, editFormData);
+      toast.success('도면이 수정되었습니다.');
+      handleCloseEditModal();
+      loadDrawings();
+    } catch (err) {
+      console.error('도면 수정 실패:', err);
+      toast.error('도면 수정에 실패했습니다.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className={styles.ledgerPage}>
       <div className={styles.header}>
@@ -219,7 +274,7 @@ export default function DrawPage() {
                       <td>
                         <div className={styles.actionButtons}>
                           <TooltipButton label='조회' variant='view' onClick={() => navigate(`/draw/detail/${item.id}`)} />
-                          <TooltipButton label='수정' variant='edit' />
+                          <TooltipButton label='수정' variant='edit' onClick={() => handleOpenEditModal(item)} />
                           <TooltipButton label='삭제' variant='delete' />
                         </div>
                       </td>
@@ -326,6 +381,81 @@ export default function DrawPage() {
                 </button>
                 <button type='submit' className={styles.submitButton} disabled={submitting}>
                   {submitting ? '등록 중...' : '등록'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 수정 모달 */}
+      {showEditModal && editingItem && (
+        <div className={styles.modalOverlay} onClick={handleCloseEditModal}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>도면 수정</h3>
+              <button className={styles.closeButton} onClick={handleCloseEditModal}>
+                ×
+              </button>
+            </div>
+            <form onSubmit={handleEditSubmit} className={styles.modalForm}>
+              <div className={styles.formGrid}>
+                <div className={styles.formRow}>
+                  <label>카테고리 *</label>
+                  <select name='category' value={editFormData.category} onChange={handleEditInputChange} required>
+                    {CATEGORY_OPTIONS.map(opt => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className={styles.formRow}>
+                  <label>프로젝트명 *</label>
+                  <input
+                    type='text'
+                    name='projectName'
+                    value={editFormData.projectName}
+                    onChange={handleEditInputChange}
+                    required
+                  />
+                </div>
+                <div className={styles.formRow}>
+                  <label>구분 *</label>
+                  <input
+                    type='text'
+                    name='division'
+                    value={editFormData.division}
+                    onChange={handleEditInputChange}
+                    required
+                  />
+                </div>
+                <div className={styles.formRow}>
+                  <label>도면번호 *</label>
+                  <input
+                    type='text'
+                    name='drawingNumber'
+                    value={editFormData.drawingNumber}
+                    onChange={handleEditInputChange}
+                    required
+                  />
+                </div>
+                <div className={`${styles.formRow} ${styles.fullWidth}`}>
+                  <label>도면 내용</label>
+                  <textarea
+                    name='description'
+                    value={editFormData.description}
+                    onChange={handleEditInputChange}
+                    rows={2}
+                  />
+                </div>
+              </div>
+              <div className={styles.modalActions}>
+                <button type='button' className={styles.cancelButton} onClick={handleCloseEditModal}>
+                  취소
+                </button>
+                <button type='submit' className={styles.submitButton} disabled={submitting}>
+                  {submitting ? '수정 중...' : '수정'}
                 </button>
               </div>
             </form>
