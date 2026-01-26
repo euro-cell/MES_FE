@@ -19,6 +19,15 @@ export const getEquipments = async (category: EquipmentCategory): Promise<Equipm
   return res.data;
 };
 
+/** Mixer 설비 목록 조회 (category=production, 이름에 "Mixer" 포함) */
+export const getMixerEquipments = async (): Promise<Equipment[]> => {
+  const res = await axios.get(`${API_BASE}/equipment/mixers`, {
+    params: { category: 'production' },
+    withCredentials: true,
+  });
+  return res.data;
+};
+
 /** 빈 문자열을 null로 변환 */
 const sanitizePayload = (payload: EquipmentPayload) => {
   return Object.fromEntries(

@@ -10,6 +10,8 @@ import { createBinderWorklog } from './BinderService';
 import type { BinderWorklogPayload } from './BinderTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { getMixerEquipments } from '../../../../plant/register/EquipmentService';
+import type { Equipment } from '../../../../plant/register/EquipmentTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 
 export default function BinderRegister() {
@@ -22,6 +24,7 @@ export default function BinderRegister() {
   const [project, setProject] = useState<WorklogProject | null>(null);
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
+  const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
 
   useEffect(() => {
     const loadProject = async () => {
@@ -35,6 +38,19 @@ export default function BinderRegister() {
     };
     loadProject();
   }, [projectId]);
+
+  // Mixer 설비 목록 로드
+  useEffect(() => {
+    const loadMixers = async () => {
+      try {
+        const mixers = await getMixerEquipments();
+        setMixerEquipments(mixers);
+      } catch (err) {
+        console.error('Mixer 설비 조회 실패:', err);
+      }
+    };
+    loadMixers();
+  }, []);
 
   useEffect(() => {
     if (Object.keys(namedRanges).length > 0) {
@@ -106,6 +122,10 @@ export default function BinderRegister() {
     );
   }
 
+  // Mixer 드롭다운 옵션 생성
+  const mixerOptions = mixerEquipments.map(eq => eq.name);
+  const binderSelectFields = mixerOptions.length > 0 ? { pdMixerName: mixerOptions } : undefined;
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -147,6 +167,7 @@ export default function BinderRegister() {
           ]}
           numericFields={BINDER_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          selectFields={binderSelectFields}
           dateFields={['manufactureDate']}
         />
       </div>

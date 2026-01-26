@@ -8,6 +8,8 @@ export interface BinderWorklog {
   createdAt: string;
   updatedAt: string;
 
+  pdMixerName?: string;
+
   material1Name?: string;
   material1Composition?: number;
   material1Lot?: string;

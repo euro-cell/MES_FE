@@ -10,6 +10,8 @@ import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
+import { getMixerEquipments } from '../../../../plant/register/EquipmentService';
+import type { Equipment } from '../../../../plant/register/EquipmentTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 
 export default function BinderEdit() {
@@ -24,6 +26,7 @@ export default function BinderEdit() {
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
 
   useEffect(() => {
     const loadProject = async () => {
@@ -37,6 +40,19 @@ export default function BinderEdit() {
     };
     loadProject();
   }, [projectId]);
+
+  // Mixer 설비 목록 로드
+  useEffect(() => {
+    const loadMixers = async () => {
+      try {
+        const mixers = await getMixerEquipments();
+        setMixerEquipments(mixers);
+      } catch (err) {
+        console.error('Mixer 설비 조회 실패:', err);
+      }
+    };
+    loadMixers();
+  }, []);
 
   useEffect(() => {
     const loadWorklog = async () => {
@@ -122,6 +138,10 @@ export default function BinderEdit() {
     );
   }
 
+  // Mixer 드롭다운 옵션 생성
+  const mixerOptions = mixerEquipments.map(eq => eq.name);
+  const binderSelectFields = mixerOptions.length > 0 ? { pdMixerName: mixerOptions } : undefined;
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -163,6 +183,7 @@ export default function BinderEdit() {
           ]}
           numericFields={BINDER_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          selectFields={binderSelectFields}
           dateFields={['manufactureDate']}
         />
       </div>
