@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { WorklogProject } from '../WorklogTypes';
+import { useAuth } from '../../../../hooks/useAuth';
 
 interface NamedRange {
   value?: any;
@@ -23,6 +24,7 @@ export function useWorklogFormInit({
   existingData,
 }: UseWorklogFormInitOptions) {
   const [formValues, setFormValues] = useState<Record<string, any>>({});
+  const { user } = useAuth();
 
   // Register 모드: namedRanges와 project 기반 초기화
   useEffect(() => {
@@ -37,6 +39,8 @@ export function useWorklogFormInit({
         initialValues[rangeName] = project.name;
       } else if (rangeName === 'manufactureDate') {
         initialValues[rangeName] = today;
+      } else if (rangeName === 'writer' && user) {
+        initialValues[rangeName] = user.name;
       } else {
         const defaultValue = namedRanges[rangeName]?.value;
         initialValues[rangeName] = defaultValue ?? '';
@@ -44,7 +48,7 @@ export function useWorklogFormInit({
     });
 
     setFormValues(initialValues);
-  }, [namedRanges, project, existingData]);
+  }, [namedRanges, project, existingData, user]);
 
   // Edit 모드: existingData 기반 초기화
   useEffect(() => {

@@ -2,17 +2,18 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
+import { useProjectLoader } from '../../shared/useProjectLoader';
+import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
+import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import { createBinderWorklog } from './BinderService';
 import type { BinderWorklogPayload } from './BinderTypes';
-import { getProject } from '../../WorklogService';
-import type { WorklogProject } from '../../WorklogTypes';
-import { getMixerEquipments, getLineEquipments } from '../../../../plant/register/EquipmentService';
+import { getMixerEquipments } from '../../../../plant/register/EquipmentService';
 import type { Equipment } from '../../../../plant/register/EquipmentTypes';
-import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
+import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 
 // 라인명 고정 옵션
@@ -25,24 +26,12 @@ export default function BinderRegister() {
   const { workbook, loading: templateLoading, error: templateError } = useExcelTemplate('binder');
   const { namedRanges } = useNamedRanges(workbook);
 
-  const [project, setProject] = useState<WorklogProject | null>(null);
-  const [formValues, setFormValues] = useState<Record<string, any>>({});
+  const project = useProjectLoader(projectId);
+  const { formValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
+  const plantEquipments = useLineEquipmentLoader(formValues.line);
+
   const [saving, setSaving] = useState(false);
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
-  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
-
-  useEffect(() => {
-    const loadProject = async () => {
-      if (!projectId) return;
-      try {
-        const projectData = await getProject(Number(projectId));
-        setProject(projectData);
-      } catch (err) {
-        console.error('프로젝트 조회 실패:', err);
-      }
-    };
-    loadProject();
-  }, [projectId]);
 
   // Mixer 설비 목록 로드
   useEffect(() => {
@@ -56,51 +45,6 @@ export default function BinderRegister() {
     };
     loadMixers();
   }, []);
-
-  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
-  useEffect(() => {
-    const loadPlantEquipments = async () => {
-      const selectedLine = formValues.line as CategoryLabel;
-      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
-        setPlantEquipments([]);
-        return;
-      }
-      try {
-        const category = LABEL_CATEGORY_MAP[selectedLine];
-        const equipments = await getLineEquipments(category);
-        setPlantEquipments(equipments);
-      } catch (err) {
-        console.error('설비 목록 조회 실패:', err);
-        setPlantEquipments([]);
-      }
-    };
-    loadPlantEquipments();
-  }, [formValues.line]);
-
-  useEffect(() => {
-    if (Object.keys(namedRanges).length > 0) {
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 형식
-      const initialValues: Record<string, any> = {};
-      Object.keys(namedRanges).forEach(rangeName => {
-        if (rangeName === 'productionId' && project) {
-          initialValues[rangeName] = project.name;
-        } else if (rangeName === 'manufactureDate') {
-          initialValues[rangeName] = today;
-        } else {
-          const defaultValue = namedRanges[rangeName]?.value;
-          initialValues[rangeName] = defaultValue ?? '';
-        }
-      });
-      setFormValues(initialValues);
-    }
-  }, [namedRanges, project]);
-
-  const handleCellChange = (rangeName: string, value: any) => {
-    setFormValues(prev => ({
-      ...prev,
-      [rangeName]: value,
-    }));
-  };
 
   const handleSave = async () => {
     setSaving(true);
