@@ -3,21 +3,60 @@ import ExcelJS from 'exceljs';
 import styles from '../../../../../styles/project/lot/10-RawDataGrid.module.css';
 import { registerRawData } from '../LotService';
 
-// 백분율 열 판별 (For.Eff_, SOC)
-const isPercentColumn = (key: string): boolean => {
-  // For.Eff는 포함 여부로 체크, SOC는 정확히 일치하는 경우만
-  return key.includes('For.Eff') || key.endsWith(' SOC') || key === 'SOC';
+// 컬럼 타입 판별
+type ColumnType = 'percent' | 'capacity' | 'voltage' | 'default';
+
+const getColumnType = (key: string): ColumnType => {
+  // 효율 (% 소수점 1자리): For.Eff, SOC
+  if (key.includes('For.Eff') || key.endsWith(' SOC') || key === 'SOC') {
+    return 'percent';
+  }
+  // 용량 (소수점 2자리): PFC, PFD, MFC, MFD, STC, STD, NCR2, Capacity, Wh
+  if (
+    key.includes('PFC') ||
+    key.includes('PFD') ||
+    key.includes('MFC') ||
+    key.includes('MFD') ||
+    key.includes('STC') ||
+    key.includes('STD') ||
+    key.includes('NCR2') ||
+    key.includes('Capacity') ||
+    key.includes('Wh')
+  ) {
+    return 'capacity';
+  }
+  // 전압/저항 (소수점 3자리): OCV, IR, Delta V, Nominal V, DC_IR
+  if (
+    key.includes('OCV') ||
+    key.includes('IR') ||
+    key.includes('Delta V') ||
+    key.includes('Nominal V') ||
+    key.includes('DC_IR')
+  ) {
+    return 'voltage';
+  }
+  return 'default';
 };
 
-// 백분율 포맷 (0.xxx -> xx.x%)
-const formatPercent = (value: string | number | null): string => {
+// 컬럼 타입에 따른 숫자 포맷
+const formatByColumnType = (value: string | number | null, columnType: ColumnType): string => {
   if (value === null || value === '') return '';
   const num = typeof value === 'number' ? value : parseFloat(value);
   if (isNaN(num)) return String(value);
-  return (num * 100).toFixed(1) + '%';
+
+  switch (columnType) {
+    case 'percent':
+      return (num * 100).toFixed(1) + '%';
+    case 'capacity':
+      return num.toFixed(2);
+    case 'voltage':
+      return num.toFixed(3);
+    default:
+      return String(value);
+  }
 };
 
-// RawData 전용 셀 값 포맷 함수 (소수점 3자리)
+// RawData 전용 셀 값 포맷 함수 (기본 파싱용)
 const formatRawDataCellValue = (value: any): string => {
   if (value === null || value === undefined) return '';
 
@@ -26,14 +65,9 @@ const formatRawDataCellValue = (value: any): string => {
     return formatRawDataCellValue(value.result);
   }
 
-  // 숫자 처리 (소수점 3자리까지 반올림)
+  // 숫자는 원본 유지 (컬럼별 포맷은 별도 적용)
   if (typeof value === 'number') {
-    // 정수인 경우 그대로 반환
-    if (Number.isInteger(value)) {
-      return String(value);
-    }
-    // 소수인 경우 최대 3자리까지 반올림
-    return parseFloat(value.toFixed(3)).toString();
+    return String(value);
   }
 
   // 날짜 처리
@@ -266,8 +300,26 @@ export default function RawDataGrid({ projectId }: RawDataGridProps) {
     setError(null);
     setSuccessMessage(null);
 
+    // 컬럼 타입에 따라 포맷 적용하여 저장
+    // 용량: 소수점 2자리, 전압/저항: 소수점 3자리, 효율: % 소수점 1자리
+    const formattedRows = excelData.rows.map(row => {
+      const formattedRow: ExcelRow = {};
+      for (const key of excelData.dataKeys) {
+        const columnType = getColumnType(key);
+        if (columnType !== 'default' && row[key] !== null && row[key] !== '') {
+          formattedRow[key] = formatByColumnType(row[key], columnType);
+        } else {
+          formattedRow[key] = row[key];
+        }
+      }
+      return formattedRow;
+    });
+
+    console.log('=== Raw Data 등록 요청 ===');
+    console.log('rows:', formattedRows);
+
     try {
-      const response = await registerRawData(projectId, excelData.dataKeys, excelData.rows);
+      const response = await registerRawData(projectId, excelData.dataKeys, formattedRows);
       setSuccessMessage(response.message);
       // 5초 후 성공 메시지 숨김
       setTimeout(() => setSuccessMessage(null), 5000);
@@ -363,9 +415,15 @@ export default function RawDataGrid({ projectId }: RawDataGridProps) {
               <tbody>
                 {excelData.rows.map((row, rowIdx) => (
                   <tr key={rowIdx}>
-                    {excelData.dataKeys.map((key, colIdx) => (
-                      <td key={colIdx}>{isPercentColumn(key) ? formatPercent(row[key]) : (row[key] ?? '')}</td>
-                    ))}
+                    {excelData.dataKeys.map((key, colIdx) => {
+                      const columnType = getColumnType(key);
+                      const value = row[key];
+                      const displayValue =
+                        columnType !== 'default' && value !== null && value !== ''
+                          ? formatByColumnType(value, columnType)
+                          : (value ?? '');
+                      return <td key={colIdx}>{displayValue}</td>;
+                    })}
                   </tr>
                 ))}
               </tbody>
