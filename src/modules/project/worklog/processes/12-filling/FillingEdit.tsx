@@ -2,17 +2,15 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
+import { useProjectLoader } from '../../shared/useProjectLoader';
+import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { getFillingWorklog, updateFillingWorklog } from './FillingService';
 import type { FillingWorklog, FillingWorklogPayload } from './FillingTypes';
-import { getProject } from '../../WorklogService';
-import type { WorklogProject } from '../../WorklogTypes';
 import { FILLING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
-import { getLineEquipments } from '../../../../plant/register/EquipmentService';
-import type { Equipment } from '../../../../plant/register/EquipmentTypes';
-import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
+import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
@@ -24,45 +22,13 @@ export default function FillingEdit() {
   const { workbook, loading: templateLoading, error: templateError } = useExcelTemplate('filling');
   const { namedRanges } = useNamedRanges(workbook);
 
-  const [project, setProject] = useState<WorklogProject | null>(null);
+  const project = useProjectLoader(projectId);
   const [worklogData, setWorklogData] = useState<FillingWorklog | null>(null);
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
 
-  useEffect(() => {
-    const loadProject = async () => {
-      if (!projectId) return;
-      try {
-        const projectData = await getProject(Number(projectId));
-        setProject(projectData);
-      } catch (err) {
-        console.error('프로젝트 조회 실패:', err);
-      }
-    };
-    loadProject();
-  }, [projectId]);
-
-  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
-  useEffect(() => {
-    const loadPlantEquipments = async () => {
-      const selectedLine = formValues.line as CategoryLabel;
-      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
-        setPlantEquipments([]);
-        return;
-      }
-      try {
-        const category = LABEL_CATEGORY_MAP[selectedLine];
-        const equipments = await getLineEquipments(category);
-        setPlantEquipments(equipments);
-      } catch (err) {
-        console.error('설비 목록 조회 실패:', err);
-        setPlantEquipments([]);
-      }
-    };
-    loadPlantEquipments();
-  }, [formValues.line]);
+  const plantEquipments = useLineEquipmentLoader(formValues.line);
 
   useEffect(() => {
     const loadWorklog = async () => {

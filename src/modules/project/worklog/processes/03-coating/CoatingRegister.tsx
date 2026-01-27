@@ -1,21 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
+import { useProjectLoader } from '../../shared/useProjectLoader';
+import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
+import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { COATING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import { createCoatingWorklog } from './CoatingService';
 import type { CoatingWorklogPayload } from './CoatingTypes';
-import { getProject } from '../../WorklogService';
-import type { WorklogProject } from '../../WorklogTypes';
-import { getLineEquipments } from '../../../../plant/register/EquipmentService';
-import type { Equipment } from '../../../../plant/register/EquipmentTypes';
-import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
+import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 
-// 라인명 고정 옵션
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
 export default function CoatingRegister() {
@@ -25,74 +23,16 @@ export default function CoatingRegister() {
   const { workbook, loading: templateLoading, error: templateError } = useExcelTemplate('coating');
   const { namedRanges } = useNamedRanges(workbook);
 
-  const [project, setProject] = useState<WorklogProject | null>(null);
-  const [formValues, setFormValues] = useState<Record<string, any>>({});
+  const project = useProjectLoader(projectId);
+  const { formValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
+  const plantEquipments = useLineEquipmentLoader(formValues.line);
+
   const [saving, setSaving] = useState(false);
-  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
-
-  useEffect(() => {
-    const loadProject = async () => {
-      if (!projectId) return;
-      try {
-        const projectData = await getProject(Number(projectId));
-        setProject(projectData);
-      } catch (err) {
-        console.error('프로젝트 조회 실패:', err);
-      }
-    };
-    loadProject();
-  }, [projectId]);
-
-  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
-  useEffect(() => {
-    const loadPlantEquipments = async () => {
-      const selectedLine = formValues.line as CategoryLabel;
-      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
-        setPlantEquipments([]);
-        return;
-      }
-      try {
-        const category = LABEL_CATEGORY_MAP[selectedLine];
-        const equipments = await getLineEquipments(category);
-        setPlantEquipments(equipments);
-      } catch (err) {
-        console.error('설비 목록 조회 실패:', err);
-        setPlantEquipments([]);
-      }
-    };
-    loadPlantEquipments();
-  }, [formValues.line]);
-
-  useEffect(() => {
-    if (Object.keys(namedRanges).length > 0) {
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 형식
-      const initialValues: Record<string, any> = {};
-      Object.keys(namedRanges).forEach(rangeName => {
-        if (rangeName === 'productionId' && project) {
-          initialValues[rangeName] = project.name;
-        } else if (rangeName === 'manufactureDate') {
-          initialValues[rangeName] = today;
-        } else {
-          const defaultValue = namedRanges[rangeName]?.value;
-          initialValues[rangeName] = defaultValue ?? '';
-        }
-      });
-      setFormValues(initialValues);
-    }
-  }, [namedRanges, project]);
-
-  const handleCellChange = (rangeName: string, value: any) => {
-    setFormValues(prev => ({
-      ...prev,
-      [rangeName]: value,
-    }));
-  };
 
   const handleSave = async () => {
     setSaving(true);
     try {
       const payload = mapFormToPayload(formValues, namedRanges, COATING_NUMERIC_FIELDS) as CoatingWorklogPayload;
-      // plant 이름을 ID로 변환
       if (formValues.plant) {
         const selectedEquipment = plantEquipments.find(eq => eq.name === formValues.plant);
         payload.plant = selectedEquipment?.id ?? null;
@@ -138,9 +78,7 @@ export default function CoatingRegister() {
     );
   }
 
-  // 드롭다운 옵션 생성
   const plantOptions = plantEquipments.map(eq => eq.name);
-
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),

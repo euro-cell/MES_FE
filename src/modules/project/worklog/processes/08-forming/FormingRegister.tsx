@@ -1,157 +1,44 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
-import { extractNamedRanges } from '../../shared/excelUtils';
+import { useNamedRanges } from '../../shared/useNamedRanges';
+import { useProjectLoader } from '../../shared/useProjectLoader';
+import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
+import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
+import { mapFormToPayload } from '../../shared/excelUtils';
 import { createFormingWorklog } from './FormingService';
 import type { FormingWorklogPayload } from './FormingTypes';
-import styles from '../../../../../styles/project/worklog/common.module.css';
-import { getProject } from '../../WorklogService';
-import type { WorklogProject } from '../../WorklogTypes';
-import { getLineEquipments } from '../../../../plant/register/EquipmentService';
-import type { Equipment } from '../../../../plant/register/EquipmentTypes';
-import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
+import { FORMING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
+import type { CategoryLabel } from '../../shared/processCategories';
+import styles from '../../../../../styles/project/worklog/common.module.css';
 
-// 라인명 고정 옵션
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
 export default function FormingRegister() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
 
-  const { workbook, loading, error } = useExcelTemplate('Forming');
-  const [formValues, setFormValues] = useState<Record<string, any>>({});
-  const [namedRanges, setNamedRanges] = useState<Record<string, any>>({});
+  const { workbook, loading: templateLoading, error: templateError } = useExcelTemplate('Forming');
+  const { namedRanges } = useNamedRanges(workbook);
+
+  const project = useProjectLoader(projectId);
+  const { formValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
+  const plantEquipments = useLineEquipmentLoader(formValues.line);
+
   const [submitting, setSubmitting] = useState(false);
-  const [project, setProject] = useState<WorklogProject | null>(null);
-  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
-
-  useEffect(() => {
-    const loadProject = async () => {
-      if (projectId) {
-        const proj = await getProject(Number(projectId));
-        setProject(proj);
-      }
-    };
-    loadProject();
-  }, [projectId]);
-
-  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
-  useEffect(() => {
-    const loadPlantEquipments = async () => {
-      const selectedLine = formValues.line as CategoryLabel;
-      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
-        setPlantEquipments([]);
-        return;
-      }
-      try {
-        const category = LABEL_CATEGORY_MAP[selectedLine];
-        const equipments = await getLineEquipments(category);
-        setPlantEquipments(equipments);
-      } catch (err) {
-        console.error('설비 목록 조회 실패:', err);
-        setPlantEquipments([]);
-      }
-    };
-    loadPlantEquipments();
-  }, [formValues.line]);
-
-  useEffect(() => {
-    if (workbook) {
-      const ranges = extractNamedRanges(workbook);
-      setNamedRanges(ranges);
-    }
-  }, [workbook]);
-
-  useEffect(() => {
-    if (Object.keys(namedRanges).length > 0) {
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 형식
-      const initialValues: Record<string, any> = {};
-      Object.keys(namedRanges).forEach(rangeName => {
-        if (rangeName === 'productionId' && project) {
-          initialValues[rangeName] = project.name;
-        } else if (rangeName === 'manufactureDate') {
-          initialValues[rangeName] = today;
-        } else {
-          const defaultValue = namedRanges[rangeName]?.value;
-          initialValues[rangeName] = defaultValue ?? '';
-        }
-      });
-      setFormValues(initialValues);
-    }
-  }, [namedRanges, project]);
-
-  const handleCellChange = (rangeName: string, value: any) => {
-    setFormValues(prev => ({
-      ...prev,
-      [rangeName]: value,
-    }));
-  };
 
   const handleSubmit = async () => {
     if (!projectId) return;
 
-    const payload: FormingWorklogPayload = {
-      workDate: formValues.workDate || '',
-      round: Number(formValues.round) || 0,
-      line: formValues.line || undefined,
-      plant: formValues.plant ? (plantEquipments.find(eq => eq.name === formValues.plant)?.id ?? null) : null,
-
-      // A. 자재 투입 정보
-      pouchLot: formValues.pouchLot,
-      pouchManufacturer: formValues.pouchManufacturer,
-      pouchSpec: formValues.pouchSpec,
-      pouchUsage: formValues.pouchUsage ? Number(formValues.pouchUsage) : undefined,
-
-      // B. 생산 정보 - 컷팅
-      cuttingWorkQuantity: formValues.cuttingWorkQuantity ? Number(formValues.cuttingWorkQuantity) : undefined,
-      cuttingGoodQuantity: formValues.cuttingGoodQuantity ? Number(formValues.cuttingGoodQuantity) : undefined,
-      cuttingDefectQuantity: formValues.cuttingDefectQuantity ? Number(formValues.cuttingDefectQuantity) : undefined,
-      cuttingDiscardQuantity: formValues.cuttingDiscardQuantity ? Number(formValues.cuttingDiscardQuantity) : undefined,
-      cuttingDefectRate: formValues.cuttingDefectRate ? Number(formValues.cuttingDefectRate) : undefined,
-
-      // B. 생산 정보 - 포밍
-      formingWorkQuantity: formValues.formingWorkQuantity ? Number(formValues.formingWorkQuantity) : undefined,
-      formingGoodQuantity: formValues.formingGoodQuantity ? Number(formValues.formingGoodQuantity) : undefined,
-      formingDefectQuantity: formValues.formingDefectQuantity ? Number(formValues.formingDefectQuantity) : undefined,
-      formingDiscardQuantity: formValues.formingDiscardQuantity ? Number(formValues.formingDiscardQuantity) : undefined,
-      formingDefectRate: formValues.formingDefectRate ? Number(formValues.formingDefectRate) : undefined,
-
-      // B. 생산 정보 - 폴딩
-      foldingWorkQuantity: formValues.foldingWorkQuantity ? Number(formValues.foldingWorkQuantity) : undefined,
-      foldingGoodQuantity: formValues.foldingGoodQuantity ? Number(formValues.foldingGoodQuantity) : undefined,
-      foldingDefectQuantity: formValues.foldingDefectQuantity ? Number(formValues.foldingDefectQuantity) : undefined,
-      foldingDiscardQuantity: formValues.foldingDiscardQuantity ? Number(formValues.foldingDiscardQuantity) : undefined,
-      foldingDefectRate: formValues.foldingDefectRate ? Number(formValues.foldingDefectRate) : undefined,
-
-      // B. 생산 정보 - 탑컷팅
-      topCuttingWorkQuantity: formValues.topCuttingWorkQuantity ? Number(formValues.topCuttingWorkQuantity) : undefined,
-      topCuttingGoodQuantity: formValues.topCuttingGoodQuantity ? Number(formValues.topCuttingGoodQuantity) : undefined,
-      topCuttingDefectQuantity: formValues.topCuttingDefectQuantity
-        ? Number(formValues.topCuttingDefectQuantity)
-        : undefined,
-      topCuttingDiscardQuantity: formValues.topCuttingDiscardQuantity
-        ? Number(formValues.topCuttingDiscardQuantity)
-        : undefined,
-      topCuttingDefectRate: formValues.topCuttingDefectRate ? Number(formValues.topCuttingDefectRate) : undefined,
-
-      // C. 공정 조건 - 컷팅
-      cuttingLength: formValues.cuttingLength ? Number(formValues.cuttingLength) : undefined,
-      cuttingChecklist: formValues.cuttingChecklist,
-
-      // C. 공정 조건 - 포밍
-      formingDepth: formValues.formingDepth ? Number(formValues.formingDepth) : undefined,
-      formingStopperHeight: formValues.formingStopperHeight ? Number(formValues.formingStopperHeight) : undefined,
-      formingChecklist: formValues.formingChecklist,
-
-      // C. 공정 조건 - 탑컷팅
-      topCuttingLength: formValues.topCuttingLength ? Number(formValues.topCuttingLength) : undefined,
-      topCuttingChecklist: formValues.topCuttingChecklist,
-    };
-
     setSubmitting(true);
     try {
+      const payload = mapFormToPayload(formValues, namedRanges, FORMING_NUMERIC_FIELDS) as FormingWorklogPayload;
+      if (formValues.plant) {
+        const selectedEquipment = plantEquipments.find(eq => eq.name === formValues.plant);
+        payload.plant = selectedEquipment?.id ?? null;
+      }
       await createFormingWorklog(Number(projectId), payload);
       alert('Forming 작업일지가 등록되었습니다.');
       navigate(`/project/log/${projectId}?category=Assembly&process=Forming`);
@@ -163,13 +50,11 @@ export default function FormingRegister() {
     }
   };
 
-  if (loading) return <p>템플릿을 불러오는 중...</p>;
-  if (error) return <p>템플릿 로드 실패: {error.message}</p>;
+  if (templateLoading) return <p>템플릿을 불러오는 중...</p>;
+  if (templateError) return <p>템플릿 로드 실패: {templateError.message}</p>;
   if (!workbook) return <p>엑셀 데이터를 불러올 수 없습니다.</p>;
 
   const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
-
-  // 드롭다운 옵션 생성
   const plantOptions = plantEquipments.map(eq => eq.name);
 
   const selectFields: Record<string, string[]> = {
@@ -204,6 +89,7 @@ export default function FormingRegister() {
         namedRanges={namedRanges}
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
+        numericFields={FORMING_NUMERIC_FIELDS}
         readOnlyFields={COMMON_READONLY_FIELDS}
         selectFields={selectFields}
         dateFields={['manufactureDate']}
