@@ -90,6 +90,20 @@ export default function GradingRegister() {
     grading5UnitNumber: UNIT_NUMBER_OPTIONS,
   };
 
+  // 커스텀 placeholder 설정
+  const placeholders: Record<string, string> = {
+    grading1Quantity: '양품 수량',
+    grading2Quantity: '양품 수량',
+    grading3Quantity: '양품 수량',
+    grading4Quantity: '양품 수량',
+    grading5Quantity: '양품 수량',
+    grading1CellNumberRange: '셀 번호 범위',
+    grading2CellNumberRange: '셀 번호 범위',
+    grading3CellNumberRange: '셀 번호 범위',
+    grading4CellNumberRange: '셀 번호 범위',
+    grading5CellNumberRange: '셀 번호 범위',
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -119,6 +133,7 @@ export default function GradingRegister() {
           readOnlyFields={COMMON_READONLY_FIELDS}
           selectFields={selectFields}
           dateFields={['manufactureDate']}
+          placeholders={placeholders}
         />
       </div>
 

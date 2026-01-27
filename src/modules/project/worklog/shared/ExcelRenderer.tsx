@@ -69,6 +69,7 @@ interface ExcelRendererProps {
   numericFields?: string[];
   readOnlyFields?: string[];
   selectFields?: Record<string, string[]>;
+  placeholders?: Record<string, string>;
 }
 
 function decodeAddress(addr: string) {
@@ -242,6 +243,7 @@ export default function ExcelRenderer({
   numericFields = [],
   readOnlyFields = [],
   selectFields = {},
+  placeholders = {},
 }: ExcelRendererProps) {
   const sheetData = useMemo((): SheetData | null => {
     if (!workbook) return null;
@@ -432,7 +434,7 @@ export default function ExcelRenderer({
                         <AutoResizeTextarea
                           value={cellValues[rangeName] ?? ''}
                           onChange={(value) => handleInputChange(rangeName, value)}
-                          placeholder={cellValue || '입력...'}
+                          placeholder='내용을 입력하세요'
                         />
                       ) : selectFields[rangeName] ? (
                         <select
@@ -458,7 +460,7 @@ export default function ExcelRenderer({
                           className={styles.cellInput}
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => handleInputChange(rangeName, e.target.value)}
-                          placeholder={cellValue || '입력...'}
+                          placeholder='HH:MM'
                         />
                       ) : numericFields.includes(rangeName) ? (
                         <input
@@ -466,7 +468,7 @@ export default function ExcelRenderer({
                           className={styles.cellInput}
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => handleInputChange(rangeName, e.target.value === '' ? '' : Number(e.target.value))}
-                          placeholder={cellValue || '입력...'}
+                          placeholder={placeholders[rangeName] ?? '숫자 입력'}
                           step='any'
                         />
                       ) : (
@@ -475,7 +477,7 @@ export default function ExcelRenderer({
                           className={styles.cellInput}
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => handleInputChange(rangeName, e.target.value)}
-                          placeholder={cellValue || '입력...'}
+                          placeholder={placeholders[rangeName] ?? '텍스트 입력'}
                         />
                       )
                     ) : isMultiline ? (

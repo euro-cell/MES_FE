@@ -144,6 +144,30 @@ export default function FormationEdit() {
     ...(plantOptions.length > 0 && { plant: plantOptions }),
   };
 
+  // 커스텀 placeholder 설정
+  const placeholders: Record<string, string> = {
+    preFormation1Quantity: '양품 수량',
+    preFormation2Quantity: '양품 수량',
+    preFormation3Quantity: '양품 수량',
+    preFormation4Quantity: '양품 수량',
+    preFormation5Quantity: '양품 수량',
+    preFormation1CellNumberRange: '셀 번호 범위',
+    preFormation2CellNumberRange: '셀 번호 범위',
+    preFormation3CellNumberRange: '셀 번호 범위',
+    preFormation4CellNumberRange: '셀 번호 범위',
+    preFormation5CellNumberRange: '셀 번호 범위',
+    mainFormation1Quantity: '양품 수량',
+    mainFormation2Quantity: '양품 수량',
+    mainFormation3Quantity: '양품 수량',
+    mainFormation4Quantity: '양품 수량',
+    mainFormation5Quantity: '양품 수량',
+    mainFormation1CellNumberRange: '셀 번호 범위',
+    mainFormation2CellNumberRange: '셀 번호 범위',
+    mainFormation3CellNumberRange: '셀 번호 범위',
+    mainFormation4CellNumberRange: '셀 번호 범위',
+    mainFormation5CellNumberRange: '셀 번호 범위',
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -173,6 +197,7 @@ export default function FormationEdit() {
           readOnlyFields={COMMON_READONLY_FIELDS}
           selectFields={formationSelectFields}
           dateFields={['manufactureDate']}
+          placeholders={placeholders}
         />
       </div>
 
