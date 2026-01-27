@@ -8,6 +8,9 @@ export interface CoatingWorklog {
   createdAt: string;
   updatedAt: string;
 
+  line?: string;
+  plant?: string;
+
   // 자재 투입 정보 1
   materialType: string;
   materialLot: string;

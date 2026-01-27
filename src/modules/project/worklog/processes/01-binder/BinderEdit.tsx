@@ -10,9 +10,12 @@ import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
-import { getMixerEquipments } from '../../../../plant/register/EquipmentService';
+import { getMixerEquipments, getLineEquipments } from '../../../../plant/register/EquipmentService';
 import type { Equipment } from '../../../../plant/register/EquipmentTypes';
+import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+
+const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
 export default function BinderEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -27,6 +30,7 @@ export default function BinderEdit() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
+  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
 
   useEffect(() => {
     const loadProject = async () => {
@@ -53,6 +57,26 @@ export default function BinderEdit() {
     };
     loadMixers();
   }, []);
+
+  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
+  useEffect(() => {
+    const loadPlantEquipments = async () => {
+      const selectedLine = formValues.line as CategoryLabel;
+      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
+        setPlantEquipments([]);
+        return;
+      }
+      try {
+        const category = LABEL_CATEGORY_MAP[selectedLine];
+        const equipments = await getLineEquipments(category);
+        setPlantEquipments(equipments);
+      } catch (err) {
+        console.error('설비 목록 조회 실패:', err);
+        setPlantEquipments([]);
+      }
+    };
+    loadPlantEquipments();
+  }, [formValues.line]);
 
   useEffect(() => {
     const loadWorklog = async () => {
@@ -138,9 +162,18 @@ export default function BinderEdit() {
     );
   }
 
-  // Mixer 드롭다운 옵션 생성
+  // 드롭다운 옵션 생성
   const mixerOptions = mixerEquipments.map(eq => eq.name);
-  const binderSelectFields = mixerOptions.length > 0 ? { pdMixerName: mixerOptions } : undefined;
+  const plantOptions = plantEquipments.map(eq => eq.name);
+
+  const binderSelectFields: Record<string, string[]> | undefined =
+    mixerOptions.length > 0 || LINE_OPTIONS.length > 0 || plantOptions.length > 0
+      ? {
+          ...(mixerOptions.length > 0 && { pdMixerName: mixerOptions }),
+          line: LINE_OPTIONS,
+          ...(plantOptions.length > 0 && { plant: plantOptions }),
+        }
+      : undefined;
 
   return (
     <div className={styles.container}>

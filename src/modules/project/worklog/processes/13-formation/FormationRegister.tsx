@@ -10,24 +10,16 @@ import { createFormationWorklog } from './FormationService';
 import type { FormationWorklogPayload } from './FormationTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { getLineEquipments } from '../../../../plant/register/EquipmentService';
+import type { Equipment } from '../../../../plant/register/EquipmentTypes';
+import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+
+// 라인명 고정 옵션
+const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
 // 호기 선택 옵션
 const UNIT_NUMBER_OPTIONS = ['11호기', '12호기', '13호기', '14호기', '15호기', '16호기'];
-
-// preFormation1~5UnitNumber, mainFormation1~5UnitNumber 필드에 대한 selectFields 설정
-const FORMATION_SELECT_FIELDS: Record<string, string[]> = {
-  preFormation1UnitNumber: UNIT_NUMBER_OPTIONS,
-  preFormation2UnitNumber: UNIT_NUMBER_OPTIONS,
-  preFormation3UnitNumber: UNIT_NUMBER_OPTIONS,
-  preFormation4UnitNumber: UNIT_NUMBER_OPTIONS,
-  preFormation5UnitNumber: UNIT_NUMBER_OPTIONS,
-  mainFormation1UnitNumber: UNIT_NUMBER_OPTIONS,
-  mainFormation2UnitNumber: UNIT_NUMBER_OPTIONS,
-  mainFormation3UnitNumber: UNIT_NUMBER_OPTIONS,
-  mainFormation4UnitNumber: UNIT_NUMBER_OPTIONS,
-  mainFormation5UnitNumber: UNIT_NUMBER_OPTIONS,
-};
 
 export default function FormationRegister() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -39,6 +31,7 @@ export default function FormationRegister() {
   const [project, setProject] = useState<WorklogProject | null>(null);
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
+  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
 
   useEffect(() => {
     const loadProject = async () => {
@@ -52,6 +45,26 @@ export default function FormationRegister() {
     };
     loadProject();
   }, [projectId]);
+
+  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
+  useEffect(() => {
+    const loadPlantEquipments = async () => {
+      const selectedLine = formValues.line as CategoryLabel;
+      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
+        setPlantEquipments([]);
+        return;
+      }
+      try {
+        const category = LABEL_CATEGORY_MAP[selectedLine];
+        const equipments = await getLineEquipments(category);
+        setPlantEquipments(equipments);
+      } catch (err) {
+        console.error('설비 목록 조회 실패:', err);
+        setPlantEquipments([]);
+      }
+    };
+    loadPlantEquipments();
+  }, [formValues.line]);
 
   useEffect(() => {
     if (Object.keys(namedRanges).length > 0) {
@@ -123,6 +136,24 @@ export default function FormationRegister() {
     );
   }
 
+  // 드롭다운 옵션 생성
+  const plantOptions = plantEquipments.map(eq => eq.name);
+
+  const selectFields: Record<string, string[]> = {
+    line: LINE_OPTIONS,
+    ...(plantOptions.length > 0 && { plant: plantOptions }),
+    preFormation1UnitNumber: UNIT_NUMBER_OPTIONS,
+    preFormation2UnitNumber: UNIT_NUMBER_OPTIONS,
+    preFormation3UnitNumber: UNIT_NUMBER_OPTIONS,
+    preFormation4UnitNumber: UNIT_NUMBER_OPTIONS,
+    preFormation5UnitNumber: UNIT_NUMBER_OPTIONS,
+    mainFormation1UnitNumber: UNIT_NUMBER_OPTIONS,
+    mainFormation2UnitNumber: UNIT_NUMBER_OPTIONS,
+    mainFormation3UnitNumber: UNIT_NUMBER_OPTIONS,
+    mainFormation4UnitNumber: UNIT_NUMBER_OPTIONS,
+    mainFormation5UnitNumber: UNIT_NUMBER_OPTIONS,
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -150,7 +181,7 @@ export default function FormationRegister() {
           multilineFields={['remark']}
           numericFields={FORMATION_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
-          selectFields={FORMATION_SELECT_FIELDS}
+          selectFields={selectFields}
           dateFields={['manufactureDate']}
         />
       </div>

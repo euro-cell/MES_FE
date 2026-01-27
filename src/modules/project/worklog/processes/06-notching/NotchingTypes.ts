@@ -10,6 +10,9 @@ export interface NotchingWorklog {
   createdAt: string;
   updatedAt: string;
 
+  line?: string;
+  plant?: string;
+
   // ===== A. 자재 투입 정보 (Material Input) =====
   pressRollLot1?: string;
   pressRollLot2?: string;

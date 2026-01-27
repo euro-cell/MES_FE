@@ -5,9 +5,9 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 /** 카테고리 한글 → 영문 변환 */
 const CATEGORY_MAP: Record<EquipmentCategory, string> = {
-  '생산': 'production',
-  '개발': 'development',
-  '측정': 'measurement',
+  생산: 'production',
+  개발: 'development',
+  측정: 'measurement',
 };
 
 /** 설비 목록 조회 */
@@ -28,11 +28,20 @@ export const getMixerEquipments = async (): Promise<Equipment[]> => {
   return res.data;
 };
 
+/** 라인(공정 카테고리별) 설비 목록 조회 */
+export const getLineEquipments = async (
+  processCategory: 'Electrode' | 'Assembly' | 'Formation',
+): Promise<Equipment[]> => {
+  const res = await axios.get(`${API_BASE}/equipment/lines`, {
+    params: { category: processCategory },
+    withCredentials: true,
+  });
+  return res.data;
+};
+
 /** 빈 문자열을 null로 변환 */
 const sanitizePayload = (payload: EquipmentPayload) => {
-  return Object.fromEntries(
-    Object.entries(payload).map(([key, value]) => [key, value === '' ? null : value])
-  );
+  return Object.fromEntries(Object.entries(payload).map(([key, value]) => [key, value === '' ? null : value]));
 };
 
 /** 설비 등록 */

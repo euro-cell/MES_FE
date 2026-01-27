@@ -9,6 +9,8 @@ export interface BinderWorklog {
   updatedAt: string;
 
   pdMixerName?: string;
+  line?: string;
+  plant?: string;
 
   material1Name?: string;
   material1Composition?: number;

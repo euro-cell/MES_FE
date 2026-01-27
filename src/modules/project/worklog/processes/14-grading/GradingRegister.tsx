@@ -10,19 +10,16 @@ import { createGradingWorklog } from './GradingService';
 import type { GradingWorklogPayload } from './GradingTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { getLineEquipments } from '../../../../plant/register/EquipmentService';
+import type { Equipment } from '../../../../plant/register/EquipmentTypes';
+import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+
+// 라인명 고정 옵션
+const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
 // 호기 선택 옵션
 const UNIT_NUMBER_OPTIONS = ['11호기', '12호기', '13호기', '14호기', '15호기', '16호기'];
-
-// grading1~5UnitNumber 필드에 대한 selectFields 설정
-const GRADING_SELECT_FIELDS: Record<string, string[]> = {
-  grading1UnitNumber: UNIT_NUMBER_OPTIONS,
-  grading2UnitNumber: UNIT_NUMBER_OPTIONS,
-  grading3UnitNumber: UNIT_NUMBER_OPTIONS,
-  grading4UnitNumber: UNIT_NUMBER_OPTIONS,
-  grading5UnitNumber: UNIT_NUMBER_OPTIONS,
-};
 
 export default function GradingRegister() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -34,6 +31,7 @@ export default function GradingRegister() {
   const [project, setProject] = useState<WorklogProject | null>(null);
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
+  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
 
   useEffect(() => {
     const loadProject = async () => {
@@ -47,6 +45,26 @@ export default function GradingRegister() {
     };
     loadProject();
   }, [projectId]);
+
+  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
+  useEffect(() => {
+    const loadPlantEquipments = async () => {
+      const selectedLine = formValues.line as CategoryLabel;
+      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
+        setPlantEquipments([]);
+        return;
+      }
+      try {
+        const category = LABEL_CATEGORY_MAP[selectedLine];
+        const equipments = await getLineEquipments(category);
+        setPlantEquipments(equipments);
+      } catch (err) {
+        console.error('설비 목록 조회 실패:', err);
+        setPlantEquipments([]);
+      }
+    };
+    loadPlantEquipments();
+  }, [formValues.line]);
 
   useEffect(() => {
     if (Object.keys(namedRanges).length > 0) {
@@ -118,6 +136,19 @@ export default function GradingRegister() {
     );
   }
 
+  // 드롭다운 옵션 생성
+  const plantOptions = plantEquipments.map(eq => eq.name);
+
+  const selectFields: Record<string, string[]> = {
+    line: LINE_OPTIONS,
+    ...(plantOptions.length > 0 && { plant: plantOptions }),
+    grading1UnitNumber: UNIT_NUMBER_OPTIONS,
+    grading2UnitNumber: UNIT_NUMBER_OPTIONS,
+    grading3UnitNumber: UNIT_NUMBER_OPTIONS,
+    grading4UnitNumber: UNIT_NUMBER_OPTIONS,
+    grading5UnitNumber: UNIT_NUMBER_OPTIONS,
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -145,7 +176,7 @@ export default function GradingRegister() {
           multilineFields={['remark']}
           numericFields={GRADING_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
-          selectFields={GRADING_SELECT_FIELDS}
+          selectFields={selectFields}
           dateFields={['manufactureDate']}
         />
       </div>

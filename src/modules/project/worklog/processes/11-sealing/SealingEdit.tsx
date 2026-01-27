@@ -10,7 +10,12 @@ import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import { SEALING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
+import { getLineEquipments } from '../../../../plant/register/EquipmentService';
+import type { Equipment } from '../../../../plant/register/EquipmentTypes';
+import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+
+const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
 export default function SealingEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -24,6 +29,7 @@ export default function SealingEdit() {
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
 
   useEffect(() => {
     const loadProject = async () => {
@@ -37,6 +43,26 @@ export default function SealingEdit() {
     };
     loadProject();
   }, [projectId]);
+
+  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
+  useEffect(() => {
+    const loadPlantEquipments = async () => {
+      const selectedLine = formValues.line as CategoryLabel;
+      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
+        setPlantEquipments([]);
+        return;
+      }
+      try {
+        const category = LABEL_CATEGORY_MAP[selectedLine];
+        const equipments = await getLineEquipments(category);
+        setPlantEquipments(equipments);
+      } catch (err) {
+        console.error('설비 목록 조회 실패:', err);
+        setPlantEquipments([]);
+      }
+    };
+    loadPlantEquipments();
+  }, [formValues.line]);
 
   useEffect(() => {
     const loadWorklog = async () => {
@@ -122,6 +148,13 @@ export default function SealingEdit() {
     );
   }
 
+  // 드롭다운 옵션 생성
+  const plantOptions = plantEquipments.map(eq => eq.name);
+  const sealingSelectFields: Record<string, string[]> = {
+    line: LINE_OPTIONS,
+    ...(plantOptions.length > 0 && { plant: plantOptions }),
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -149,6 +182,7 @@ export default function SealingEdit() {
           multilineFields={['topChecklist', 'sideChecklist', 'bottomChecklist', 'remarkTop', 'remarkSide']}
           numericFields={SEALING_NUMERIC_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
+          selectFields={sealingSelectFields}
           dateFields={['manufactureDate']}
         />
       </div>

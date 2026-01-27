@@ -8,6 +8,9 @@ export interface SlurryWorklog {
   createdAt: string;
   updatedAt: string;
 
+  line?: string;
+  plant?: string;
+
   // 자재 투입 정보 - 원료 1-8
   material1Name?: string;
   material1Composition?: number;

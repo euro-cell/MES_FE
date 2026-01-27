@@ -10,6 +10,11 @@ import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import { VD_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
+import { getLineEquipments } from '../../../../plant/register/EquipmentService';
+import type { Equipment } from '../../../../plant/register/EquipmentTypes';
+import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
+
+const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
 export default function VdEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -22,6 +27,7 @@ export default function VdEdit() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [project, setProject] = useState<WorklogProject | null>(null);
+  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
 
   // 프로젝트 정보 로드
   useEffect(() => {
@@ -41,6 +47,26 @@ export default function VdEdit() {
       setNamedRanges(ranges);
     }
   }, [workbook]);
+
+  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
+  useEffect(() => {
+    const loadPlantEquipments = async () => {
+      const selectedLine = formValues.line as CategoryLabel;
+      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
+        setPlantEquipments([]);
+        return;
+      }
+      try {
+        const category = LABEL_CATEGORY_MAP[selectedLine];
+        const equipments = await getLineEquipments(category);
+        setPlantEquipments(equipments);
+      } catch (err) {
+        console.error('설비 목록 조회 실패:', err);
+        setPlantEquipments([]);
+      }
+    };
+    loadPlantEquipments();
+  }, [formValues.line]);
 
   // 작업일지 데이터 로드
   useEffect(() => {
@@ -248,6 +274,13 @@ export default function VdEdit() {
 
   const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
 
+  // 드롭다운 옵션 생성
+  const plantOptions = plantEquipments.map(eq => eq.name);
+  const vdSelectFields: Record<string, string[]> = {
+    line: LINE_OPTIONS,
+    ...(plantOptions.length > 0 && { plant: plantOptions }),
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -274,6 +307,7 @@ export default function VdEdit() {
         className={styles.excelRenderer}
         numericFields={VD_NUMERIC_FIELDS}
         readOnlyFields={COMMON_READONLY_FIELDS}
+        selectFields={vdSelectFields}
         dateFields={['manufactureDate']}
       />
     </div>

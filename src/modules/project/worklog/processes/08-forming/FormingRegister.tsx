@@ -8,7 +8,13 @@ import type { FormingWorklogPayload } from './FormingTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
+import { getLineEquipments } from '../../../../plant/register/EquipmentService';
+import type { Equipment } from '../../../../plant/register/EquipmentTypes';
+import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
+
+// 라인명 고정 옵션
+const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
 export default function FormingRegister() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -19,6 +25,7 @@ export default function FormingRegister() {
   const [namedRanges, setNamedRanges] = useState<Record<string, any>>({});
   const [submitting, setSubmitting] = useState(false);
   const [project, setProject] = useState<WorklogProject | null>(null);
+  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
 
   useEffect(() => {
     const loadProject = async () => {
@@ -29,6 +36,26 @@ export default function FormingRegister() {
     };
     loadProject();
   }, [projectId]);
+
+  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
+  useEffect(() => {
+    const loadPlantEquipments = async () => {
+      const selectedLine = formValues.line as CategoryLabel;
+      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
+        setPlantEquipments([]);
+        return;
+      }
+      try {
+        const category = LABEL_CATEGORY_MAP[selectedLine];
+        const equipments = await getLineEquipments(category);
+        setPlantEquipments(equipments);
+      } catch (err) {
+        console.error('설비 목록 조회 실패:', err);
+        setPlantEquipments([]);
+      }
+    };
+    loadPlantEquipments();
+  }, [formValues.line]);
 
   useEffect(() => {
     if (workbook) {
@@ -137,6 +164,14 @@ export default function FormingRegister() {
 
   const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
 
+  // 드롭다운 옵션 생성
+  const plantOptions = plantEquipments.map(eq => eq.name);
+
+  const selectFields: Record<string, string[]> = {
+    line: LINE_OPTIONS,
+    ...(plantOptions.length > 0 && { plant: plantOptions }),
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -165,6 +200,7 @@ export default function FormingRegister() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
         readOnlyFields={COMMON_READONLY_FIELDS}
+        selectFields={selectFields}
         dateFields={['manufactureDate']}
       />
     </div>

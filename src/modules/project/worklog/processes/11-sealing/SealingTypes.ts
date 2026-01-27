@@ -8,6 +8,9 @@ export interface SealingWorklog {
   createdAt: string;
   updatedAt: string;
 
+  line?: string;
+  plant?: string;
+
   // A. 자재 투입 정보
   pouchLot?: string;
   pouchManufacturer?: string;

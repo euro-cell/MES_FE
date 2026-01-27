@@ -10,9 +10,13 @@ import { createBinderWorklog } from './BinderService';
 import type { BinderWorklogPayload } from './BinderTypes';
 import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
-import { getMixerEquipments } from '../../../../plant/register/EquipmentService';
+import { getMixerEquipments, getLineEquipments } from '../../../../plant/register/EquipmentService';
 import type { Equipment } from '../../../../plant/register/EquipmentTypes';
+import { LABEL_CATEGORY_MAP, type CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+
+// 라인명 고정 옵션
+const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
 export default function BinderRegister() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -25,6 +29,7 @@ export default function BinderRegister() {
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
+  const [plantEquipments, setPlantEquipments] = useState<Equipment[]>([]);
 
   useEffect(() => {
     const loadProject = async () => {
@@ -51,6 +56,26 @@ export default function BinderRegister() {
     };
     loadMixers();
   }, []);
+
+  // line(라인명) 선택 시 plant(사용 설비명) 목록 로드
+  useEffect(() => {
+    const loadPlantEquipments = async () => {
+      const selectedLine = formValues.line as CategoryLabel;
+      if (!selectedLine || !LABEL_CATEGORY_MAP[selectedLine]) {
+        setPlantEquipments([]);
+        return;
+      }
+      try {
+        const category = LABEL_CATEGORY_MAP[selectedLine];
+        const equipments = await getLineEquipments(category);
+        setPlantEquipments(equipments);
+      } catch (err) {
+        console.error('설비 목록 조회 실패:', err);
+        setPlantEquipments([]);
+      }
+    };
+    loadPlantEquipments();
+  }, [formValues.line]);
 
   useEffect(() => {
     if (Object.keys(namedRanges).length > 0) {
@@ -122,9 +147,15 @@ export default function BinderRegister() {
     );
   }
 
-  // Mixer 드롭다운 옵션 생성
+  // 드롭다운 옵션 생성
   const mixerOptions = mixerEquipments.map(eq => eq.name);
-  const binderSelectFields = mixerOptions.length > 0 ? { pdMixerName: mixerOptions } : undefined;
+  const plantOptions = plantEquipments.map(eq => eq.name);
+
+  const binderSelectFields: Record<string, string[]> = {
+    line: LINE_OPTIONS,
+    ...(mixerOptions.length > 0 && { pdMixerName: mixerOptions }),
+    ...(plantOptions.length > 0 && { plant: plantOptions }),
+  };
 
   return (
     <div className={styles.container}>
