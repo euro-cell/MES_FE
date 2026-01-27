@@ -109,6 +109,8 @@ export interface NotchingWorklog {
 export interface NotchingWorklogPayload {
   workDate: string;
   round: number;
+  line?: string;
+  plant?: any;
 
   // ===== A. 자재 투입 정보 =====
   pressRollLot1?: string;

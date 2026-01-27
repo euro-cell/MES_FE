@@ -124,6 +124,11 @@ export default function FormationEdit() {
     setSaving(true);
     try {
       const payload = mapFormToPayload(formValues, namedRanges, FORMATION_NUMERIC_FIELDS) as Partial<FormationWorklogPayload>;
+      // plant 이름을 ID로 변환
+      if (formValues.plant) {
+        const selectedEquipment = plantEquipments.find(eq => eq.name === formValues.plant);
+        payload.plant = selectedEquipment?.id ?? null;
+      }
       await updateFormationWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
       navigate(`/project/log/${projectId}?category=Formation&process=Formation`);

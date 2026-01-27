@@ -92,6 +92,11 @@ export default function CoatingRegister() {
     setSaving(true);
     try {
       const payload = mapFormToPayload(formValues, namedRanges, COATING_NUMERIC_FIELDS) as CoatingWorklogPayload;
+      // plant 이름을 ID로 변환
+      if (formValues.plant) {
+        const selectedEquipment = plantEquipments.find(eq => eq.name === formValues.plant);
+        payload.plant = selectedEquipment?.id ?? null;
+      }
       await createCoatingWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/project/log/${projectId}?category=Electrode&process=Coating`);

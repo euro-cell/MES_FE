@@ -140,6 +140,11 @@ export default function SlurryEdit() {
     setSaving(true);
     try {
       const payload = mapFormToPayload(formValues, namedRanges, SLURRY_NUMERIC_FIELDS) as Partial<SlurryWorklogPayload>;
+      // plant 이름을 ID로 변환
+      if (formValues.plant) {
+        const selectedEquipment = plantEquipments.find(eq => eq.name === formValues.plant);
+        payload.plant = selectedEquipment?.id ?? null;
+      }
       await updateSlurryWorklog(Number(projectId), Number(worklogId), payload);
       alert('작업일지가 수정되었습니다.');
       navigate(`/project/log/${projectId}?category=Electrode&process=Slurry`);

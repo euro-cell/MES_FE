@@ -93,6 +93,11 @@ export default function SealingRegister() {
     setSaving(true);
     try {
       const payload = mapFormToPayload(formValues, namedRanges, SEALING_NUMERIC_FIELDS) as SealingWorklogPayload;
+      // plant 이름을 ID로 변환
+      if (formValues.plant) {
+        const selectedEquipment = plantEquipments.find(eq => eq.name === formValues.plant);
+        payload.plant = selectedEquipment?.id ?? null;
+      }
       await createSealingWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/project/log/${projectId}?category=Assembly&process=Sealing`);

@@ -98,7 +98,10 @@ export default function PressEdit() {
   }, [projectId, worklogId, namedRanges, project]);
 
   const handleCellChange = (rangeName: string, value: any) => {
-    setFormValues(prev => ({ ...prev, [rangeName]: value }));
+    setFormValues(prev => ({
+      ...prev,
+      [rangeName]: value,
+    }));
   };
 
   const handleSubmit = async () => {
@@ -107,6 +110,11 @@ export default function PressEdit() {
     setSubmitting(true);
     try {
       const payload = mapFormToPayload(formValues, namedRanges, PRESS_NUMERIC_FIELDS) as PressWorklogPayload;
+      // plant 이름을 ID로 변환
+      if (formValues.plant) {
+        const selectedEquipment = plantEquipments.find(eq => eq.name === formValues.plant);
+        payload.plant = selectedEquipment?.id ?? null;
+      }
       await updatePressWorklog(Number(projectId), Number(worklogId), payload);
       alert('Press 작업일지가 수정되었습니다.');
       navigate(`/project/log/${projectId}?category=Electrode&process=Press`);

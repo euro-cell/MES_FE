@@ -135,6 +135,8 @@ export interface FormationWorklog {
 export interface FormationWorklogPayload {
   workDate: string;
   round: number;
+  line?: string;
+  plant?: any;
 
   // A. 자재 투입 정보
   cellNumberRange?: string;

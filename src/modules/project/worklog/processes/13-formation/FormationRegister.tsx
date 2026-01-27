@@ -95,6 +95,11 @@ export default function FormationRegister() {
     setSaving(true);
     try {
       const payload = mapFormToPayload(formValues, namedRanges, FORMATION_NUMERIC_FIELDS) as FormationWorklogPayload;
+      // plant 이름을 ID로 변환
+      if (formValues.plant) {
+        const selectedEquipment = plantEquipments.find(eq => eq.name === formValues.plant);
+        payload.plant = selectedEquipment?.id ?? null;
+      }
       await createFormationWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/project/log/${projectId}?category=Formation&process=Formation`);

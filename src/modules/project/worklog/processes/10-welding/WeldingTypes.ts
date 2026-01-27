@@ -74,6 +74,8 @@ export interface WeldingWorklog {
 export interface WeldingWorklogPayload {
   workDate: string;
   round: number;
+  line?: string;
+  plant?: any;
 
   // A. 자재 투입 정보
   leadTabLot?: string;

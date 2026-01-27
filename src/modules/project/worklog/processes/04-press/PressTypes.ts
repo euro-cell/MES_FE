@@ -128,7 +128,7 @@ export interface PressWorklogPayload {
   workDate: string;
   worker: string;
   line: string;
-  plant: string;
+  plant: any;
   shift: string;
   round: number;
 

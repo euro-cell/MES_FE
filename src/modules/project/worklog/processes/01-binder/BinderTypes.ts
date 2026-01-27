@@ -75,4 +75,6 @@ export interface BinderWorklog {
   stabilizationEndTime?: string;
 }
 
-export interface BinderWorklogPayload extends Omit<BinderWorklog, 'id' | 'createdAt' | 'updatedAt' | 'writer'> {}
+export interface BinderWorklogPayload extends Omit<BinderWorklog, 'id' | 'createdAt' | 'updatedAt' | 'writer' | 'plant'> {
+  plant?: any;
+}

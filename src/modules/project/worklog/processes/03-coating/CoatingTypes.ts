@@ -153,6 +153,8 @@ export interface CoatingWorklogPayload {
   workDate: string;
   round: number;
   writer: string;
+  line?: string;
+  plant?: any;
 
   // 자재 투입 정보 1
   materialType?: string;

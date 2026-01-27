@@ -266,4 +266,6 @@ export interface SlurryWorklog {
   pdMixer4EndTime1?: string;
 }
 
-export interface SlurryWorklogPayload extends Omit<SlurryWorklog, 'id' | 'createdAt' | 'updatedAt' | 'writer'> {}
+export interface SlurryWorklogPayload extends Omit<SlurryWorklog, 'id' | 'createdAt' | 'updatedAt' | 'writer' | 'plant'> {
+  plant?: any;
+}

@@ -56,6 +56,8 @@ export interface FillingWorklog {
 export interface FillingWorklogPayload {
   workDate: string;
   round: number;
+  line?: string;
+  plant?: any;
 
   // A. 자재 투입 정보
   electrolyteLot?: string;

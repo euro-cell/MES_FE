@@ -66,6 +66,8 @@ export interface FormingWorklog {
 export interface FormingWorklogPayload {
   workDate: string;
   round: number;
+  line?: string;
+  plant?: any;
 
   // ===== A. 자재 투입 정보 =====
   pouchLot?: string;

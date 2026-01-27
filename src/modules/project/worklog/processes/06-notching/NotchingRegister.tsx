@@ -84,7 +84,10 @@ export default function NotchingRegister() {
   }, [namedRanges, project]);
 
   const handleCellChange = (rangeName: string, value: any) => {
-    setFormValues(prev => ({ ...prev, [rangeName]: value }));
+    setFormValues(prev => ({
+      ...prev,
+      [rangeName]: value,
+    }));
   };
 
   const handleSubmit = async () => {
@@ -93,6 +96,11 @@ export default function NotchingRegister() {
     setSubmitting(true);
     try {
       const payload = mapFormToPayload(formValues, namedRanges, NOTCHING_NUMERIC_FIELDS) as NotchingWorklogPayload;
+      // plant 이름을 ID로 변환
+      if (formValues.plant) {
+        const selectedEquipment = plantEquipments.find(eq => eq.name === formValues.plant);
+        payload.plant = selectedEquipment?.id ?? null;
+      }
       await createNotchingWorklog(Number(projectId), payload);
       alert('Notching 작업일지가 등록되었습니다.');
       navigate(`/project/log/${projectId}?category=Electrode&process=Notching`);

@@ -170,7 +170,10 @@ export default function VdEdit() {
   }, [projectId, worklogId]);
 
   const handleCellChange = (rangeName: string, value: any) => {
-    setFormValues(prev => ({ ...prev, [rangeName]: value }));
+    setFormValues(prev => ({
+      ...prev,
+      [rangeName]: value,
+    }));
   };
 
   const handleSubmit = async () => {
@@ -182,7 +185,7 @@ export default function VdEdit() {
       manufactureDate: formValues.manufactureDate || '',
       worker: formValues.worker || '',
       line: formValues.line || '',
-      plant: formValues.plant || '',
+      plant: formValues.plant ? (plantEquipments.find(eq => eq.name === formValues.plant)?.id ?? null) : null,
       shift: formValues.shift || '',
 
       // A. 자재 투입 정보

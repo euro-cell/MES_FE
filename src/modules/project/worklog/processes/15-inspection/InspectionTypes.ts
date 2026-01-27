@@ -67,6 +67,8 @@ export interface InspectionWorklogPayload {
   workDate?: string;
   round?: number;
   writer?: string;
+  line?: string;
+  plant?: any;
 
   // A. 자재 투입 정보
   productionId?: string;

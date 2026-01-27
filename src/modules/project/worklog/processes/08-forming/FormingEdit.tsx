@@ -135,7 +135,10 @@ export default function FormingEdit() {
   }, [projectId, worklogId]);
 
   const handleCellChange = (rangeName: string, value: any) => {
-    setFormValues(prev => ({ ...prev, [rangeName]: value }));
+    setFormValues(prev => ({
+      ...prev,
+      [rangeName]: value,
+    }));
   };
 
   const handleSubmit = async () => {
@@ -144,6 +147,8 @@ export default function FormingEdit() {
     const payload: FormingWorklogPayload = {
       workDate: formValues.workDate || '',
       round: Number(formValues.round) || 0,
+      line: formValues.line || undefined,
+      plant: formValues.plant ? (plantEquipments.find(eq => eq.name === formValues.plant)?.id ?? null) : null,
 
       // A. 자재 투입 정보
       pouchLot: formValues.pouchLot,

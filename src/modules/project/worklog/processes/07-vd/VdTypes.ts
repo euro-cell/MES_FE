@@ -105,7 +105,7 @@ export interface VdWorklogPayload {
   manufactureDate: string;
   worker: string;
   line: string;
-  plant: string;
+  plant: any;
   shift: string;
 
   // ===== A. 자재 투입 정보 =====

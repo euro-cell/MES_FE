@@ -92,6 +92,11 @@ export default function InspectionRegister() {
     setSaving(true);
     try {
       const payload = mapFormToPayload(formValues, namedRanges, INSPECTION_NUMERIC_FIELDS) as InspectionWorklogPayload;
+      // plant 이름을 ID로 변환
+      if (formValues.plant) {
+        const selectedEquipment = plantEquipments.find(eq => eq.name === formValues.plant);
+        payload.plant = selectedEquipment?.id ?? null;
+      }
       await createInspectionWorklog(Number(projectId), payload);
       alert('작업일지가 등록되었습니다.');
       navigate(`/project/log/${projectId}?category=Formation&process=Inspection`);
