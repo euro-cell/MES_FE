@@ -146,11 +146,11 @@ export default function GradingEdit() {
     grading3Quantity: '양품 수량',
     grading4Quantity: '양품 수량',
     grading5Quantity: '양품 수량',
-    grading1CellNumberRange: '셀 번호 범위',
-    grading2CellNumberRange: '셀 번호 범위',
-    grading3CellNumberRange: '셀 번호 범위',
-    grading4CellNumberRange: '셀 번호 범위',
-    grading5CellNumberRange: '셀 번호 범위',
+    grading1CellNumberRange: '예: 1-5, 8, 10-15',
+    grading2CellNumberRange: '예: 1-5, 8, 10-15',
+    grading3CellNumberRange: '예: 1-5, 8, 10-15',
+    grading4CellNumberRange: '예: 1-5, 8, 10-15',
+    grading5CellNumberRange: '예: 1-5, 8, 10-15',
   };
 
   return (
