@@ -15,8 +15,8 @@ const getUsageColor = (usage: number): string => {
   return '#d32f2f'; // 빨강 (100%)
 };
 
-const getTextColor = (usage: number): string => {
-  return usage > 50 ? '#ffffff' : '#333333';
+const getTextColor = (): string => {
+  return '#333333';
 };
 
 export default function RackStorageGrid({ locations }: RackStorageGridProps) {
