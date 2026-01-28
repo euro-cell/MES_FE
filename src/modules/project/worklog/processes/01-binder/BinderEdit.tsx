@@ -10,7 +10,7 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { getBinderWorklog, updateBinderWorklog } from '../../../../../api/project/worklog';
 import type { BinderWorklog, BinderWorklogPayload } from './BinderTypes';
-import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { BINDER_NUMERIC_FIELDS, BINDER_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import { getMixerEquipments } from '../../../../plant/register/EquipmentService';
 import type { Equipment } from '../../../../plant/register/EquipmentTypes';
@@ -201,6 +201,7 @@ export default function BinderEdit() {
             'stabilizationEndTime',
           ]}
           numericFields={BINDER_NUMERIC_FIELDS}
+          integerFields={BINDER_INTEGER_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
           selectFields={binderSelectFields}
           dateFields={['manufactureDate']}

@@ -9,7 +9,7 @@ import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import { useMaterialLots } from '../../shared/useMaterialLots';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { BINDER_NUMERIC_FIELDS, BINDER_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import { createBinderWorklog } from '../../../../../api/project/worklog';
 import type { BinderWorklogPayload } from './BinderTypes';
@@ -159,6 +159,7 @@ export default function BinderRegister() {
             'stabilizationEndTime',
           ]}
           numericFields={BINDER_NUMERIC_FIELDS}
+          integerFields={BINDER_INTEGER_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
           selectFields={binderSelectFields}
           dateFields={['manufactureDate']}

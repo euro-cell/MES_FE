@@ -1,6 +1,23 @@
 // 각 공정별 숫자 필드 목록
 
-// Binder 숫자 필드
+// Binder 정수형 필드 (RPM, 점도 등)
+export const BINDER_INTEGER_FIELDS = [
+  'viscosity',
+  'nmpWeightRpmLow',
+  'nmpWeightRpmHigh',
+  'binderWeightRpmLow',
+  'binderWeightRpmHigh',
+  'mixing1RpmLow',
+  'mixing1RpmHigh',
+  'scrappingRpmLow',
+  'scrappingRpmHigh',
+  'mixing2RpmLow',
+  'mixing2RpmHigh',
+  'stabilizationRpmLow',
+  'stabilizationRpmHigh',
+];
+
+// Binder 숫자 필드 (실수형) - 정수형 필드 제외
 export const BINDER_NUMERIC_FIELDS = [
   'material1Composition',
   'material1PlannedInput',
@@ -9,34 +26,21 @@ export const BINDER_NUMERIC_FIELDS = [
   'material2PlannedInput',
   'material2ActualInput',
   'binderSolution',
-  'viscosity',
   'solidContent1',
   'solidContent2',
   'solidContent3',
   'nmpWeightInput',
   'nmpWeightTemp',
-  'nmpWeightRpmLow',
-  'nmpWeightRpmHigh',
   'binderWeightInput',
   'binderWeightTemp',
-  'binderWeightRpmLow',
-  'binderWeightRpmHigh',
   'mixing1Input',
   'mixing1Temp',
-  'mixing1RpmLow',
-  'mixing1RpmHigh',
   'scrappingInput',
   'scrappingTemp',
-  'scrappingRpmLow',
-  'scrappingRpmHigh',
   'mixing2Input',
   'mixing2Temp',
-  'mixing2RpmLow',
-  'mixing2RpmHigh',
   'stabilizationInput',
   'stabilizationTemp',
-  'stabilizationRpmLow',
-  'stabilizationRpmHigh',
 ];
 
 // Slurry 숫자 필드

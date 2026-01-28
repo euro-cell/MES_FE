@@ -67,6 +67,7 @@ interface ExcelRendererProps {
   timeFields?: string[];
   dateFields?: string[];
   numericFields?: string[];
+  integerFields?: string[];
   readOnlyFields?: string[];
   selectFields?: Record<string, string[]>;
   placeholders?: Record<string, string>;
@@ -241,6 +242,7 @@ export default function ExcelRenderer({
   timeFields = [],
   dateFields = [],
   numericFields = [],
+  integerFields = [],
   readOnlyFields = [],
   selectFields = {},
   placeholders = {},
@@ -461,6 +463,15 @@ export default function ExcelRenderer({
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => handleInputChange(rangeName, e.target.value)}
                           placeholder='HH:MM'
+                        />
+                      ) : integerFields.includes(rangeName) ? (
+                        <input
+                          type='number'
+                          className={styles.cellInput}
+                          value={cellValues[rangeName] ?? ''}
+                          onChange={e => handleInputChange(rangeName, e.target.value === '' ? '' : parseInt(e.target.value, 10))}
+                          placeholder={placeholders[rangeName] ?? '숫자 입력'}
+                          step='1'
                         />
                       ) : numericFields.includes(rangeName) ? (
                         <input
