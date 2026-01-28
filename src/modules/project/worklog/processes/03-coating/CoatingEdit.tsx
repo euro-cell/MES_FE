@@ -118,9 +118,14 @@ export default function CoatingEdit() {
   }
 
   const plantOptions = plantEquipments.map(eq => eq.name);
+  const coatingSideOptions = ['단면', '양면'];
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+    coatingSide1: coatingSideOptions,
+    coatingSide2: coatingSideOptions,
+    coatingSide3: coatingSideOptions,
+    coatingSide4: coatingSideOptions,
   };
 
   return (
