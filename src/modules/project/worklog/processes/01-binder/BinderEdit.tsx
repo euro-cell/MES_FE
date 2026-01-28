@@ -4,6 +4,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
+import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { getBinderWorklog, updateBinderWorklog } from './BinderService';
@@ -32,6 +33,7 @@ export default function BinderEdit() {
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
 
   const plantEquipments = useLineEquipmentLoader(formValues.line);
+  const { categories: materialCategories } = useMaterialCategories();
 
   // Mixer 설비 목록 로드
   useEffect(() => {
@@ -140,11 +142,16 @@ export default function BinderEdit() {
   const plantOptions = plantEquipments.map(eq => eq.name);
 
   const binderSelectFields: Record<string, string[]> | undefined =
-    mixerOptions.length > 0 || LINE_OPTIONS.length > 0 || plantOptions.length > 0
+    mixerOptions.length > 0 || LINE_OPTIONS.length > 0 || plantOptions.length > 0 || materialCategories.length > 0
       ? {
           ...(mixerOptions.length > 0 && { pdMixerName: mixerOptions }),
           line: LINE_OPTIONS,
           ...(plantOptions.length > 0 && { plant: plantOptions }),
+          // 자재투입정보 구분 드롭다운
+          ...(materialCategories.length > 0 && {
+            material1Name: materialCategories,
+            material2Name: materialCategories,
+          }),
         }
       : undefined;
 

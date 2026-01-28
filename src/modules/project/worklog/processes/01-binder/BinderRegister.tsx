@@ -5,6 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
+import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
@@ -29,6 +30,7 @@ export default function BinderRegister() {
   const project = useProjectLoader(projectId);
   const { formValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
   const plantEquipments = useLineEquipmentLoader(formValues.line);
+  const { categories: materialCategories } = useMaterialCategories();
 
   const [saving, setSaving] = useState(false);
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
@@ -104,6 +106,11 @@ export default function BinderRegister() {
     line: LINE_OPTIONS,
     ...(mixerOptions.length > 0 && { pdMixerName: mixerOptions }),
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+    // 자재투입정보 구분 드롭다운
+    ...(materialCategories.length > 0 && {
+      material1Name: materialCategories,
+      material2Name: materialCategories,
+    }),
   };
 
   return (

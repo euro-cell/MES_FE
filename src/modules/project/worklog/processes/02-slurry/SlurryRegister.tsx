@@ -5,6 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
+import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { SLURRY_NUMERIC_FIELDS } from '../../shared/numericFields';
@@ -27,6 +28,7 @@ export default function SlurryRegister() {
   const project = useProjectLoader(projectId);
   const { formValues, setFormValues } = useWorklogFormInit({ namedRanges, project });
   const plantEquipments = useLineEquipmentLoader(formValues.line);
+  const { categories: materialCategories } = useMaterialCategories();
 
   const [saving, setSaving] = useState(false);
 
@@ -123,9 +125,17 @@ export default function SlurryRegister() {
   // 드롭다운 옵션 생성
   const plantOptions = plantEquipments.map(eq => eq.name);
 
+  // 자재투입정보 구분 드롭다운 (material1~material8)
+  const materialNameFields = materialCategories.length > 0
+    ? Object.fromEntries(
+        Array.from({ length: 8 }, (_, i) => [`material${i + 1}Name`, materialCategories])
+      )
+    : {};
+
   const slurrySelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+    ...materialNameFields,
   };
 
   return (

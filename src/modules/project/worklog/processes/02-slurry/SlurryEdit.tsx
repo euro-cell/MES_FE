@@ -4,6 +4,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
+import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { getSlurryWorklog, updateSlurryWorklog } from './SlurryService';
@@ -29,6 +30,7 @@ export default function SlurryEdit() {
   const [saving, setSaving] = useState(false);
 
   const plantEquipments = useLineEquipmentLoader(formValues.line);
+  const { categories: materialCategories } = useMaterialCategories();
 
   useEffect(() => {
     const loadWorklog = async () => {
@@ -154,9 +156,18 @@ export default function SlurryEdit() {
 
   // 드롭다운 옵션 생성
   const plantOptions = plantEquipments.map(eq => eq.name);
+
+  // 자재투입정보 구분 드롭다운 (material1~material8)
+  const materialNameFields = materialCategories.length > 0
+    ? Object.fromEntries(
+        Array.from({ length: 8 }, (_, i) => [`material${i + 1}Name`, materialCategories])
+      )
+    : {};
+
   const slurrySelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+    ...materialNameFields,
   };
 
   return (
