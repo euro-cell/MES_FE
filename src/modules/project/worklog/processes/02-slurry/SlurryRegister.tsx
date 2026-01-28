@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
@@ -13,6 +13,8 @@ import { SLURRY_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createSlurryWorklog } from '../../../../../api/project/worklog';
 import type { SlurryWorklogPayload } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS, SLURRY_READONLY_FIELDS } from './slurryConstants';
+import { getMixerEquipments } from '../../../../../api/plant/EquipmentService';
+import type { Equipment } from '../../../../plant/register/EquipmentTypes';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 
@@ -42,6 +44,20 @@ export default function SlurryRegister() {
   const { lotOptions: binderSolutionLotOptions } = useMaterialLots('Binder');
 
   const [saving, setSaving] = useState(false);
+  const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
+
+  // Mixer 설비 목록 로드
+  useEffect(() => {
+    const loadMixers = async () => {
+      try {
+        const mixers = await getMixerEquipments();
+        setMixerEquipments(mixers);
+      } catch (err) {
+        console.error('Mixer 설비 조회 실패:', err);
+      }
+    };
+    loadMixers();
+  }, []);
 
   // 고형분 자동계산 함수
   const calculateSolidContent = (
@@ -134,7 +150,15 @@ export default function SlurryRegister() {
   }
 
   // 드롭다운 옵션 생성
+  const mixerOptions = mixerEquipments.map(eq => eq.name);
   const plantOptions = plantEquipments.map(eq => eq.name);
+
+  // PD Mixer 이름 드롭다운 (pdMixer1Name ~ pdMixer4Name)
+  const pdMixerNameFields = mixerOptions.length > 0
+    ? Object.fromEntries(
+        ['pdMixer1Name', 'pdMixer2Name', 'pdMixer3Name', 'pdMixer4Name'].map(field => [field, mixerOptions])
+      )
+    : {};
 
   // 자재투입정보 구분 드롭다운 (material1~material6)
   const materialNameFields = materialCategories.length > 0
@@ -161,6 +185,7 @@ export default function SlurryRegister() {
   const slurrySelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+    ...pdMixerNameFields,
     ...materialNameFields,
     ...materialLotFields,
     ...binderSolutionLotField,
