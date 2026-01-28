@@ -7,7 +7,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { createVdWorklog } from './VdService';
+import { createVdWorklog } from '../../../../../api/project/worklog';
 import type { VdWorklogPayload } from './VdTypes';
 import { VD_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';

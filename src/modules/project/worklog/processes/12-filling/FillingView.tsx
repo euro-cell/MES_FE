@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
-import { getFillingWorklog } from './FillingService';
+import { getFillingWorklog } from '../../../../../api/project/worklog';
 import type { FillingWorklog } from './FillingTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 

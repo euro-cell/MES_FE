@@ -10,7 +10,7 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
-import { createBinderWorklog } from './BinderService';
+import { createBinderWorklog } from '../../../../../api/project/worklog';
 import type { BinderWorklogPayload } from './BinderTypes';
 import { getMixerEquipments } from '../../../../plant/register/EquipmentService';
 import type { Equipment } from '../../../../plant/register/EquipmentTypes';

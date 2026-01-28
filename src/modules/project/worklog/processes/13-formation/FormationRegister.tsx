@@ -9,7 +9,7 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { FORMATION_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
-import { createFormationWorklog } from './FormationService';
+import { createFormationWorklog } from '../../../../../api/project/worklog';
 import type { FormationWorklogPayload } from './FormationTypes';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';

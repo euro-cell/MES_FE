@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styles from '../../../styles/project/plan/PlanRegister.module.css';
-import { getProductionPlan, updateProductionPlan } from './PlanService';
+import { getProductionPlan, updateProductionPlan } from '../../../api/project/plan';
 import type { PlanPayload } from './PlanTypes';
 import DateInput from '../../../components/DateInput';
 

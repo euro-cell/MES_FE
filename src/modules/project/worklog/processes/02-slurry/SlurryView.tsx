@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
-import { getSlurryWorklog } from './SlurryService';
+import { getSlurryWorklog } from '../../../../../api/project/worklog';
 import type { SlurryWorklog } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS } from './slurryConstants';
 import styles from '../../../../../styles/project/worklog/common.module.css';

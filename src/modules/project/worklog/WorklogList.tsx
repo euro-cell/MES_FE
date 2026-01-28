@@ -2,24 +2,40 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/project/worklog/WorklogList.module.css';
 import TooltipButton from '../../../components/TooltipButton';
-import { getWorklogs } from './WorklogService';
 import type { WorklogEntry } from './WorklogTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
-import { getBinderWorklogs, deleteBinderWorklog } from './processes/01-binder/BinderService';
-import { getSlurryWorklogs, deleteSlurryWorklog } from './processes/02-slurry/SlurryService';
-import { getCoatingWorklogs, deleteCoatingWorklog } from './processes/03-coating/CoatingService';
-import { getPressWorklogs, deletePressWorklog } from './processes/04-press/PressService';
-import { getNotchingWorklogs, deleteNotchingWorklog } from './processes/06-notching/NotchingService';
-import { getVdWorklogs, deleteVdWorklog } from './processes/07-vd/VdService';
-import { getFormingWorklogs, deleteFormingWorklog } from './processes/08-forming/FormingService';
-import { getStackingWorklogs, deleteStackingWorklog } from './processes/09-stacking/StackingService';
-import { getWeldingWorklogs, deleteWeldingWorklog } from './processes/10-welding/WeldingService';
-import { getSealingWorklogs, deleteSealingWorklog } from './processes/11-sealing/SealingService';
-import { getFillingWorklogs, deleteFillingWorklog } from './processes/12-filling/FillingService';
-import { getFormationWorklogs, deleteFormationWorklog } from './processes/13-formation/FormationService';
-import { getGradingWorklogs, deleteGradingWorklog } from './processes/14-grading/GradingService';
-import { getInspectionWorklogs, deleteInspectionWorklog } from './processes/15-inspection/InspectionService';
+import {
+  getWorklogs,
+  getBinderWorklogs,
+  deleteBinderWorklog,
+  getSlurryWorklogs,
+  deleteSlurryWorklog,
+  getCoatingWorklogs,
+  deleteCoatingWorklog,
+  getPressWorklogs,
+  deletePressWorklog,
+  getNotchingWorklogs,
+  deleteNotchingWorklog,
+  getVdWorklogs,
+  deleteVdWorklog,
+  getFormingWorklogs,
+  deleteFormingWorklog,
+  getStackingWorklogs,
+  deleteStackingWorklog,
+  getWeldingWorklogs,
+  deleteWeldingWorklog,
+  getSealingWorklogs,
+  deleteSealingWorklog,
+  getFillingWorklogs,
+  deleteFillingWorklog,
+  getFormationWorklogs,
+  deleteFormationWorklog,
+  getGradingWorklogs,
+  deleteGradingWorklog,
+  getInspectionWorklogs,
+  deleteInspectionWorklog,
+} from '../../../api/project/worklog';
 
 interface WorklogListProps {
   projectId: number;

@@ -9,7 +9,7 @@ import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { SLURRY_NUMERIC_FIELDS } from '../../shared/numericFields';
-import { createSlurryWorklog } from './SlurryService';
+import { createSlurryWorklog } from '../../../../../api/project/worklog';
 import type { SlurryWorklogPayload } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS, SLURRY_READONLY_FIELDS } from './slurryConstants';
 import type { CategoryLabel } from '../../shared/processCategories';

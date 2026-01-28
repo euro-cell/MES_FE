@@ -5,7 +5,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
-import { getVdWorklog, updateVdWorklog } from './VdService';
+import { getVdWorklog, updateVdWorklog } from '../../../../../api/project/worklog';
 import type { VdWorklog, VdWorklogPayload } from './VdTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 import { VD_NUMERIC_FIELDS } from '../../shared/numericFields';

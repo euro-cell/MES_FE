@@ -11,11 +11,14 @@ import type {
   SealingData,
   FormationData,
   SyncStatus,
-} from '../LotTypes';
+} from '../../modules/project/lot/LotTypes';
+import type { LotSearchResult } from '../../modules/project/lot/search/LotSearchTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-// 프로젝트 목록 조회
+// ============ Lot 관리 API ============
+
+/** 프로젝트 목록 조회 */
 export async function getLotProjects(): Promise<LotProject[]> {
   try {
     const response = await axios.get(`${API_BASE}/production`, {
@@ -33,7 +36,7 @@ export async function getLotProjects(): Promise<LotProject[]> {
   }
 }
 
-// 프로젝트 정보 조회
+/** 프로젝트 정보 조회 */
 export async function getProjectInfo(projectId: number): Promise<LotProject | null> {
   try {
     const projects = await getLotProjects();
@@ -44,7 +47,7 @@ export async function getProjectInfo(projectId: number): Promise<LotProject | nu
   }
 }
 
-// Lot 데이터 동기화
+/** Lot 데이터 동기화 */
 export async function syncLotData(projectId: number, process: string): Promise<void> {
   try {
     await axios.post(`${API_BASE}/production/${projectId}/lot/sync`, null, {
@@ -57,7 +60,7 @@ export async function syncLotData(projectId: number, process: string): Promise<v
   }
 }
 
-// Sync 상태 조회
+/** Sync 상태 조회 */
 export async function getSyncStatus(projectId: number, process: string): Promise<SyncStatus | null> {
   try {
     const response = await axios.get(`${API_BASE}/production/${projectId}/lot/sync`, {
@@ -71,7 +74,7 @@ export async function getSyncStatus(projectId: number, process: string): Promise
   }
 }
 
-// Mixing 데이터 조회
+/** Mixing 데이터 조회 */
 export async function getMixingData(projectId: number): Promise<MixingData[]> {
   try {
     const response = await axios.get(`${API_BASE}/production/${projectId}/lot/mixing`, {
@@ -84,7 +87,7 @@ export async function getMixingData(projectId: number): Promise<MixingData[]> {
   }
 }
 
-// Coating 데이터 조회
+/** Coating 데이터 조회 */
 export async function getCoatingData(projectId: number): Promise<CoatingData[]> {
   try {
     const response = await axios.get(`${API_BASE}/production/${projectId}/lot/coating`, {
@@ -97,7 +100,7 @@ export async function getCoatingData(projectId: number): Promise<CoatingData[]> 
   }
 }
 
-// Calendering 데이터 조회
+/** Calendering 데이터 조회 */
 export async function getCalenderingData(projectId: number): Promise<CalenderingData[]> {
   try {
     const response = await axios.get(`${API_BASE}/production/${projectId}/lot/calendering`, {
@@ -110,7 +113,7 @@ export async function getCalenderingData(projectId: number): Promise<Calendering
   }
 }
 
-// Slitting 데이터 조회 (목데이터)
+/** Slitting 데이터 조회 (목데이터) */
 export async function getSlittingData(projectId: number): Promise<SlittingData[]> {
   console.log('Slitting 데이터 조회 - projectId:', projectId);
 
@@ -149,7 +152,7 @@ export async function getSlittingData(projectId: number): Promise<SlittingData[]
   ];
 }
 
-// Notching 데이터 조회
+/** Notching 데이터 조회 */
 export async function getNotchingData(projectId: number): Promise<NotchingData[]> {
   try {
     const response = await axios.get(`${API_BASE}/production/${projectId}/lot/notching`, {
@@ -162,7 +165,7 @@ export async function getNotchingData(projectId: number): Promise<NotchingData[]
   }
 }
 
-// Stacking 데이터 조회
+/** Stacking 데이터 조회 */
 export async function getStackingData(projectId: number): Promise<StackingData[]> {
   try {
     const response = await axios.get(`${API_BASE}/production/${projectId}/lot/stacking`, {
@@ -175,7 +178,7 @@ export async function getStackingData(projectId: number): Promise<StackingData[]
   }
 }
 
-// Welding 데이터 조회
+/** Welding 데이터 조회 */
 export async function getWeldingData(projectId: number): Promise<WeldingData[]> {
   try {
     const response = await axios.get(`${API_BASE}/production/${projectId}/lot/welding`, {
@@ -188,7 +191,7 @@ export async function getWeldingData(projectId: number): Promise<WeldingData[]> 
   }
 }
 
-// Sealing/Filling 데이터 조회
+/** Sealing/Filling 데이터 조회 */
 export async function getSealingData(projectId: number): Promise<SealingData[]> {
   try {
     const response = await axios.get(`${API_BASE}/production/${projectId}/lot/sealing`, {
@@ -201,7 +204,7 @@ export async function getSealingData(projectId: number): Promise<SealingData[]> 
   }
 }
 
-// Formation 데이터 조회
+/** Formation 데이터 조회 */
 export async function getFormationData(projectId: number): Promise<FormationData[]> {
   try {
     const response = await axios.get(`${API_BASE}/production/${projectId}/lot/formation`, {
@@ -214,7 +217,7 @@ export async function getFormationData(projectId: number): Promise<FormationData
   }
 }
 
-// RawData 등록 응답 타입
+/** RawData 등록 응답 타입 */
 export interface RegisterRawDataResponse {
   success: boolean;
   message: string;
@@ -226,7 +229,7 @@ export interface RegisterRawDataResponse {
   };
 }
 
-// RawData 등록
+/** RawData 등록 */
 export async function registerRawData(
   projectId: number,
   headers: string[],
@@ -271,4 +274,20 @@ export async function downloadLotExcel(projectId: number, projectName: string): 
   link.click();
   document.body.removeChild(link);
   window.URL.revokeObjectURL(url);
+}
+
+// ============ Lot 검색 API ============
+
+/** 셀 Lot으로 통합 검색 */
+export async function searchLot(cellLotNumber: string): Promise<LotSearchResult | null> {
+  try {
+    const response = await axios.get(`${API_BASE}/production/lot/search`, {
+      params: { lot: cellLotNumber },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Lot 검색 실패:', error);
+    return null;
+  }
 }

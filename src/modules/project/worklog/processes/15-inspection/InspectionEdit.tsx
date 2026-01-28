@@ -6,7 +6,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getInspectionWorklog, updateInspectionWorklog } from './InspectionService';
+import { getInspectionWorklog, updateInspectionWorklog } from '../../../../../api/project/worklog';
 import type { InspectionWorklog, InspectionWorklogPayload } from './InspectionTypes';
 import { INSPECTION_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';

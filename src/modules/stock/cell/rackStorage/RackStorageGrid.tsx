@@ -31,7 +31,7 @@ export default function RackStorageGrid({ locations }: RackStorageGridProps) {
     if (!location) return null;
 
     const bgColor = getUsageColor(location.usage);
-    const textColor = getTextColor(location.usage);
+    const textColor = getTextColor();
 
     return (
       <div

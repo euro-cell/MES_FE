@@ -2,7 +2,7 @@ import { useState } from 'react';
 import SearchInput from './components/SearchInput';
 import ProcessLotTable from './components/ProcessLotTable';
 import RawMaterialLotTable from './components/RawMaterialLotTable';
-import { searchLot } from './LotSearchService';
+import { searchLot } from '../../../../api/project/lot';
 import type { LotSearchResult } from './LotSearchTypes';
 import styles from '../../../../styles/project/lot/LotSearchPage.module.css';
 

@@ -7,7 +7,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { createNotchingWorklog } from './NotchingService';
+import { createNotchingWorklog } from '../../../../../api/project/worklog';
 import type { NotchingWorklogPayload } from './NotchingTypes';
 import { NOTCHING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';

@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import styles from '../../../styles/project/plan/PlanRegister.module.css';
-import { savePlan } from './PlanService';
+import { savePlan } from '../../../api/project/plan';
 import type { PlanPayload } from './PlanTypes';
 import DateInput from '../../../components/DateInput';
 

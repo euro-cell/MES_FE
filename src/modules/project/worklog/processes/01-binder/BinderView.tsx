@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
-import { getBinderWorklog } from './BinderService';
+import { getBinderWorklog } from '../../../../../api/project/worklog';
 import type { BinderWorklog } from './BinderTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 

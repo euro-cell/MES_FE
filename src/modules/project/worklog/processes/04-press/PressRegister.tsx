@@ -7,7 +7,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { createPressWorklog } from './PressService';
+import { createPressWorklog } from '../../../../../api/project/worklog';
 import type { PressWorklogPayload } from './PressTypes';
 import { PRESS_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';

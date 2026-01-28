@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/project/worklog/WorklogProjectList.module.css';
-import { getProjects } from './WorklogService';
+import { getProjects } from '../../../api/project/worklog';
 import type { WorklogProject } from './WorklogTypes';
 
 export default function WorklogProjectList() {

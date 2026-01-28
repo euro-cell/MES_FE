@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getProductionPlan } from './PlanService';
+import { getProductionPlan } from '../../../api/project/plan';
 import { exportPlanToStyledExcel } from './exportExcel';
 import styles from '../../../styles/project/plan/PlanView.module.css';
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/project/plan/PlanList.module.css';
-import { getPlanProjects, deleteProductionPlan } from './PlanService';
+import { getPlanProjects, deleteProductionPlan } from '../../../api/project/plan';
 import type { PlanProject } from './PlanTypes';
 import TooltipButton from '../../../components/TooltipButton';
 

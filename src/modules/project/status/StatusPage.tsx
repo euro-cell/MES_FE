@@ -8,7 +8,7 @@ import {
   getRealMonthlyData,
   getProductionStatusInfo,
   updateTargetQuantity,
-} from './StatusService';
+} from '../../../api/project/status';
 import { exportStatusToExcel } from './exportStatusExcel';
 import { parseMonthParam } from './utils/dateUtils';
 import type { MonthlyStatusData, ProductionStatusInfo } from './StatusTypes';

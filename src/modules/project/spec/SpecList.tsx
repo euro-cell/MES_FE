@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { deleteSpecification, getSpecificationSummary } from './specification/SpecService';
+import { deleteSpecification, getSpecificationSummary, deleteProductionMaterial } from '../../../api/project/spec';
 import TooltipButton from '../../../components/TooltipButton';
 import styles from '../../../styles/project/spec/specList.module.css';
-import { deleteProductionMaterial } from './material/MaterialService';
 
 interface SpecItem {
   id: number;

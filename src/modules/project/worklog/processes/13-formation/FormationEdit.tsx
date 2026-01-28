@@ -6,7 +6,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getFormationWorklog, updateFormationWorklog } from './FormationService';
+import { getFormationWorklog, updateFormationWorklog } from '../../../../../api/project/worklog';
 import type { FormationWorklog, FormationWorklogPayload } from './FormationTypes';
 import { FORMATION_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';

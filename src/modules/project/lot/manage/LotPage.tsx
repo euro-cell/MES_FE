@@ -15,7 +15,7 @@ import {
   getFormationData,
   syncLotData,
   getSyncStatus,
-} from './LotService';
+} from '../../../../api/project/lot';
 import type {
   LotProject,
   MixingData,
@@ -157,7 +157,7 @@ export default function LotPage() {
 
     setIsDownloading(true);
     try {
-      const { downloadLotExcel } = await import('./LotService');
+      const { downloadLotExcel } = await import('../../../../api/project/lot');
       await downloadLotExcel(Number(projectId), projectInfo?.name || '');
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);

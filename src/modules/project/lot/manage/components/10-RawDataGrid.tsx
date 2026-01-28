@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import ExcelJS from 'exceljs';
 import styles from '../../../../../styles/project/lot/10-RawDataGrid.module.css';
-import { registerRawData } from '../LotService';
+import { registerRawData } from '../../../../../api/project/lot';
 
 // 컬럼 타입 판별
 type ColumnType = 'percent' | 'capacity' | 'voltage' | 'default';

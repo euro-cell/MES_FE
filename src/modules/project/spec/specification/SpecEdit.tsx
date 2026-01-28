@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getSpecificationByProject, updateSpecification } from './SpecService';
+import { getSpecificationByProject, updateSpecification } from '../../../../api/project/spec';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
 import SpecSectionCathode from './sections/SpecSectionCathode';

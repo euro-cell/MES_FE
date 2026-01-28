@@ -6,7 +6,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getCoatingWorklog, updateCoatingWorklog } from './CoatingService';
+import { getCoatingWorklog, updateCoatingWorklog } from '../../../../../api/project/worklog';
 import type { CoatingWorklog, CoatingWorklogPayload } from './CoatingTypes';
 import { COATING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';

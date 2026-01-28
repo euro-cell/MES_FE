@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getSpecificationByProject } from './SpecService';
-import { getMaterialsByProduction } from '../material/MaterialService';
+import { getSpecificationByProject, getMaterialsByProduction } from '../../../../api/project/spec';
 import { exportSpecToExcel } from './exportExcel';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';

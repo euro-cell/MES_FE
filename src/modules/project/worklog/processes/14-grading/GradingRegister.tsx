@@ -9,7 +9,7 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { GRADING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
-import { createGradingWorklog } from './GradingService';
+import { createGradingWorklog } from '../../../../../api/project/worklog';
 import type { GradingWorklogPayload } from './GradingTypes';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';

@@ -9,7 +9,7 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { STACKING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
-import { createStackingWorklog } from './StackingService';
+import { createStackingWorklog } from '../../../../../api/project/worklog';
 import type { StackingWorklogPayload } from './StackingTypes';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';

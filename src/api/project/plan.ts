@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { PlanProject, PlanPayload } from './PlanTypes';
+import type { PlanProject, PlanPayload } from '../../modules/project/plan/PlanTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -17,7 +17,7 @@ export const savePlan = async (projectId: number, payload: PlanPayload) => {
   return res.data;
 };
 
-/** 생산계획 삭제 */
+/** 생산계획 삭제 (프로젝트 삭제) */
 export const deleteProject = async (id: number): Promise<void> => {
   await axios.delete(`${API_BASE}/production/${id}`, { withCredentials: true });
 };

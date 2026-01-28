@@ -7,7 +7,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { createFormingWorklog } from './FormingService';
+import { createFormingWorklog } from '../../../../../api/project/worklog';
 import type { FormingWorklogPayload } from './FormingTypes';
 import { FORMING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';

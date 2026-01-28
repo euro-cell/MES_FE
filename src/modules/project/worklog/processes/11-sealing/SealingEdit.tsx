@@ -6,7 +6,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getSealingWorklog, updateSealingWorklog } from './SealingService';
+import { getSealingWorklog, updateSealingWorklog } from '../../../../../api/project/worklog';
 import type { SealingWorklog, SealingWorklogPayload } from './SealingTypes';
 import { SEALING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';

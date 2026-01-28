@@ -6,7 +6,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getPressWorklog, updatePressWorklog } from './PressService';
+import { getPressWorklog, updatePressWorklog } from '../../../../../api/project/worklog';
 import type { PressWorklog, PressWorklogPayload } from './PressTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 import { PRESS_NUMERIC_FIELDS } from '../../shared/numericFields';

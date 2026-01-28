@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { createSpecification } from './SpecService';
+import { createSpecification } from '../../../../api/project/spec';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
 import SpecSectionCathode from './sections/SpecSectionCathode';

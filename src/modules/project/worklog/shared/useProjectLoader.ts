@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getProject } from '../WorklogService';
+import { getProject } from '../../../../api/project/worklog';
 import type { WorklogProject } from '../WorklogTypes';
 
 /**

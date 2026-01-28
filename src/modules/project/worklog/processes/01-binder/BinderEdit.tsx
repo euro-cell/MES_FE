@@ -7,7 +7,7 @@ import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getBinderWorklog, updateBinderWorklog } from './BinderService';
+import { getBinderWorklog, updateBinderWorklog } from '../../../../../api/project/worklog';
 import type { BinderWorklog, BinderWorklogPayload } from './BinderTypes';
 import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';

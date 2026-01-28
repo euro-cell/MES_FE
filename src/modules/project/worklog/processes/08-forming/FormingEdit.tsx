@@ -5,7 +5,7 @@ import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
-import { getFormingWorklog, updateFormingWorklog } from './FormingService';
+import { getFormingWorklog, updateFormingWorklog } from '../../../../../api/project/worklog';
 import type { FormingWorklog, FormingWorklogPayload } from './FormingTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 import { FORMING_NUMERIC_FIELDS } from '../../shared/numericFields';

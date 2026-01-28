@@ -6,7 +6,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getNotchingWorklog, updateNotchingWorklog } from './NotchingService';
+import { getNotchingWorklog, updateNotchingWorklog } from '../../../../../api/project/worklog';
 import type { NotchingWorklog, NotchingWorklogPayload } from './NotchingTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 import { NOTCHING_NUMERIC_FIELDS } from '../../shared/numericFields';

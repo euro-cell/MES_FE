@@ -6,7 +6,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getFillingWorklog, updateFillingWorklog } from './FillingService';
+import { getFillingWorklog, updateFillingWorklog } from '../../../../../api/project/worklog';
 import type { FillingWorklog, FillingWorklogPayload } from './FillingTypes';
 import { FILLING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';

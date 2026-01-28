@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from '../../../../styles/project/spec/materialNew.module.css';
-import {
-  getMaterialCategories,
-  getMaterialsByCategory,
-  getMaterialsByProduction,
-  updateProductionMaterial,
-} from './MaterialService';
+import { getMaterialCategories, getMaterialsByCategory } from '../../../../api/material';
+import { getMaterialsByProduction, updateProductionMaterial } from '../../../../api/project/spec';
 
 export interface Row {
   id: number;

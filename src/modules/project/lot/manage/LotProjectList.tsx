@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../../styles/project/lot/LotProjectList.module.css';
-import { getLotProjects } from './LotService';
+import { getLotProjects } from '../../../../api/project/lot';
 import type { LotProject } from '../LotTypes';
 
 export default function LotProjectList() {

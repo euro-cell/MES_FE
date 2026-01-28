@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getMaterialCategories } from '../../spec/material/MaterialService';
+import { getMaterialCategories } from '../../../../api/material';
 
 /**
  * 자재 카테고리 목록을 로드하는 커스텀 훅

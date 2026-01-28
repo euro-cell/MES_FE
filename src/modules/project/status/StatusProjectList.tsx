@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/project/status/StatusProjectList.module.css';
-import { getStatusProjects } from './StatusService';
+import { getStatusProjects } from '../../../api/project/status';
 import type { StatusProject } from './StatusTypes';
 
 export default function StatusProjectList() {

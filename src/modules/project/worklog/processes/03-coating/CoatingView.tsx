@@ -3,9 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import ExcelRenderer from '../../shared/ExcelRenderer';
-import { getCoatingWorklog } from './CoatingService';
+import { getCoatingWorklog, getProject } from '../../../../../api/project/worklog';
 import type { CoatingWorklog } from './CoatingTypes';
-import { getProject } from '../../WorklogService';
 import type { WorklogProject } from '../../WorklogTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 

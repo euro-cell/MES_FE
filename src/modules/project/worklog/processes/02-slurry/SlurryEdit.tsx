@@ -7,7 +7,7 @@ import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getSlurryWorklog, updateSlurryWorklog } from './SlurryService';
+import { getSlurryWorklog, updateSlurryWorklog } from '../../../../../api/project/worklog';
 import type { SlurryWorklog, SlurryWorklogPayload } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS, SLURRY_READONLY_FIELDS } from './slurryConstants';
 import { SLURRY_NUMERIC_FIELDS } from '../../shared/numericFields';

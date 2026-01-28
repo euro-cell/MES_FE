@@ -3,7 +3,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import WorklogList from './WorklogList';
 import { createCategoryMenus, createProcessMenus, getProcessById } from './processConfig';
-import { getPlanProjects } from '../plan/PlanService';
+import { getPlanProjects } from '../../../api/project/plan';
 import type { PlanProject } from '../plan/PlanTypes';
 import styles from '../../../styles/project/worklog/WorklogPage.module.css';
 

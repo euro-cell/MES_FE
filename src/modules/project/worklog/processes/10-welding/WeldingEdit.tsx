@@ -6,7 +6,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getWeldingWorklog, updateWeldingWorklog } from './WeldingService';
+import { getWeldingWorklog, updateWeldingWorklog } from '../../../../../api/project/worklog';
 import type { WeldingWorklog, WeldingWorklogPayload } from './WeldingTypes';
 import { WELDING_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
