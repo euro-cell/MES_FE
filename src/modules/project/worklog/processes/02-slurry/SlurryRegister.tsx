@@ -85,6 +85,23 @@ export default function SlurryRegister() {
         }
       }
 
+      // pdMixer1Input1 자동계산: binderSolutionPlannedInput * (pdMixer1InputRate1 / 100)
+      if (rangeName === 'binderSolutionPlannedInput' || rangeName === 'pdMixer1InputRate1') {
+        const plannedInput = parseFloat(newValues.binderSolutionPlannedInput);
+        const inputRate = parseFloat(newValues.pdMixer1InputRate1);
+        if (!isNaN(plannedInput) && !isNaN(inputRate)) {
+          newValues.pdMixer1Input1 = Number((plannedInput * inputRate / 100).toFixed(3));
+        }
+      }
+
+      // pdMixer1SolidContent1 자동계산: binderSolution 값 그대로
+      if (rangeName === 'binderSolution' || rangeName === 'pdMixer1Input1' || rangeName === 'binderSolutionLot') {
+        const binderSol = parseFloat(newValues.binderSolution);
+        if (!isNaN(binderSol)) {
+          newValues.pdMixer1SolidContent1 = binderSol;
+        }
+      }
+
       // 고형분 1-3 자동계산
       const solidContentGroups = [1, 2, 3];
       solidContentGroups.forEach(num => {
@@ -230,6 +247,7 @@ export default function SlurryRegister() {
           readOnlyFields={SLURRY_READONLY_FIELDS}
           selectFields={slurrySelectFields}
           dateFields={['manufactureDate']}
+          uppercaseFields={['lot']}
         />
       </div>
 

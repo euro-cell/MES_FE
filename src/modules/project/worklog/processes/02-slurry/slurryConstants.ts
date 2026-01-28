@@ -50,4 +50,6 @@ export const SLURRY_READONLY_FIELDS = [
   'solidContent1Percentage',
   'solidContent2Percentage',
   'solidContent3Percentage',
+  'pdMixer1Input1',
+  'pdMixer1SolidContent1',
 ];

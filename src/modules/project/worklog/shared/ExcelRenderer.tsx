@@ -1,5 +1,6 @@
 import { useMemo, useRef, useEffect } from 'react';
 import ExcelJS from 'exceljs';
+import toast from 'react-hot-toast';
 import { formatCellValue, isCellInMerge, type MergeRange, type NamedRangeInfo } from './excelUtils';
 import styles from '../../../../styles/project/worklog/ExcelRenderer.module.css';
 
@@ -71,6 +72,7 @@ interface ExcelRendererProps {
   readOnlyFields?: string[];
   selectFields?: Record<string, string[]>;
   placeholders?: Record<string, string>;
+  uppercaseFields?: string[]; // 대문자+숫자만 허용하는 필드
 }
 
 function decodeAddress(addr: string) {
@@ -246,6 +248,7 @@ export default function ExcelRenderer({
   readOnlyFields = [],
   selectFields = {},
   placeholders = {},
+  uppercaseFields = [],
 }: ExcelRendererProps) {
   const sheetData = useMemo((): SheetData | null => {
     if (!workbook) return null;
@@ -481,6 +484,29 @@ export default function ExcelRenderer({
                           onChange={e => handleInputChange(rangeName, e.target.value === '' ? '' : Number(e.target.value))}
                           placeholder={placeholders[rangeName] ?? '숫자 입력'}
                           step='any'
+                        />
+                      ) : uppercaseFields.includes(rangeName) ? (
+                        <input
+                          type='text'
+                          className={styles.cellInput}
+                          value={cellValues[rangeName] ?? ''}
+                          onChange={e => {
+                            const inputValue = e.target.value;
+                            // 한글 입력 감지
+                            if (/[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(inputValue)) {
+                              toast.error(
+                                <div>
+                                  영문 대문자와 숫자만 입력 가능합니다.
+                                  <br />
+                                  키보드를 영문으로 전환해 주세요.
+                                </div>
+                              );
+                            }
+                            // 대문자와 숫자만 허용
+                            const filtered = inputValue.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                            handleInputChange(rangeName, filtered);
+                          }}
+                          placeholder={placeholders[rangeName] ?? 'LOT 입력 (영문+숫자)'}
                         />
                       ) : (
                         <input
