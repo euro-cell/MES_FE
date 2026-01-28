@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/plant/Equipment.module.css';
-import { getEquipments, deleteEquipment } from './EquipmentService';
+import { getEquipments, deleteEquipment } from '../../../api/plant/EquipmentService';
 import type { Equipment, EquipmentCategory } from './EquipmentTypes';
 
 interface Props {
@@ -58,7 +58,7 @@ export default function EquipmentList({ category }: Props) {
 
   const handleDownload = async () => {
     try {
-      const { downloadEquipmentExcel } = await import('./EquipmentService');
+      const { downloadEquipmentExcel } = await import('../../../api/plant/EquipmentService');
       await downloadEquipmentExcel(category);
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);

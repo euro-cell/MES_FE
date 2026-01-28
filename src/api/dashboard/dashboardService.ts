@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { DashboardProject, DashboardProjectPlan, ProductionProgressResponse, DashboardSummaryItem } from './types';
+import type { DashboardProject, DashboardProjectPlan, ProductionProgressResponse, DashboardSummaryItem } from '../../modules/dashboard/types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 

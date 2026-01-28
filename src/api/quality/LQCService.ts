@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { LQCProject } from './LQCTypes';
+import type { LQCProject } from '../../modules/quality/lqc/LQCTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 

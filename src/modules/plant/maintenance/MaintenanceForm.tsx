@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from '../../../styles/plant/Equipment.module.css';
-import { createMaintenanceRecord, updateMaintenanceRecord } from './MaintenanceService';
-import { getEquipments } from '../register/EquipmentService';
+import { createMaintenanceRecord, updateMaintenanceRecord } from '../../../api/plant/MaintenanceService';
+import { getEquipments } from '../../../api/plant/EquipmentService';
 import type { MaintenanceRecord, MaintenancePayload } from './MaintenanceTypes';
 import type { Equipment } from '../register/EquipmentTypes';
 

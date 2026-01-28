@@ -16,7 +16,7 @@ import {
   updateCellInventoryRestock,
   fetchCellInventoryStatistics,
   fetchStorageUsage,
-} from './InOutService';
+} from '../../../../api/stock/InOutService';
 import styles from '../../../../styles/stock/cell/InOut.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;

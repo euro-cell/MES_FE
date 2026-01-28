@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { OQCProject } from './OQCTypes';
+import type { OQCProject } from '../../modules/quality/oqc/OQCTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 

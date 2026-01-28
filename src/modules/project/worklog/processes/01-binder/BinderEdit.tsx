@@ -12,7 +12,7 @@ import { getBinderWorklog, updateBinderWorklog } from '../../../../../api/projec
 import type { BinderWorklog, BinderWorklogPayload } from './BinderTypes';
 import { BINDER_NUMERIC_FIELDS, BINDER_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
-import { getMixerEquipments } from '../../../../plant/register/EquipmentService';
+import { getMixerEquipments } from '../../../../../api/plant/EquipmentService';
 import type { Equipment } from '../../../../plant/register/EquipmentTypes';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';

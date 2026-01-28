@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import styles from '../../styles/draw/Drawing.module.css';
-import { getDrawings, deleteDrawing } from './DrawService';
+import { getDrawings, deleteDrawing } from '../../api/draw/DrawService';
 import type { DrawingListItem, DrawingCategory } from './DrawTypes';
 import TooltipButton from '../../components/TooltipButton';
 import DrawingRegisterModal from './DrawingRegisterModal';

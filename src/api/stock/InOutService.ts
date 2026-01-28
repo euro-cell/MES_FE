@@ -4,7 +4,7 @@ import type {
   CellInventoryResponse,
   CellInventoryStatisticsResponse,
   StorageUsageResponse,
-} from './types';
+} from '../../modules/stock/cell/inOut/types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 

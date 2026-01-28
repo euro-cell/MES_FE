@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import styles from '../../styles/draw/Drawing.module.css';
-import { updateDrawing } from './DrawService';
+import { updateDrawing } from '../../api/draw/DrawService';
 import type { DrawingCategory, DrawingListItem, DrawingUpdatePayload } from './DrawTypes';
 
 const CATEGORY_OPTIONS: DrawingCategory[] = ['공장', '설비', '제품', 'OEM/ODM'];

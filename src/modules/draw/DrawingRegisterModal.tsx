@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import styles from '../../styles/draw/Drawing.module.css';
-import { createDrawing } from './DrawService';
+import { createDrawing } from '../../api/draw/DrawService';
 import type { DrawingCategory, DrawingCreatePayload } from './DrawTypes';
 
 const CATEGORY_OPTIONS: DrawingCategory[] = ['공장', '설비', '제품', 'OEM/ODM'];

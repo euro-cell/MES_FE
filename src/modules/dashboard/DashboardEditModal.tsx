@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { DashboardProject, DashboardFormState } from './types';
-import { updateProduction } from './dashboardService';
+import { updateProduction } from '../../api/dashboard/dashboardService';
 import styles from '../../styles/dashboard/modal.module.css';
 
 interface Props {

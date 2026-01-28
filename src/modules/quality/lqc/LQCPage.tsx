@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/quality/lqc/LQCPage.module.css';
-import { getLQCProject } from './LQCService';
+import { getLQCProject } from '../../../api/quality/LQCService';
 import { createCategoryMenus, createProcessMenus } from './processConfig';
 import MixingCathodeTable from './components/MixingCathodeTable';
 import MixingAnodeTable from './components/MixingAnodeTable';

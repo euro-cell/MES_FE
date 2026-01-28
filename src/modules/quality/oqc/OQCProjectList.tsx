@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/quality/oqc/OQCProjectList.module.css';
-import { getOQCProjects } from './OQCService';
+import { getOQCProjects } from '../../../api/quality/OQCService';
 import type { OQCProject } from './OQCTypes';
 
 export default function OQCProjectList() {

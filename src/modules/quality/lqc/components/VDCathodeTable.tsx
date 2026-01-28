@@ -17,7 +17,7 @@ import {
   getLQCVDData,
   type SpecValue,
   type VDData,
-} from '../LQCService';
+} from '../../../../api/quality/LQCService';
 
 // Chart.js 등록
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);

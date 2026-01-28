@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from '../../../styles/plant/Equipment.module.css';
-import { createEquipment, updateEquipment } from './EquipmentService';
+import { createEquipment, updateEquipment } from '../../../api/plant/EquipmentService';
 import type { Equipment, EquipmentCategory, EquipmentPayload, EquipmentProcess } from './EquipmentTypes';
 
 const CATEGORY_LABELS: Record<EquipmentCategory, string> = {

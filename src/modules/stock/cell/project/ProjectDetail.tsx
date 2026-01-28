@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import ProjectTable from './ProjectTable';
-import { fetchCellInventoryByProject, type CellInventoryDetail } from './ProjectService';
+import { fetchCellInventoryByProject, type CellInventoryDetail } from '../../../../api/stock/ProjectService';
 
 export default function ProjectDetail() {
   const { projectName } = useParams<{ projectName: string }>();

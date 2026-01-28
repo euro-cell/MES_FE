@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/quality/oqc/OQCPage.module.css';
-import { getOQCProject } from './OQCService';
+import { getOQCProject } from '../../../api/quality/OQCService';
 import { createOQCMenus } from './menuConfig';
 import SummaryTable from './components/SummaryTable';
 import type { OQCProject } from './OQCTypes';

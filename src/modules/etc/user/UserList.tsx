@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getUsers, deleteUser, toggleUserActive } from './userService';
-import type { User } from './userService';
+import { getUsers, deleteUser, toggleUserActive } from '../../../api/etc/userService';
+import type { User } from '../../../api/etc/userService';
 import { ROLE_LABELS } from './userRoleMap';
 import UserForm from './UserForm';
 import styles from '../../../styles/etc/users.module.css';

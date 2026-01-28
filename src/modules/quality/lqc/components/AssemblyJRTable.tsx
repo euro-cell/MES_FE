@@ -7,7 +7,7 @@ import {
   getLQCAssemblyJRData,
   type SpecValue,
   type AssemblyJRData,
-} from '../LQCService';
+} from '../../../../api/quality/LQCService';
 
 interface AssemblyJRTableProps {
   projectId: number;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { DashboardProject } from './types';
-import { deleteProduction } from './dashboardService';
+import { deleteProduction } from '../../api/dashboard/dashboardService';
 import styles from '../../styles/dashboard/modal.module.css';
 
 interface Props {

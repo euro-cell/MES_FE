@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getLineEquipments } from '../../../plant/register/EquipmentService';
+import { getLineEquipments } from '../../../../api/plant/EquipmentService';
 import type { Equipment } from '../../../plant/register/EquipmentTypes';
 import { LABEL_CATEGORY_MAP, type CategoryLabel } from './processCategories';
 

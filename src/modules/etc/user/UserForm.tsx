@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { createUser, updateUser } from './userService';
-import type { User } from './userService';
+import { createUser, updateUser } from '../../../api/etc/userService';
+import type { User } from '../../../api/etc/userService';
 import { ROLE_LABELS } from './userRoleMap';
 import styles from '../../../styles/etc/users.module.css';
 

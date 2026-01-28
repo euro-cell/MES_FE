@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/quality/lqc/LQCProjectList.module.css';
-import { getLQCProjects } from './LQCService';
+import { getLQCProjects } from '../../../api/quality/LQCService';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCProjectList() {

@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
 import styles from '../../styles/draw/Drawing.module.css';
-import { getDrawingById, addVersion, updateVersion, deleteVersion } from './DrawService';
+import { getDrawingById, addVersion, updateVersion, deleteVersion } from '../../api/draw/DrawService';
 import type { Drawing, DrawingVersion } from './DrawTypes';
 import TooltipButton from '../../components/TooltipButton';
 import PdfViewer from '../../components/PdfViewer';

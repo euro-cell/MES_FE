@@ -15,7 +15,7 @@ const CELL_MENUS = [
 
 const handleDownload = async () => {
   try {
-    const { downloadCellExcel } = await import('./inOut/InOutService');
+    const { downloadCellExcel } = await import('../../../api/stock/InOutService');
     await downloadCellExcel();
   } catch (error) {
     console.error('엑셀 다운로드 실패:', error);

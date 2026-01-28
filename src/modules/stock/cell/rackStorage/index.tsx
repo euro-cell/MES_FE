@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import type { RackStorageData } from './types';
 import RackStorageGrid from './RackStorageGrid';
-import { fetchRackStorageData } from './RackStorageService';
+import { fetchRackStorageData } from '../../../../api/stock/RackStorageService';
 import styles from '../../../../styles/stock/cell/RackStorage.module.css';
 
 export default function RackStorageIndex() {

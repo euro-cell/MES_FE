@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Equipment, EquipmentPayload, EquipmentCategory } from './EquipmentTypes';
+import type { Equipment, EquipmentPayload, EquipmentCategory } from '../../modules/plant/register/EquipmentTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 

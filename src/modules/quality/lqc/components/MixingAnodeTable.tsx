@@ -21,7 +21,7 @@ import {
   type SpecValue,
   type BinderData,
   type SlurryData,
-} from '../LQCService';
+} from '../../../../api/quality/LQCService';
 
 interface MixingAnodeTableProps {
   projectId: number;

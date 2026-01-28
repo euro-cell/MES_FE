@@ -17,7 +17,7 @@ import {
   getLQCCoatingData,
   type SpecValue,
   type CoatingData,
-} from '../LQCService';
+} from '../../../../api/quality/LQCService';
 
 // Chart.js 등록
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);

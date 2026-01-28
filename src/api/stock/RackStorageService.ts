@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { RackLocation, RackStorageData } from './types';
+import type { RackLocation, RackStorageData } from '../../modules/stock/cell/rackStorage/types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 

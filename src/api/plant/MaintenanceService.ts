@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { MaintenanceRecord, MaintenancePayload } from './MaintenanceTypes';
+import type { MaintenanceRecord, MaintenancePayload } from '../../modules/plant/maintenance/MaintenanceTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 

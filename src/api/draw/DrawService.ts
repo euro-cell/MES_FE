@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Drawing, DrawingListItem, DrawingListParams, DrawingCreatePayload, DrawingUpdatePayload, VersionUpdatePayload } from './DrawTypes';
+import type { Drawing, DrawingListItem, DrawingListParams, DrawingCreatePayload, DrawingUpdatePayload, VersionUpdatePayload } from '../../modules/draw/DrawTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 

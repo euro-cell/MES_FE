@@ -8,7 +8,7 @@ import {
   type ValueGetterParams,
   type ValueFormatterParams,
 } from 'ag-grid-community';
-import type { CellInventoryDetail } from './ProjectService';
+import type { CellInventoryDetail } from '../../../../api/stock/ProjectService';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
