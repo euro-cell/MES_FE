@@ -11,6 +11,14 @@ interface Material {
   unit: string;
 }
 
+export interface MaterialLot {
+  id: number;
+  lot: string;
+  name: string;
+  receivedDate: string;
+  remainingQty: number;
+}
+
 /** 자재 카테고리 목록 조회 */
 export async function getMaterialCategories(): Promise<string[]> {
   const response = await axios.get(`${API_BASE}/material/categories`, {
@@ -23,6 +31,18 @@ export async function getMaterialCategories(): Promise<string[]> {
 export async function getMaterialsByCategory(category: string): Promise<Material[]> {
   const response = await axios.get(`${API_BASE}/material`, {
     params: { category },
+    withCredentials: true,
+  });
+  return response.data;
+}
+
+/** 카테고리별 자재 LOT 목록 조회 (재고 있는 LOT만, 선입선출 정렬) */
+export async function getMaterialLots(params?: {
+  category?: string;
+  materialId?: number;
+}): Promise<MaterialLot[]> {
+  const response = await axios.get(`${API_BASE}/material/lots`, {
+    params,
     withCredentials: true,
   });
   return response.data;

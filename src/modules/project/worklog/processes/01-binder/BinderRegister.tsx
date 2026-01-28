@@ -6,6 +6,7 @@ import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
 import { useMaterialCategories } from '../../shared/useMaterialCategories';
+import { useMaterialLots } from '../../shared/useMaterialLots';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { BINDER_NUMERIC_FIELDS } from '../../shared/numericFields';
@@ -31,6 +32,8 @@ export default function BinderRegister() {
   const { formValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
   const plantEquipments = useLineEquipmentLoader(formValues.line);
   const { categories: materialCategories } = useMaterialCategories();
+  const { lotOptions: material1LotOptions } = useMaterialLots(formValues.material1Name);
+  const { lotOptions: material2LotOptions } = useMaterialLots(formValues.material2Name);
 
   const [saving, setSaving] = useState(false);
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
@@ -111,6 +114,9 @@ export default function BinderRegister() {
       material1Name: materialCategories,
       material2Name: materialCategories,
     }),
+    // 자재투입정보 LOT 드롭다운 (카테고리 선택 시 연동)
+    ...(material1LotOptions.length > 0 && { material1Lot: material1LotOptions }),
+    ...(material2LotOptions.length > 0 && { material2Lot: material2LotOptions }),
   };
 
   return (

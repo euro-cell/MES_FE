@@ -5,6 +5,7 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useMaterialCategories } from '../../shared/useMaterialCategories';
+import { useMaterialLots } from '../../shared/useMaterialLots';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { getBinderWorklog, updateBinderWorklog } from '../../../../../api/project/worklog';
@@ -34,6 +35,8 @@ export default function BinderEdit() {
 
   const plantEquipments = useLineEquipmentLoader(formValues.line);
   const { categories: materialCategories } = useMaterialCategories();
+  const { lotOptions: material1LotOptions } = useMaterialLots(formValues.material1Name);
+  const { lotOptions: material2LotOptions } = useMaterialLots(formValues.material2Name);
 
   // Mixer 설비 목록 로드
   useEffect(() => {
@@ -152,6 +155,9 @@ export default function BinderEdit() {
             material1Name: materialCategories,
             material2Name: materialCategories,
           }),
+          // 자재투입정보 LOT 드롭다운 (카테고리 선택 시 연동)
+          ...(material1LotOptions.length > 0 && { material1Lot: material1LotOptions }),
+          ...(material2LotOptions.length > 0 && { material2Lot: material2LotOptions }),
         }
       : undefined;
 
