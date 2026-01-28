@@ -7,6 +7,7 @@ import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
 import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import { useMaterialLots } from '../../shared/useMaterialLots';
+import { useBinderLots } from '../../shared/useBinderLots';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { SLURRY_NUMERIC_FIELDS } from '../../shared/numericFields';
@@ -40,8 +41,8 @@ export default function SlurryRegister() {
   const { lotOptions: material4LotOptions } = useMaterialLots(formValues.material4Name);
   const { lotOptions: material5LotOptions } = useMaterialLots(formValues.material5Name);
   const { lotOptions: material6LotOptions } = useMaterialLots(formValues.material6Name);
-  // 바인더용액 LOT 목록 조회
-  const { lotOptions: binderSolutionLotOptions } = useMaterialLots('Binder');
+  // 바인더용액 LOT 목록 조회 (Binder 작업일지에서)
+  const { lotOptions: binderSolutionLotOptions, getLotSolidContent } = useBinderLots(projectId);
 
   const [saving, setSaving] = useState(false);
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
@@ -75,6 +76,14 @@ export default function SlurryRegister() {
   const handleCellChange = (rangeName: string, value: any) => {
     setFormValues(prev => {
       const newValues = { ...prev, [rangeName]: value };
+
+      // 바인더용액 LOT 선택 시 binderSolution 자동 입력
+      if (rangeName === 'binderSolutionLot' && value) {
+        const solidContent = getLotSolidContent(value);
+        if (solidContent !== null) {
+          newValues.binderSolution = solidContent;
+        }
+      }
 
       // 고형분 1-3 자동계산
       const solidContentGroups = [1, 2, 3];

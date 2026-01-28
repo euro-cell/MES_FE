@@ -73,6 +73,17 @@ export const deleteBinderWorklog = async (productionId: number, worklogId: numbe
   await axios.delete(`${API_BASE}/production/${productionId}/worklog/${worklogId}/binder`, { withCredentials: true });
 };
 
+/** Binder 작업일지 LOT 목록 조회 (Slurry에서 바인더용액 LOT 드롭다운용) */
+export interface BinderLot {
+  lotNumber: string;
+  solidContent: number;
+}
+
+export const getBinderLots = async (productionId: number): Promise<BinderLot[]> => {
+  const res = await axios.get<BinderLot[]>(`${API_BASE}/production/${productionId}/worklog/binder/lots`, { withCredentials: true });
+  return res.data;
+};
+
 // ============ Slurry API ============
 
 export const getSlurryTemplate = async (): Promise<ArrayBuffer> => {
