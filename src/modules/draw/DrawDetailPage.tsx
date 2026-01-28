@@ -83,11 +83,9 @@ export default function DrawDetailPage() {
   const allPdfFiles: PdfFile[] = useMemo(() => {
     const files: PdfFile[] = [];
     sortedVersions.forEach(ver => {
-      console.log('pdfFilePaths:', ver.pdfFilePaths);
       ver.pdfFileNames.forEach((fileName, idx) => {
         const filePath = ver.pdfFilePaths[idx];
         const url = filePath ? toFileUrl(filePath) : '';
-        console.log('filePath:', filePath, '-> url:', url);
         files.push({
           version: ver.version,
           fileName,
@@ -486,7 +484,12 @@ export default function DrawDetailPage() {
                 </div>
                 <div className={styles.formRow}>
                   <label>PDF 파일 교체 (복수 선택 가능)</label>
-                  <input type='file' accept='.pdf' multiple onChange={e => handleEditVersionFileChange(e, 'pdfFiles')} />
+                  <input
+                    type='file'
+                    accept='.pdf'
+                    multiple
+                    onChange={e => handleEditVersionFileChange(e, 'pdfFiles')}
+                  />
                   {editingVersion.pdfFileNames.length > 0 && (
                     <span className={styles.currentFile}>현재: {editingVersion.pdfFileNames.join(', ')}</span>
                   )}
