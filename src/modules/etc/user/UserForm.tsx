@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createUser, updateUser } from './userService';
 import type { User } from './userService';
 import { ROLE_LABELS } from './userRoleMap';
-import styles from '../../../styles/users.module.css';
+import styles from '../../../styles/etc/users.module.css';
 
 interface Props {
   user?: User | null;

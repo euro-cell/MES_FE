@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import styles from '../styles/sidebar.module.css';
+import styles from '../styles/layout/sidebar.module.css';
 import { MENU_CONFIG } from '../modules/menuConfig';
 
 const Sidebar: React.FC = () => {

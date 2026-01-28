@@ -1,4 +1,4 @@
-import styles from '../styles/moduleIndex.module.css';
+import styles from '../styles/components/moduleIndex.module.css';
 import { useActiveSubmenu } from '../hooks/useActiveSubmenu';
 
 interface SubmenuBarProps {

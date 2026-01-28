@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
-import styles from '../../../styles/moduleIndex.module.css';
+import styles from '../../../styles/components/moduleIndex.module.css';
 import ElectrodeIndex from './electrode';
 import AssemblyIndex from './assembly';
 

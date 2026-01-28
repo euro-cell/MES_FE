@@ -3,7 +3,7 @@ import { ko } from 'date-fns/locale';
 import { getYear, getMonth } from 'date-fns';
 import { forwardRef } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
-import styles from '../styles/DateInput.module.css';
+import styles from '../styles/components/DateInput.module.css';
 
 // 한국어 로케일 등록
 registerLocale('ko', ko);

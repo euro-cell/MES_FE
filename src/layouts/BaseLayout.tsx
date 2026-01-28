@@ -1,7 +1,7 @@
 import React from 'react';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
-import styles from '../styles/common.module.css';
+import styles from '../styles/layout/common.module.css';
 
 interface BaseLayoutProps {
   children: React.ReactNode;

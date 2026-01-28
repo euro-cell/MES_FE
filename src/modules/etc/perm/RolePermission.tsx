@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from '../../../styles/permission.module.css';
+import styles from '../../../styles/etc/permission.module.css';
 import { ROLE_LABELS } from '../user/userRoleMap';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;

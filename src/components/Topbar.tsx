@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { ROLE_LABELS } from '../modules/etc/user/userRoleMap';
 import { MENU_CONFIG } from '../modules/menuConfig';
-import styles from '../styles/topbar.module.css';
+import styles from '../styles/layout/topbar.module.css';
 
 const Topbar: React.FC = () => {
   const navigate = useNavigate();

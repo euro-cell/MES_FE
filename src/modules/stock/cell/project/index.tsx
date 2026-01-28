@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SubmenuBar from '../../../../components/SubmenuBar';
 import { fetchCellInventoryStatistics } from '../inOut/InOutService';
-import styles from '../../../../styles/moduleIndex.module.css';
+import styles from '../../../../styles/components/moduleIndex.module.css';
 import ProjectDetail from './ProjectDetail';
 import type { ProjectStatistics } from '../inOut/types';
 

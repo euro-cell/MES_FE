@@ -1,4 +1,4 @@
-import styles from '../styles/TooltipButton.module.css';
+import styles from '../styles/components/TooltipButton.module.css';
 
 interface TooltipButtonProps {
   label: string;

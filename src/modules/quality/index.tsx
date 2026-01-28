@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { MENU_CONFIG } from '../menuConfig';
 import SubmenuBar from '../../components/SubmenuBar';
-import styles from '../../styles/moduleIndex.module.css';
+import styles from '../../styles/components/moduleIndex.module.css';
 import LQCIndex from './lqc';
 import OQCIndex from './oqc';
 

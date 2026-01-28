@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from '../../../styles/permission.module.css';
+import styles from '../../../styles/etc/permission.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 

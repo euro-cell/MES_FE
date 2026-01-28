@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { MENU_CONFIG } from '../menuConfig';
 import SubmenuBar from '../../components/SubmenuBar';
-import styles from '../../styles/moduleIndex.module.css';
+import styles from '../../styles/components/moduleIndex.module.css';
 import ConditionPage from './condition/ConditionPage';
 import UserList from './user/UserList';
 import PermissionPage from './perm/PermissionPage';

@@ -3,7 +3,7 @@ import { getUsers, deleteUser, toggleUserActive } from './userService';
 import type { User } from './userService';
 import { ROLE_LABELS } from './userRoleMap';
 import UserForm from './UserForm';
-import styles from '../../../styles/users.module.css';
+import styles from '../../../styles/etc/users.module.css';
 
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
