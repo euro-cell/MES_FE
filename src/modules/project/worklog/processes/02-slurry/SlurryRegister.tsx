@@ -31,15 +31,15 @@ export default function SlurryRegister() {
   const plantEquipments = useLineEquipmentLoader(formValues.line);
   const { categories: materialCategories } = useMaterialCategories();
 
-  // 자재 1~8에 대한 LOT 목록 조회
+  // 자재 1~6에 대한 LOT 목록 조회
   const { lotOptions: material1LotOptions } = useMaterialLots(formValues.material1Name);
   const { lotOptions: material2LotOptions } = useMaterialLots(formValues.material2Name);
   const { lotOptions: material3LotOptions } = useMaterialLots(formValues.material3Name);
   const { lotOptions: material4LotOptions } = useMaterialLots(formValues.material4Name);
   const { lotOptions: material5LotOptions } = useMaterialLots(formValues.material5Name);
   const { lotOptions: material6LotOptions } = useMaterialLots(formValues.material6Name);
-  const { lotOptions: material7LotOptions } = useMaterialLots(formValues.material7Name);
-  const { lotOptions: material8LotOptions } = useMaterialLots(formValues.material8Name);
+  // 바인더용액 LOT 목록 조회
+  const { lotOptions: binderSolutionLotOptions } = useMaterialLots('Binder');
 
   const [saving, setSaving] = useState(false);
 
@@ -136,29 +136,34 @@ export default function SlurryRegister() {
   // 드롭다운 옵션 생성
   const plantOptions = plantEquipments.map(eq => eq.name);
 
-  // 자재투입정보 구분 드롭다운 (material1~material8)
+  // 자재투입정보 구분 드롭다운 (material1~material6)
   const materialNameFields = materialCategories.length > 0
     ? Object.fromEntries(
-        Array.from({ length: 8 }, (_, i) => [`material${i + 1}Name`, materialCategories])
+        Array.from({ length: 6 }, (_, i) => [`material${i + 1}Name`, materialCategories])
       )
     : {};
 
   // 자재투입정보 LOT 드롭다운 (카테고리 선택 시 연동)
   const materialLotOptions = [
-    material1LotOptions, material2LotOptions, material3LotOptions, material4LotOptions,
-    material5LotOptions, material6LotOptions, material7LotOptions, material8LotOptions,
+    material1LotOptions, material2LotOptions, material3LotOptions,
+    material4LotOptions, material5LotOptions, material6LotOptions,
   ];
   const materialLotFields = Object.fromEntries(
     materialLotOptions
       .map((opts, i) => [`material${i + 1}Lot`, opts])
       .filter(([, opts]) => (opts as string[]).length > 0)
   );
+  // 바인더용액 LOT 드롭다운
+  const binderSolutionLotField = binderSolutionLotOptions.length > 0
+    ? { binderSolutionLot: binderSolutionLotOptions }
+    : {};
 
   const slurrySelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
     ...materialNameFields,
     ...materialLotFields,
+    ...binderSolutionLotField,
   };
 
   return (

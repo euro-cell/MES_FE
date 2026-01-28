@@ -45,13 +45,24 @@ export const BINDER_NUMERIC_FIELDS = [
 
 // Slurry 숫자 필드
 export const SLURRY_NUMERIC_FIELDS = [
-  // 자재 투입 정보 - 원료 1-8
-  ...['1', '2', '3', '4', '5', '6', '7', '8'].flatMap(n => [
+  // 자재 투입 정보 - 원료 1-6
+  ...['1', '2', '3', '4', '5', '6'].flatMap(n => [
     `material${n}Composition`,
     `material${n}PlannedInput`,
     `material${n}ActualInput`,
   ]),
+  // 바인더용액 (Binder Solution)
+  'binderSolutionComposition',
+  'binderSolutionPlannedInput',
+  'binderSolutionActualInput',
+  // 용매 (Solvent)
+  'solventAddPlannedInput',
+  'solventAddActualInput',
+  'solventTotalPlannedInput',
+  'solventTotalActualInput',
+  // Solid Content & Binder Solution
   'solidContent',
+  'binderSolution',
   // 점도
   'viscosityAfterMixing',
   'viscosityAfterDefoaming',

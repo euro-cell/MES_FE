@@ -11,7 +11,7 @@ export interface SlurryWorklog {
   line?: string;
   plant?: string;
 
-  // 자재 투입 정보 - 원료 1-8
+  // 자재 투입 정보 - 원료 1-6
   material1Name?: string;
   material1Composition?: number;
   material1Lot?: string;
@@ -48,20 +48,23 @@ export interface SlurryWorklog {
   material6PlannedInput?: number;
   material6ActualInput?: number;
 
-  material7Name?: string;
-  material7Composition?: number;
-  material7Lot?: string;
-  material7PlannedInput?: number;
-  material7ActualInput?: number;
+  // 바인더용액 (Binder Solution)
+  binderSolutionComposition?: number; // 조성 (%, 소수점 첫째자리)
+  binderSolutionLot?: string;
+  binderSolutionPlannedInput?: number;
+  binderSolutionActualInput?: number;
 
-  material8Name?: string;
-  material8Composition?: number;
-  material8Lot?: string;
-  material8PlannedInput?: number;
-  material8ActualInput?: number;
+  // 용매 (Solvent)
+  solventAddPlannedInput?: number;
+  solventAddActualInput?: number;
+  solventTotalPlannedInput?: number;
+  solventTotalActualInput?: number;
 
   // Solid Content
   solidContent?: number;
+
+  // Binder Solution
+  binderSolution?: number;
 
   // 생산 정보
   lot?: string;
