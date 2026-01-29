@@ -9,7 +9,7 @@ import { useNotchingLots } from '../../shared/useNotchingLots';
 import { getVdWorklog, updateVdWorklog } from '../../../../../api/project/worklog';
 import type { VdWorklog, VdWorklogPayload } from './VdTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
-import { VD_NUMERIC_FIELDS, VD_INTEGER_FIELDS } from '../../shared/numericFields';
+import { VD_NUMERIC_FIELDS, VD_INTEGER_FIELDS, VD_TIME_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
 
@@ -325,6 +325,7 @@ export default function VdEdit() {
         readOnlyFields={COMMON_READONLY_FIELDS}
         selectFields={vdSelectFields}
         dateFields={['manufactureDate']}
+        timeFields={VD_TIME_FIELDS}
       />
     </div>
   );

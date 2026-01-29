@@ -283,6 +283,10 @@ export const VD_NUMERIC_FIELDS = [
   'vacuumDegreeSetting',
   'upperSetTemperature',
   'lowerSetTemperature',
+];
+
+// VD 시간 필드 (타이머 시간 - HH:mm)
+export const VD_TIME_FIELDS = [
   'upperTimerTime',
   'lowerTimerTime',
 ];

@@ -461,11 +461,28 @@ export default function ExcelRenderer({
                         />
                       ) : timeFields.includes(rangeName) ? (
                         <input
-                          type='time'
+                          type='text'
                           className={styles.cellInput}
                           value={cellValues[rangeName] ?? ''}
-                          onChange={e => handleInputChange(rangeName, e.target.value)}
-                          placeholder='HH:MM'
+                          onChange={e => {
+                            const value = e.target.value;
+                            // 숫자와 콜론만 허용, 최대 5자 (HH:mm)
+                            const filtered = value.replace(/[^0-9:]/g, '').slice(0, 5);
+                            // 자동으로 콜론 추가 (2자리 입력 후)
+                            if (filtered.length === 2 && !filtered.includes(':') && value.length > (cellValues[rangeName]?.length || 0)) {
+                              handleInputChange(rangeName, filtered + ':');
+                            } else {
+                              handleInputChange(rangeName, filtered);
+                            }
+                          }}
+                          onBlur={e => {
+                            // 입력 완료 시 형식 검증 (HH:mm)
+                            const value = e.target.value;
+                            if (value && !/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value)) {
+                              toast.error('시간 형식이 올바르지 않습니다. (00:00 ~ 23:59)');
+                            }
+                          }}
+                          placeholder='HH:mm (예: 09:30)'
                         />
                       ) : integerFields.includes(rangeName) ? (
                         <input

@@ -10,7 +10,7 @@ import { useNotchingLots } from '../../shared/useNotchingLots';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { createVdWorklog } from '../../../../../api/project/worklog';
 import type { VdWorklogPayload } from './VdTypes';
-import { VD_NUMERIC_FIELDS, VD_INTEGER_FIELDS } from '../../shared/numericFields';
+import { VD_NUMERIC_FIELDS, VD_INTEGER_FIELDS, VD_TIME_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
@@ -149,6 +149,7 @@ export default function VdRegister() {
         readOnlyFields={COMMON_READONLY_FIELDS}
         selectFields={selectFields}
         dateFields={['manufactureDate']}
+        timeFields={VD_TIME_FIELDS}
       />
     </div>
   );
