@@ -137,16 +137,15 @@ export const SLURRY_NUMERIC_FIELDS = [
   'pdMixer4RpmHigh1',
 ];
 
-// Coating 숫자 필드
+// Coating 소수점 필드 (소수점 첫째자리)
 export const COATING_NUMERIC_FIELDS = [
   'inputAmount',
   'usageAmount',
   'solidContent',
   'inputAmountDesign',
   'inputAmountActual',
-  // 생산 정보 1~4차
+  // 생산 정보 1~4차 - 소수점 필드 (전단/후단, 코팅폭, 무지부)
   ...['1', '2', '3', '4'].flatMap(n => [
-    `productionQuantity${n}`,
     `monoPumpFront${n}`,
     `monoPumpRear${n}`,
     `coatingSpeedFront${n}`,
@@ -160,20 +159,7 @@ export const COATING_NUMERIC_FIELDS = [
     `weightPerAreaRear${n}M`,
     `weightPerAreaRear${n}C`,
     `weightPerAreaRear${n}D`,
-    `thicknessFront${n}M`,
-    `thicknessFront${n}C`,
-    `thicknessFront${n}D`,
-    `thicknessRear${n}M`,
-    `thicknessRear${n}C`,
-    `thicknessRear${n}D`,
   ]),
-  // 건조 조건
-  'zone1TempUpper',
-  'zone1TempLower',
-  'zone2TempUpper',
-  'zone2TempLower',
-  'zone3Temp',
-  'zone4Temp',
   // 공급 풍량
   'zone1SupplyAirflowUpper',
   'zone1SupplyAirflowLower',
@@ -184,10 +170,35 @@ export const COATING_NUMERIC_FIELDS = [
   // 배기 풍량
   'zone12ExhaustAirflow',
   'zone34ExhaustAirflow',
-  'capsuleFilter',
   'coatingSpeed',
+  // 코팅 조건 (면적밀도)
+  'coatingConditionSingle',
+  'coatingConditionDouble',
+];
+
+// Coating 정수 필드
+export const COATING_INTEGER_FIELDS = [
+  // 생산 정보 1~4차 - 정수 필드 (생산량, 두께)
+  ...['1', '2', '3', '4'].flatMap(n => [
+    `productionQuantity${n}`,
+    `thicknessFront${n}M`,
+    `thicknessFront${n}C`,
+    `thicknessFront${n}D`,
+    `thicknessRear${n}M`,
+    `thicknessRear${n}C`,
+    `thicknessRear${n}D`,
+  ]),
+  // 건조 조건 (온도 - 정수)
+  'zone1TempUpper',
+  'zone1TempLower',
+  'zone2TempUpper',
+  'zone2TempLower',
+  'zone3Temp',
+  'zone4Temp',
+  // 필터 (정수)
+  'capsuleFilter',
   'meshFilter',
-  // 장력
+  // 장력 (정수)
   'tensionUnT',
   'tensionOfT',
   'tensionReT',

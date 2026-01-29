@@ -9,7 +9,7 @@ import { useFoilLots } from '../../shared/useFoilLots';
 import { useSlurryLots } from '../../shared/useSlurryLots';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { COATING_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { COATING_NUMERIC_FIELDS, COATING_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import { createCoatingWorklog } from '../../../../../api/project/worklog';
 import type { CoatingWorklogPayload } from './CoatingTypes';
@@ -166,6 +166,7 @@ export default function CoatingRegister() {
           multilineFields={[]}
           timeFields={[]}
           numericFields={COATING_NUMERIC_FIELDS}
+          integerFields={COATING_INTEGER_FIELDS}
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...COATING_AUTO_FILL_FIELDS]}
           selectFields={selectFields}
           dateFields={['manufactureDate']}

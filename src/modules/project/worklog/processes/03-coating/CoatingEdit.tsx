@@ -10,7 +10,7 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { getCoatingWorklog, updateCoatingWorklog } from '../../../../../api/project/worklog';
 import type { CoatingWorklog, CoatingWorklogPayload } from './CoatingTypes';
-import { COATING_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { COATING_NUMERIC_FIELDS, COATING_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
@@ -198,6 +198,7 @@ export default function CoatingEdit() {
           multilineFields={[]}
           timeFields={[]}
           numericFields={COATING_NUMERIC_FIELDS}
+          integerFields={COATING_INTEGER_FIELDS}
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...COATING_AUTO_FILL_FIELDS]}
           selectFields={selectFields}
           dateFields={['manufactureDate']}
