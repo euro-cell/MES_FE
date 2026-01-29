@@ -115,6 +115,18 @@ export const deleteSlurryWorklog = async (productionId: number, worklogId: numbe
   await axios.delete(`${API_BASE}/production/${productionId}/worklog/${worklogId}/slurry`, { withCredentials: true });
 };
 
+/** Slurry 작업일지 LOT 목록 조회 (Coating에서 슬러리 LOT 드롭다운용) */
+export interface SlurryLot {
+  lotNumber: string;
+  solidContent: number;
+  viscosity: number;
+}
+
+export const getSlurryLots = async (productionId: number): Promise<SlurryLot[]> => {
+  const res = await axios.get<SlurryLot[]>(`${API_BASE}/production/${productionId}/worklog/slurry/lots`, { withCredentials: true });
+  return res.data;
+};
+
 // ============ Coating API ============
 
 export const getCoatingTemplate = async (): Promise<ArrayBuffer> => {

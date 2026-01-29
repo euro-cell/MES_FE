@@ -5,6 +5,8 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
+import { useFoilLots } from '../../shared/useFoilLots';
+import { useSlurryLots } from '../../shared/useSlurryLots';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { COATING_NUMERIC_FIELDS } from '../../shared/numericFields';
@@ -15,6 +17,9 @@ import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
+const FOIL_TYPE_OPTIONS = ['Al Foil', 'Cu Foil'];
+// 자동입력 필드 (LOT 선택 시 자동으로 채워지는 필드)
+const COATING_AUTO_FILL_FIELDS = ['manufacturer', 'spec', 'solidContent', 'viscosity'];
 
 export default function CoatingRegister() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -24,10 +29,48 @@ export default function CoatingRegister() {
   const { namedRanges } = useNamedRanges(workbook);
 
   const project = useProjectLoader(projectId);
-  const { formValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
+  const { formValues, setFormValues } = useWorklogFormInit({ namedRanges, project });
   const plantEquipments = useLineEquipmentLoader(formValues.line);
 
+  // 호일 LOT 조회 (materialType 선택에 따라)
+  const { lotOptions: foilLotOptions, getLotInfo: getFoilLotInfo } = useFoilLots(formValues.materialType);
+  // 슬러리 LOT 조회 (프로젝트 ID 기반)
+  const { lotOptions: slurryLotOptions, getLotInfo: getSlurryLotInfo } = useSlurryLots(projectId);
+
   const [saving, setSaving] = useState(false);
+
+  const handleCellChange = (rangeName: string, value: any) => {
+    setFormValues(prev => {
+      const newValues = { ...prev, [rangeName]: value };
+
+      // materialType 변경 시 LOT, 제조사, 스펙 초기화
+      if (rangeName === 'materialType') {
+        newValues.materialLot = '';
+        newValues.manufacturer = '';
+        newValues.spec = '';
+      }
+
+      // 호일 LOT 선택 시 제조사, 스펙 자동입력
+      if (rangeName === 'materialLot' && value) {
+        const foilInfo = getFoilLotInfo(value);
+        if (foilInfo) {
+          newValues.manufacturer = foilInfo.manufacturer;
+          newValues.spec = foilInfo.spec;
+        }
+      }
+
+      // 슬러리 LOT 선택 시 고형분, 점도 자동입력
+      if (rangeName === 'materialLot2' && value) {
+        const slurryInfo = getSlurryLotInfo(value);
+        if (slurryInfo) {
+          newValues.solidContent = slurryInfo.solidContent;
+          newValues.viscosity = String(slurryInfo.viscosity);
+        }
+      }
+
+      return newValues;
+    });
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -83,6 +126,13 @@ export default function CoatingRegister() {
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+    // 자재 투입 정보 1 (호일)
+    materialType: FOIL_TYPE_OPTIONS,
+    ...(foilLotOptions.length > 0 && { materialLot: foilLotOptions }),
+    // 자재 투입 정보 2 (슬러리)
+    materialType2: ['Slurry'],
+    ...(slurryLotOptions.length > 0 && { materialLot2: slurryLotOptions }),
+    // 코팅면
     coatingSide1: coatingSideOptions,
     coatingSide2: coatingSideOptions,
     coatingSide3: coatingSideOptions,
@@ -109,14 +159,14 @@ export default function CoatingRegister() {
       <div className={styles.excelWrapper}>
         <ExcelRenderer
           workbook={workbook}
-          editableRanges={Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name))}
+          editableRanges={Object.keys(namedRanges).filter(name => ![...COMMON_READONLY_FIELDS, ...COATING_AUTO_FILL_FIELDS].includes(name))}
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={[]}
           timeFields={[]}
           numericFields={COATING_NUMERIC_FIELDS}
-          readOnlyFields={COMMON_READONLY_FIELDS}
+          readOnlyFields={[...COMMON_READONLY_FIELDS, ...COATING_AUTO_FILL_FIELDS]}
           selectFields={selectFields}
           dateFields={['manufactureDate']}
         />
