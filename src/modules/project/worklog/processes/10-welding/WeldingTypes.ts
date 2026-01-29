@@ -11,11 +11,19 @@ export interface WeldingWorklog {
   line?: string;
   plant?: string;
 
-  // A. 자재 투입 정보
+  // A. 자재 투입 정보 - 리드탭1
+  leadTabType?: string;
   leadTabLot?: string;
   leadTabManufacturer?: string;
   leadTabSpec?: string;
   leadTabUsage?: number;
+  // A. 자재 투입 정보 - 리드탭2
+  leadTab2Type?: string;
+  leadTab2Lot?: string;
+  leadTab2Manufacturer?: string;
+  leadTab2Spec?: string;
+  leadTab2Usage?: number;
+  // A. 자재 투입 정보 - PI 테이프
   piTapeLot?: string;
   piTapeManufacturer?: string;
   piTapeSpec?: string;
@@ -77,11 +85,19 @@ export interface WeldingWorklogPayload {
   line?: string;
   plant?: any;
 
-  // A. 자재 투입 정보
+  // A. 자재 투입 정보 - 리드탭1
+  leadTabType?: string;
   leadTabLot?: string;
   leadTabManufacturer?: string;
   leadTabSpec?: string;
   leadTabUsage?: number;
+  // A. 자재 투입 정보 - 리드탭2
+  leadTab2Type?: string;
+  leadTab2Lot?: string;
+  leadTab2Manufacturer?: string;
+  leadTab2Spec?: string;
+  leadTab2Usage?: number;
+  // A. 자재 투입 정보 - PI 테이프
   piTapeLot?: string;
   piTapeManufacturer?: string;
   piTapeSpec?: string;

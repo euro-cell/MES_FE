@@ -356,34 +356,8 @@ export const STACKING_INTEGER_FIELDS = [
   'stackCount',
 ];
 
-// Welding 숫자 필드
+// Welding 소수점 필드 (공정 조건)
 export const WELDING_NUMERIC_FIELDS = [
-  'leadTabUsage',
-  'piTapeUsage',
-  // 프리웰딩
-  'preWeldingWorkQuantity',
-  'preWeldingGoodQuantity',
-  'preWeldingDefectQuantity',
-  'preWeldingDiscardQuantity',
-  'preWeldingDefectRate',
-  // 메인웰딩
-  'mainWeldingWorkQuantity',
-  'mainWeldingGoodQuantity',
-  'mainWeldingDefectQuantity',
-  'mainWeldingDiscardQuantity',
-  'mainWeldingDefectRate',
-  // 하이팟2
-  'hipot2WorkQuantity',
-  'hipot2GoodQuantity',
-  'hipot2DefectQuantity',
-  'hipot2DiscardQuantity',
-  'hipot2DefectRate',
-  // 테이핑
-  'tapingWorkQuantity',
-  'tapingGoodQuantity',
-  'tapingDefectQuantity',
-  'tapingDiscardQuantity',
-  'tapingDefectRate',
   // 공정 조건 - 프리웰딩
   'preWeldingEnergy',
   'preWeldingAmplitude',
@@ -401,6 +375,34 @@ export const WELDING_NUMERIC_FIELDS = [
   'hipotTime',
   // 공정 조건 - 테이핑
   'tapingLength',
+];
+
+// Welding 정수 필드 (사용량, 수량)
+export const WELDING_INTEGER_FIELDS = [
+  // 자재 투입 정보 - 사용량
+  'leadTabUsage',
+  'leadTab2Usage',
+  'piTapeUsage',
+  // 프리웰딩
+  'preWeldingWorkQuantity',
+  'preWeldingGoodQuantity',
+  'preWeldingDefectQuantity',
+  'preWeldingDiscardQuantity',
+  // 메인웰딩
+  'mainWeldingWorkQuantity',
+  'mainWeldingGoodQuantity',
+  'mainWeldingDefectQuantity',
+  'mainWeldingDiscardQuantity',
+  // 하이팟2
+  'hipot2WorkQuantity',
+  'hipot2GoodQuantity',
+  'hipot2DefectQuantity',
+  'hipot2DiscardQuantity',
+  // 테이핑
+  'tapingWorkQuantity',
+  'tapingGoodQuantity',
+  'tapingDefectQuantity',
+  'tapingDiscardQuantity',
 ];
 
 // Sealing 숫자 필드
