@@ -300,13 +300,8 @@ export const VD_INTEGER_FIELDS = [
   ]),
 ];
 
-// Forming 숫자 필드 (불량률, 공정 조건)
+// Forming 숫자 필드 (공정 조건)
 export const FORMING_NUMERIC_FIELDS = [
-  // 불량률
-  'cuttingDefectRate',
-  'formingDefectRate',
-  'foldingDefectRate',
-  'topCuttingDefectRate',
   // 공정 조건
   'cuttingLength',
   'formingDepth',
@@ -314,27 +309,23 @@ export const FORMING_NUMERIC_FIELDS = [
   'topCuttingLength',
 ];
 
-// Forming 정수 필드 (수량)
+// Forming 정수 필드 (수량) - 양품 수량은 자동계산이므로 제외
 export const FORMING_INTEGER_FIELDS = [
   'pouchUsage',
   // 컷팅
   'cuttingWorkQuantity',
-  'cuttingGoodQuantity',
   'cuttingDefectQuantity',
   'cuttingDiscardQuantity',
   // 포밍
   'formingWorkQuantity',
-  'formingGoodQuantity',
   'formingDefectQuantity',
   'formingDiscardQuantity',
   // 폴딩
   'foldingWorkQuantity',
-  'foldingGoodQuantity',
   'foldingDefectQuantity',
   'foldingDiscardQuantity',
   // 탑컷팅
   'topCuttingWorkQuantity',
-  'topCuttingGoodQuantity',
   'topCuttingDefectQuantity',
   'topCuttingDiscardQuantity',
 ];

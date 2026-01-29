@@ -16,6 +16,19 @@ import type { CategoryLabel } from '../../shared/processCategories';
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 // 자동입력 필드 (파우치 LOT 선택 시 제조사, 스팩 자동 입력)
 const POUCH_AUTO_FILL_FIELDS = ['pouchManufacturer', 'pouchSpec'];
+// 자동계산 필드 (양품 수량, 불량률)
+const AUTO_CALC_FIELDS = [
+  // 양품 수량 (작업 수량 - 불량 수량)
+  'cuttingGoodQuantity',
+  'formingGoodQuantity',
+  'foldingGoodQuantity',
+  'topCuttingGoodQuantity',
+  // 불량률 (불량 수량 / 작업 수량 * 100)
+  'cuttingDefectRate',
+  'formingDefectRate',
+  'foldingDefectRate',
+  'topCuttingDefectRate',
+];
 
 export default function FormingEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -101,7 +114,38 @@ export default function FormingEdit() {
     loadWorklog();
   }, [projectId, worklogId]);
 
-  // 파우치 LOT 선택 시 제조사, 스팩 자동 입력
+  // 양품 수량 및 불량률 자동계산 헬퍼 함수
+  const calculateAutoFields = (
+    prev: Record<string, any>,
+    rangeName: string,
+    value: any
+  ): Record<string, any> => {
+    const updates: Record<string, any> = { [rangeName]: value };
+
+    // 각 공정별 양품 수량, 불량률 계산
+    const processes = ['cutting', 'forming', 'folding', 'topCutting'];
+    for (const process of processes) {
+      const workField = `${process}WorkQuantity`;
+      const defectField = `${process}DefectQuantity`;
+      const goodField = `${process}GoodQuantity`;
+      const defectRateField = `${process}DefectRate`;
+
+      if (rangeName === workField || rangeName === defectField) {
+        const workQty = rangeName === workField ? (value || 0) : (prev[workField] || 0);
+        const defectQty = rangeName === defectField ? (value || 0) : (prev[defectField] || 0);
+        // 양품 수량 = 작업 수량 - 불량 수량
+        updates[goodField] = Math.max(0, Number(workQty) - Number(defectQty));
+        // 불량률 = (불량 수량 / 작업 수량) * 100
+        updates[defectRateField] = Number(workQty) > 0
+          ? Math.round((Number(defectQty) / Number(workQty)) * 10000) / 100
+          : 0;
+      }
+    }
+
+    return updates;
+  };
+
+  // 파우치 LOT 선택 시 제조사, 스팩 자동 입력 + 양품 수량 자동계산
   const handleCellChange = (rangeName: string, value: any) => {
     if (rangeName === 'pouchLot') {
       const selectedPouch = pouchLots.find(p => p.lot === value);
@@ -112,7 +156,10 @@ export default function FormingEdit() {
         pouchSpec: selectedPouch?.spec || '',
       }));
     } else {
-      setFormValues(prev => ({ ...prev, [rangeName]: value }));
+      setFormValues(prev => ({
+        ...prev,
+        ...calculateAutoFields(prev, rangeName, value),
+      }));
     }
   };
 
@@ -227,7 +274,7 @@ export default function FormingEdit() {
         className={styles.excelRenderer}
         numericFields={FORMING_NUMERIC_FIELDS}
         integerFields={FORMING_INTEGER_FIELDS}
-        readOnlyFields={[...COMMON_READONLY_FIELDS, ...POUCH_AUTO_FILL_FIELDS]}
+        readOnlyFields={[...COMMON_READONLY_FIELDS, ...POUCH_AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
         selectFields={formingSelectFields}
         dateFields={['manufactureDate']}
       />

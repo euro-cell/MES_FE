@@ -434,7 +434,7 @@ export default function ExcelRenderer({
                     className={isEditable ? styles.editableCell : ''}
                     style={cellStyle}
                   >
-                    {isEditable && rangeName ? (
+                    {isEditable && rangeName && !isReadOnly ? (
                       isMultiline ? (
                         <AutoResizeTextarea
                           value={cellValues[rangeName] ?? ''}
