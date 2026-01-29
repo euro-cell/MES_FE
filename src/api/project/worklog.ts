@@ -220,6 +220,17 @@ export const deleteNotchingWorklog = async (productionId: number, worklogId: num
   await axios.delete(`${API_BASE}/production/${productionId}/worklog/${worklogId}/notching`, { withCredentials: true });
 };
 
+/** Notching 작업일지 LOT 목록 조회 (VD에서 매거진 LOT 드롭다운용) */
+export interface NotchingLotsResponse {
+  cathodeLots: string[];
+  anodeLots: string[];
+}
+
+export const getNotchingLots = async (productionId: number): Promise<NotchingLotsResponse> => {
+  const res = await axios.get<NotchingLotsResponse>(`${API_BASE}/production/${productionId}/worklog/notching/lots`, { withCredentials: true });
+  return res.data;
+};
+
 // ============ VD API ============
 
 export const getVdTemplate = async (): Promise<ArrayBuffer> => {

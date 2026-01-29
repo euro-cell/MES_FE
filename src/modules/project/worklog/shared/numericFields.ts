@@ -272,13 +272,11 @@ export const NOTCHING_INTEGER_FIELDS = [
   'punchingSpeed',
 ];
 
-// VD 숫자 필드
+// VD 숫자 필드 (수분측정, 공정 조건)
 export const VD_NUMERIC_FIELDS = [
-  // 생산 정보 1~5차
+  // 생산 정보 1~5차 - 수분측정
   ...['1', '2', '3', '4', '5'].flatMap(n => [
-    `upperInputQuantity${n}`,
     `upperMoistureMeasurement${n}`,
-    `lowerInputQuantity${n}`,
     `lowerMoistureMeasurement${n}`,
   ]),
   // 공정 조건
@@ -287,6 +285,15 @@ export const VD_NUMERIC_FIELDS = [
   'lowerSetTemperature',
   'upperTimerTime',
   'lowerTimerTime',
+];
+
+// VD 정수 필드 (투입량)
+export const VD_INTEGER_FIELDS = [
+  // 생산 정보 1~5차 - 투입량
+  ...['1', '2', '3', '4', '5'].flatMap(n => [
+    `upperInputQuantity${n}`,
+    `lowerInputQuantity${n}`,
+  ]),
 ];
 
 // Forming 숫자 필드
