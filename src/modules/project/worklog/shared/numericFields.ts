@@ -405,26 +405,12 @@ export const WELDING_INTEGER_FIELDS = [
   'tapingDiscardQuantity',
 ];
 
-// Sealing 숫자 필드
+// Sealing 소수점 필드 (공정 조건)
 export const SEALING_NUMERIC_FIELDS = [
   'pouchDepth',
-  // 탑
-  'topWorkQuantity',
-  'topGoodQuantity',
-  'topDefectQuantity',
-  'topDiscardQuantity',
+  // 불량률
   'topDefectRate',
-  // 사이드
-  'sideWorkQuantity',
-  'sideGoodQuantity',
-  'sideDefectQuantity',
-  'sideDiscardQuantity',
   'sideDefectRate',
-  // 하이팟3
-  'hipot3WorkQuantity',
-  'hipot3GoodQuantity',
-  'hipot3DefectQuantity',
-  'hipot3DiscardQuantity',
   'hipot3DefectRate',
   // 공정 조건
   'topSealingTime',
@@ -432,6 +418,25 @@ export const SEALING_NUMERIC_FIELDS = [
   'bottomSealingTime',
   'hipotVoltage',
   'hipotTime',
+];
+
+// Sealing 정수 필드 (수량)
+export const SEALING_INTEGER_FIELDS = [
+  // 탑
+  'topWorkQuantity',
+  'topGoodQuantity',
+  'topDefectQuantity',
+  'topDiscardQuantity',
+  // 사이드
+  'sideWorkQuantity',
+  'sideGoodQuantity',
+  'sideDefectQuantity',
+  'sideDiscardQuantity',
+  // 하이팟3
+  'hipot3WorkQuantity',
+  'hipot3GoodQuantity',
+  'hipot3DefectQuantity',
+  'hipot3DiscardQuantity',
 ];
 
 // Filling 숫자 필드

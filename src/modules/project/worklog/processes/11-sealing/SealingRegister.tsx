@@ -5,16 +5,30 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
+import { usePouchLots } from '../../shared/usePouchLots';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { createSealingWorklog } from '../../../../../api/project/worklog';
 import type { SealingWorklogPayload } from './SealingTypes';
-import { SEALING_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { SEALING_NUMERIC_FIELDS, SEALING_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
+// 자동입력 필드 (파우치 LOT 선택 시 제조사 자동 입력)
+const AUTO_FILL_FIELDS = ['pouchManufacturer'];
+// 자동계산 필드 (양품 수량, 불량률)
+const AUTO_CALC_FIELDS = [
+  // 양품 수량 (작업 수량 - 불량 수량 - 폐기 수량)
+  'topGoodQuantity',
+  'sideGoodQuantity',
+  'hipot3GoodQuantity',
+  // 불량률 (불량 수량 / 작업 수량 * 100)
+  'topDefectRate',
+  'sideDefectRate',
+  'hipot3DefectRate',
+];
 
 export default function SealingRegister() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -24,10 +38,61 @@ export default function SealingRegister() {
   const { namedRanges } = useNamedRanges(workbook);
 
   const project = useProjectLoader(projectId);
-  const { formValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
+  const { formValues, setFormValues } = useWorklogFormInit({ namedRanges, project });
   const plantEquipments = useLineEquipmentLoader(formValues.line);
+  const { pouchLots } = usePouchLots();
 
   const [saving, setSaving] = useState(false);
+
+  // 양품 수량 및 불량률 자동계산 헬퍼 함수
+  const calculateAutoFields = (
+    prev: Record<string, any>,
+    rangeName: string,
+    value: any
+  ): Record<string, any> => {
+    const updates: Record<string, any> = { [rangeName]: value };
+
+    // 각 공정별 양품 수량, 불량률 계산
+    const processes = ['top', 'side', 'hipot3'];
+    for (const process of processes) {
+      const workField = `${process}WorkQuantity`;
+      const defectField = `${process}DefectQuantity`;
+      const discardField = `${process}DiscardQuantity`;
+      const goodField = `${process}GoodQuantity`;
+      const defectRateField = `${process}DefectRate`;
+
+      if (rangeName === workField || rangeName === defectField || rangeName === discardField) {
+        const workQty = rangeName === workField ? (value || 0) : (prev[workField] || 0);
+        const defectQty = rangeName === defectField ? (value || 0) : (prev[defectField] || 0);
+        const discardQty = rangeName === discardField ? (value || 0) : (prev[discardField] || 0);
+        // 양품 수량 = 작업 수량 - 불량 수량 - 폐기 수량
+        updates[goodField] = Math.max(0, Number(workQty) - Number(defectQty) - Number(discardQty));
+        // 불량률 = (불량 수량 / 작업 수량) * 100
+        updates[defectRateField] = Number(workQty) > 0
+          ? Math.round((Number(defectQty) / Number(workQty)) * 10000) / 100
+          : 0;
+      }
+    }
+
+    return updates;
+  };
+
+  // 파우치 LOT 선택 시 제조사 자동 입력 + 양품 수량 자동계산
+  const handleCellChange = (rangeName: string, value: any) => {
+    if (rangeName === 'pouchLot') {
+      const selectedPouch = pouchLots.find(p => p.lot === value);
+      setFormValues(prev => ({
+        ...prev,
+        [rangeName]: value,
+        pouchManufacturer: selectedPouch?.manufacturer || '',
+      }));
+    } else {
+      setFormValues(prev => ({
+        ...prev,
+        ...calculateAutoFields(prev, rangeName, value),
+      }));
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -79,9 +144,12 @@ export default function SealingRegister() {
   }
 
   const plantOptions = plantEquipments.map(eq => eq.name);
+  const pouchLotOptions = pouchLots.map(p => p.lot);
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+    // 파우치 LOT 선택박스
+    pouchLot: pouchLotOptions,
   };
 
   return (
@@ -110,7 +178,8 @@ export default function SealingRegister() {
           onCellChange={handleCellChange}
           multilineFields={['topChecklist', 'sideChecklist', 'bottomChecklist', 'remarkTop', 'remarkSide']}
           numericFields={SEALING_NUMERIC_FIELDS}
-          readOnlyFields={COMMON_READONLY_FIELDS}
+          integerFields={SEALING_INTEGER_FIELDS}
+          readOnlyFields={[...COMMON_READONLY_FIELDS, ...AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
           selectFields={selectFields}
           dateFields={['manufactureDate']}
         />

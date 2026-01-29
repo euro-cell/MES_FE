@@ -3,7 +3,7 @@ import { getMaterialLots, type MaterialLot } from '../../../../api/material';
 
 /**
  * 파우치 자재 LOT 목록을 로드하는 커스텀 훅
- * Forming 작업일지에서 파우치 LOT 드롭다운에 사용
+ * Sealing 작업일지에서 파우치 LOT 드롭다운에 사용
  * @returns 파우치 LOT 목록, loading, error 상태
  */
 export function usePouchLots() {
