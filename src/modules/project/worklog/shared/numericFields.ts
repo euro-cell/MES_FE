@@ -439,20 +439,11 @@ export const SEALING_INTEGER_FIELDS = [
   'hipot3DiscardQuantity',
 ];
 
-// Filling 숫자 필드
+// Filling 소수점 필드 (공정 조건, 불량률, 사용량)
 export const FILLING_NUMERIC_FIELDS = [
   'electrolyteUsage',
-  // 필링
-  'fillingWorkQuantity',
-  'fillingGoodQuantity',
-  'fillingDefectQuantity',
-  'fillingDiscardQuantity',
+  // 불량률
   'fillingDefectRate',
-  // 웨이팅
-  'waitingWorkQuantity',
-  'waitingGoodQuantity',
-  'waitingDefectQuantity',
-  'waitingDiscardQuantity',
   'waitingDefectRate',
   // 공정 조건 - 필링
   'fillingEquipmentInjectionAmount',
@@ -460,12 +451,27 @@ export const FILLING_NUMERIC_FIELDS = [
   'fillingInjectionSpeed',
   'fillingSpecificGravity',
   // 공정 조건 - 웨이팅
-  'waiting1RepeatCount',
   'waiting1HoldTime',
-  'waiting2RepeatCount',
   'waiting2HoldTime',
-  'waiting3RepeatCount',
   'waiting3HoldTime',
+];
+
+// Filling 정수 필드 (수량)
+export const FILLING_INTEGER_FIELDS = [
+  // 필링
+  'fillingWorkQuantity',
+  'fillingGoodQuantity',
+  'fillingDefectQuantity',
+  'fillingDiscardQuantity',
+  // 웨이팅
+  'waitingWorkQuantity',
+  'waitingGoodQuantity',
+  'waitingDefectQuantity',
+  'waitingDiscardQuantity',
+  // 공정 조건 - 웨이팅 반복횟수
+  'waiting1RepeatCount',
+  'waiting2RepeatCount',
+  'waiting3RepeatCount',
 ];
 
 // Formation 숫자 필드
