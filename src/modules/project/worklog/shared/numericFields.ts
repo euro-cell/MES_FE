@@ -330,30 +330,30 @@ export const FORMING_INTEGER_FIELDS = [
   'topCuttingDiscardQuantity',
 ];
 
-// Stacking 숫자 필드
+// Stacking 소수점 필드 (공정 조건)
 export const STACKING_NUMERIC_FIELDS = [
-  'separatorInputQuantity',
   'separatorUsage',
-  // 스택
-  'stackActualInput',
-  'stackGoodQuantity',
-  'stackDefectQuantity',
-  'stackDiscardQuantity',
-  'stackDefectRate',
-  // 하이팟1
-  'hipot1ActualInput',
-  'hipot1GoodQuantity',
-  'hipot1DefectQuantity',
-  'hipot1DiscardQuantity',
-  'hipot1DefectRate',
-  // JR 번호 1~4
-  ...['1', '2', '3', '4'].map(n => `jr${n}ElectrodeDefect`),
-  // 공정 조건
   'jellyRollWeight',
   'jellyRollThickness',
   'separatorTopBottomDimension',
-  'stackCount',
   'hipotVoltage',
+];
+
+// Stacking 정수 필드 (투입량, 수량, 전극파손) - 양품 수량은 자동계산이므로 제외
+export const STACKING_INTEGER_FIELDS = [
+  'separatorInputQuantity',
+  // 스택
+  'stackActualInput',
+  'stackDefectQuantity',
+  'stackDiscardQuantity',
+  // 하이팟1
+  'hipot1ActualInput',
+  'hipot1DefectQuantity',
+  'hipot1DiscardQuantity',
+  // JR 번호 1~4 전극파손
+  ...['1', '2', '3', '4'].map(n => `jr${n}ElectrodeDefect`),
+  // 공정 조건
+  'stackCount',
 ];
 
 // Welding 숫자 필드
