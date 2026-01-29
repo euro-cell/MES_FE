@@ -9,7 +9,7 @@ import { mapFormToPayload } from '../../shared/excelUtils';
 import { getPressWorklog, updatePressWorklog } from '../../../../../api/project/worklog';
 import type { PressWorklog, PressWorklogPayload } from './PressTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
-import { PRESS_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { PRESS_NUMERIC_FIELDS, PRESS_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
 
@@ -129,6 +129,7 @@ export default function PressEdit() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
         numericFields={PRESS_NUMERIC_FIELDS}
+        integerFields={PRESS_INTEGER_FIELDS}
         readOnlyFields={COMMON_READONLY_FIELDS}
         selectFields={pressSelectFields}
         dateFields={['manufactureDate']}

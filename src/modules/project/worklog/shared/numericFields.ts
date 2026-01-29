@@ -204,19 +204,26 @@ export const COATING_INTEGER_FIELDS = [
   'tensionReT',
 ];
 
-// Press 숫자 필드
+// Press 소수점 필드 (소수점 2자리 - 면적밀도)
 export const PRESS_NUMERIC_FIELDS = [
-  'targetThickness',
-  // 생산 정보 1~5차
+  // 생산 정보 1~5차 - 면적밀도
   ...['1', '2', '3', '4', '5'].flatMap(n => [
-    `coatingQuantity${n}`,
-    `pressQuantity${n}`,
     `weightPerAreaFront${n}M`,
     `weightPerAreaFront${n}C`,
     `weightPerAreaFront${n}D`,
     `weightPerAreaRear${n}M`,
     `weightPerAreaRear${n}C`,
     `weightPerAreaRear${n}D`,
+  ]),
+];
+
+// Press 정수 필드 (두께, 투입량, 생산량, 장력, 프레스 속도, 선압 조건, 롤 온도)
+export const PRESS_INTEGER_FIELDS = [
+  'targetThickness',
+  // 생산 정보 1~5차 - 투입량, 생산량, 두께
+  ...['1', '2', '3', '4', '5'].flatMap(n => [
+    `coatingQuantity${n}`,
+    `pressQuantity${n}`,
     `thicknessFront${n}M`,
     `thicknessFront${n}C`,
     `thicknessFront${n}D`,
@@ -224,7 +231,7 @@ export const PRESS_NUMERIC_FIELDS = [
     `thicknessRear${n}C`,
     `thicknessRear${n}D`,
   ]),
-  // 공정 조건
+  // 공정 조건 - 장력, 프레스 속도, 선압 조건, 롤 온도
   'tensionUnT',
   'tensionReT',
   'pressSpeed',
