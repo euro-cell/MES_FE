@@ -242,22 +242,30 @@ export const PRESS_INTEGER_FIELDS = [
   'rollTemperatureInfeed',
 ];
 
-// Notching 숫자 필드
+// Notching 소수점 필드 (소수점 1자리 - 치수 정보)
 export const NOTCHING_NUMERIC_FIELDS = [
-  // 생산 정보 1~5차
+  // 생산 정보 1~5차 - 치수 정보 4가지
+  ...['1', '2', '3', '4', '5'].flatMap(n => [
+    `dimension${n}`,
+    `wide${n}`,
+    `length${n}`,
+    `missMatch${n}`,
+  ]),
+];
+
+// Notching 정수 필드 (수량, 불량 수량, 불량 상세, 공정 조건)
+export const NOTCHING_INTEGER_FIELDS = [
+  // 생산 정보 1~5차 - 수량
   ...['1', '2', '3', '4', '5'].flatMap(n => [
     `pressQuantity${n}`,
     `notchingQuantity${n}`,
     `defectQuantity${n}`,
     `goodQuantity${n}`,
-    `dimension${n}`,
+    // 불량 상세
     `burr${n}`,
     `damage${n}`,
     `nonCutting${n}`,
     `overTab${n}`,
-    `wide${n}`,
-    `length${n}`,
-    `missMatch${n}`,
   ]),
   // 공정 조건
   'tension',

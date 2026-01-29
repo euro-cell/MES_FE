@@ -9,11 +9,13 @@ import { mapFormToPayload } from '../../shared/excelUtils';
 import { getNotchingWorklog, updateNotchingWorklog } from '../../../../../api/project/worklog';
 import type { NotchingWorklog, NotchingWorklogPayload } from './NotchingTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
-import { NOTCHING_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { NOTCHING_NUMERIC_FIELDS, NOTCHING_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
+// 자동입력 필드 (양품 수량 = 타발 수량 - 불량 수량)
+const NOTCHING_AUTO_FILL_FIELDS = ['goodQuantity1', 'goodQuantity2', 'goodQuantity3', 'goodQuantity4', 'goodQuantity5'];
 
 export default function NotchingEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -62,11 +64,22 @@ export default function NotchingEdit() {
     loadWorklog();
   }, [projectId, worklogId, namedRanges, project]);
 
+  // 양품 수량 자동계산 (타발 수량 - 불량 수량)
   const handleCellChange = (rangeName: string, value: any) => {
-    setFormValues(prev => ({
-      ...prev,
-      [rangeName]: value,
-    }));
+    setFormValues(prev => {
+      const newValues = { ...prev, [rangeName]: value };
+
+      // notchingQuantity 또는 defectQuantity 변경 시 goodQuantity 자동계산
+      for (let i = 1; i <= 5; i++) {
+        if (rangeName === `notchingQuantity${i}` || rangeName === `defectQuantity${i}`) {
+          const notching = parseInt(newValues[`notchingQuantity${i}`]) || 0;
+          const defect = parseInt(newValues[`defectQuantity${i}`]) || 0;
+          newValues[`goodQuantity${i}`] = notching - defect;
+        }
+      }
+
+      return newValues;
+    });
   };
 
   const handleSubmit = async () => {
@@ -95,7 +108,7 @@ export default function NotchingEdit() {
   if (templateError) return <p>템플릿 로드 실패: {templateError.message}</p>;
   if (!workbook || !worklog) return <p>데이터를 불러올 수 없습니다.</p>;
 
-  const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
+  const editableRanges = Object.keys(namedRanges).filter(name => ![...COMMON_READONLY_FIELDS, ...NOTCHING_AUTO_FILL_FIELDS].includes(name));
 
   // 드롭다운 옵션 생성
   const plantOptions = plantEquipments.map(eq => eq.name);
@@ -129,7 +142,8 @@ export default function NotchingEdit() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
         numericFields={NOTCHING_NUMERIC_FIELDS}
-        readOnlyFields={COMMON_READONLY_FIELDS}
+        integerFields={NOTCHING_INTEGER_FIELDS}
+        readOnlyFields={[...COMMON_READONLY_FIELDS, ...NOTCHING_AUTO_FILL_FIELDS]}
         selectFields={notchingSelectFields}
         dateFields={['manufactureDate']}
       />

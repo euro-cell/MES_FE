@@ -9,12 +9,14 @@ import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { createNotchingWorklog } from '../../../../../api/project/worklog';
 import type { NotchingWorklogPayload } from './NotchingTypes';
-import { NOTCHING_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { NOTCHING_NUMERIC_FIELDS, NOTCHING_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
+// 자동입력 필드 (양품 수량 = 타발 수량 - 불량 수량)
+const NOTCHING_AUTO_FILL_FIELDS = ['goodQuantity1', 'goodQuantity2', 'goodQuantity3', 'goodQuantity4', 'goodQuantity5'];
 
 export default function NotchingRegister() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -24,8 +26,26 @@ export default function NotchingRegister() {
   const { namedRanges } = useNamedRanges(workbook);
 
   const project = useProjectLoader(projectId);
-  const { formValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
+  const { formValues, setFormValues } = useWorklogFormInit({ namedRanges, project });
   const plantEquipments = useLineEquipmentLoader(formValues.line);
+
+  // 양품 수량 자동계산 (타발 수량 - 불량 수량)
+  const handleCellChange = (rangeName: string, value: any) => {
+    setFormValues(prev => {
+      const newValues = { ...prev, [rangeName]: value };
+
+      // notchingQuantity 또는 defectQuantity 변경 시 goodQuantity 자동계산
+      for (let i = 1; i <= 5; i++) {
+        if (rangeName === `notchingQuantity${i}` || rangeName === `defectQuantity${i}`) {
+          const notching = parseInt(newValues[`notchingQuantity${i}`]) || 0;
+          const defect = parseInt(newValues[`defectQuantity${i}`]) || 0;
+          newValues[`goodQuantity${i}`] = notching - defect;
+        }
+      }
+
+      return newValues;
+    });
+  };
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -54,7 +74,7 @@ export default function NotchingRegister() {
   if (templateError) return <p>템플릿 로드 실패: {templateError.message}</p>;
   if (!workbook) return <p>엑셀 데이터를 불러올 수 없습니다.</p>;
 
-  const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
+  const editableRanges = Object.keys(namedRanges).filter(name => ![...COMMON_READONLY_FIELDS, ...NOTCHING_AUTO_FILL_FIELDS].includes(name));
   const plantOptions = plantEquipments.map(eq => eq.name);
 
   const selectFields: Record<string, string[]> = {
@@ -90,7 +110,8 @@ export default function NotchingRegister() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
         numericFields={NOTCHING_NUMERIC_FIELDS}
-        readOnlyFields={COMMON_READONLY_FIELDS}
+        integerFields={NOTCHING_INTEGER_FIELDS}
+        readOnlyFields={[...COMMON_READONLY_FIELDS, ...NOTCHING_AUTO_FILL_FIELDS]}
         selectFields={selectFields}
         dateFields={['manufactureDate']}
       />
