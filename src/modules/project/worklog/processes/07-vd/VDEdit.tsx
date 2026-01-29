@@ -217,8 +217,8 @@ export default function VdEdit() {
       vacuumDegreeSetting: formValues.vacuumDegreeSetting ? Number(formValues.vacuumDegreeSetting) : undefined,
       upperSetTemperature: formValues.upperSetTemperature ? Number(formValues.upperSetTemperature) : undefined,
       lowerSetTemperature: formValues.lowerSetTemperature ? Number(formValues.lowerSetTemperature) : undefined,
-      upperTimerTime: formValues.upperTimerTime ? Number(formValues.upperTimerTime) : undefined,
-      lowerTimerTime: formValues.lowerTimerTime ? Number(formValues.lowerTimerTime) : undefined,
+      upperTimerTime: formValues.upperTimerTime || undefined,
+      lowerTimerTime: formValues.lowerTimerTime || undefined,
     };
 
     setSubmitting(true);

@@ -300,38 +300,43 @@ export const VD_INTEGER_FIELDS = [
   ]),
 ];
 
-// Forming 숫자 필드
+// Forming 숫자 필드 (불량률, 공정 조건)
 export const FORMING_NUMERIC_FIELDS = [
-  'pouchUsage',
-  // 컷팅
-  'cuttingWorkQuantity',
-  'cuttingGoodQuantity',
-  'cuttingDefectQuantity',
-  'cuttingDiscardQuantity',
+  // 불량률
   'cuttingDefectRate',
-  // 포밍
-  'formingWorkQuantity',
-  'formingGoodQuantity',
-  'formingDefectQuantity',
-  'formingDiscardQuantity',
   'formingDefectRate',
-  // 폴딩
-  'foldingWorkQuantity',
-  'foldingGoodQuantity',
-  'foldingDefectQuantity',
-  'foldingDiscardQuantity',
   'foldingDefectRate',
-  // 탑컷팅
-  'topCuttingWorkQuantity',
-  'topCuttingGoodQuantity',
-  'topCuttingDefectQuantity',
-  'topCuttingDiscardQuantity',
   'topCuttingDefectRate',
   // 공정 조건
   'cuttingLength',
   'formingDepth',
   'formingStopperHeight',
   'topCuttingLength',
+];
+
+// Forming 정수 필드 (수량)
+export const FORMING_INTEGER_FIELDS = [
+  'pouchUsage',
+  // 컷팅
+  'cuttingWorkQuantity',
+  'cuttingGoodQuantity',
+  'cuttingDefectQuantity',
+  'cuttingDiscardQuantity',
+  // 포밍
+  'formingWorkQuantity',
+  'formingGoodQuantity',
+  'formingDefectQuantity',
+  'formingDiscardQuantity',
+  // 폴딩
+  'foldingWorkQuantity',
+  'foldingGoodQuantity',
+  'foldingDefectQuantity',
+  'foldingDiscardQuantity',
+  // 탑컷팅
+  'topCuttingWorkQuantity',
+  'topCuttingGoodQuantity',
+  'topCuttingDefectQuantity',
+  'topCuttingDiscardQuantity',
 ];
 
 // Stacking 숫자 필드

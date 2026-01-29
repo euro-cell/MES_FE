@@ -6,15 +6,18 @@ import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
+import { usePouchLots } from '../../shared/usePouchLots';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { createFormingWorklog } from '../../../../../api/project/worklog';
 import type { FormingWorklogPayload } from './FormingTypes';
-import { FORMING_NUMERIC_FIELDS } from '../../shared/numericFields';
+import { FORMING_NUMERIC_FIELDS, FORMING_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
+// 자동입력 필드 (파우치 LOT 선택 시 제조사, 스팩 자동 입력)
+const POUCH_AUTO_FILL_FIELDS = ['pouchManufacturer', 'pouchSpec'];
 
 export default function FormingRegister() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -24,10 +27,26 @@ export default function FormingRegister() {
   const { namedRanges } = useNamedRanges(workbook);
 
   const project = useProjectLoader(projectId);
-  const { formValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
+  const { formValues, setFormValues } = useWorklogFormInit({ namedRanges, project });
   const plantEquipments = useLineEquipmentLoader(formValues.line);
+  const { pouchLots } = usePouchLots();
 
   const [submitting, setSubmitting] = useState(false);
+
+  // 파우치 LOT 선택 시 제조사, 스팩 자동 입력
+  const handleCellChange = (rangeName: string, value: any) => {
+    if (rangeName === 'pouchLot') {
+      const selectedPouch = pouchLots.find(p => p.lot === value);
+      setFormValues(prev => ({
+        ...prev,
+        [rangeName]: value,
+        pouchManufacturer: selectedPouch?.manufacturer || '',
+        pouchSpec: selectedPouch?.spec || '',
+      }));
+    } else {
+      setFormValues(prev => ({ ...prev, [rangeName]: value }));
+    }
+  };
 
   const handleSubmit = async () => {
     if (!projectId) return;
@@ -56,10 +75,12 @@ export default function FormingRegister() {
 
   const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
   const plantOptions = plantEquipments.map(eq => eq.name);
+  const pouchLotOptions = pouchLots.map(p => p.lot);
 
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+    ...(pouchLotOptions.length > 0 && { pouchLot: pouchLotOptions }),
   };
 
   return (
@@ -90,7 +111,8 @@ export default function FormingRegister() {
         onCellChange={handleCellChange}
         className={styles.excelRenderer}
         numericFields={FORMING_NUMERIC_FIELDS}
-        readOnlyFields={COMMON_READONLY_FIELDS}
+        integerFields={FORMING_INTEGER_FIELDS}
+        readOnlyFields={[...COMMON_READONLY_FIELDS, ...POUCH_AUTO_FILL_FIELDS]}
         selectFields={selectFields}
         dateFields={['manufactureDate']}
       />
