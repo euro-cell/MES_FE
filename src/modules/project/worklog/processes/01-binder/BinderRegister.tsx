@@ -11,6 +11,7 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { BINDER_NUMERIC_FIELDS, BINDER_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
+import { saveWorklogDefaults, loadWorklogDefaults } from '../../shared/worklogDefaults';
 import { createBinderWorklog } from '../../../../../api/project/worklog';
 import type { BinderWorklogPayload } from './BinderTypes';
 import { getMixerEquipments } from '../../../../../api/plant/EquipmentService';
@@ -29,8 +30,17 @@ export default function BinderRegister() {
   const { namedRanges } = useNamedRanges(workbook);
 
   const project = useProjectLoader(projectId);
-  const { formValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
+  const { formValues, setFormValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
   const plantEquipments = useLineEquipmentLoader(formValues.line);
+
+  // LocalStorage에서 기본값 불러오기
+  useEffect(() => {
+    if (Object.keys(formValues).length === 0) return;
+    const defaults = loadWorklogDefaults('binder');
+    if (defaults) {
+      setFormValues(prev => ({ ...prev, ...defaults }));
+    }
+  }, [Object.keys(formValues).length > 0]);
   const { categories: materialCategories } = useMaterialCategories();
   const { lotOptions: material1LotOptions } = useMaterialLots(formValues.material1Name);
   const { lotOptions: material2LotOptions } = useMaterialLots(formValues.material2Name);
@@ -61,6 +71,8 @@ export default function BinderRegister() {
         payload.plant = selectedEquipment?.id ?? null;
       }
       await createBinderWorklog(Number(projectId), payload);
+      // 저장 성공 시 기본값 저장
+      saveWorklogDefaults('binder', formValues);
       alert('작업일지가 등록되었습니다.');
       navigate(`/project/log/${projectId}?category=Electrode&process=Binder`);
     } catch (err) {
