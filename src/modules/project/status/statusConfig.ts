@@ -26,7 +26,7 @@ export const STATUS_PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
     { id: 'MainFormation', category: 'Formation', title: 'Main Formation OCV/IR_1' },
     { id: 'Aging', category: 'Formation', title: 'Aging OCV/IR_2' },
     { id: 'Grading', category: 'Formation', title: 'Grading OCV/IR_3' },
-    { id: 'Inspection', category: 'Formation', title: '외관검사' },
+    { id: 'Inspection', category: 'Formation', title: '최종검사' },
   ],
 };
 

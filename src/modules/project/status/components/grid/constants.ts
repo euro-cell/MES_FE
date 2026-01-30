@@ -84,7 +84,7 @@ export const PROCESS_NAME_MAP: Record<string, string> = {
   mainFormation: 'Main Formation',
   aging: 'Aging\nOCV/IR_2',
   grading: 'Grading\nOCV/IR_3',
-  visualInspection: '외관검사',
+  visualInspection: '최종검사',
 };
 
 // 공정별 생산량 단위 매핑

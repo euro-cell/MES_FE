@@ -8,6 +8,7 @@ export interface LotProject {
 export interface ProcessInfo {
   id: string;
   title: string;
+  icon?: string;
 }
 
 export interface CategoryInfo {

@@ -15,7 +15,7 @@ export const LOT_PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
   ],
   Formation: [
     { id: 'Formation', title: 'Formation' },
-    { id: 'RawData', title: 'Raw Data 등록' },
+    { id: 'RawData', title: 'Raw Data 등록', icon: '📊' },
   ],
 };
 
@@ -35,7 +35,7 @@ export const createCategoryMenus = (projectId: number) => {
 export const createProcessMenus = (projectId: number, category: string) => {
   const processes = LOT_PROCESS_CONFIG[category] || [];
   return processes.map(process => ({
-    title: process.title,
+    title: process.icon ? `${process.icon} ${process.title}` : process.title,
     path: `/project/lot/${projectId}?category=${category}&process=${process.id}`,
   }));
 };

@@ -79,7 +79,7 @@ export default function InspectionView() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>외관검사 작업일지 조회</h2>
+        <h2>최종검사 작업일지 조회</h2>
         <div className={styles.actions}>
           <button onClick={handleBack} className={styles.backButton}>
             목록

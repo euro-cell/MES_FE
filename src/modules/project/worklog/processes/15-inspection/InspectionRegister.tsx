@@ -88,7 +88,7 @@ export default function InspectionRegister() {
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
-          <h2>외관검사 작업일지 등록</h2>
+          <h2>최종검사 작업일지 등록</h2>
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
         </div>
         <div className={styles.actions}>

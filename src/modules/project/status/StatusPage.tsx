@@ -34,7 +34,7 @@ const processNameMap: Record<string, string> = {
   mainFormation: 'Main Formation',
   aging: 'Aging',
   grading: 'Grading',
-  visualInspection: '외관검사',
+  visualInspection: '최종검사',
 };
 
 export default function StatusPage() {
