@@ -27,6 +27,7 @@ export const MENU_CONFIG = {
     title: '품질 관리',
     path: '/quality',
     sub: [
+      { title: 'IQC', path: '/quality/iqc' },
       { title: 'LQC', path: '/quality/lqc' },
       { title: 'OQC', path: '/quality/oqc' },
     ],

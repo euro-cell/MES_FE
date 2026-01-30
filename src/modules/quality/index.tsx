@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { MENU_CONFIG } from '../menuConfig';
 import SubmenuBar from '../../components/SubmenuBar';
 import styles from '../../styles/components/moduleIndex.module.css';
+import IQCIndex from './iqc';
 import LQCIndex from './lqc';
 import OQCIndex from './oqc';
 
@@ -14,6 +15,7 @@ export default function QualityIndex() {
 
       <div className='module-content'>
         <Routes>
+          <Route path='iqc/*' element={<IQCIndex />} />
           <Route path='lqc/*' element={<LQCIndex />} />
           <Route path='oqc/*' element={<OQCIndex />} />
         </Routes>
