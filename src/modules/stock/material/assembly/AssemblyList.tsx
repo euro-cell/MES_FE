@@ -5,10 +5,12 @@ import {
   updateAssemblyMaterial,
   deleteAssemblyMaterial,
   getAssemblyHistory,
+  importAssemblyMaterials,
 } from '../../../../api/stock/material/AssemblyMaterialService';
 import type { AssemblyMaterial, MaterialHistory } from './types';
 import AddAssemblyModal from './AddAssemblyModal';
 import DeleteAssemblyModal from './DeleteAssemblyModal';
+import UploadMaterialModal, { type MaterialUploadData } from '../shared/UploadMaterialModal';
 import styles from '../../../../styles/stock/material/assembly.module.css';
 
 const INITIAL_FORM_DATA: Omit<AssemblyMaterial, 'id'> = {
@@ -41,6 +43,7 @@ export default function AssemblyList() {
   const [showHistory, setShowHistory] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
   const loadMaterials = async (includeZero: boolean = false) => {
     try {
@@ -185,6 +188,21 @@ export default function AssemblyList() {
     }
   };
 
+  const handleUpload = () => {
+    setShowUploadModal(true);
+  };
+
+  const handleCloseUploadModal = () => {
+    setShowUploadModal(false);
+  };
+
+  const handleImportMaterials = async (data: MaterialUploadData[]) => {
+    const result = await importAssemblyMaterials(data);
+    // 데이터 새로고침
+    await loadMaterials(includeZeroStock);
+    return result;
+  };
+
   useEffect(() => {
     loadMaterials(includeZeroStock);
   }, []);
@@ -216,16 +234,21 @@ export default function AssemblyList() {
             />
             <span>입/출고 이력 보기</span>
           </label>
+          {!showHistory && (
+            <>
+              <button className={styles.downloadButton} onClick={handleDownload}>
+                📥 엑셀 다운로드
+              </button>
+              <button className={styles.uploadButton} onClick={handleUpload}>
+                📤 엑셀 업로드
+              </button>
+            </>
+          )}
         </div>
         {!showHistory && (
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button className={styles.downloadButton} onClick={handleDownload}>
-              📥 엑셀 다운로드
-            </button>
-            <button className={styles.addButton} onClick={handleOpenModal}>
-              + 추가
-            </button>
-          </div>
+          <button className={styles.addButton} onClick={handleOpenModal}>
+            + 추가
+          </button>
         )}
       </div>
 
@@ -360,6 +383,13 @@ export default function AssemblyList() {
       />
 
       <DeleteAssemblyModal show={showDeleteModal} onConfirm={handleDeleteConfirm} onClose={handleCloseDeleteModal} />
+
+      <UploadMaterialModal
+        show={showUploadModal}
+        onClose={handleCloseUploadModal}
+        onImport={handleImportMaterials}
+        processType='조립'
+      />
     </div>
   );
 }

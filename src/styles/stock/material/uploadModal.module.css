@@ -1,0 +1,316 @@
+/* 모달 오버레이 */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 모달 컨텐츠 */
+.modalContent {
+  background: white;
+  border-radius: 8px;
+  width: 95%;
+  max-width: 1400px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 모달 헤더 */
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #1e293b;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  color: #1e293b;
+}
+
+/* 모달 바디 */
+.modalBody {
+  padding: 8px;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* 드롭존 */
+.dropZone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 6px;
+  padding: 5px;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  background: #f8fafc;
+  flex-shrink: 0;
+}
+
+.dropZone:hover,
+.dragging {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadLabel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.uploadIcon {
+  width: 24px;
+  height: 24px;
+  stroke: #64748b;
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.uploadText {
+  color: #475569;
+  font-size: 13px;
+}
+
+.fileTypes {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* 힌트 */
+.hint {
+  margin: 6px 0 0 0;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+/* 로딩 상태 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 30px;
+  color: #3b82f6;
+  font-size: 14px;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 에러/성공 메시지 */
+.error {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 14px;
+  white-space: pre-line;
+}
+
+.success {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  color: #16a34a;
+  font-size: 14px;
+}
+
+/* 미리보기 섹션 */
+.previewSection {
+  margin-top: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.fileName {
+  font-weight: 500;
+  color: #334155;
+}
+
+.rowCount {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.clearButton {
+  margin-left: auto;
+  padding: 4px 10px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.clearButton:hover {
+  background: #dc2626;
+}
+
+/* 테이블 래퍼 */
+.tableWrapper {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.previewTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  table-layout: auto;
+}
+
+.previewTable th,
+.previewTable td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 8px;
+  text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.previewTable th {
+  background: #1e40af;
+  color: white;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.previewTable tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.previewTable tbody tr:hover td {
+  background: #e0f2fe;
+}
+
+/* 모달 푸터 */
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 5px 10px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.cancelButton {
+  padding: 8px 20px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cancelButton:hover {
+  background: #e2e8f0;
+}
+
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.importButton {
+  padding: 8px 20px;
+  background: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.importButton:hover {
+  background: #16a34a;
+}
+
+.importButton:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* 버튼 내 스피너 */
+.buttonSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}

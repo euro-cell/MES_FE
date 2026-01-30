@@ -66,6 +66,38 @@ export const getElectrodeHistory = async (page: number = 1, limit: number = 20) 
   }
 };
 
+/** 전극 자재 엑셀 업로드 (Upsert: lot + category 조합으로 식별) */
+export interface MaterialImportData {
+  category: string;
+  type: string;
+  purpose: string;
+  name: string;
+  spec?: string;
+  lotNo?: string;
+  company?: string;
+  origin: string;
+  unit: string;
+  price?: number;
+  note?: string;
+  stock?: number;
+}
+
+export const importElectrodeMaterials = async (
+  data: MaterialImportData[]
+): Promise<{ created: number; updated: number }> => {
+  try {
+    const response = await axios.post<{ created: number; updated: number }>(
+      `${API_BASE}/material/electrode/import`,
+      { materials: data },
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('❌ 전극 자재 업로드 실패:', error);
+    throw error;
+  }
+};
+
 /** 전극 자재 엑셀 다운로드 */
 export const downloadElectrodeExcel = async (): Promise<void> => {
   const res = await axios.get(`${API_BASE}/material/electrode/export`, {
