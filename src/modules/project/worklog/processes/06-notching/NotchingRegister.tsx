@@ -88,6 +88,7 @@ export default function NotchingRegister() {
         <div>
           <h2>Notching 작업일지 등록</h2>
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
+          <p className={styles.hint}>파란색: 입력 / 연두색: 선택 / 노란색: 자동입력</p>
         </div>
         <div className={styles.actions}>
           <button

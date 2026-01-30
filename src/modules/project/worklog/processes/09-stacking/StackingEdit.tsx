@@ -189,6 +189,7 @@ export default function StackingEdit() {
         <div>
           <h2>Stacking 작업일지 수정</h2>
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
+          <p className={styles.hint}>파란색: 입력 / 연두색: 선택 / 노란색: 자동입력</p>
         </div>
         <div className={styles.actions}>
           <button onClick={handleCancel} className={styles.cancelButton} disabled={saving}>
@@ -215,10 +216,6 @@ export default function StackingEdit() {
           selectFields={stackingSelectFields}
           dateFields={['manufactureDate']}
         />
-      </div>
-
-      <div className={styles.footer}>
-        <p className={styles.hint}>파란색으로 표시된 셀에 값을 입력할 수 있습니다.</p>
       </div>
     </div>
   );

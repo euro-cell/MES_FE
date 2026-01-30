@@ -406,6 +406,9 @@ export default function ExcelRenderer({
                 // 읽기 전용 필드는 연한 노란색 배경
                 if (isReadOnly) {
                   cellStyle.backgroundColor = '#FFFDE7';
+                } else if (isEditable && rangeName && selectFields[rangeName]) {
+                  // 선택박스 필드는 연두색 배경
+                  cellStyle.backgroundColor = '#f0fdf4';
                 } else if (backgroundColor && !isEditable) {
                   // 편집 가능한 셀이 아닌 경우에만 배경색 적용
                   cellStyle.backgroundColor = backgroundColor;
@@ -426,12 +429,20 @@ export default function ExcelRenderer({
                   delete cellStyle.borderTop;
                 }
 
+                // 셀 클래스 결정: 선택박스 > 편집가능 > 없음
+                const isSelectField = isEditable && rangeName && selectFields[rangeName];
+                const cellClassName = isSelectField
+                  ? styles.selectCell
+                  : isEditable
+                    ? styles.editableCell
+                    : '';
+
                 return (
                   <td
                     key={colIdx}
                     rowSpan={mergeInfo.isMerged ? mergeInfo.rowSpan : 1}
                     colSpan={mergeInfo.isMerged ? mergeInfo.colSpan : 1}
-                    className={isEditable ? styles.editableCell : ''}
+                    className={cellClassName}
                     style={cellStyle}
                   >
                     {isEditable && rangeName && !isReadOnly ? (

@@ -254,6 +254,7 @@ export default function FormingEdit() {
         <div>
           <h2>Forming 작업일지 수정</h2>
           {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
+          <p className={styles.hint}>파란색: 입력 / 연두색: 선택 / 노란색: 자동입력</p>
         </div>
         <div className={styles.actions}>
           <button className={styles.btnCancel} onClick={() => navigate(`/project/log/${projectId}?category=Assembly&process=Forming`)}>
