@@ -1,19 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
 import { useProjectLoader } from '../../shared/useProjectLoader';
 import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
-import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import { useMaterialLots } from '../../shared/useMaterialLots';
 import { useBinderLots } from '../../shared/useBinderLots';
+import { useProjectSpecification } from '../../shared/useProjectSpecification';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { SLURRY_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createSlurryWorklog } from '../../../../../api/project/worklog';
 import type { SlurryWorklogPayload } from './SlurryTypes';
-import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS, SLURRY_READONLY_FIELDS } from './slurryConstants';
+import {
+  SLURRY_TIME_FIELDS,
+  SLURRY_MULTILINE_FIELDS,
+  SLURRY_READONLY_FIELDS,
+  MATERIAL_FIELD_SUFFIXES,
+} from './slurryConstants';
 import {
   saveWorklogDefaults,
   loadWorklogDefaults,
@@ -29,6 +34,9 @@ import styles from '../../../../../styles/project/worklog/common.module.css';
 // 라인명 고정 옵션
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
+// 양극재/음극재 선택 옵션
+const ELECTRODE_TYPE_OPTIONS = ['양극재', '음극재'];
+
 export default function SlurryRegister() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
@@ -39,7 +47,7 @@ export default function SlurryRegister() {
   const project = useProjectLoader(projectId);
   const { formValues, setFormValues } = useWorklogFormInit({ namedRanges, project });
   const plantEquipments = useLineEquipmentLoader(formValues.line);
-  const { categories: materialCategories } = useMaterialCategories();
+  const { specification } = useProjectSpecification(projectId);
 
   // 자재 1~6에 대한 LOT 목록 조회
   const { lotOptions: material1LotOptions } = useMaterialLots(formValues.material1Name);
@@ -53,6 +61,37 @@ export default function SlurryRegister() {
 
   const [saving, setSaving] = useState(false);
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
+  // 설계정보에서 가져온 자재 수 (동적 readOnly 계산용)
+  const [activeMaterialCount, setActiveMaterialCount] = useState(0);
+
+  // 동적 readOnly 필드 계산: 설계정보에서 가져온 자재 수에 따라 사용하지 않는 행은 전체 readOnly
+  const dynamicReadOnlyFields = useMemo(() => {
+    const fields: string[] = [...SLURRY_READONLY_FIELDS];
+
+    // 1~6행 조성(%)은 항상 readOnly (설계정보에서 자동 채움)
+    for (let i = 1; i <= 6; i++) {
+      fields.push(`material${i}Composition`);
+    }
+
+    // 2~6행 구분(Name)은 항상 readOnly (설계정보에서 자동 채움)
+    for (let i = 2; i <= 6; i++) {
+      fields.push(`material${i}Name`);
+    }
+
+    // 사용하지 않는 행 (activeMaterialCount + 1 ~ 6)은 모든 필드가 readOnly
+    if (activeMaterialCount > 0) {
+      for (let i = activeMaterialCount + 1; i <= 6; i++) {
+        MATERIAL_FIELD_SUFFIXES.forEach(suffix => {
+          const fieldName = `material${i}${suffix}`;
+          if (!fields.includes(fieldName)) {
+            fields.push(fieldName);
+          }
+        });
+      }
+    }
+
+    return fields;
+  }, [activeMaterialCount]);
 
   // LocalStorage에서 기본값 불러오기
   useEffect(() => {
@@ -77,11 +116,7 @@ export default function SlurryRegister() {
   }, []);
 
   // 고형분 자동계산 함수
-  const calculateSolidContent = (
-    dish: number,
-    slurry: number,
-    dry: number
-  ): number | null => {
+  const calculateSolidContent = (dish: number, slurry: number, dry: number): number | null => {
     if (isNaN(dish) || isNaN(slurry) || isNaN(dry)) return null;
     const wetMass = slurry - dish;
     const dryMass = dry - dish;
@@ -92,6 +127,38 @@ export default function SlurryRegister() {
   const handleCellChange = (rangeName: string, value: any) => {
     setFormValues(prev => {
       const newValues = { ...prev, [rangeName]: value };
+
+      // 양극재/음극재 선택 시 설계정보에서 자재투입정보 자동 채움
+      if (rangeName === 'material1Name' && specification) {
+        const electrode = value === '양극재' ? specification.cathode : specification.anode;
+        if (electrode) {
+          // activeMaterial, conductor(도전재), binder를 순서대로 합침
+          const allMaterials = [
+            ...electrode.activeMaterial.map(m => ({ name: value, composition: m.value })),
+            ...electrode.conductor.map(m => ({ name: '도전재', composition: m.value })),
+            ...electrode.binder.map(m => ({ name: '바인더', composition: m.value })),
+          ];
+
+          // 자재 수 저장 (동적 readOnly 계산용)
+          setActiveMaterialCount(Math.min(allMaterials.length, 6));
+
+          // 최대 6행까지 채움
+          allMaterials.slice(0, 6).forEach((mat, i) => {
+            const rowNum = i + 1;
+            newValues[`material${rowNum}Name`] = mat.name;
+            newValues[`material${rowNum}Composition`] = mat.composition;
+          });
+
+          // 남은 행은 비움 (LOT, PlannedInput, ActualInput도 비움)
+          for (let i = allMaterials.length + 1; i <= 6; i++) {
+            newValues[`material${i}Name`] = '';
+            newValues[`material${i}Composition`] = '';
+            newValues[`material${i}Lot`] = '';
+            newValues[`material${i}PlannedInput`] = '';
+            newValues[`material${i}ActualInput`] = '';
+          }
+        }
+      }
 
       // 바인더용액 LOT 선택 시 binderSolution 자동 입력
       if (rangeName === 'binderSolutionLot' && value) {
@@ -106,7 +173,7 @@ export default function SlurryRegister() {
         const plannedInput = parseFloat(newValues.binderSolutionPlannedInput);
         const inputRate = parseFloat(newValues.pdMixer1InputRate1);
         if (!isNaN(plannedInput) && !isNaN(inputRate)) {
-          newValues.pdMixer1Input1 = Number((plannedInput * inputRate / 100).toFixed(3));
+          newValues.pdMixer1Input1 = Number(((plannedInput * inputRate) / 100).toFixed(3));
         }
       }
 
@@ -210,33 +277,35 @@ export default function SlurryRegister() {
   const plantOptions = plantEquipments.map(eq => eq.name);
 
   // PD Mixer 이름 드롭다운 (pdMixer1Name ~ pdMixer4Name)
-  const pdMixerNameFields = mixerOptions.length > 0
-    ? Object.fromEntries(
-        ['pdMixer1Name', 'pdMixer2Name', 'pdMixer3Name', 'pdMixer4Name'].map(field => [field, mixerOptions])
-      )
-    : {};
+  const pdMixerNameFields =
+    mixerOptions.length > 0
+      ? Object.fromEntries(
+          ['pdMixer1Name', 'pdMixer2Name', 'pdMixer3Name', 'pdMixer4Name'].map(field => [field, mixerOptions]),
+        )
+      : {};
 
-  // 자재투입정보 구분 드롭다운 (material1~material6)
-  const materialNameFields = materialCategories.length > 0
-    ? Object.fromEntries(
-        Array.from({ length: 6 }, (_, i) => [`material${i + 1}Name`, materialCategories])
-      )
-    : {};
+  // 자재투입정보 구분 드롭다운 (1행만 양극재/음극재 선택)
+  const materialNameFields = {
+    material1Name: ELECTRODE_TYPE_OPTIONS,
+  };
 
   // 자재투입정보 LOT 드롭다운 (카테고리 선택 시 연동)
   const materialLotOptions = [
-    material1LotOptions, material2LotOptions, material3LotOptions,
-    material4LotOptions, material5LotOptions, material6LotOptions,
+    material1LotOptions,
+    material2LotOptions,
+    material3LotOptions,
+    material4LotOptions,
+    material5LotOptions,
+    material6LotOptions,
   ];
   const materialLotFields = Object.fromEntries(
     materialLotOptions
       .map((opts, i) => [`material${i + 1}Lot`, opts])
-      .filter(([, opts]) => (opts as string[]).length > 0)
+      .filter(([, opts]) => (opts as string[]).length > 0),
   );
   // 바인더용액 LOT 드롭다운
-  const binderSolutionLotField = binderSolutionLotOptions.length > 0
-    ? { binderSolutionLot: binderSolutionLotOptions }
-    : {};
+  const binderSolutionLotField =
+    binderSolutionLotOptions.length > 0 ? { binderSolutionLot: binderSolutionLotOptions } : {};
 
   const slurrySelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
@@ -260,7 +329,7 @@ export default function SlurryRegister() {
             onClick={handleLoadPrevious}
             className={styles.loadPreviousButton}
             disabled={saving}
-            title="마지막으로 저장한 작업일지 내용을 불러옵니다 (프로젝트명, 날짜, 작성자 제외)"
+            title='마지막으로 저장한 작업일지 내용을 불러옵니다 (프로젝트명, 날짜, 작성자 제외)'
           >
             이전 내용 불러오기
           </button>
@@ -278,14 +347,14 @@ export default function SlurryRegister() {
       <div className={styles.excelWrapper}>
         <ExcelRenderer
           workbook={workbook}
-          editableRanges={Object.keys(namedRanges).filter(name => !SLURRY_READONLY_FIELDS.includes(name))}
+          editableRanges={Object.keys(namedRanges).filter(name => !dynamicReadOnlyFields.includes(name))}
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={SLURRY_MULTILINE_FIELDS}
           timeFields={SLURRY_TIME_FIELDS}
           numericFields={SLURRY_NUMERIC_FIELDS}
-          readOnlyFields={SLURRY_READONLY_FIELDS}
+          readOnlyFields={dynamicReadOnlyFields}
           selectFields={slurrySelectFields}
           dateFields={['manufactureDate']}
           uppercaseFields={['lot']}

@@ -44,7 +44,7 @@ export const SLURRY_TIME_FIELDS = [
 
 export const SLURRY_MULTILINE_FIELDS = ['remark'];
 
-// 자동계산 필드 (읽기 전용)
+// 자동계산 필드 (읽기 전용) - 자재투입정보 필드는 SlurryRegister에서 동적으로 계산
 export const SLURRY_READONLY_FIELDS = [
   'productionId',
   'solidContent1Percentage',
@@ -53,3 +53,6 @@ export const SLURRY_READONLY_FIELDS = [
   'pdMixer1Input1',
   'pdMixer1SolidContent1',
 ];
+
+// 자재투입정보 각 행의 필드 접미사 (동적 readOnly 계산용)
+export const MATERIAL_FIELD_SUFFIXES = ['Name', 'Composition', 'Lot', 'PlannedInput', 'ActualInput'];
