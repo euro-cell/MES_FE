@@ -1,7 +1,6 @@
 /* Common styles for worklog components */
 
 .container {
-  padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -10,7 +9,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .headerLeft {
@@ -27,8 +26,8 @@
 }
 
 .projectName {
-  font-size: 14px;
-  color: #6b7280;
+  font-size: 19px;
+  color: #1e1f23;
   margin: 4px 0 0 0;
 }
 
@@ -187,7 +186,7 @@
 .excelWrapper {
   background: white;
   border-radius: 8px;
-  padding: 20px;
+  padding: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
