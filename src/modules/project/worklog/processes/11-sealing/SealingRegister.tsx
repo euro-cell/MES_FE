@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
@@ -12,8 +12,15 @@ import { createSealingWorklog } from '../../../../../api/project/worklog';
 import type { SealingWorklogPayload } from './SealingTypes';
 import { SEALING_NUMERIC_FIELDS, SEALING_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
+import {
+  saveWorklogDefaults,
+  loadWorklogDefaults,
+  saveWorklogAllFields,
+  loadWorklogAllFields,
+} from '../../shared/worklogDefaults';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+import toast from 'react-hot-toast';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 // 자동입력 필드 (파우치 LOT 선택 시 제조사 자동 입력)
@@ -44,12 +51,17 @@ export default function SealingRegister() {
 
   const [saving, setSaving] = useState(false);
 
+  // LocalStorage에서 기본값 불러오기
+  useEffect(() => {
+    if (Object.keys(formValues).length === 0) return;
+    const defaults = loadWorklogDefaults('sealing');
+    if (defaults) {
+      setFormValues(prev => ({ ...prev, ...defaults }));
+    }
+  }, [Object.keys(formValues).length > 0]);
+
   // 양품 수량 및 불량률 자동계산 헬퍼 함수
-  const calculateAutoFields = (
-    prev: Record<string, any>,
-    rangeName: string,
-    value: any
-  ): Record<string, any> => {
+  const calculateAutoFields = (prev: Record<string, any>, rangeName: string, value: any): Record<string, any> => {
     const updates: Record<string, any> = { [rangeName]: value };
 
     // 각 공정별 양품 수량, 불량률 계산
@@ -62,15 +74,14 @@ export default function SealingRegister() {
       const defectRateField = `${process}DefectRate`;
 
       if (rangeName === workField || rangeName === defectField || rangeName === discardField) {
-        const workQty = rangeName === workField ? (value || 0) : (prev[workField] || 0);
-        const defectQty = rangeName === defectField ? (value || 0) : (prev[defectField] || 0);
-        const discardQty = rangeName === discardField ? (value || 0) : (prev[discardField] || 0);
+        const workQty = rangeName === workField ? value || 0 : prev[workField] || 0;
+        const defectQty = rangeName === defectField ? value || 0 : prev[defectField] || 0;
+        const discardQty = rangeName === discardField ? value || 0 : prev[discardField] || 0;
         // 양품 수량 = 작업 수량 - 불량 수량 - 폐기 수량
         updates[goodField] = Math.max(0, Number(workQty) - Number(defectQty) - Number(discardQty));
         // 불량률 = (불량 수량 / 작업 수량) * 100
-        updates[defectRateField] = Number(workQty) > 0
-          ? Math.round((Number(defectQty) / Number(workQty)) * 10000) / 100
-          : 0;
+        updates[defectRateField] =
+          Number(workQty) > 0 ? Math.round((Number(defectQty) / Number(workQty)) * 10000) / 100 : 0;
       }
     }
 
@@ -103,6 +114,9 @@ export default function SealingRegister() {
         payload.plant = selectedEquipment?.id ?? null;
       }
       await createSealingWorklog(Number(projectId), payload);
+      // 저장 성공 시 기본값 저장
+      saveWorklogDefaults('sealing', formValues);
+      saveWorklogAllFields('sealing', formValues);
       alert('작업일지가 등록되었습니다.');
       navigate(`/project/log/${projectId}?category=Assembly&process=Sealing`);
     } catch (err) {
@@ -116,6 +130,17 @@ export default function SealingRegister() {
   const handleCancel = () => {
     if (confirm('입력한 내용이 사라집니다. 취소하시겠습니까?')) {
       navigate(`/project/log/${projectId}?category=Assembly&process=Sealing`);
+    }
+  };
+
+  // 이전 내용 불러오기
+  const handleLoadPrevious = () => {
+    const savedFields = loadWorklogAllFields('sealing');
+    if (savedFields) {
+      setFormValues(prev => ({ ...prev, ...savedFields }));
+      toast.success('이전 등록 내용을 불러왔습니다.');
+    } else {
+      toast.error('저장된 이전 내용이 없습니다.');
     }
   };
 
@@ -155,10 +180,20 @@ export default function SealingRegister() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div>
-          <h2>Sealing 작업일지 등록</h2>
-          {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
-          <p className={styles.hint}>파란색: 입력 / 연두색: 선택 / 노란색: 자동입력</p>
+        <div className={styles.headerLeft}>
+          <div>
+            <h2>Sealing 작업일지 등록</h2>
+            {project && <p className={styles.projectName}>프로젝트: {project.name}</p>}
+            <p className={styles.hint}>파란색: 입력 / 연두색: 선택 / 노란색: 자동입력</p>
+          </div>
+          <button
+            onClick={handleLoadPrevious}
+            className={styles.loadPreviousButton}
+            disabled={saving}
+            title='마지막으로 저장한 작업일지 내용을 불러옵니다 (프로젝트명, 날짜, 작성자 제외)'
+          >
+            이전 내용 불러오기
+          </button>
         </div>
         <div className={styles.actions}>
           <button onClick={handleCancel} className={styles.cancelButton} disabled={saving}>

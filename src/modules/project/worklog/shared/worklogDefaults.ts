@@ -3,7 +3,21 @@
 const STORAGE_KEY_PREFIX = 'worklog_defaults_';
 const PREVIOUS_STORAGE_KEY_PREFIX = 'worklog_previous_';
 
-export type ProcessType = 'binder' | 'slurry' | 'coating';
+export type ProcessType =
+  | 'binder'
+  | 'slurry'
+  | 'coating'
+  | 'press'
+  | 'notching'
+  | 'vd'
+  | 'forming'
+  | 'stacking'
+  | 'welding'
+  | 'sealing'
+  | 'filling'
+  | 'formation'
+  | 'grading'
+  | 'inspection';
 
 // 각 공정별 자동 저장/불러오기할 필드 정의 (페이지 진입 시 자동 적용)
 export const PROCESS_DEFAULT_FIELDS: Record<ProcessType, string[]> = {
@@ -41,6 +55,17 @@ export const PROCESS_DEFAULT_FIELDS: Record<ProcessType, string[]> = {
     'coatingConditionSingle',
     'coatingConditionDouble',
   ],
+  press: ['reviewer', 'approver'],
+  notching: ['reviewer', 'approver'],
+  vd: ['reviewer', 'approver'],
+  forming: ['reviewer', 'approver'],
+  stacking: ['reviewer', 'approver'],
+  welding: ['reviewer', 'approver'],
+  sealing: ['reviewer', 'approver'],
+  filling: ['reviewer', 'approver'],
+  formation: ['reviewer', 'approver'],
+  grading: ['reviewer', 'approver'],
+  inspection: ['reviewer', 'approver'],
 };
 
 // 불러오기에서 제외할 필드 (프로젝트별, 날짜별로 다른 값)
