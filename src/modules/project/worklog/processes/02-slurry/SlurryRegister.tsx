@@ -14,6 +14,7 @@ import { SLURRY_NUMERIC_FIELDS } from '../../shared/numericFields';
 import { createSlurryWorklog } from '../../../../../api/project/worklog';
 import type { SlurryWorklogPayload } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS, SLURRY_READONLY_FIELDS } from './slurryConstants';
+import { saveWorklogDefaults, loadWorklogDefaults } from '../../shared/worklogDefaults';
 import { getMixerEquipments } from '../../../../../api/plant/EquipmentService';
 import type { Equipment } from '../../../../plant/register/EquipmentTypes';
 import type { CategoryLabel } from '../../shared/processCategories';
@@ -46,6 +47,15 @@ export default function SlurryRegister() {
 
   const [saving, setSaving] = useState(false);
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
+
+  // LocalStorage에서 기본값 불러오기
+  useEffect(() => {
+    if (Object.keys(formValues).length === 0) return;
+    const defaults = loadWorklogDefaults('slurry');
+    if (defaults) {
+      setFormValues(prev => ({ ...prev, ...defaults }));
+    }
+  }, [Object.keys(formValues).length > 0]);
 
   // Mixer 설비 목록 로드
   useEffect(() => {
@@ -135,6 +145,8 @@ export default function SlurryRegister() {
         payload.plant = selectedEquipment?.id ?? null;
       }
       await createSlurryWorklog(Number(projectId), payload);
+      // 저장 성공 시 기본값 저장
+      saveWorklogDefaults('slurry', formValues);
       alert('작업일지가 등록되었습니다.');
       navigate(`/project/log/${projectId}?category=Electrode&process=Slurry`);
     } catch (err) {

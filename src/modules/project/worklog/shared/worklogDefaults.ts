@@ -2,11 +2,12 @@
 
 const STORAGE_KEY_PREFIX = 'worklog_defaults_';
 
-export type ProcessType = 'binder';
+export type ProcessType = 'binder' | 'slurry';
 
 // 각 공정별 저장할 필드 정의
 export const PROCESS_DEFAULT_FIELDS: Record<ProcessType, string[]> = {
   binder: ['reviewer', 'approver'],
+  slurry: ['reviewer', 'approver'],
 };
 
 /**
