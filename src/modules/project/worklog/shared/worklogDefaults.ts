@@ -7,9 +7,9 @@ export type ProcessType = 'binder' | 'slurry' | 'coating';
 
 // 각 공정별 저장할 필드 정의
 export const PROCESS_DEFAULT_FIELDS: Record<ProcessType, string[]> = {
-  binder: ['reviewer', 'approver'],
-  slurry: ['reviewer', 'approver'],
-  coating: ['reviewer', 'approver'],
+  binder: ['reviewer', 'approver', 'jigNumber'],
+  slurry: ['reviewer', 'approver', 'jigNumber'],
+  coating: ['reviewer', 'approver', 'jigNumber'],
 };
 
 // 불러오기에서 제외할 필드 (프로젝트별, 날짜별로 다른 값)
