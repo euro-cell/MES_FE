@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect } from 'react';
+import { useMemo, useRef, useEffect, useCallback } from 'react';
 import ExcelJS from 'exceljs';
 import toast from 'react-hot-toast';
 import { formatCellValue, isCellInMerge, type MergeRange, type NamedRangeInfo } from './excelUtils';
@@ -9,10 +9,14 @@ function AutoResizeTextarea({
   value,
   onChange,
   placeholder,
+  onKeyDown,
+  dataRangeName,
 }: {
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
+  onKeyDown?: (e: React.KeyboardEvent) => void;
+  dataRangeName?: string;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -38,6 +42,8 @@ function AutoResizeTextarea({
       value={value}
       onChange={handleChange}
       placeholder={placeholder}
+      onKeyDown={onKeyDown}
+      data-range-name={dataRangeName}
     />
   );
 }
@@ -371,6 +377,54 @@ export default function ExcelRenderer({
     }
   };
 
+  // 편집 가능한 셀 목록 (순서대로)
+  const editableCellOrder = useMemo(() => {
+    if (!sheetData) return [];
+    const cells: { rowIdx: number; colIdx: number; rangeName: string }[] = [];
+
+    sheetData.values.forEach((row, rowIdx) => {
+      row.forEach((_, colIdx) => {
+        const rangeName = getNamedRangeForCell(rowIdx, colIdx);
+        if (rangeName && editableRanges.includes(rangeName) && !readOnlyFields.includes(rangeName)) {
+          cells.push({ rowIdx, colIdx, rangeName });
+        }
+      });
+    });
+
+    return cells;
+  }, [sheetData, namedRanges, editableRanges, readOnlyFields]);
+
+  // Enter 키로 다음 입력 칸으로 이동
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, rangeName: string) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      // 멀티라인 필드는 Enter로 줄바꿈 허용
+      if (multilineFields.includes(rangeName)) return;
+
+      e.preventDefault();
+      const currentIndex = editableCellOrder.findIndex(cell => cell.rangeName === rangeName);
+      if (currentIndex >= 0 && currentIndex < editableCellOrder.length - 1) {
+        const nextCell = editableCellOrder[currentIndex + 1];
+        const nextInput = document.querySelector(
+          `[data-range-name="${nextCell.rangeName}"]`
+        ) as HTMLElement;
+        nextInput?.focus();
+      }
+    } else if (e.key === 'Enter' && e.shiftKey) {
+      // Shift+Enter: 이전 셀로 이동
+      if (multilineFields.includes(rangeName)) return;
+
+      e.preventDefault();
+      const currentIndex = editableCellOrder.findIndex(cell => cell.rangeName === rangeName);
+      if (currentIndex > 0) {
+        const prevCell = editableCellOrder[currentIndex - 1];
+        const prevInput = document.querySelector(
+          `[data-range-name="${prevCell.rangeName}"]`
+        ) as HTMLElement;
+        prevInput?.focus();
+      }
+    }
+  }, [editableCellOrder, multilineFields]);
+
   if (!sheetData) {
     return <p>엑셀 데이터를 불러올 수 없습니다.</p>;
   }
@@ -450,13 +504,30 @@ export default function ExcelRenderer({
                         <AutoResizeTextarea
                           value={cellValues[rangeName] ?? ''}
                           onChange={(value) => handleInputChange(rangeName, value)}
-                          placeholder='내용을 입력하세요'
+                          placeholder='내용을 입력하세요 (Ctrl+Enter: 다음 칸)'
+                          onKeyDown={(e) => {
+                            // 멀티라인에서는 Ctrl+Enter로 다음 셀 이동
+                            if (e.key === 'Enter' && e.ctrlKey) {
+                              e.preventDefault();
+                              const currentIndex = editableCellOrder.findIndex(cell => cell.rangeName === rangeName);
+                              if (currentIndex >= 0 && currentIndex < editableCellOrder.length - 1) {
+                                const nextCell = editableCellOrder[currentIndex + 1];
+                                const nextInput = document.querySelector(
+                                  `[data-range-name="${nextCell.rangeName}"]`
+                                ) as HTMLElement;
+                                nextInput?.focus();
+                              }
+                            }
+                          }}
+                          dataRangeName={rangeName}
                         />
                       ) : selectFields[rangeName] ? (
                         <select
                           className={styles.cellInput}
+                          data-range-name={rangeName}
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => handleInputChange(rangeName, e.target.value)}
+                          onKeyDown={e => handleKeyDown(e, rangeName)}
                         >
                           <option value=''>선택...</option>
                           {selectFields[rangeName].map(option => (
@@ -467,13 +538,16 @@ export default function ExcelRenderer({
                         <input
                           type='date'
                           className={styles.cellInput}
+                          data-range-name={rangeName}
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => handleInputChange(rangeName, e.target.value)}
+                          onKeyDown={e => handleKeyDown(e, rangeName)}
                         />
                       ) : timeFields.includes(rangeName) ? (
                         <input
                           type='text'
                           className={styles.cellInput}
+                          data-range-name={rangeName}
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => {
                             const value = e.target.value;
@@ -493,14 +567,17 @@ export default function ExcelRenderer({
                               toast.error('시간 형식이 올바르지 않습니다. (00:00 ~ 23:59)');
                             }
                           }}
+                          onKeyDown={e => handleKeyDown(e, rangeName)}
                           placeholder='HH:mm (예: 09:30)'
                         />
                       ) : integerFields.includes(rangeName) ? (
                         <input
                           type='number'
                           className={styles.cellInput}
+                          data-range-name={rangeName}
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => handleInputChange(rangeName, e.target.value === '' ? '' : parseInt(e.target.value, 10))}
+                          onKeyDown={e => handleKeyDown(e, rangeName)}
                           placeholder={placeholders[rangeName] ?? '숫자 입력'}
                           step='1'
                         />
@@ -508,8 +585,10 @@ export default function ExcelRenderer({
                         <input
                           type='number'
                           className={styles.cellInput}
+                          data-range-name={rangeName}
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => handleInputChange(rangeName, e.target.value === '' ? '' : Number(e.target.value))}
+                          onKeyDown={e => handleKeyDown(e, rangeName)}
                           placeholder={placeholders[rangeName] ?? '숫자 입력'}
                           step='any'
                         />
@@ -517,6 +596,7 @@ export default function ExcelRenderer({
                         <input
                           type='text'
                           className={styles.cellInput}
+                          data-range-name={rangeName}
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => {
                             const inputValue = e.target.value;
@@ -534,14 +614,17 @@ export default function ExcelRenderer({
                             const filtered = inputValue.toUpperCase().replace(/[^A-Z0-9]/g, '');
                             handleInputChange(rangeName, filtered);
                           }}
+                          onKeyDown={e => handleKeyDown(e, rangeName)}
                           placeholder={placeholders[rangeName] ?? 'LOT 입력 (영문+숫자)'}
                         />
                       ) : (
                         <input
                           type='text'
                           className={styles.cellInput}
+                          data-range-name={rangeName}
                           value={cellValues[rangeName] ?? ''}
                           onChange={e => handleInputChange(rangeName, e.target.value)}
+                          onKeyDown={e => handleKeyDown(e, rangeName)}
                           placeholder={placeholders[rangeName] ?? '텍스트 입력'}
                         />
                       )
