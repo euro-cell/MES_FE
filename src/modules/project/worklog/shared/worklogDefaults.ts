@@ -2,21 +2,19 @@
 
 const STORAGE_KEY_PREFIX = 'worklog_defaults_';
 
-export type ProcessType = 'binder' | 'slurry';
+export type ProcessType = 'binder' | 'slurry' | 'coating';
 
 // 각 공정별 저장할 필드 정의
 export const PROCESS_DEFAULT_FIELDS: Record<ProcessType, string[]> = {
   binder: ['reviewer', 'approver'],
   slurry: ['reviewer', 'approver'],
+  coating: ['reviewer', 'approver'],
 };
 
 /**
  * 작업일지 기본값 저장
  */
-export function saveWorklogDefaults(
-  processType: ProcessType,
-  values: Record<string, any>
-): void {
+export function saveWorklogDefaults(processType: ProcessType, values: Record<string, any>): void {
   const fieldsToSave = PROCESS_DEFAULT_FIELDS[processType];
   const dataToSave: Record<string, any> = {};
 
@@ -35,9 +33,7 @@ export function saveWorklogDefaults(
 /**
  * 작업일지 기본값 불러오기
  */
-export function loadWorklogDefaults(
-  processType: ProcessType
-): Record<string, any> | null {
+export function loadWorklogDefaults(processType: ProcessType): Record<string, any> | null {
   const key = `${STORAGE_KEY_PREFIX}${processType}`;
   const saved = localStorage.getItem(key);
   return saved ? JSON.parse(saved) : null;

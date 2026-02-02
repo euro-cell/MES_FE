@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
@@ -11,6 +11,7 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { COATING_NUMERIC_FIELDS, COATING_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
+import { saveWorklogDefaults, loadWorklogDefaults } from '../../shared/worklogDefaults';
 import { createCoatingWorklog } from '../../../../../api/project/worklog';
 import type { CoatingWorklogPayload } from './CoatingTypes';
 import type { CategoryLabel } from '../../shared/processCategories';
@@ -38,6 +39,15 @@ export default function CoatingRegister() {
   const { lotOptions: slurryLotOptions, getLotInfo: getSlurryLotInfo } = useSlurryLots(projectId);
 
   const [saving, setSaving] = useState(false);
+
+  // LocalStorage에서 기본값 불러오기
+  useEffect(() => {
+    if (Object.keys(formValues).length === 0) return;
+    const defaults = loadWorklogDefaults('coating');
+    if (defaults) {
+      setFormValues(prev => ({ ...prev, ...defaults }));
+    }
+  }, [Object.keys(formValues).length > 0]);
 
   const handleCellChange = (rangeName: string, value: any) => {
     setFormValues(prev => {
@@ -81,6 +91,8 @@ export default function CoatingRegister() {
         payload.plant = selectedEquipment?.id ?? null;
       }
       await createCoatingWorklog(Number(projectId), payload);
+      // 저장 성공 시 기본값 저장
+      saveWorklogDefaults('coating', formValues);
       alert('작업일지가 등록되었습니다.');
       navigate(`/project/log/${projectId}?category=Electrode&process=Coating`);
     } catch (err) {
