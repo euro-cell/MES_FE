@@ -5,11 +5,42 @@ const PREVIOUS_STORAGE_KEY_PREFIX = 'worklog_previous_';
 
 export type ProcessType = 'binder' | 'slurry' | 'coating';
 
-// 각 공정별 저장할 필드 정의
+// 각 공정별 자동 저장/불러오기할 필드 정의 (페이지 진입 시 자동 적용)
 export const PROCESS_DEFAULT_FIELDS: Record<ProcessType, string[]> = {
   binder: ['reviewer', 'approver', 'jigNumber'],
   slurry: ['reviewer', 'approver', 'jigNumber'],
-  coating: ['reviewer', 'approver', 'jigNumber'],
+  coating: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 건조 조건
+    'zone1TempUpper',
+    'zone1TempLower',
+    'zone2TempUpper',
+    'zone2TempLower',
+    'zone3Temp',
+    'zone4Temp',
+    // 공급 풍량
+    'zone1SupplyAirflowUpper',
+    'zone1SupplyAirflowLower',
+    'zone2SupplyAirflowUpper',
+    'zone2SupplyAirflowLower',
+    'zone3SupplyAirflow',
+    'zone4SupplyAirflow',
+    // 배기 풍량
+    'zone12ExhaustAirflow',
+    'zone34ExhaustAirflow',
+    'capsuleFilter',
+    'coatingSpeed',
+    'meshFilter',
+    // 장력
+    'tensionUnT',
+    'tensionOfT',
+    'tensionReT',
+    // 코팅 조건
+    'coatingConditionSingle',
+    'coatingConditionDouble',
+  ],
 };
 
 // 불러오기에서 제외할 필드 (프로젝트별, 날짜별로 다른 값)
