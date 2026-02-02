@@ -13,6 +13,12 @@
   margin-bottom: 20px;
 }
 
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .header h2 {
   font-size: 24px;
   font-weight: 600;
@@ -64,9 +70,27 @@
 }
 
 .cancelButton:disabled,
-.saveButton:disabled {
+.saveButton:disabled,
+.loadPreviousButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.loadPreviousButton {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #10b981;
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.loadPreviousButton:hover:not(:disabled) {
+  background: #d1fae5;
+  color: #047857;
 }
 
 /* Buttons - View */
