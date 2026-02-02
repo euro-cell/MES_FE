@@ -1,7 +1,7 @@
 // 작업일지 기본값 LocalStorage 관리
 
 const STORAGE_KEY_PREFIX = 'worklog_defaults_';
-const ALL_FIELDS_STORAGE_KEY_PREFIX = 'worklog_all_fields_';
+const PREVIOUS_STORAGE_KEY_PREFIX = 'worklog_previous_';
 
 export type ProcessType = 'binder' | 'slurry' | 'coating';
 
@@ -57,7 +57,7 @@ export function saveWorklogAllFields(processType: ProcessType, values: Record<st
   });
 
   if (Object.keys(dataToSave).length > 0) {
-    const key = `${ALL_FIELDS_STORAGE_KEY_PREFIX}${processType}`;
+    const key = `${PREVIOUS_STORAGE_KEY_PREFIX}${processType}`;
     localStorage.setItem(key, JSON.stringify(dataToSave));
   }
 }
@@ -66,7 +66,7 @@ export function saveWorklogAllFields(processType: ProcessType, values: Record<st
  * 작업일지 모든 필드 불러오기 (버튼 클릭용)
  */
 export function loadWorklogAllFields(processType: ProcessType): Record<string, any> | null {
-  const key = `${ALL_FIELDS_STORAGE_KEY_PREFIX}${processType}`;
+  const key = `${PREVIOUS_STORAGE_KEY_PREFIX}${processType}`;
   const saved = localStorage.getItem(key);
   return saved ? JSON.parse(saved) : null;
 }
@@ -75,6 +75,6 @@ export function loadWorklogAllFields(processType: ProcessType): Record<string, a
  * 저장된 이전 내용이 있는지 확인
  */
 export function hasWorklogAllFields(processType: ProcessType): boolean {
-  const key = `${ALL_FIELDS_STORAGE_KEY_PREFIX}${processType}`;
+  const key = `${PREVIOUS_STORAGE_KEY_PREFIX}${processType}`;
   return localStorage.getItem(key) !== null;
 }
