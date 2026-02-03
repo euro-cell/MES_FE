@@ -48,12 +48,6 @@ export interface SlurryWorklog {
   material6PlannedInput?: number;
   material6ActualInput?: number;
 
-  // 바인더용액 (Binder Solution)
-  binderSolutionComposition?: number; // 조성 (%, 소수점 첫째자리)
-  binderSolutionLot?: string;
-  binderSolutionPlannedInput?: number;
-  binderSolutionActualInput?: number;
-
   // 용매 (Solvent)
   solventAddPlannedInput?: number;
   solventAddActualInput?: number;

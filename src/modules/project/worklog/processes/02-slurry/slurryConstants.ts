@@ -50,8 +50,22 @@ export const SLURRY_READONLY_FIELDS = [
   'solidContent1Percentage',
   'solidContent2Percentage',
   'solidContent3Percentage',
-  'pdMixer1Input1',
   'pdMixer1SolidContent1',
+  'pdMixer1SolidContent2',
+  'pdMixer1SolidContent3',
+  'pdMixer1SolidContent4',
+  'pdMixer1SolidContent5',
+  'pdMixer1SolidContent6',
+  'pdMixer1Input1',
+  'pdMixer1Input2',
+  'pdMixer1Input3',
+  'pdMixer1Input4',
+  'pdMixer1Input5',
+  'pdMixer1Input6',
+  'pdMixer2Input1',
+  'pdMixer2SolidContent1',
+  'solventTotalPlannedInput',
+  'solventAddPlannedInput',
 ];
 
 // 자재투입정보 각 행의 필드 접미사 (동적 readOnly 계산용)

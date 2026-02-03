@@ -44,7 +44,7 @@ export default function SlurryEdit() {
   const { lotOptions: material5LotOptions } = useMaterialLots(formValues.material5Name);
   const { lotOptions: material6LotOptions } = useMaterialLots(formValues.material6Name);
   // 바인더용액 LOT 목록 조회 (Binder 작업일지에서)
-  const { lotOptions: binderSolutionLotOptions, getLotSolidContent } = useBinderLots(projectId);
+  const { lotOptions: binderSolutionLotOptions } = useBinderLots(projectId);
 
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
 
@@ -108,28 +108,234 @@ export default function SlurryEdit() {
     setFormValues(prev => {
       const newValues = { ...prev, [rangeName]: value };
 
-      // 바인더용액 LOT 선택 시 binderSolution 자동 입력
-      if (rangeName === 'binderSolutionLot' && value) {
-        const solidContent = getLotSolidContent(value);
-        if (solidContent !== null) {
-          newValues.binderSolution = solidContent;
+      // 바인더 행, 도전재 행, 활물질(양극재/음극재) 행 찾기
+      let binderRow = 0;
+      const conductorRows: number[] = [];
+      const electrodeRows: number[] = [];
+      for (let i = 1; i <= 6; i++) {
+        const materialName = newValues[`material${i}Name`];
+        if (materialName === '바인더') {
+          binderRow = i;
+        } else if (materialName === '도전재') {
+          conductorRows.push(i);
+        } else if (materialName === '양극재' || materialName === '음극재') {
+          electrodeRows.push(i);
         }
       }
 
-      // pdMixer1Input1 자동계산: binderSolutionPlannedInput * (pdMixer1InputRate1 / 100)
-      if (rangeName === 'binderSolutionPlannedInput' || rangeName === 'pdMixer1InputRate1') {
-        const plannedInput = parseFloat(newValues.binderSolutionPlannedInput);
-        const inputRate = parseFloat(newValues.pdMixer1InputRate1);
-        if (!isNaN(plannedInput) && !isNaN(inputRate)) {
-          newValues.pdMixer1Input1 = Number((plannedInput * inputRate / 100).toFixed(3));
+      // pdMixer1Input1 자동계산: 바인더 투입량설계 * pdMixer1InputRate1
+      const shouldRecalcPdMixer1Input1 =
+        (binderRow > 0 && rangeName === `material${binderRow}PlannedInput`) ||
+        rangeName === 'pdMixer1InputRate1' ||
+        rangeName === 'material1PlannedInput' ||
+        rangeName === 'binderSolution';
+      if (shouldRecalcPdMixer1Input1 && binderRow > 0) {
+        const binderPlannedInput = parseFloat(newValues[`material${binderRow}PlannedInput`]);
+        const inputRate1 = parseFloat(newValues.pdMixer1InputRate1);
+        if (!isNaN(binderPlannedInput) && !isNaN(inputRate1)) {
+          newValues.pdMixer1Input1 = Number((binderPlannedInput * inputRate1).toFixed(3));
         }
       }
 
-      // pdMixer1SolidContent1 자동계산: binderSolution 값 그대로
-      if (rangeName === 'binderSolution' || rangeName === 'pdMixer1Input1' || rangeName === 'binderSolutionLot') {
+      // pdMixer1Input2 자동계산: 도전재1 투입량설계 * pdMixer1InputRate2
+      const conductor1Row = conductorRows[0] || 0;
+      const shouldRecalcPdMixer1Input2 =
+        (conductor1Row > 0 && rangeName === `material${conductor1Row}PlannedInput`) ||
+        rangeName === 'pdMixer1InputRate2' ||
+        rangeName === 'material1PlannedInput' ||
+        rangeName === 'binderSolution';
+      if (shouldRecalcPdMixer1Input2 && conductor1Row > 0) {
+        const conductor1PlannedInput = parseFloat(newValues[`material${conductor1Row}PlannedInput`]);
+        const inputRate2 = parseFloat(newValues.pdMixer1InputRate2);
+        if (!isNaN(conductor1PlannedInput) && !isNaN(inputRate2)) {
+          newValues.pdMixer1Input2 = Number((conductor1PlannedInput * inputRate2).toFixed(3));
+        }
+      }
+
+      // pdMixer1Input3 자동계산: 도전재2 투입량설계 * pdMixer1InputRate3 (도전재2가 있을 때만)
+      const conductor2Row = conductorRows[1] || 0;
+      const shouldRecalcPdMixer1Input3 =
+        (conductor2Row > 0 && rangeName === `material${conductor2Row}PlannedInput`) ||
+        rangeName === 'pdMixer1InputRate3' ||
+        rangeName === 'material1PlannedInput' ||
+        rangeName === 'binderSolution';
+      if (shouldRecalcPdMixer1Input3 && conductor2Row > 0) {
+        const conductor2PlannedInput = parseFloat(newValues[`material${conductor2Row}PlannedInput`]);
+        const inputRate3 = parseFloat(newValues.pdMixer1InputRate3);
+        if (!isNaN(conductor2PlannedInput) && !isNaN(inputRate3)) {
+          newValues.pdMixer1Input3 = Number((conductor2PlannedInput * inputRate3).toFixed(3));
+        }
+      }
+
+      // pdMixer1Input4 자동계산: 활물질1(양극재/음극재) 투입량설계 * pdMixer1InputRate4
+      const electrode1Row = electrodeRows[0] || 0;
+      const shouldRecalcPdMixer1Input4 =
+        (electrode1Row > 0 && rangeName === `material${electrode1Row}PlannedInput`) ||
+        rangeName === 'pdMixer1InputRate4';
+      if (shouldRecalcPdMixer1Input4 && electrode1Row > 0) {
+        const electrode1PlannedInput = parseFloat(newValues[`material${electrode1Row}PlannedInput`]);
+        const inputRate4 = parseFloat(newValues.pdMixer1InputRate4);
+        if (!isNaN(electrode1PlannedInput) && !isNaN(inputRate4)) {
+          newValues.pdMixer1Input4 = Number((electrode1PlannedInput * inputRate4).toFixed(3));
+        }
+      }
+
+      // pdMixer1Input5 자동계산: 활물질2 투입량설계 * pdMixer1InputRate5 (활물질2가 있을 때만)
+      const electrode2Row = electrodeRows[1] || 0;
+      const shouldRecalcPdMixer1Input5 =
+        (electrode2Row > 0 && rangeName === `material${electrode2Row}PlannedInput`) ||
+        rangeName === 'pdMixer1InputRate5';
+      if (shouldRecalcPdMixer1Input5 && electrode2Row > 0) {
+        const electrode2PlannedInput = parseFloat(newValues[`material${electrode2Row}PlannedInput`]);
+        const inputRate5 = parseFloat(newValues.pdMixer1InputRate5);
+        if (!isNaN(electrode2PlannedInput) && !isNaN(inputRate5)) {
+          newValues.pdMixer1Input5 = Number((electrode2PlannedInput * inputRate5).toFixed(3));
+        }
+      }
+
+      // pdMixer1Input6 자동계산: solventAddPlannedInput * pdMixer1InputRate6
+      const shouldRecalcPdMixer1Input6 =
+        rangeName === 'solventAddPlannedInput' ||
+        rangeName === 'pdMixer1InputRate6' ||
+        rangeName === 'solventTotalPlannedInput' ||
+        rangeName === 'material1PlannedInput' ||
+        rangeName === 'material1Composition' ||
+        rangeName === 'solidContent' ||
+        (binderRow > 0 && rangeName === `material${binderRow}PlannedInput`) ||
+        rangeName === 'binderSolution';
+      if (shouldRecalcPdMixer1Input6) {
+        const solventAddPlanned = parseFloat(newValues.solventAddPlannedInput);
+        const inputRate6 = parseFloat(newValues.pdMixer1InputRate6);
+        if (!isNaN(solventAddPlanned) && !isNaN(inputRate6)) {
+          newValues.pdMixer1Input6 = Number((solventAddPlanned * inputRate6).toFixed(3));
+        }
+      }
+
+      // pdMixer1SolidContent1~6, pdMixer2Input1, pdMixer2SolidContent1 자동계산
+      const pdMixer1InputTriggers = [
+        'pdMixer1Input1', 'pdMixer1Input2', 'pdMixer1Input3', 'pdMixer1Input4', 'pdMixer1Input5', 'pdMixer1Input6',
+        'pdMixer2Input1', 'pdMixer2InputRate1',
+        'binderSolution',
+        'pdMixer1InputRate1', 'pdMixer1InputRate2', 'pdMixer1InputRate3', 'pdMixer1InputRate4', 'pdMixer1InputRate5', 'pdMixer1InputRate6',
+        'material1PlannedInput', 'material2PlannedInput',
+        'solventAddPlannedInput', 'solventTotalPlannedInput', 'solidContent', 'material1Composition',
+      ];
+      if (binderRow > 0) pdMixer1InputTriggers.push(`material${binderRow}PlannedInput`);
+      if (conductor1Row > 0) pdMixer1InputTriggers.push(`material${conductor1Row}PlannedInput`);
+      if (conductor2Row > 0) pdMixer1InputTriggers.push(`material${conductor2Row}PlannedInput`);
+      if (electrode1Row > 0) pdMixer1InputTriggers.push(`material${electrode1Row}PlannedInput`);
+      if (electrode2Row > 0) pdMixer1InputTriggers.push(`material${electrode2Row}PlannedInput`);
+
+      const shouldRecalcPdMixer1SolidContent = pdMixer1InputTriggers.includes(rangeName);
+      if (shouldRecalcPdMixer1SolidContent) {
+        const input1 = parseFloat(newValues.pdMixer1Input1) || 0;
+        const input2 = parseFloat(newValues.pdMixer1Input2) || 0;
+        const input3 = parseFloat(newValues.pdMixer1Input3) || 0;
+        const input4 = parseFloat(newValues.pdMixer1Input4) || 0;
+        const input5 = parseFloat(newValues.pdMixer1Input5) || 0;
         const binderSol = parseFloat(newValues.binderSolution);
-        if (!isNaN(binderSol)) {
+
+        // pdMixer1SolidContent1: = SUM(input1 * binderSolution) / SUM(input1) = binderSolution
+        if (input1 > 0 && !isNaN(binderSol)) {
           newValues.pdMixer1SolidContent1 = binderSol;
+        }
+
+        // pdMixer1SolidContent2: = (input1 * binderSolution + input2) / (input1 + input2)
+        if (input1 > 0 && input2 > 0 && !isNaN(binderSol)) {
+          const sumInputs = input1 + input2;
+          const weightedSum = input1 * binderSol + input2;
+          newValues.pdMixer1SolidContent2 = Number((weightedSum / sumInputs).toFixed(4));
+        }
+
+        // pdMixer1SolidContent3: = (input1 * binderSolution + input2 + input3) / (input1 + input2 + input3)
+        if (input1 > 0 && input2 > 0 && input3 > 0 && !isNaN(binderSol)) {
+          const sumInputs = input1 + input2 + input3;
+          const weightedSum = input1 * binderSol + input2 + input3;
+          newValues.pdMixer1SolidContent3 = Number((weightedSum / sumInputs).toFixed(4));
+        }
+
+        // pdMixer1SolidContent4: = (input1 * binderSolution + input2 + input3 + input4) / (input1 + input2 + input3 + input4)
+        if (input1 > 0 && input2 > 0 && input3 > 0 && input4 > 0 && !isNaN(binderSol)) {
+          const sumInputs = input1 + input2 + input3 + input4;
+          const weightedSum = input1 * binderSol + input2 + input3 + input4;
+          newValues.pdMixer1SolidContent4 = Number((weightedSum / sumInputs).toFixed(4));
+        }
+
+        // pdMixer1SolidContent5: = (input1 * binderSolution + input2 + input3 + input4 + input5) / (input1 + ... + input5)
+        if (input1 > 0 && input2 > 0 && input3 > 0 && input4 > 0 && input5 > 0 && !isNaN(binderSol)) {
+          const sumInputs = input1 + input2 + input3 + input4 + input5;
+          const weightedSum = input1 * binderSol + input2 + input3 + input4 + input5;
+          newValues.pdMixer1SolidContent5 = Number((weightedSum / sumInputs).toFixed(4));
+        }
+
+        // pdMixer1SolidContent6: = (input1 * binderSolution + input2 + input3 + input4 + input5) / (input1 + ... + input6)
+        // 분자는 input1~5까지, 분모는 input1~6까지 (용매는 분자에 포함 안됨)
+        const input6 = parseFloat(newValues.pdMixer1Input6) || 0;
+        if (input1 > 0 && input6 > 0 && !isNaN(binderSol)) {
+          const sumInputs = input1 + input2 + input3 + input4 + input5 + input6;
+          const weightedSum = input1 * binderSol + input2 + input3 + input4 + input5;
+          newValues.pdMixer1SolidContent6 = Number((weightedSum / sumInputs).toFixed(4));
+        }
+
+        // pdMixer2Input1 자동계산: solventAddPlannedInput * pdMixer2InputRate1
+        const solventAddPlanned = parseFloat(newValues.solventAddPlannedInput);
+        const pdMixer2InputRate1 = parseFloat(newValues.pdMixer2InputRate1);
+        if (!isNaN(solventAddPlanned) && !isNaN(pdMixer2InputRate1)) {
+          newValues.pdMixer2Input1 = Number((solventAddPlanned * pdMixer2InputRate1).toFixed(3));
+        }
+
+        // pdMixer2SolidContent1: = (input1 * binderSolution + input2~5) / (pdMixer1Input1~6 + pdMixer2Input1)
+        const pdMixer2Input1Val = parseFloat(newValues.pdMixer2Input1) || 0;
+        if (input1 > 0 && pdMixer2Input1Val > 0 && !isNaN(binderSol)) {
+          const sumInputs = input1 + input2 + input3 + input4 + input5 + input6 + pdMixer2Input1Val;
+          const weightedSum = input1 * binderSol + input2 + input3 + input4 + input5;
+          newValues.pdMixer2SolidContent1 = Number((weightedSum / sumInputs).toFixed(4));
+        }
+      }
+
+      // solventTotalPlannedInput 자동계산:
+      // = material1PlannedInput / material1Composition / solidContent - material1PlannedInput / material1Composition
+      const isMaterial1PlannedChange = rangeName === 'material1PlannedInput';
+      const isMaterial1CompChange = rangeName === 'material1Composition';
+      const isSolidContentChange = rangeName === 'solidContent';
+      if (isMaterial1PlannedChange || isMaterial1CompChange || isSolidContentChange) {
+        const mat1Planned = parseFloat(newValues.material1PlannedInput);
+        const mat1Comp = parseFloat(newValues.material1Composition);
+        const solidCont = parseFloat(newValues.solidContent);
+
+        if (!isNaN(mat1Planned) && !isNaN(mat1Comp) && mat1Comp > 0 && !isNaN(solidCont) && solidCont > 0) {
+          const baseCalc = mat1Planned / mat1Comp;
+          const solventTotal = baseCalc / solidCont - baseCalc;
+          newValues.solventTotalPlannedInput = Number(solventTotal.toFixed(3));
+        }
+      }
+
+      // solventAddPlannedInput 자동계산: solventTotalPlannedInput - 바인더투입설계 * (1 - binderSolution)
+      // 바인더 행 찾기
+      let binderRowNum = 0;
+      for (let i = 1; i <= 6; i++) {
+        if (newValues[`material${i}Name`] === '바인더') {
+          binderRowNum = i;
+          break;
+        }
+      }
+      // solventTotalPlannedInput이 자동계산된 경우도 포함
+      const shouldRecalcSolventAdd =
+        rangeName === 'solventTotalPlannedInput' ||
+        rangeName === 'material1PlannedInput' ||
+        rangeName === 'material1Composition' ||
+        rangeName === 'solidContent' ||
+        (binderRowNum > 0 && rangeName === `material${binderRowNum}PlannedInput`) ||
+        rangeName === 'binderSolution';
+      if (shouldRecalcSolventAdd) {
+        const solventTotal = parseFloat(newValues.solventTotalPlannedInput);
+        const binderPlanned = binderRowNum > 0 ? parseFloat(newValues[`material${binderRowNum}PlannedInput`]) : NaN;
+        const binderSol = parseFloat(newValues.binderSolution);
+
+        if (!isNaN(solventTotal) && !isNaN(binderPlanned) && !isNaN(binderSol)) {
+          // solventAddPlannedInput = solventTotalPlannedInput - 바인더투입설계 * (1 - binderSolution)
+          const solventAdd = solventTotal - binderPlanned * (1 - binderSol);
+          newValues.solventAddPlannedInput = Number(solventAdd.toFixed(3));
         }
       }
 
@@ -227,27 +433,35 @@ export default function SlurryEdit() {
     : {};
 
   // 자재투입정보 LOT 드롭다운 (카테고리 선택 시 연동)
-  const materialLotOptions = [
+  // 바인더 행은 콤보박스(선택+입력), 그 외는 선택박스
+  const materialLotOptionsFromMaterial = [
     material1LotOptions, material2LotOptions, material3LotOptions,
     material4LotOptions, material5LotOptions, material6LotOptions,
   ];
-  const materialLotFields = Object.fromEntries(
-    materialLotOptions
-      .map((opts, i) => [`material${i + 1}Lot`, opts])
-      .filter(([, opts]) => (opts as string[]).length > 0)
-  );
-  // 바인더용액 LOT 드롭다운
-  const binderSolutionLotField = binderSolutionLotOptions.length > 0
-    ? { binderSolutionLot: binderSolutionLotOptions }
-    : {};
+  const materialLotFields: Record<string, string[]> = {};
+  const binderLotComboFields: Record<string, string[]> = {};
+  for (let i = 1; i <= 6; i++) {
+    const materialName = formValues[`material${i}Name`];
+    if (materialName === '바인더') {
+      // 바인더 행은 콤보박스 (선택 + 직접입력)
+      if (binderSolutionLotOptions.length > 0) {
+        binderLotComboFields[`material${i}Lot`] = binderSolutionLotOptions;
+      }
+    } else {
+      // 그 외는 자재 LOT 선택박스
+      const opts = materialLotOptionsFromMaterial[i - 1];
+      if (opts && opts.length > 0) {
+        materialLotFields[`material${i}Lot`] = opts;
+      }
+    }
+  }
 
   const slurrySelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
-    ...(plantOptions.length > 0 && { plant: plantOptions }),
+    ...(plantOptions.length > 0 ? { plant: plantOptions } : {}),
     ...pdMixerNameFields,
     ...materialNameFields,
     ...materialLotFields,
-    ...binderSolutionLotField,
   };
 
   return (
@@ -280,6 +494,7 @@ export default function SlurryEdit() {
           numericFields={SLURRY_NUMERIC_FIELDS}
           readOnlyFields={SLURRY_READONLY_FIELDS}
           selectFields={slurrySelectFields}
+          comboFields={binderLotComboFields}
           dateFields={['manufactureDate']}
           uppercaseFields={['lot']}
         />

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, useCallback } from 'react';
+import { useMemo, useRef, useEffect, useCallback, useState } from 'react';
 import ExcelJS from 'exceljs';
 import toast from 'react-hot-toast';
 import { formatCellValue, isCellInMerge, type MergeRange, type NamedRangeInfo } from './excelUtils';
@@ -48,6 +48,92 @@ function AutoResizeTextarea({
   );
 }
 
+// 수식 참조 정보 타입 (커스텀 툴팁용)
+interface FormulaRef {
+  field: string;
+  label: string;
+  color: string;
+}
+
+interface FormulaInfo {
+  formula: string;
+  refs: FormulaRef[];
+}
+
+// 커스텀 툴팁 컴포넌트 (색상 지원)
+function FormulaTooltip({
+  formulaInfo,
+  position,
+}: {
+  formulaInfo: FormulaInfo;
+  position: { x: number; y: number };
+}) {
+  // 수식 문자열에서 레이블을 찾아 색상 적용
+  const renderFormula = () => {
+    const formula = formulaInfo.formula;
+    const parts: React.ReactNode[] = [];
+
+    // 레이블과 색상 매핑 생성
+    const labelColorMap = new Map<string, string>();
+    formulaInfo.refs.forEach(ref => {
+      labelColorMap.set(ref.label, ref.color);
+    });
+
+    // 모든 레이블을 찾아서 위치와 함께 저장
+    const matches: { start: number; end: number; label: string; color: string }[] = [];
+    labelColorMap.forEach((color, label) => {
+      let searchStart = 0;
+      while (true) {
+        const idx = formula.indexOf(label, searchStart);
+        if (idx === -1) break;
+        matches.push({ start: idx, end: idx + label.length, label, color });
+        searchStart = idx + label.length;
+      }
+    });
+
+    // 위치순 정렬
+    matches.sort((a, b) => a.start - b.start);
+
+    // 텍스트와 색상 레이블을 순서대로 조합
+    let lastIndex = 0;
+    matches.forEach((match, idx) => {
+      // 레이블 앞의 텍스트
+      if (match.start > lastIndex) {
+        parts.push(<span key={`text-${idx}`}>{formula.slice(lastIndex, match.start)}</span>);
+      }
+      // 색상이 적용된 레이블
+      parts.push(
+        <span key={`label-${idx}`} style={{ color: match.color, fontWeight: 'bold' }}>
+          {match.label}
+        </span>,
+      );
+      lastIndex = match.end;
+    });
+
+    // 남은 텍스트
+    if (lastIndex < formula.length) {
+      parts.push(<span key='text-last'>{formula.slice(lastIndex)}</span>);
+    }
+
+    return parts.length > 0 ? parts : formula;
+  };
+
+  return (
+    <div
+      className={styles.formulaTooltip}
+      style={{
+        position: 'fixed',
+        left: position.x,
+        top: position.y - 10,
+        transform: 'translate(-50%, -100%)',
+        zIndex: 1000,
+      }}
+    >
+      <div className={styles.formulaText}>{renderFormula()}</div>
+    </div>
+  );
+}
+
 interface CellData {
   value: any;
   numFmt?: string;
@@ -77,8 +163,11 @@ interface ExcelRendererProps {
   integerFields?: string[];
   readOnlyFields?: string[];
   selectFields?: Record<string, string[]>;
+  comboFields?: Record<string, string[]>; // 선택 + 직접입력 가능한 콤보박스 필드
   placeholders?: Record<string, string>;
   uppercaseFields?: string[]; // 대문자+숫자만 허용하는 필드
+  tooltips?: Record<string, string>; // 셀 툴팁 (자동계산 수식 등) - 단순 텍스트
+  formulaRefs?: Record<string, FormulaInfo>; // 수식 참조 정보 (하이라이트용)
 }
 
 function decodeAddress(addr: string) {
@@ -253,9 +342,20 @@ export default function ExcelRenderer({
   integerFields = [],
   readOnlyFields = [],
   selectFields = {},
+  comboFields = {},
   placeholders = {},
   uppercaseFields = [],
+  tooltips = {},
+  formulaRefs = {},
 }: ExcelRendererProps) {
+  // 호버된 수식 셀의 참조 필드들
+  const [highlightedFields, setHighlightedFields] = useState<FormulaRef[]>([]);
+  // 커스텀 툴팁 상태
+  const [tooltipInfo, setTooltipInfo] = useState<{
+    formulaInfo: FormulaInfo;
+    position: { x: number; y: number };
+  } | null>(null);
+
   const sheetData = useMemo((): SheetData | null => {
     if (!workbook) return null;
 
@@ -491,13 +591,40 @@ export default function ExcelRenderer({
                     ? styles.editableCell
                     : '';
 
+                // 툴팁 가져오기
+                const tooltip = rangeName ? tooltips[rangeName] : undefined;
+                // 수식 참조 정보
+                const formulaInfo = rangeName ? formulaRefs[rangeName] : undefined;
+                // 이 셀이 하이라이트 대상인지 확인
+                const highlightRef = highlightedFields.find(ref => ref.field === rangeName);
+                const highlightBorderStyle = highlightRef
+                  ? { boxShadow: `inset 0 0 0 3px ${highlightRef.color}` }
+                  : {};
+
                 return (
                   <td
                     key={colIdx}
                     rowSpan={mergeInfo.isMerged ? mergeInfo.rowSpan : 1}
                     colSpan={mergeInfo.isMerged ? mergeInfo.colSpan : 1}
                     className={cellClassName}
-                    style={cellStyle}
+                    style={{ ...cellStyle, ...highlightBorderStyle }}
+                    title={formulaInfo ? undefined : tooltip}
+                    onMouseEnter={e => {
+                      if (formulaInfo) {
+                        setHighlightedFields(formulaInfo.refs);
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        setTooltipInfo({
+                          formulaInfo,
+                          position: { x: rect.left + rect.width / 2, y: rect.top },
+                        });
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (formulaInfo) {
+                        setHighlightedFields([]);
+                        setTooltipInfo(null);
+                      }
+                    }}
                   >
                     {isEditable && rangeName && !isReadOnly ? (
                       isMultiline ? (
@@ -534,6 +661,24 @@ export default function ExcelRenderer({
                             <option key={option} value={option}>{option}</option>
                           ))}
                         </select>
+                      ) : comboFields[rangeName] ? (
+                        <>
+                          <input
+                            type='text'
+                            className={styles.cellInput}
+                            data-range-name={rangeName}
+                            list={`combo-${rangeName}`}
+                            value={cellValues[rangeName] ?? ''}
+                            onChange={e => handleInputChange(rangeName, e.target.value)}
+                            onKeyDown={e => handleKeyDown(e, rangeName)}
+                            placeholder='선택 또는 직접 입력'
+                          />
+                          <datalist id={`combo-${rangeName}`}>
+                            {comboFields[rangeName].map(option => (
+                              <option key={option} value={option} />
+                            ))}
+                          </datalist>
+                        </>
                       ) : dateFields.includes(rangeName) ? (
                         <input
                           type='date'
@@ -640,6 +785,9 @@ export default function ExcelRenderer({
           ))}
         </tbody>
       </table>
+      {tooltipInfo && (
+        <FormulaTooltip formulaInfo={tooltipInfo.formulaInfo} position={tooltipInfo.position} />
+      )}
     </div>
   );
 }
