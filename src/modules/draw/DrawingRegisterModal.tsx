@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import styles from '../../styles/draw/Drawing.module.css';
@@ -43,12 +43,19 @@ export default function DrawingRegisterModal({
   defaultCategory,
   defaultProjectName,
 }: DrawingRegisterModalProps) {
-  const [formData, setFormData] = useState<FormData>(() => ({
-    ...INITIAL_FORM,
-    category: defaultCategory || '공장',
-    projectName: defaultProjectName || '',
-  }));
+  const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
+
+  // 모달이 열릴 때 formData 초기화
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        ...INITIAL_FORM,
+        category: defaultCategory || '공장',
+        projectName: defaultProjectName || '',
+      });
+    }
+  }, [isOpen, defaultCategory, defaultProjectName]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
