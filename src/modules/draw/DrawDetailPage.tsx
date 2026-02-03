@@ -5,6 +5,7 @@ import { getDrawingById, addVersion, updateVersion, deleteVersion } from '../../
 import type { Drawing, DrawingVersion } from './DrawTypes';
 import TooltipButton from '../../components/TooltipButton';
 import PdfViewer from '../../components/PdfViewer';
+import ImageViewer from '../../components/ImageViewer';
 import toast from 'react-hot-toast';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -20,6 +21,7 @@ interface PdfFile {
   version: number;
   fileName: string;
   fileUrl?: string;
+  imageUrls?: string[];
 }
 
 interface VersionFormData {
@@ -86,10 +88,19 @@ export default function DrawDetailPage() {
       ver.pdfFileNames.forEach((fileName, idx) => {
         const filePath = ver.pdfFilePaths[idx];
         const url = filePath ? toFileUrl(filePath) : '';
+
+        // 해당 PDF의 이미지 파일 경로 필터링 (pdf-{idx+1} 폴더 기반 매칭)
+        const pdfFolderName = `pdf-${idx + 1}`;
+        const imageUrls = (ver.imageFilePaths || [])
+          .filter(imgPath => imgPath.includes(pdfFolderName))
+          .map(imgPath => toFileUrl(imgPath))
+          .sort(); // 페이지 순서대로 정렬
+
         files.push({
           version: ver.version,
           fileName,
           fileUrl: url,
+          imageUrls: imageUrls.length > 0 ? imageUrls : undefined,
         });
       });
     });
@@ -366,7 +377,7 @@ export default function DrawDetailPage() {
       </div>
 
       <div className={styles.detailSection}>
-        <h3>PDF 뷰어</h3>
+        <h3>도면 뷰어</h3>
         {allPdfFiles.length > 0 ? (
           <>
             <div className={styles.pdfTabs}>
@@ -380,7 +391,11 @@ export default function DrawDetailPage() {
                 </button>
               ))}
             </div>
-            <PdfViewer fileUrl={selectedPdf?.fileUrl} fileName={selectedPdf?.fileName} />
+            {selectedPdf?.imageUrls && selectedPdf.imageUrls.length > 0 ? (
+              <ImageViewer imageUrls={selectedPdf.imageUrls} fileName={selectedPdf.fileName} />
+            ) : (
+              <PdfViewer fileUrl={selectedPdf?.fileUrl} fileName={selectedPdf?.fileName} />
+            )}
           </>
         ) : (
           <div className={styles.noPdf}>등록된 PDF 파일이 없습니다.</div>

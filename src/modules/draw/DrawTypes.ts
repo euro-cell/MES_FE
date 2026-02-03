@@ -7,6 +7,7 @@ export interface DrawingVersion {
   drawingFilePath: string | null;
   pdfFileNames: string[];
   pdfFilePaths: string[];
+  imageFilePaths: string[];
   registrationDate: string;
   changeNote: string | null;
 }
