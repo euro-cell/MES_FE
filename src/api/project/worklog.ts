@@ -127,6 +127,20 @@ export const getSlurryLots = async (productionId: number): Promise<SlurryLot[]> 
   return res.data;
 };
 
+/** Slurry 믹싱 정보 조회 (Binder에서 투입량 계산용) */
+export interface SlurryMixingInfo {
+  id: number;
+  lot: string;
+  workDate: string;
+  round: number;
+  binderPlannedInput: number;
+}
+
+export const getSlurryMixingInfo = async (productionId: number): Promise<SlurryMixingInfo[]> => {
+  const res = await axios.get<SlurryMixingInfo[]>(`${API_BASE}/production/${productionId}/worklog/slurry/mixing-info`, { withCredentials: true });
+  return res.data;
+};
+
 // ============ Coating API ============
 
 export const getCoatingTemplate = async (): Promise<ArrayBuffer> => {

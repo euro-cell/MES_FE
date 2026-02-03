@@ -8,6 +8,7 @@ import { useWorklogFormInit } from '../../shared/useWorklogFormInit';
 import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import { useMaterialLots } from '../../shared/useMaterialLots';
 import ExcelRenderer from '../../shared/ExcelRenderer';
+import MixingInfoModal from '../../shared/MixingInfoModal';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { BINDER_NUMERIC_FIELDS, BINDER_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
@@ -17,7 +18,7 @@ import {
   saveWorklogAllFields,
   loadWorklogAllFields,
 } from '../../shared/worklogDefaults';
-import { createBinderWorklog } from '../../../../../api/project/worklog';
+import { createBinderWorklog, type SlurryMixingInfo } from '../../../../../api/project/worklog';
 import type { BinderWorklogPayload } from './BinderTypes';
 import { getMixerEquipments } from '../../../../../api/plant/EquipmentService';
 import type { Equipment } from '../../../../plant/register/EquipmentTypes';
@@ -53,6 +54,7 @@ export default function BinderRegister() {
 
   const [saving, setSaving] = useState(false);
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
+  const [showMixingInfoModal, setShowMixingInfoModal] = useState(false);
 
   // Mixer 설비 목록 로드
   useEffect(() => {
@@ -105,6 +107,33 @@ export default function BinderRegister() {
     } else {
       toast.error('저장된 이전 내용이 없습니다.');
     }
+  };
+
+  // 믹싱 정보 선택 시 투입량설계 자동 계산
+  const handleMixingInfoSelect = (mixingInfo: SlurryMixingInfo) => {
+    const binderPlannedInput = mixingInfo.binderPlannedInput;
+    if (!binderPlannedInput) {
+      toast.error('바인더 투입량설계 정보가 없습니다.');
+      setShowMixingInfoModal(false);
+      return;
+    }
+
+    // 현재 formValues에서 조성(%) 값 가져오기
+    const material1Comp = parseFloat(formValues.material1Composition) || 0;
+    const material2Comp = parseFloat(formValues.material2Composition) || 0;
+
+    // 투입량설계 계산: binderPlannedInput * 조성(%) / 100
+    const newValues: Record<string, any> = {};
+    if (material1Comp > 0) {
+      newValues.material1PlannedInput = Number((binderPlannedInput * material1Comp / 100).toFixed(3));
+    }
+    if (material2Comp > 0) {
+      newValues.material2PlannedInput = Number((binderPlannedInput * material2Comp / 100).toFixed(3));
+    }
+
+    setFormValues(prev => ({ ...prev, ...newValues }));
+    setShowMixingInfoModal(false);
+    toast.success(`${mixingInfo.lot} 믹싱 정보가 적용되었습니다.`);
   };
 
   if (templateLoading) {
@@ -204,8 +233,26 @@ export default function BinderRegister() {
           readOnlyFields={COMMON_READONLY_FIELDS}
           selectFields={binderSelectFields}
           dateFields={['manufactureDate']}
+          headerButton={
+            <button
+              onClick={() => setShowMixingInfoModal(true)}
+              className={styles.mixingInfoButton}
+              disabled={saving}
+              title='Slurry 작업일지의 믹싱 정보를 불러와 투입량설계를 자동 계산합니다'
+            >
+              믹싱 정보 불러오기
+            </button>
+          }
         />
       </div>
+
+      {showMixingInfoModal && projectId && (
+        <MixingInfoModal
+          projectId={projectId}
+          onClose={() => setShowMixingInfoModal(false)}
+          onSelect={handleMixingInfoSelect}
+        />
+      )}
     </div>
   );
 }

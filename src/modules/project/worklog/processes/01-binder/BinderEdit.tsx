@@ -7,8 +7,9 @@ import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useMaterialCategories } from '../../shared/useMaterialCategories';
 import { useMaterialLots } from '../../shared/useMaterialLots';
 import ExcelRenderer from '../../shared/ExcelRenderer';
+import MixingInfoModal from '../../shared/MixingInfoModal';
 import { mapFormToPayload } from '../../shared/excelUtils';
-import { getBinderWorklog, updateBinderWorklog } from '../../../../../api/project/worklog';
+import { getBinderWorklog, updateBinderWorklog, type SlurryMixingInfo } from '../../../../../api/project/worklog';
 import type { BinderWorklog, BinderWorklogPayload } from './BinderTypes';
 import { BINDER_NUMERIC_FIELDS, BINDER_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
@@ -16,6 +17,7 @@ import { getMixerEquipments } from '../../../../../api/plant/EquipmentService';
 import type { Equipment } from '../../../../plant/register/EquipmentTypes';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+import toast from 'react-hot-toast';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
@@ -32,6 +34,7 @@ export default function BinderEdit() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [mixerEquipments, setMixerEquipments] = useState<Equipment[]>([]);
+  const [showMixingInfoModal, setShowMixingInfoModal] = useState(false);
 
   const plantEquipments = useLineEquipmentLoader(formValues.line);
   const { categories: materialCategories } = useMaterialCategories();
@@ -114,6 +117,33 @@ export default function BinderEdit() {
     if (confirm('수정한 내용이 사라집니다. 취소하시겠습니까?')) {
       navigate(`/project/log/${projectId}?category=Electrode&process=Binder`);
     }
+  };
+
+  // 믹싱 정보 선택 시 투입량설계 자동 계산
+  const handleMixingInfoSelect = (mixingInfo: SlurryMixingInfo) => {
+    const binderPlannedInput = mixingInfo.binderPlannedInput;
+    if (!binderPlannedInput) {
+      toast.error('바인더 투입량설계 정보가 없습니다.');
+      setShowMixingInfoModal(false);
+      return;
+    }
+
+    // 현재 formValues에서 조성(%) 값 가져오기
+    const material1Comp = parseFloat(formValues.material1Composition) || 0;
+    const material2Comp = parseFloat(formValues.material2Composition) || 0;
+
+    // 투입량설계 계산: binderPlannedInput * 조성(%) / 100
+    const newValues: Record<string, any> = {};
+    if (material1Comp > 0) {
+      newValues.material1PlannedInput = Number((binderPlannedInput * material1Comp / 100).toFixed(3));
+    }
+    if (material2Comp > 0) {
+      newValues.material2PlannedInput = Number((binderPlannedInput * material2Comp / 100).toFixed(3));
+    }
+
+    setFormValues(prev => ({ ...prev, ...newValues }));
+    setShowMixingInfoModal(false);
+    toast.success(`${mixingInfo.lot} 믹싱 정보가 적용되었습니다.`);
   };
 
   if (templateLoading || loading) {
@@ -206,8 +236,26 @@ export default function BinderEdit() {
           readOnlyFields={COMMON_READONLY_FIELDS}
           selectFields={binderSelectFields}
           dateFields={['manufactureDate']}
+          headerButton={
+            <button
+              onClick={() => setShowMixingInfoModal(true)}
+              className={styles.mixingInfoButton}
+              disabled={saving}
+              title='Slurry 작업일지의 믹싱 정보를 불러와 투입량설계를 자동 계산합니다'
+            >
+              믹싱 정보 불러오기
+            </button>
+          }
         />
       </div>
+
+      {showMixingInfoModal && projectId && (
+        <MixingInfoModal
+          projectId={projectId}
+          onClose={() => setShowMixingInfoModal(false)}
+          onSelect={handleMixingInfoSelect}
+        />
+      )}
     </div>
   );
 }

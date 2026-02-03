@@ -1,0 +1,150 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  color: #333;
+}
+
+.modalContent {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.loadingText,
+.emptyText {
+  text-align: center;
+  color: #666;
+  padding: 40px 0;
+}
+
+.mixingInfoTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mixingInfoTable th,
+.mixingInfoTable td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.mixingInfoTable th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.mixingInfoTable td {
+  font-size: 14px;
+  color: #333;
+}
+
+.mixingInfoTable tbody tr {
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.mixingInfoTable tbody tr:hover {
+  background-color: #f3f4f6;
+}
+
+.mixingInfoTable tbody tr.selected {
+  background-color: #dbeafe;
+}
+
+.mixingInfoTable tbody tr.selected:hover {
+  background-color: #bfdbfe;
+}
+
+.modalFooter {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+}
+
+.cancelButton,
+.selectButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cancelButton {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.cancelButton:hover {
+  background-color: #e0e0e0;
+}
+
+.selectButton {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.selectButton:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.selectButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}

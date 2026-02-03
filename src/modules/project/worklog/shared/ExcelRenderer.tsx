@@ -168,6 +168,7 @@ interface ExcelRendererProps {
   uppercaseFields?: string[]; // 대문자+숫자만 허용하는 필드
   tooltips?: Record<string, string>; // 셀 툴팁 (자동계산 수식 등) - 단순 텍스트
   formulaRefs?: Record<string, FormulaInfo>; // 수식 참조 정보 (하이라이트용)
+  headerButton?: React.ReactNode; // 첫 번째 행(타이틀) 옆에 표시할 버튼
 }
 
 function decodeAddress(addr: string) {
@@ -347,6 +348,7 @@ export default function ExcelRenderer({
   uppercaseFields = [],
   tooltips = {},
   formulaRefs = {},
+  headerButton,
 }: ExcelRendererProps) {
   // 호버된 수식 셀의 참조 필드들
   const [highlightedFields, setHighlightedFields] = useState<FormulaRef[]>([]);
@@ -776,7 +778,13 @@ export default function ExcelRenderer({
                     ) : isMultiline ? (
                       <div style={{ whiteSpace: 'pre-wrap' }}>{cellValue}</div>
                     ) : (
-                      cellValue
+                      // 첫 번째 행 첫 번째 셀(타이틀)에 headerButton 표시
+                      rowIdx === 0 && colIdx === 0 && headerButton ? (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
+                          <span>{cellValue}</span>
+                          {headerButton}
+                        </div>
+                      ) : cellValue
                     )}
                   </td>
                 );
