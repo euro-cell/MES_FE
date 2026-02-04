@@ -95,8 +95,8 @@ export interface VdWorklog {
   vacuumDegreeSetting?: number;
   upperSetTemperature?: number;
   lowerSetTemperature?: number;
-  upperTimerTime?: number;
-  lowerTimerTime?: number;
+  upperTimerTime?: string;
+  lowerTimerTime?: string;
 }
 
 export interface VdWorklogPayload {
@@ -188,6 +188,6 @@ export interface VdWorklogPayload {
   vacuumDegreeSetting?: number;
   upperSetTemperature?: number;
   lowerSetTemperature?: number;
-  upperTimerTime?: number;
-  lowerTimerTime?: number;
+  upperTimerTime?: string;
+  lowerTimerTime?: string;
 }

@@ -55,17 +55,177 @@ export const PROCESS_DEFAULT_FIELDS: Record<ProcessType, string[]> = {
     'coatingConditionSingle',
     'coatingConditionDouble',
   ],
-  press: ['reviewer', 'approver'],
-  notching: ['reviewer', 'approver'],
-  vd: ['reviewer', 'approver'],
-  forming: ['reviewer', 'approver'],
-  stacking: ['reviewer', 'approver'],
-  welding: ['reviewer', 'approver'],
-  sealing: ['reviewer', 'approver'],
-  filling: ['reviewer', 'approver'],
-  formation: ['reviewer', 'approver'],
-  grading: ['reviewer', 'approver'],
-  inspection: ['reviewer', 'approver'],
+  press: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 공정 조건 - 장력
+    'tensionUnT',
+    'tensionReT',
+    // 공정 조건 - 프레스
+    'pressSpeed',
+    'pressureCondition',
+    // 공정 조건 - Roll Gap
+    'rollGapLeft',
+    'rollGapRight',
+    // 공정 조건 - Roll 온도
+    'rollTemperatureMain',
+    'rollTemperatureInfeed',
+  ],
+  notching: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 공정 조건
+    'tension',
+    'punchingSpeed',
+  ],
+  vd: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 공정 조건
+    'vacuumDegreeSetting',
+    'upperSetTemperature',
+    'lowerSetTemperature',
+    'upperTimerTime',
+    'lowerTimerTime',
+  ],
+  forming: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 공정 조건 - 컷팅
+    'cuttingLength',
+    'cuttingChecklist',
+    // 공정 조건 - 포밍
+    'formingDepth',
+    'formingStopperHeight',
+    'formingChecklist',
+    // 공정 조건 - 탑컷팅
+    'topCuttingLength',
+    'topCuttingChecklist',
+  ],
+  stacking: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 공정 조건
+    'jellyRollWeight',
+    'jellyRollThickness',
+    'separatorTopBottomDimension',
+    'stackCount',
+    'hipotVoltage',
+  ],
+  welding: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 공정 조건 - 프리웰딩
+    'preWeldingEnergy',
+    'preWeldingAmplitude',
+    'preWeldingStopper',
+    'preWeldingPressure',
+    'preWeldingHoldTime',
+    // 공정 조건 - 메인웰딩
+    'mainWeldingEnergy',
+    'mainWeldingAmplitude',
+    'mainWeldingStopper',
+    'mainWeldingPressure',
+    'mainWeldingHoldTime',
+    // 공정 조건 - 하이팟
+    'hipotVoltage',
+    'hipotTime',
+    // 공정 조건 - 테이핑
+    'tapingLength',
+  ],
+  sealing: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 공정 조건 - 탑
+    'topTemperature',
+    'topPressure',
+    'topSealingTime',
+    'topChecklist',
+    // 공정 조건 - 사이드
+    'sideTemperature',
+    'sidePressure',
+    'sideSealingTime',
+    'sideChecklist',
+    // 공정 조건 - 바텀
+    'bottomTemperature',
+    'bottomPressure',
+    'bottomSealingTime',
+    'bottomChecklist',
+    // 공정 조건 - 하이팟
+    'hipotVoltage',
+    'hipotTime',
+  ],
+  filling: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 공정 조건 - 필링
+    'fillingEquipmentInjectionAmount',
+    'fillingSpecInjectionAmount',
+    'fillingInjectionSpeed',
+    'fillingSpecificGravity',
+    // 공정 조건 - 웨이팅 구분 1
+    'waiting1RepeatCount',
+    'waiting1PressureRange',
+    'waiting1HoldTime',
+    // 공정 조건 - 웨이팅 구분 2
+    'waiting2RepeatCount',
+    'waiting2PressureRange',
+    'waiting2HoldTime',
+    // 공정 조건 - 웨이팅 구분 3
+    'waiting3RepeatCount',
+    'waiting3PressureRange',
+    'waiting3HoldTime',
+  ],
+  formation: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 공정 조건 - 프리포메이션
+    'preFormationVoltageCondition',
+    'preFormationLowerVoltage',
+    'preFormationUpperVoltage',
+    'preFormationAppliedCurrent',
+    'preFormationTemperature',
+    // 공정 조건 - 메인포메이션
+    'mainFormationVoltageCondition',
+    'mainFormationLowerVoltage',
+    'mainFormationUpperVoltage',
+    'mainFormationAppliedCurrent',
+    'mainFormationTemperature',
+    // 공정 조건 - 디가스
+    'degasVacuumHoldTime',
+    'degasVacuumSealingAdhesionTime',
+    'degasVacuumDegree',
+    // 공정 조건 - OCV1
+    'ocv1MeasurementEquipmentName',
+    'ocv1VoltageSpec',
+  ],
+  grading: [
+    'reviewer',
+    'approver',
+    'jigNumber',
+    // 공정 조건 - Grading
+    'gradingVoltageCondition',
+    'gradingLowerVoltage',
+    'gradingUpperVoltage',
+    'gradingAppliedCurrent',
+    'gradingTemperature',
+    // 공정 조건 - OCV2
+    'ocv2MeasurementEquipmentName',
+    'ocv2VoltageSpec',
+    // 공정 조건 - OCV3
+    'ocv3MeasurementEquipmentName',
+    'ocv3VoltageSpec',
+  ],
+  inspection: ['reviewer', 'approver', 'jigNumber'],
 };
 
 // 불러오기에서 제외할 필드 (프로젝트별, 날짜별로 다른 값)

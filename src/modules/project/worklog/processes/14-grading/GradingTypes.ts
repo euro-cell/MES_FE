@@ -56,25 +56,20 @@ export interface GradingWorklog {
   // B. 생산 정보 - Lot 범위
   lotRange?: string;
 
-  // C. 공정 조건 - OCV2
-  ocv2VoltageSpec?: string;
-  ocv2MeasurementTemp?: number;
-  ocv2SettlingTime?: number;
-
-  // C. 공정 조건 - IR
-  irResistanceSpec?: string;
-  irMeasurementFreq?: number;
-  irMeasurementTemp?: number;
-
-  // C. 공정 조건 - HiPot
-  hipotVoltageSpec?: string;
-  hipotTestTime?: number;
-  hipotLeakageCurrent?: number;
-
   // C. 공정 조건 - Grading
-  gradingCapacitySpec?: string;
-  gradingVoltageRange?: string;
-  gradingClassification?: string;
+  gradingVoltageCondition?: string;
+  gradingLowerVoltage?: number;
+  gradingUpperVoltage?: number;
+  gradingAppliedCurrent?: number;
+  gradingTemperature?: number;
+
+  // C. 공정 조건 - OCV2
+  ocv2MeasurementEquipmentName?: string;
+  ocv2VoltageSpec?: string;
+
+  // C. 공정 조건 - OCV3
+  ocv3MeasurementEquipmentName?: string;
+  ocv3VoltageSpec?: string;
 
   // D. 비고
   remark?: string;
@@ -134,25 +129,20 @@ export interface GradingWorklogPayload {
   // B. 생산 정보 - Lot 범위
   lotRange?: string;
 
-  // C. 공정 조건 - OCV2
-  ocv2VoltageSpec?: string;
-  ocv2MeasurementTemp?: number;
-  ocv2SettlingTime?: number;
-
-  // C. 공정 조건 - IR
-  irResistanceSpec?: string;
-  irMeasurementFreq?: number;
-  irMeasurementTemp?: number;
-
-  // C. 공정 조건 - HiPot
-  hipotVoltageSpec?: string;
-  hipotTestTime?: number;
-  hipotLeakageCurrent?: number;
-
   // C. 공정 조건 - Grading
-  gradingCapacitySpec?: string;
-  gradingVoltageRange?: string;
-  gradingClassification?: string;
+  gradingVoltageCondition?: string;
+  gradingLowerVoltage?: number;
+  gradingUpperVoltage?: number;
+  gradingAppliedCurrent?: number;
+  gradingTemperature?: number;
+
+  // C. 공정 조건 - OCV2
+  ocv2MeasurementEquipmentName?: string;
+  ocv2VoltageSpec?: string;
+
+  // C. 공정 조건 - OCV3
+  ocv3MeasurementEquipmentName?: string;
+  ocv3VoltageSpec?: string;
 
   // D. 비고
   remark?: string;
