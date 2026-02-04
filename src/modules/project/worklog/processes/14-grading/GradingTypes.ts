@@ -53,6 +53,13 @@ export interface GradingWorklog {
   grading4Quantity?: number;
   grading5Quantity?: number;
 
+  // B. 생산 정보 - OCV3
+  ocv3InputQuantity?: number;
+  ocv3GoodQuantity?: number;
+  ocv3DefectQuantity?: number;
+  ocv3DiscardQuantity?: number;
+  ocv3DefectRate?: number;
+
   // B. 생산 정보 - Lot 범위
   lotRange?: string;
 
@@ -125,6 +132,13 @@ export interface GradingWorklogPayload {
   grading3Quantity?: number;
   grading4Quantity?: number;
   grading5Quantity?: number;
+
+  // B. 생산 정보 - OCV3
+  ocv3InputQuantity?: number;
+  ocv3GoodQuantity?: number;
+  ocv3DefectQuantity?: number;
+  ocv3DiscardQuantity?: number;
+  ocv3DefectRate?: number;
 
   // B. 생산 정보 - Lot 범위
   lotRange?: string;

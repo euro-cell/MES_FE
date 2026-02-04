@@ -27,6 +27,22 @@ const GRADING_SELECT_FIELDS: Record<string, string[]> = {
   grading5UnitNumber: UNIT_NUMBER_OPTIONS,
 };
 
+// 자동계산 필드 (양품 수량, 불량률)
+const AUTO_CALC_FIELDS = [
+  // 양품 수량 (투입 수량 - 불량 수량)
+  'ocv2GoodQuantity',
+  'irGoodQuantity',
+  'hipotGoodQuantity',
+  'gradingGoodQuantity',
+  'ocv3GoodQuantity',
+  // 불량률 (불량 수량 / 투입 수량 * 100)
+  'ocv2DefectRate',
+  'irDefectRate',
+  'hipotDefectRate',
+  'gradingDefectRate',
+  'ocv3DefectRate',
+];
+
 export default function GradingEdit() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
   const navigate = useNavigate();
@@ -72,10 +88,36 @@ export default function GradingEdit() {
     loadWorklog();
   }, [projectId, worklogId, namedRanges, project]);
 
+  // 양품 수량 및 불량률 자동계산 함수
+  const calculateAutoFields = (prev: Record<string, any>, rangeName: string, value: any): Record<string, any> => {
+    const updates: Record<string, any> = { [rangeName]: value };
+
+    // 각 공정별 양품 수량, 불량률 계산
+    const processes = ['ocv2', 'ir', 'hipot', 'grading', 'ocv3'];
+    for (const process of processes) {
+      const inputField = `${process}InputQuantity`;
+      const defectField = `${process}DefectQuantity`;
+      const goodField = `${process}GoodQuantity`;
+      const defectRateField = `${process}DefectRate`;
+
+      if (rangeName === inputField || rangeName === defectField) {
+        const inputQty = rangeName === inputField ? value || 0 : prev[inputField] || 0;
+        const defectQty = rangeName === defectField ? value || 0 : prev[defectField] || 0;
+        // 양품 수량 = 투입 수량 - 불량 수량
+        updates[goodField] = Math.max(0, Number(inputQty) - Number(defectQty));
+        // 불량률 = (불량 수량 / 투입 수량) * 100
+        updates[defectRateField] =
+          Number(inputQty) > 0 ? Math.round((Number(defectQty) / Number(inputQty)) * 10000) / 100 : 0;
+      }
+    }
+
+    return updates;
+  };
+
   const handleCellChange = (rangeName: string, value: any) => {
     setFormValues(prev => ({
       ...prev,
-      [rangeName]: value,
+      ...calculateAutoFields(prev, rangeName, value),
     }));
   };
 
@@ -180,7 +222,7 @@ export default function GradingEdit() {
           onCellChange={handleCellChange}
           multilineFields={['remark']}
           numericFields={GRADING_NUMERIC_FIELDS}
-          readOnlyFields={COMMON_READONLY_FIELDS}
+          readOnlyFields={[...COMMON_READONLY_FIELDS, ...AUTO_CALC_FIELDS]}
           selectFields={gradingSelectFields}
           dateFields={['manufactureDate']}
           placeholders={placeholders}

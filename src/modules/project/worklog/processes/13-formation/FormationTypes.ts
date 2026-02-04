@@ -104,8 +104,14 @@ export interface FormationWorklog {
   mainFormation5Quantity?: number;
   mainFormation5CellNumberRange?: string;
 
-  // B. 생산 정보 - OCV1 & Lot
-  ocv1Quantity?: number;
+  // B. 생산 정보 - OCV1
+  ocv1InputQuantity?: number;
+  ocv1GoodQuantity?: number;
+  ocv1DefectQuantity?: number;
+  ocv1DiscardQuantity?: number;
+  ocv1DefectRate?: number;
+
+  // B. 생산 정보 - Lot 범위
   lotRange?: string;
 
   // C. 공정 조건 - 프리포메이션
@@ -231,8 +237,14 @@ export interface FormationWorklogPayload {
   mainFormation5Quantity?: number;
   mainFormation5CellNumberRange?: string;
 
-  // B. 생산 정보 - OCV1 & Lot
-  ocv1Quantity?: number;
+  // B. 생산 정보 - OCV1
+  ocv1InputQuantity?: number;
+  ocv1GoodQuantity?: number;
+  ocv1DefectQuantity?: number;
+  ocv1DiscardQuantity?: number;
+  ocv1DefectRate?: number;
+
+  // B. 생산 정보 - Lot 범위
   lotRange?: string;
 
   // C. 공정 조건 - 프리포메이션

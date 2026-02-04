@@ -24,6 +24,22 @@ import toast from 'react-hot-toast';
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 const UNIT_NUMBER_OPTIONS = ['11호기', '12호기', '13호기', '14호기', '15호기', '16호기'];
 
+// 자동계산 필드 (양품 수량, 불량률)
+const AUTO_CALC_FIELDS = [
+  // 양품 수량 (투입 수량 - 불량 수량)
+  'ocv2GoodQuantity',
+  'irGoodQuantity',
+  'hipotGoodQuantity',
+  'gradingGoodQuantity',
+  'ocv3GoodQuantity',
+  // 불량률 (불량 수량 / 투입 수량 * 100)
+  'ocv2DefectRate',
+  'irDefectRate',
+  'hipotDefectRate',
+  'gradingDefectRate',
+  'ocv3DefectRate',
+];
+
 export default function GradingRegister() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
@@ -32,7 +48,7 @@ export default function GradingRegister() {
   const { namedRanges } = useNamedRanges(workbook);
 
   const project = useProjectLoader(projectId);
-  const { formValues, setFormValues, handleCellChange } = useWorklogFormInit({ namedRanges, project });
+  const { formValues, setFormValues } = useWorklogFormInit({ namedRanges, project });
   const plantEquipments = useLineEquipmentLoader(formValues.line);
 
   const [saving, setSaving] = useState(false);
@@ -45,6 +61,40 @@ export default function GradingRegister() {
       setFormValues(prev => ({ ...prev, ...defaults }));
     }
   }, [Object.keys(formValues).length > 0]);
+
+  // 양품 수량 및 불량률 자동계산 함수
+  const calculateAutoFields = (prev: Record<string, any>, rangeName: string, value: any): Record<string, any> => {
+    const updates: Record<string, any> = { [rangeName]: value };
+
+    // 각 공정별 양품 수량, 불량률 계산
+    const processes = ['ocv2', 'ir', 'hipot', 'grading', 'ocv3'];
+    for (const process of processes) {
+      const inputField = `${process}InputQuantity`;
+      const defectField = `${process}DefectQuantity`;
+      const goodField = `${process}GoodQuantity`;
+      const defectRateField = `${process}DefectRate`;
+
+      if (rangeName === inputField || rangeName === defectField) {
+        const inputQty = rangeName === inputField ? value || 0 : prev[inputField] || 0;
+        const defectQty = rangeName === defectField ? value || 0 : prev[defectField] || 0;
+        // 양품 수량 = 투입 수량 - 불량 수량
+        updates[goodField] = Math.max(0, Number(inputQty) - Number(defectQty));
+        // 불량률 = (불량 수량 / 투입 수량) * 100
+        updates[defectRateField] =
+          Number(inputQty) > 0 ? Math.round((Number(defectQty) / Number(inputQty)) * 10000) / 100 : 0;
+      }
+    }
+
+    return updates;
+  };
+
+  // 셀 값 변경 핸들러 (자동계산 포함)
+  const handleCellChange = (rangeName: string, value: any) => {
+    setFormValues(prev => ({
+      ...prev,
+      ...calculateAutoFields(prev, rangeName, value),
+    }));
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -171,7 +221,7 @@ export default function GradingRegister() {
           onCellChange={handleCellChange}
           multilineFields={['remark']}
           numericFields={GRADING_NUMERIC_FIELDS}
-          readOnlyFields={COMMON_READONLY_FIELDS}
+          readOnlyFields={[...COMMON_READONLY_FIELDS, ...AUTO_CALC_FIELDS]}
           selectFields={selectFields}
           dateFields={['manufactureDate']}
           placeholders={placeholders}
