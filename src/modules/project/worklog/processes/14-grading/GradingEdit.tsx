@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
@@ -114,6 +114,68 @@ export default function GradingEdit() {
     return updates;
   };
 
+  // 자동계산 필드 툴팁 생성
+  const fieldTooltips = useMemo(() => {
+    const tips: Record<string, string> = {};
+    const processes = ['ocv2', 'ir', 'hipot', 'grading', 'ocv3'];
+    const processLabels: Record<string, string> = {
+      ocv2: 'OCV2',
+      ir: 'IR',
+      hipot: 'HiPot',
+      grading: 'Grading',
+      ocv3: 'OCV3',
+    };
+
+    processes.forEach(process => {
+      const label = processLabels[process];
+      tips[`${process}GoodQuantity`] = `= ${label} 투입 수량 - ${label} 불량 수량`;
+      tips[`${process}DefectRate`] = `= (${label} 불량 수량 / ${label} 투입 수량) × 100`;
+    });
+
+    return tips;
+  }, []);
+
+  // 수식 참조 정보 (호버 시 셀 하이라이트용)
+  const formulaRefs = useMemo(() => {
+    const COLORS = {
+      blue: '#2196F3',
+      green: '#4CAF50',
+      orange: '#FF9800',
+    };
+
+    const refs: Record<string, { formula: string; refs: { field: string; label: string; color: string }[] }> = {};
+    const processes = ['ocv2', 'ir', 'hipot', 'grading', 'ocv3'];
+    const processLabels: Record<string, string> = {
+      ocv2: 'OCV2',
+      ir: 'IR',
+      hipot: 'HiPot',
+      grading: 'Grading',
+      ocv3: 'OCV3',
+    };
+
+    processes.forEach(process => {
+      const label = processLabels[process];
+      // 양품 수량 수식 참조
+      refs[`${process}GoodQuantity`] = {
+        formula: `= ${label} 투입 수량 - ${label} 불량 수량`,
+        refs: [
+          { field: `${process}InputQuantity`, label: `${label} 투입 수량`, color: COLORS.blue },
+          { field: `${process}DefectQuantity`, label: `${label} 불량 수량`, color: COLORS.green },
+        ],
+      };
+      // 불량률 수식 참조
+      refs[`${process}DefectRate`] = {
+        formula: `= (${label} 불량 수량 / ${label} 투입 수량) × 100`,
+        refs: [
+          { field: `${process}DefectQuantity`, label: `${label} 불량 수량`, color: COLORS.blue },
+          { field: `${process}InputQuantity`, label: `${label} 투입 수량`, color: COLORS.green },
+        ],
+      };
+    });
+
+    return refs;
+  }, []);
+
   const handleCellChange = (rangeName: string, value: any) => {
     setFormValues(prev => ({
       ...prev,
@@ -226,6 +288,8 @@ export default function GradingEdit() {
           selectFields={gradingSelectFields}
           dateFields={['manufactureDate']}
           placeholders={placeholders}
+          tooltips={fieldTooltips}
+          formulaRefs={formulaRefs}
         />
       </div>
 

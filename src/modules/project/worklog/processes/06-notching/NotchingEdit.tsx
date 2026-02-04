@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
@@ -63,6 +63,31 @@ export default function NotchingEdit() {
 
     loadWorklog();
   }, [projectId, worklogId, namedRanges, project]);
+
+  // 자동계산 필드 툴팁 생성
+  const fieldTooltips = useMemo(() => {
+    const tips: Record<string, string> = {};
+    for (let i = 1; i <= 5; i++) {
+      tips[`goodQuantity${i}`] = `= 타발 수량${i} - 불량 수량${i}`;
+    }
+    return tips;
+  }, []);
+
+  // 수식 참조 정보 (호버 시 셀 하이라이트용)
+  const formulaRefs = useMemo(() => {
+    const COLORS = { blue: '#2196F3', green: '#4CAF50' };
+    const refs: Record<string, { formula: string; refs: { field: string; label: string; color: string }[] }> = {};
+    for (let i = 1; i <= 5; i++) {
+      refs[`goodQuantity${i}`] = {
+        formula: `= 타발 수량${i} - 불량 수량${i}`,
+        refs: [
+          { field: `notchingQuantity${i}`, label: `타발 수량${i}`, color: COLORS.blue },
+          { field: `defectQuantity${i}`, label: `불량 수량${i}`, color: COLORS.green },
+        ],
+      };
+    }
+    return refs;
+  }, []);
 
   // 양품 수량 자동계산 (타발 수량 - 불량 수량)
   const handleCellChange = (rangeName: string, value: any) => {
@@ -147,6 +172,8 @@ export default function NotchingEdit() {
         readOnlyFields={[...COMMON_READONLY_FIELDS, ...NOTCHING_AUTO_FILL_FIELDS]}
         selectFields={notchingSelectFields}
         dateFields={['manufactureDate']}
+        tooltips={fieldTooltips}
+        formulaRefs={formulaRefs}
       />
     </div>
   );

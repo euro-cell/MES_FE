@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
@@ -52,6 +52,51 @@ export default function FormingRegister() {
   const { pouchLots } = usePouchLots();
 
   const [submitting, setSubmitting] = useState(false);
+
+  // 자동계산 필드 툴팁
+  const fieldTooltips = useMemo(() => {
+    const tips: Record<string, string> = {};
+    const processes = [
+      { key: 'cutting', label: '컷팅' },
+      { key: 'forming', label: '포밍' },
+      { key: 'folding', label: '폴딩' },
+      { key: 'topCutting', label: '탑컷팅' },
+    ];
+    for (const { key, label } of processes) {
+      tips[`${key}GoodQuantity`] = `= ${label} 작업 수량 - ${label} 불량 수량`;
+      tips[`${key}DefectRate`] = `= (${label} 불량 수량 / ${label} 작업 수량) × 100`;
+    }
+    return tips;
+  }, []);
+
+  // 자동계산 필드 참조 (하이라이트용)
+  const formulaRefs = useMemo(() => {
+    const COLORS = { blue: '#2196F3', green: '#4CAF50', orange: '#FF9800' };
+    const refs: Record<string, { formula: string; refs: { field: string; label: string; color: string }[] }> = {};
+    const processes = [
+      { key: 'cutting', label: '컷팅' },
+      { key: 'forming', label: '포밍' },
+      { key: 'folding', label: '폴딩' },
+      { key: 'topCutting', label: '탑컷팅' },
+    ];
+    for (const { key, label } of processes) {
+      refs[`${key}GoodQuantity`] = {
+        formula: `= ${label} 작업 수량 - ${label} 불량 수량`,
+        refs: [
+          { field: `${key}WorkQuantity`, label: `${label} 작업 수량`, color: COLORS.blue },
+          { field: `${key}DefectQuantity`, label: `${label} 불량 수량`, color: COLORS.green },
+        ],
+      };
+      refs[`${key}DefectRate`] = {
+        formula: `= (${label} 불량 수량 / ${label} 작업 수량) × 100`,
+        refs: [
+          { field: `${key}DefectQuantity`, label: `${label} 불량 수량`, color: COLORS.blue },
+          { field: `${key}WorkQuantity`, label: `${label} 작업 수량`, color: COLORS.green },
+        ],
+      };
+    }
+    return refs;
+  }, []);
 
   // LocalStorage에서 기본값 불러오기
   useEffect(() => {
@@ -199,6 +244,8 @@ export default function FormingRegister() {
         readOnlyFields={[...COMMON_READONLY_FIELDS, ...POUCH_AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
         selectFields={selectFields}
         dateFields={['manufactureDate']}
+        tooltips={fieldTooltips}
+        formulaRefs={formulaRefs}
       />
     </div>
   );

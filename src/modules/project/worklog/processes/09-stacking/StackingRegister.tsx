@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
@@ -48,6 +48,47 @@ export default function StackingRegister() {
   const { separatorLots } = useSeparatorLots();
 
   const [saving, setSaving] = useState(false);
+
+  // 자동계산 필드 툴팁
+  const fieldTooltips = useMemo(() => {
+    const tips: Record<string, string> = {};
+    const processes = [
+      { key: 'stack', label: '스태킹' },
+      { key: 'hipot1', label: 'Hipot1' },
+    ];
+    for (const { key, label } of processes) {
+      tips[`${key}GoodQuantity`] = `= ${label} 투입량 - ${label} 불량 수량`;
+      tips[`${key}DefectRate`] = `= (${label} 불량 수량 / ${label} 투입량) × 100`;
+    }
+    return tips;
+  }, []);
+
+  // 자동계산 필드 참조 (하이라이트용)
+  const formulaRefs = useMemo(() => {
+    const COLORS = { blue: '#2196F3', green: '#4CAF50' };
+    const refs: Record<string, { formula: string; refs: { field: string; label: string; color: string }[] }> = {};
+    const processes = [
+      { key: 'stack', label: '스태킹' },
+      { key: 'hipot1', label: 'Hipot1' },
+    ];
+    for (const { key, label } of processes) {
+      refs[`${key}GoodQuantity`] = {
+        formula: `= ${label} 투입량 - ${label} 불량 수량`,
+        refs: [
+          { field: `${key}ActualInput`, label: `${label} 투입량`, color: COLORS.blue },
+          { field: `${key}DefectQuantity`, label: `${label} 불량 수량`, color: COLORS.green },
+        ],
+      };
+      refs[`${key}DefectRate`] = {
+        formula: `= (${label} 불량 수량 / ${label} 투입량) × 100`,
+        refs: [
+          { field: `${key}DefectQuantity`, label: `${label} 불량 수량`, color: COLORS.blue },
+          { field: `${key}ActualInput`, label: `${label} 투입량`, color: COLORS.green },
+        ],
+      };
+    }
+    return refs;
+  }, []);
 
   // LocalStorage에서 기본값 불러오기
   useEffect(() => {
@@ -215,6 +256,8 @@ export default function StackingRegister() {
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...SEPARATOR_AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
           selectFields={selectFields}
           dateFields={['manufactureDate']}
+          tooltips={fieldTooltips}
+          formulaRefs={formulaRefs}
         />
       </div>
     </div>

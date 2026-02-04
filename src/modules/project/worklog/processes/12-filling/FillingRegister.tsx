@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
@@ -52,6 +52,55 @@ export default function FillingRegister() {
   const { electrolyteLots } = useElectrolyteLots();
 
   const [saving, setSaving] = useState(false);
+
+  // 자동계산 필드 툴팁
+  const fieldTooltips = useMemo(() => {
+    const tips: Record<string, string> = {};
+    const processes = [
+      { key: 'filling', label: '주액' },
+      { key: 'waiting', label: 'Wetting' },
+    ];
+    for (const { key, label } of processes) {
+      tips[`${key}GoodQuantity`] = `= ${label} 작업 수량 - ${label} 불량 수량`;
+      tips[`${key}DefectRate`] = `= (${label} 불량 수량 / ${label} 작업 수량) × 100`;
+    }
+    tips['electrolyteUsage'] = '= 주액량(Spec) × Wetting 작업 수량 / 1000 (kg 변환)';
+    return tips;
+  }, []);
+
+  // 자동계산 필드 참조 (하이라이트용)
+  const formulaRefs = useMemo(() => {
+    const COLORS = { blue: '#2196F3', green: '#4CAF50', orange: '#FF9800' };
+    const refs: Record<string, { formula: string; refs: { field: string; label: string; color: string }[] }> = {};
+    const processes = [
+      { key: 'filling', label: '주액' },
+      { key: 'waiting', label: 'Wetting' },
+    ];
+    for (const { key, label } of processes) {
+      refs[`${key}GoodQuantity`] = {
+        formula: `= ${label} 작업 수량 - ${label} 불량 수량`,
+        refs: [
+          { field: `${key}WorkQuantity`, label: `${label} 작업 수량`, color: COLORS.blue },
+          { field: `${key}DefectQuantity`, label: `${label} 불량 수량`, color: COLORS.green },
+        ],
+      };
+      refs[`${key}DefectRate`] = {
+        formula: `= (${label} 불량 수량 / ${label} 작업 수량) × 100`,
+        refs: [
+          { field: `${key}DefectQuantity`, label: `${label} 불량 수량`, color: COLORS.blue },
+          { field: `${key}WorkQuantity`, label: `${label} 작업 수량`, color: COLORS.green },
+        ],
+      };
+    }
+    refs['electrolyteUsage'] = {
+      formula: '= 주액량(Spec) × Wetting 작업 수량 / 1000',
+      refs: [
+        { field: 'fillingSpecInjectionAmount', label: '주액량(Spec)', color: COLORS.blue },
+        { field: 'waitingWorkQuantity', label: 'Wetting 작업 수량', color: COLORS.green },
+      ],
+    };
+    return refs;
+  }, []);
 
   // LocalStorage에서 기본값 불러오기
   useEffect(() => {
@@ -240,6 +289,8 @@ export default function FillingRegister() {
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
           selectFields={selectFields}
           dateFields={['manufactureDate']}
+          tooltips={fieldTooltips}
+          formulaRefs={formulaRefs}
         />
       </div>
     </div>

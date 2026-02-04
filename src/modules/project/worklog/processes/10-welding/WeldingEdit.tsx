@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
 import { useNamedRanges } from '../../shared/useNamedRanges';
@@ -49,6 +49,43 @@ export default function WeldingEdit() {
     formValues.leadTab2Type
   );
   const { tapeLots } = useTapeLots();
+
+  // 자동계산 필드 툴팁
+  const fieldTooltips = useMemo(() => {
+    const tips: Record<string, string> = {};
+    const processes = [
+      { key: 'preWelding', label: '가용접' },
+      { key: 'mainWelding', label: '본용접' },
+      { key: 'hipot2', label: 'Hipot2' },
+      { key: 'taping', label: '테이핑' },
+    ];
+    for (const { key, label } of processes) {
+      tips[`${key}GoodQuantity`] = `= ${label} 작업 수량 - ${label} 불량 수량`;
+    }
+    return tips;
+  }, []);
+
+  // 자동계산 필드 참조 (하이라이트용)
+  const formulaRefs = useMemo(() => {
+    const COLORS = { blue: '#2196F3', green: '#4CAF50' };
+    const refs: Record<string, { formula: string; refs: { field: string; label: string; color: string }[] }> = {};
+    const processes = [
+      { key: 'preWelding', label: '가용접' },
+      { key: 'mainWelding', label: '본용접' },
+      { key: 'hipot2', label: 'Hipot2' },
+      { key: 'taping', label: '테이핑' },
+    ];
+    for (const { key, label } of processes) {
+      refs[`${key}GoodQuantity`] = {
+        formula: `= ${label} 작업 수량 - ${label} 불량 수량`,
+        refs: [
+          { field: `${key}WorkQuantity`, label: `${label} 작업 수량`, color: COLORS.blue },
+          { field: `${key}DefectQuantity`, label: `${label} 불량 수량`, color: COLORS.green },
+        ],
+      };
+    }
+    return refs;
+  }, []);
 
   useEffect(() => {
     const loadWorklog = async () => {
@@ -262,6 +299,8 @@ export default function WeldingEdit() {
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
           selectFields={weldingSelectFields}
           dateFields={['manufactureDate']}
+          tooltips={fieldTooltips}
+          formulaRefs={formulaRefs}
         />
       </div>
     </div>
