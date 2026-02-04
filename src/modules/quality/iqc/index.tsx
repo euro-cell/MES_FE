@@ -1,10 +1,12 @@
-import styles from '../../../styles/components/moduleIndex.module.css';
+import { Route, Routes } from 'react-router-dom';
+import IQCProjectList from './IQCProjectList';
+import IQCPage from './IQCPage';
 
 export default function IQCIndex() {
   return (
-    <div className={styles.tempPage}>
-      <h2>IQC</h2>
-      <p>준비 중입니다.</p>
-    </div>
+    <Routes>
+      <Route path='' element={<IQCProjectList />} />
+      <Route path=':projectId' element={<IQCPage />} />
+    </Routes>
   );
 }
