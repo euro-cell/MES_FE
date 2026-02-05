@@ -5,6 +5,16 @@ import styles from '../../../styles/quality/iqc/IQCPage.module.css';
 import { getIQCProject } from '../../../api/quality/IQCService';
 import { createIQCMenus } from './menuConfig';
 import type { IQCProject, IQCMenuType } from './IQCTypes';
+import SummaryTable from './tables/SummaryTable';
+import CathodeMaterial1Table from './tables/CathodeMaterial1Table';
+import CathodeMaterial2Table from './tables/CathodeMaterial2Table';
+import AnodeMaterialTable from './tables/AnodeMaterialTable';
+import ConductiveMaterialTable from './tables/ConductiveMaterialTable';
+import CurrentCollectorTable from './tables/CurrentCollectorTable';
+import SeparatorTable from './tables/SeparatorTable';
+import ElectrolyteTable from './tables/ElectrolyteTable';
+import PouchTable from './tables/PouchTable';
+import LeadTabTable from './tables/LeadTabTable';
 
 export default function IQCPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -39,33 +49,35 @@ export default function IQCPage() {
 
   const iqcMenus = createIQCMenus(Number(projectId));
 
-  // 메뉴별 한글 타이틀 매핑
-  const menuTitles: Record<IQCMenuType, string> = {
-    Summary: 'Summary',
-    CathodeMaterial1: '양극재1',
-    CathodeMaterial2: '양극재2',
-    AnodeMaterial: '음극재',
-    ConductiveMaterial: '도전재',
-    CurrentCollector: '집전체',
-    Separator: '분리막',
-    Electrolyte: '전해액',
-    Pouch: '파우치',
-    LeadTab: '리드탭',
-  };
-
   const renderContent = () => {
     if (!menu) {
       return <div className={styles.placeholder}>메뉴를 선택하세요.</div>;
     }
 
-    const menuTitle = menuTitles[menu] || menu;
-
-    // TODO: 각 메뉴별 컴포넌트 구현 후 교체
-    return (
-      <div className={styles.placeholder}>
-        {menuTitle} - 준비 중입니다.
-      </div>
-    );
+    switch (menu) {
+      case 'Summary':
+        return <SummaryTable />;
+      case 'CathodeMaterial1':
+        return <CathodeMaterial1Table />;
+      case 'CathodeMaterial2':
+        return <CathodeMaterial2Table />;
+      case 'AnodeMaterial':
+        return <AnodeMaterialTable />;
+      case 'ConductiveMaterial':
+        return <ConductiveMaterialTable />;
+      case 'CurrentCollector':
+        return <CurrentCollectorTable />;
+      case 'Separator':
+        return <SeparatorTable />;
+      case 'Electrolyte':
+        return <ElectrolyteTable />;
+      case 'Pouch':
+        return <PouchTable />;
+      case 'LeadTab':
+        return <LeadTabTable />;
+      default:
+        return <div className={styles.placeholder}>메뉴를 선택하세요.</div>;
+    }
   };
 
   return (

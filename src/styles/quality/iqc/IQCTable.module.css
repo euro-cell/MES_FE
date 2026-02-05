@@ -1,0 +1,182 @@
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.tableSection {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tableTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tableTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.iqcTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.iqcTable th,
+.iqcTable td {
+  border: 1px solid #e2e8f0;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.iqcTable th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #334155;
+}
+
+.iqcTable td {
+  color: #475569;
+}
+
+.iqcTable tbody tr:hover {
+  background: #f8fafc;
+}
+
+.headerRow {
+  background: #f8fafc !important;
+  font-weight: 600;
+}
+
+.subHeaderRow {
+  background: #fafbfc !important;
+  font-weight: 500;
+}
+
+.noDataRow {
+  text-align: center;
+  color: #94a3b8 !important;
+  font-style: italic;
+  padding: 20px 12px !important;
+}
+
+/* 이미지 관련 */
+.imageCell {
+  padding: 8px;
+}
+
+.imageContainer {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.imagePreview {
+  max-width: 300px;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.imagePreview:hover {
+  transform: scale(1.05);
+}
+
+/* 텍스트 입력 셀 */
+.textCell {
+  text-align: left;
+  padding: 8px 12px;
+}
+
+.textArea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.textArea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.textArea::placeholder {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Summary 특화 */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.summaryCard {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.summaryCardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 12px;
+}
+
+.summaryCardContent {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* 부적합 구분 */
+.nonConformityGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.nonConformityItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.nonConformityLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.nonConformityValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
