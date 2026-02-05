@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/quality/iqc/IQCPage.module.css';
-import { getIQCProject } from '../../../api/quality/IQCService';
+import { getIQCProject, getIQCSummary, getIQCList } from '../../../api/quality/IQCService';
 import { createIQCMenus } from './menuConfig';
-import type { IQCProject, IQCMenuType } from './IQCTypes';
+import type { IQCProject, IQCMenuType, IQCSummary, IQCListItem } from './IQCTypes';
 import SummaryTable from './tables/SummaryTable';
 import CathodeMaterial1Table from './tables/CathodeMaterial1Table';
 import CathodeMaterial2Table from './tables/CathodeMaterial2Table';
@@ -23,6 +23,8 @@ export default function IQCPage() {
 
   const [project, setProject] = useState<IQCProject | null>(null);
   const [loading, setLoading] = useState(true);
+  const [summaryData, setSummaryData] = useState<IQCSummary | null>(null);
+  const [iqcListData, setIqcListData] = useState<IQCListItem[]>([]);
 
   const searchParams = new URLSearchParams(location.search);
   const menu = searchParams.get('menu') as IQCMenuType | null;
@@ -44,6 +46,25 @@ export default function IQCPage() {
     loadProject();
   }, [projectId]);
 
+  useEffect(() => {
+    const loadSummaryData = async () => {
+      if (!projectId || menu !== 'Summary') return;
+
+      try {
+        const [summary, list] = await Promise.all([
+          getIQCSummary(Number(projectId)),
+          getIQCList(Number(projectId)),
+        ]);
+        setSummaryData(summary);
+        setIqcListData(list);
+      } catch (err) {
+        console.error('Summary 데이터 조회 실패:', err);
+      }
+    };
+
+    loadSummaryData();
+  }, [projectId, menu]);
+
   if (loading) return <p>데이터를 불러오는 중...</p>;
   if (!project) return <p>프로젝트를 찾을 수 없습니다.</p>;
 
@@ -56,7 +77,18 @@ export default function IQCPage() {
 
     switch (menu) {
       case 'Summary':
-        return <SummaryTable />;
+        return (
+          <SummaryTable
+            data={
+              summaryData
+                ? {
+                    ...summaryData,
+                    iqcList: iqcListData,
+                  }
+                : undefined
+            }
+          />
+        );
       case 'CathodeMaterial1':
         return <CathodeMaterial1Table />;
       case 'CathodeMaterial2':
