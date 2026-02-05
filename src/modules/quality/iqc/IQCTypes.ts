@@ -56,6 +56,7 @@ export interface CathodeMaterial1Data {
 
 export interface CathodeMaterial1Result {
   item: string;
+  subItem?: string; // 세부 항목 (D5, D50, D95, 0.1C 등)
   standard: string;
   result: string;
   pass: boolean;

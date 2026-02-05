@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { IQCProject, IQCSummary, IQCListItem } from '../../modules/quality/iqc/IQCTypes';
+import type { IQCProject, IQCSummary, IQCListItem, CathodeMaterial1Data } from '../../modules/quality/iqc/IQCTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -79,4 +79,28 @@ export const deleteIQCListItem = async (itemId: number): Promise<void> => {
   await axios.delete(`${API_BASE}/quality/iqc/list/${itemId}`, {
     withCredentials: true,
   });
+};
+
+/** 양극재1 조회 */
+export const getCathodeMaterial1 = async (productionId: number): Promise<CathodeMaterial1Data | null> => {
+  try {
+    const res = await axios.get(`${API_BASE}/quality/iqc/${productionId}/cathode-material-1`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    console.error('양극재1 조회 실패:', error);
+    return null;
+  }
+};
+
+/** 양극재1 저장/수정 */
+export const saveCathodeMaterial1 = async (
+  productionId: number,
+  data: Partial<CathodeMaterial1Data>
+): Promise<CathodeMaterial1Data> => {
+  const res = await axios.post(`${API_BASE}/quality/iqc/${productionId}/cathode-material-1`, data, {
+    withCredentials: true,
+  });
+  return res.data;
 };

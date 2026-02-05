@@ -23,6 +23,75 @@
   font-size: 16px;
   font-weight: 600;
   color: #1e293b;
+  flex: 1;
+}
+
+.specButton {
+  padding: 6px 12px;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.specButton:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.saveButton {
+  padding: 6px 12px;
+  border: 1px solid #16a34a;
+  border-radius: 6px;
+  background: #16a34a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saveButton:hover {
+  background: #15803d;
+  border-color: #15803d;
+}
+
+.cancelButton {
+  padding: 6px 12px;
+  border: 1px solid #64748b;
+  border-radius: 6px;
+  background: #64748b;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton:hover {
+  background: #475569;
+  border-color: #475569;
+}
+
+.deleteButton {
+  padding: 6px 12px;
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.deleteButton:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
 }
 
 .iqcTable {
@@ -112,6 +181,7 @@
   resize: vertical;
   font-family: inherit;
   line-height: 1.5;
+  box-sizing: border-box;
 }
 
 .textArea:focus {

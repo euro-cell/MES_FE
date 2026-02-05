@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/quality/iqc/IQCPage.module.css';
-import { getIQCProject, getIQCSummary, getIQCList } from '../../../api/quality/IQCService';
+import { getIQCProject, getIQCSummary, getIQCList, getCathodeMaterial1, saveCathodeMaterial1 } from '../../../api/quality/IQCService';
 import { createIQCMenus } from './menuConfig';
-import type { IQCProject, IQCMenuType, IQCSummary, IQCListItem } from './IQCTypes';
+import type { IQCProject, IQCMenuType, IQCSummary, IQCListItem, CathodeMaterial1Data } from './IQCTypes';
 import SummaryTable from './tables/SummaryTable';
 import CathodeMaterial1Table from './tables/CathodeMaterial1Table';
 import CathodeMaterial2Table from './tables/CathodeMaterial2Table';
@@ -25,6 +25,7 @@ export default function IQCPage() {
   const [loading, setLoading] = useState(true);
   const [summaryData, setSummaryData] = useState<IQCSummary | null>(null);
   const [iqcListData, setIqcListData] = useState<IQCListItem[]>([]);
+  const [cathodeMaterial1Data, setCathodeMaterial1Data] = useState<CathodeMaterial1Data | null>(null);
 
   const searchParams = new URLSearchParams(location.search);
   const menu = searchParams.get('menu') as IQCMenuType | null;
@@ -65,6 +66,34 @@ export default function IQCPage() {
     loadSummaryData();
   }, [projectId, menu]);
 
+  useEffect(() => {
+    const loadCathodeMaterial1Data = async () => {
+      if (!projectId || menu !== 'CathodeMaterial1') return;
+
+      try {
+        const data = await getCathodeMaterial1(Number(projectId));
+        setCathodeMaterial1Data(data);
+      } catch (err) {
+        console.error('양극재1 데이터 조회 실패:', err);
+      }
+    };
+
+    loadCathodeMaterial1Data();
+  }, [projectId, menu]);
+
+  const handleSaveCathodeMaterial1 = async (data: Partial<CathodeMaterial1Data>) => {
+    if (!projectId) return;
+
+    try {
+      const saved = await saveCathodeMaterial1(Number(projectId), data);
+      setCathodeMaterial1Data(saved);
+      alert('저장되었습니다.');
+    } catch (err) {
+      console.error('양극재1 저장 실패:', err);
+      alert('저장에 실패했습니다.');
+    }
+  };
+
   if (loading) return <p>데이터를 불러오는 중...</p>;
   if (!project) return <p>프로젝트를 찾을 수 없습니다.</p>;
 
@@ -90,7 +119,13 @@ export default function IQCPage() {
           />
         );
       case 'CathodeMaterial1':
-        return <CathodeMaterial1Table />;
+        return (
+          <CathodeMaterial1Table
+            data={cathodeMaterial1Data ?? undefined}
+            productionId={Number(projectId)}
+            onSave={handleSaveCathodeMaterial1}
+          />
+        );
       case 'CathodeMaterial2':
         return <CathodeMaterial2Table />;
       case 'AnodeMaterial':
