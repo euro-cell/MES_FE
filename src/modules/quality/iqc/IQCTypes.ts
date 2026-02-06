@@ -45,21 +45,51 @@ export interface IQCListItem {
 /** 양극재1 (NCM622) */
 export interface CathodeMaterial1Data {
   id: number;
-  inspectionDate: string;
-  lot: string;
-  manufacturer: string;
+  // 기본 정보
+  productCode: string; // 품목
+  productName: string; // 품명
+  manufacturer: string; // 제조원
+  lotNo: string; // Lot no.
+  usage: string; // 사용처
+  receiveDate: string; // 입고일
+  inspectionDate: string; // 검사일
+  inspector: string; // 검사자
+  // 검사 결과
   inspectionResults: CathodeMaterial1Result[];
-  coaReference: string;
-  images: string[];
+  // 기타 CoA 참조 결과
+  coaResults: CathodeMaterial1CoaResult;
+  // 이미지
+  images: {
+    psd?: string;
+    halfCell?: string;
+    feSem?: string;
+  };
+  // 비고
   remarks: string;
 }
 
 export interface CathodeMaterial1Result {
   item: string;
   subItem?: string; // 세부 항목 (D5, D50, D95, 0.1C 등)
-  standard: string;
-  result: string;
-  pass: boolean;
+  unit: string; // 단위
+  standard: string; // 규격
+  refCoa: string; // Reference - CoA
+  refLastData: string; // Reference - Last data
+  sample1: string; // 검사 결과 - 샘플1
+  sample2: string; // 검사 결과 - 샘플2
+  sample3: string; // 검사 결과 - 샘플3
+  average: string; // 검사 결과 - 평균
+  pass: boolean | null; // 합불판정 (합/불/null)
+  remarks: string; // 비고
+}
+
+export interface CathodeMaterial1CoaResult {
+  dMin: string; // Dmin(μm)
+  dMax: string; // Dmax(μm)
+  bet: string; // BET(m²/g)
+  lioh: string; // LiOH(%)
+  li2co3: string; // Li2CO3(%)
+  fe: string; // Fe(ppm)
 }
 
 /** 양극재2 (LCO) */

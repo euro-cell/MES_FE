@@ -1,7 +1,7 @@
 .tableContainer {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 10px;
 }
 
 .tableSection {
@@ -94,6 +94,35 @@
   border-color: #b91c1c;
 }
 
+.tableInput {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.tableInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.tableSelect {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 13px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.tableSelect:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
 .iqcTable {
   width: 100%;
   border-collapse: collapse;
@@ -108,9 +137,10 @@
 }
 
 .iqcTable th {
-  background: #f1f5f9;
+  background: #1e4a8c;
   font-weight: 600;
-  color: #334155;
+  color: #ffffff;
+  border-color: #1a3d73;
 }
 
 .iqcTable td {
@@ -249,4 +279,105 @@
   font-size: 14px;
   font-weight: 600;
   color: #1e293b;
+}
+
+/* 검사 항목 셀 */
+.itemCell {
+  font-weight: 500;
+  background: #fafbfc;
+}
+
+.subItemCell {
+  background: #fafbfc;
+}
+
+.passCell {
+  font-weight: 600;
+}
+
+/* 부적합 표시 텍스트 */
+.noteText {
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* 이미지 그리드 */
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 16px;
+}
+
+.imageBox {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.imageLabel {
+  background: #f1f5f9;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.imageContent {
+  padding: 16px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.resultImage {
+  max-width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+}
+
+.noImage {
+  color: #94a3b8;
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Remark 박스 */
+.remarkBox {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 16px;
+  background: #fff;
+}
+
+.remarkTextarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.remarkTextarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.remarkContent {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin: 0;
+  font-family: inherit;
 }
