@@ -58,7 +58,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
   const [selectedType, setSelectedType] = useState('');
   const [selectedName, setSelectedName] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
-  const [selectedLot, setSelectedLot] = useState('');
+  const [selectedLots, setSelectedLots] = useState<string[]>([]);
 
   useEffect(() => {
     if (data) {
@@ -84,13 +84,13 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
     setSelectedType('');
     setSelectedName('');
     setSelectedCompany('');
-    setSelectedLot('');
+    setSelectedLots([]);
     setLots([]);
   };
 
   const handleTypeChange = (type: string) => {
     setSelectedType(type);
-    setSelectedLot('');
+    setSelectedLots([]);
     setLots([]);
 
     if (!type) {
@@ -118,15 +118,15 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
         getMaterialLots({ category: '양극재', type }).then((res) => {
           const lotFiltered = res.filter((l) => l.name === autoName);
           setLots(lotFiltered);
-          const autoLot = lotFiltered.length === 1 ? lotFiltered[0].lot : '';
-          setSelectedLot(autoLot);
+          const autoLots = lotFiltered.length === 1 ? [lotFiltered[0].lot] : [];
+          setSelectedLots(autoLots);
           setEditData((prev) => ({
             ...prev,
             type,
             name: autoName,
             manufacturer: autoCompany,
-            lotNo: autoLot,
-            receiptDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiptDate) : prev.receiptDate,
+            lotNo: autoLots.join(', '),
+            receiptDate: autoLots.length > 0 ? (lotFiltered[0].receivedDate || prev.receiptDate) : prev.receiptDate,
           }));
         });
       }
@@ -135,7 +135,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
 
   const handleNameChange = (name: string) => {
     setSelectedName(name);
-    setSelectedLot('');
+    setSelectedLots([]);
     setLots([]);
 
     if (!name) {
@@ -154,14 +154,14 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
       getMaterialLots({ category: '양극재', type: selectedType }).then((res) => {
         const lotFiltered = res.filter((l) => l.name === name);
         setLots(lotFiltered);
-        const autoLot = lotFiltered.length === 1 ? lotFiltered[0].lot : '';
-        setSelectedLot(autoLot);
+        const autoLots = lotFiltered.length === 1 ? [lotFiltered[0].lot] : [];
+        setSelectedLots(autoLots);
         setEditData((prev) => ({
           ...prev,
           name,
           manufacturer: autoCompany,
-          lotNo: autoLot,
-          receiptDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiptDate) : prev.receiptDate,
+          lotNo: autoLots.join(', '),
+          receiptDate: autoLots.length > 0 ? (lotFiltered[0].receivedDate || prev.receiptDate) : prev.receiptDate,
         }));
       });
     }
@@ -169,7 +169,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
 
   const handleCompanyChange = (company: string) => {
     setSelectedCompany(company);
-    setSelectedLot('');
+    setSelectedLots([]);
     setLots([]);
     setEditData((prev) => ({ ...prev, manufacturer: company, lotNo: '' }));
 
@@ -178,24 +178,23 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
     getMaterialLots({ category: '양극재', type: selectedType }).then((res) => {
       const lotFiltered = res.filter((l) => l.name === selectedName);
       setLots(lotFiltered);
-      const autoLot = lotFiltered.length === 1 ? lotFiltered[0].lot : '';
-      setSelectedLot(autoLot);
+      const autoLots = lotFiltered.length === 1 ? [lotFiltered[0].lot] : [];
+      setSelectedLots(autoLots);
       setEditData((prev) => ({
         ...prev,
         manufacturer: company,
-        lotNo: autoLot,
-        receiptDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiptDate) : prev.receiptDate,
+        lotNo: autoLots.join(', '),
+        receiptDate: autoLots.length > 0 ? (lotFiltered[0].receivedDate || prev.receiptDate) : prev.receiptDate,
       }));
     });
   };
 
-  const handleLotChange = (lot: string) => {
-    setSelectedLot(lot);
-    const found = lots.find((l) => l.lot === lot);
+  const handleLotChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = Array.from(e.target.selectedOptions).map((o) => o.value);
+    setSelectedLots(selected);
     setEditData((prev) => ({
       ...prev,
-      lotNo: lot,
-      receiptDate: found?.receivedDate || prev.receiptDate,
+      lotNo: selected.join(', '),
     }));
   };
 
@@ -240,7 +239,6 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
     while (i < results.length) {
       const current = results[i];
 
-      // 같은 category의 subItem들을 묶기
       const subItems = [current];
       let j = i + 1;
       while (j < results.length && results[j].category === current.category && results[j].item) {
@@ -249,7 +247,6 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
       }
 
       if (subItems.length > 1 || current.item) {
-        // 세부 항목이 있는 경우
         subItems.forEach((result, subIndex) => {
           const actualIndex = i + subIndex;
           rows.push(
@@ -286,7 +283,6 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
         });
         i = j;
       } else {
-        // 세부 항목 없는 경우
         rows.push(
           <tr key={i}>
             <td colSpan={2} className={styles.itemCell}>
@@ -423,8 +419,14 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
             </td>
             <td>
               {isEditing ? (
-                <select value={selectedLot} onChange={(e) => handleLotChange(e.target.value)} disabled={!selectedCompany} className={styles.tableSelect}>
-                  <option value="">선택</option>
+                <select
+                  multiple
+                  value={selectedLots}
+                  onChange={handleLotChange}
+                  disabled={!selectedCompany}
+                  className={styles.tableSelect}
+                  style={{ height: '80px' }}
+                >
                   {lots.map((l) => (
                     <option key={l.lot} value={l.lot}>{l.lot}</option>
                   ))}
