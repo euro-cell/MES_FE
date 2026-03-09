@@ -153,16 +153,16 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
 
   // 기본 검사 항목 템플릿
   const getDefaultInspectionResults = (): CathodeMaterial1Result[] => [
-    { item: '입도', subItem: 'D5', unit: 'μm', standard: 'N/A', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: true, remarks: '' },
-    { item: '입도', subItem: 'D50', unit: 'μm', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: true, remarks: '' },
-    { item: '입도', subItem: 'D95', unit: 'μm', standard: 'N/A', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: true, remarks: '' },
-    { item: '수분', unit: 'ppm', standard: 'TBD', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: true, remarks: '' },
-    { item: '탭밀도', unit: 'g/cc', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: true, remarks: '' },
-    { item: 'pH', unit: '', standard: 'N/A', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: true, remarks: '' },
-    { item: 'Half cell', subItem: '0.1C', unit: 'mAh/g', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: true, remarks: '' },
+    { item: '입도', subItem: 'D5', unit: 'μm', standard: 'N/A', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
+    { item: '입도', subItem: 'D50', unit: 'μm', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
+    { item: '입도', subItem: 'D95', unit: 'μm', standard: 'N/A', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
+    { item: '수분', unit: 'ppm', standard: 'TBD', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
+    { item: '탭밀도', unit: 'g/cc', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
+    { item: 'pH', unit: '', standard: 'N/A', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
+    { item: 'Half cell', subItem: '0.1C', unit: 'mAh/g', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
     { item: 'Half cell', subItem: '1st 효율', unit: '%', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
     { item: 'Half cell', subItem: '0.5C', unit: 'mAh/g', standard: 'TBD', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-    { item: 'Half cell', subItem: '1.0C', unit: 'mAh/g', standard: 'TBD', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: true, remarks: '' },
+    { item: 'Half cell', subItem: '1.0C', unit: 'mAh/g', standard: 'TBD', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
   ];
 
   const getDefaultCoaResults = (): CathodeMaterial1CoaResult => ({
@@ -348,7 +348,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
     };
 
     const getPassDisplay = (pass: boolean | null) => {
-      if (pass === null) return { text: '불', color: '#dc2626' };
+      if (pass === null) return { text: '미판정', color: '#94a3b8' };
       return pass ? { text: '합', color: '#16a34a' } : { text: '불', color: '#dc2626' };
     };
 
