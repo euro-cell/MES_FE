@@ -192,7 +192,11 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
 
   useEffect(() => {
     if (data) {
-      setEditData(data);
+      setEditData({
+        ...data,
+        inspectionResults: data.inspectionResults ?? getDefaultInspectionResults(),
+        coaResults: data.coaResults ?? getDefaultCoaResults(),
+      });
     } else {
       setEditData({
         id: 0,
@@ -248,17 +252,18 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
   const renderInspectionRows = () => {
     const rows: React.JSX.Element[] = [];
     let i = 0;
+    const inspectionResults = editData.inspectionResults ?? [];
 
-    while (i < editData.inspectionResults.length) {
-      const current = editData.inspectionResults[i];
+    while (i < inspectionResults.length) {
+      const current = inspectionResults[i];
 
       // 같은 항목의 세부 항목들을 찾기
       const subItems = [current];
       let j = i + 1;
-      while (j < editData.inspectionResults.length &&
-             editData.inspectionResults[j].item === current.item &&
-             editData.inspectionResults[j].subItem) {
-        subItems.push(editData.inspectionResults[j]);
+      while (j < inspectionResults.length &&
+             inspectionResults[j].item === current.item &&
+             inspectionResults[j].subItem) {
+        subItems.push(inspectionResults[j]);
         j++;
       }
 

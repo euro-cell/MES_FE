@@ -7,7 +7,7 @@ interface SummaryTableProps {
 }
 
 const SummaryTable: React.FC<SummaryTableProps> = ({ data }) => {
-  if (!data) {
+  if (!data || !data.nonConformity) {
     return (
       <div className={styles.tableContainer}>
         <div className={styles.tableSection}>
