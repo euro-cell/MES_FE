@@ -256,6 +256,16 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
 
       {/* 기본 정보 테이블 */}
       <table className={styles.iqcTable}>
+        <colgroup>
+          <col style={{ width: '12%' }} />
+          <col style={{ width: '16%' }} />
+          <col style={{ width: '14%' }} />
+          <col style={{ width: '14%' }} />
+          <col style={{ width: '12%' }} />
+          <col style={{ width: '12%' }} />
+          <col style={{ width: '12%' }} />
+          <col style={{ width: '8%' }} />
+        </colgroup>
         <thead>
           <tr>
             <th>품목</th>
@@ -284,6 +294,20 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
 
       {/* 검사 결과 테이블 */}
       <table className={styles.iqcTable} style={{ marginTop: '-1px' }}>
+        <colgroup>
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '7%' }} />
+          <col style={{ width: '6%' }} />
+          <col style={{ width: '10%' }} />
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '9%' }} />
+          <col style={{ width: '9%' }} />
+          <col style={{ width: '9%' }} />
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '7%' }} />
+          <col style={{ width: '11%' }} />
+        </colgroup>
         <thead>
           <tr>
             <th colSpan={2} rowSpan={2}>검사 항목</th>
@@ -314,6 +338,14 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
         <span className={styles.noteText}>※ 부적합</span>
       </div>
       <table className={styles.iqcTable}>
+        <colgroup>
+          <col style={{ width: '16.66%' }} />
+          <col style={{ width: '16.66%' }} />
+          <col style={{ width: '16.66%' }} />
+          <col style={{ width: '16.66%' }} />
+          <col style={{ width: '16.66%' }} />
+          <col style={{ width: '16.7%' }} />
+        </colgroup>
         <thead>
           <tr>
             <th>D<sub>min</sub>(μm)</th>
