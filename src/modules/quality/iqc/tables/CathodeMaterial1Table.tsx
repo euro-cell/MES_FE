@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import type { CathodeMaterial1Data, CathodeMaterial1Result, CathodeMaterial1CoaResult } from '../IQCTypes';
+import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
 
 interface CathodeMaterial1TableProps {
   data?: CathodeMaterial1Data;
@@ -13,6 +14,142 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
   onSave,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+
+  // 자재 선택 관련 state
+  const [materials, setMaterials] = useState<{ id: number; type: string; name: string; company: string }[]>([]);
+  const [lots, setLots] = useState<{ id: number; lot: string; name: string; receivedDate: string; remainingQty: number }[]>([]);
+  const [selectedType, setSelectedType] = useState('');
+  const [selectedName, setSelectedName] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState('');
+  const [selectedLot, setSelectedLot] = useState('');
+
+  // 편집 모드 진입 시 자재 목록 fetch
+  useEffect(() => {
+    if (isEditing) {
+      getMaterialsByCategory('양극재').then((res) => {
+        setMaterials(res);
+      });
+    }
+  }, [isEditing]);
+
+  const resetSelections = () => {
+    setSelectedType('');
+    setSelectedName('');
+    setSelectedCompany('');
+    setSelectedLot('');
+    setLots([]);
+  };
+
+  const handleTypeChange = (type: string) => {
+    setSelectedType(type);
+    setSelectedLot('');
+    setLots([]);
+
+    if (!type) {
+      setSelectedName('');
+      setSelectedCompany('');
+      setEditData((prev) => ({ ...prev, productCode: '', productName: '', manufacturer: '', lotNo: '' }));
+      return;
+    }
+
+    const filtered = materials.filter((m) => m.type === type);
+    const names = [...new Set(filtered.map((m) => m.name))];
+    const autoName = names.length === 1 ? names[0] : '';
+    setSelectedName(autoName);
+    setSelectedCompany('');
+    setEditData((prev) => ({ ...prev, productCode: type, productName: autoName, manufacturer: '', lotNo: '' }));
+
+    if (autoName) {
+      const nameFiltered = filtered.filter((m) => m.name === autoName);
+      const companies = [...new Set(nameFiltered.map((m) => m.company))];
+      const autoCompany = companies.length === 1 ? companies[0] : '';
+      setSelectedCompany(autoCompany);
+      setEditData((prev) => ({ ...prev, productCode: type, productName: autoName, manufacturer: autoCompany, lotNo: '' }));
+
+      if (autoCompany) {
+        getMaterialLots({ category: '양극재', type }).then((res) => {
+          const lotFiltered = res.filter((l) => l.name === autoName);
+          setLots(lotFiltered);
+          const autoLot = lotFiltered.length === 1 ? lotFiltered[0].lot : '';
+          setSelectedLot(autoLot);
+          setEditData((prev) => ({
+            ...prev,
+            productCode: type,
+            productName: autoName,
+            manufacturer: autoCompany,
+            lotNo: autoLot,
+            receiveDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiveDate) : prev.receiveDate,
+          }));
+        });
+      }
+    }
+  };
+
+  const handleNameChange = (name: string) => {
+    setSelectedName(name);
+    setSelectedLot('');
+    setLots([]);
+
+    if (!name) {
+      setSelectedCompany('');
+      setEditData((prev) => ({ ...prev, productName: '', manufacturer: '', lotNo: '' }));
+      return;
+    }
+
+    const filtered = materials.filter((m) => m.type === selectedType && m.name === name);
+    const companies = [...new Set(filtered.map((m) => m.company))];
+    const autoCompany = companies.length === 1 ? companies[0] : '';
+    setSelectedCompany(autoCompany);
+    setEditData((prev) => ({ ...prev, productName: name, manufacturer: autoCompany, lotNo: '' }));
+
+    if (autoCompany) {
+      getMaterialLots({ category: '양극재', type: selectedType }).then((res) => {
+        const lotFiltered = res.filter((l) => l.name === name);
+        setLots(lotFiltered);
+        const autoLot = lotFiltered.length === 1 ? lotFiltered[0].lot : '';
+        setSelectedLot(autoLot);
+        setEditData((prev) => ({
+          ...prev,
+          productName: name,
+          manufacturer: autoCompany,
+          lotNo: autoLot,
+          receiveDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiveDate) : prev.receiveDate,
+        }));
+      });
+    }
+  };
+
+  const handleCompanyChange = (company: string) => {
+    setSelectedCompany(company);
+    setSelectedLot('');
+    setLots([]);
+    setEditData((prev) => ({ ...prev, manufacturer: company, lotNo: '' }));
+
+    if (!company) return;
+
+    getMaterialLots({ category: '양극재', type: selectedType }).then((res) => {
+      const lotFiltered = res.filter((l) => l.name === selectedName);
+      setLots(lotFiltered);
+      const autoLot = lotFiltered.length === 1 ? lotFiltered[0].lot : '';
+      setSelectedLot(autoLot);
+      setEditData((prev) => ({
+        ...prev,
+        manufacturer: company,
+        lotNo: autoLot,
+        receiveDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiveDate) : prev.receiveDate,
+      }));
+    });
+  };
+
+  const handleLotChange = (lot: string) => {
+    setSelectedLot(lot);
+    const found = lots.find((l) => l.lot === lot);
+    setEditData((prev) => ({
+      ...prev,
+      lotNo: lot,
+      receiveDate: found?.receivedDate || prev.receiveDate,
+    }));
+  };
 
   // 기본 검사 항목 템플릿
   const getDefaultInspectionResults = (): CathodeMaterial1Result[] => [
@@ -78,13 +215,31 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
   const handleSave = async () => {
     if (onSave) {
       await onSave(editData);
+      resetSelections();
       setIsEditing(false);
     }
   };
 
   const handleCancel = () => {
+    resetSelections();
     if (data) {
       setEditData(data);
+    } else {
+      setEditData({
+        id: 0,
+        productCode: '',
+        productName: '',
+        manufacturer: '',
+        lotNo: '',
+        usage: '',
+        receiveDate: '',
+        inspectionDate: '',
+        inspector: '',
+        inspectionResults: getDefaultInspectionResults(),
+        coaResults: getDefaultCoaResults(),
+        images: {},
+        remarks: '',
+      });
     }
     setIsEditing(false);
   };
@@ -280,10 +435,65 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
         </thead>
         <tbody>
           <tr>
-            <td>{isEditing ? <input type="text" value={editData.productCode} onChange={(e) => setEditData({ ...editData, productCode: e.target.value })} className={styles.tableInput} /> : editData.productCode}</td>
-            <td>{isEditing ? <input type="text" value={editData.productName} onChange={(e) => setEditData({ ...editData, productName: e.target.value })} className={styles.tableInput} /> : editData.productName}</td>
-            <td>{isEditing ? <input type="text" value={editData.manufacturer} onChange={(e) => setEditData({ ...editData, manufacturer: e.target.value })} className={styles.tableInput} /> : editData.manufacturer}</td>
-            <td>{isEditing ? <input type="text" value={editData.lotNo} onChange={(e) => setEditData({ ...editData, lotNo: e.target.value })} className={styles.tableInput} /> : editData.lotNo}</td>
+            <td>
+              {isEditing ? (
+                <select
+                  value={selectedType}
+                  onChange={(e) => handleTypeChange(e.target.value)}
+                  className={styles.tableSelect}
+                >
+                  <option value="">선택</option>
+                  {[...new Set(materials.map((m) => m.type))].map((type) => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              ) : editData.productCode}
+            </td>
+            <td>
+              {isEditing ? (
+                <select
+                  value={selectedName}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  disabled={!selectedType}
+                  className={styles.tableSelect}
+                >
+                  <option value="">선택</option>
+                  {[...new Set(materials.filter((m) => m.type === selectedType).map((m) => m.name))].map((name) => (
+                    <option key={name} value={name}>{name}</option>
+                  ))}
+                </select>
+              ) : editData.productName}
+            </td>
+            <td>
+              {isEditing ? (
+                <select
+                  value={selectedCompany}
+                  onChange={(e) => handleCompanyChange(e.target.value)}
+                  disabled={!selectedName}
+                  className={styles.tableSelect}
+                >
+                  <option value="">선택</option>
+                  {[...new Set(materials.filter((m) => m.type === selectedType && m.name === selectedName).map((m) => m.company))].map((company) => (
+                    <option key={company} value={company}>{company}</option>
+                  ))}
+                </select>
+              ) : editData.manufacturer}
+            </td>
+            <td>
+              {isEditing ? (
+                <select
+                  value={selectedLot}
+                  onChange={(e) => handleLotChange(e.target.value)}
+                  disabled={!selectedCompany}
+                  className={styles.tableSelect}
+                >
+                  <option value="">선택</option>
+                  {lots.map((l) => (
+                    <option key={l.lot} value={l.lot}>{l.lot}</option>
+                  ))}
+                </select>
+              ) : editData.lotNo}
+            </td>
             <td>{isEditing ? <input type="text" value={editData.usage} onChange={(e) => setEditData({ ...editData, usage: e.target.value })} className={styles.tableInput} /> : editData.usage}</td>
             <td>{isEditing ? <input type="date" value={editData.receiveDate} onChange={(e) => setEditData({ ...editData, receiveDate: e.target.value })} className={styles.tableInput} /> : editData.receiveDate}</td>
             <td>{isEditing ? <input type="date" value={editData.inspectionDate} onChange={(e) => setEditData({ ...editData, inspectionDate: e.target.value })} className={styles.tableInput} /> : editData.inspectionDate}</td>
