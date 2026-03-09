@@ -1,101 +1,43 @@
 import React from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
-import type { IQCSummary } from '../IQCTypes';
+import type { IQCItem } from '../IQCTypes';
 
 interface SummaryTableProps {
-  data?: IQCSummary;
+  items: IQCItem[];
 }
 
-const SummaryTable: React.FC<SummaryTableProps> = ({ data }) => {
-  if (!data || !data.nonConformity) {
-    return (
-      <div className={styles.tableContainer}>
-        <div className={styles.tableSection}>
-          <p className={styles.noDataRow}>데이터가 없습니다.</p>
-        </div>
-      </div>
-    );
-  }
+const CATEGORY_LABELS: { key: string; label: string }[] = [
+  { key: '양극재', label: '양극재' },
+  { key: '음극재', label: '음극재' },
+  { key: '도전재', label: '도전재' },
+  { key: '집전체', label: '집전체' },
+  { key: '분리막', label: '분리막' },
+  { key: '전해액', label: '전해액' },
+  { key: '파우치', label: '파우치' },
+  { key: '리드탭', label: '리드탭' },
+];
+
+const SummaryTable: React.FC<SummaryTableProps> = ({ items }) => {
+  // category별 부적합 건수 집계
+  const nonConformityCounts = CATEGORY_LABELS.reduce<Record<string, number>>((acc, { key }) => {
+    acc[key] = items.filter((item) => item.category === key && item.isPassed === false).length;
+    return acc;
+  }, {});
 
   return (
     <div className={styles.tableContainer}>
-      {/* 프로젝트 개요 및 반제품 품질 부적합 구분 */}
-      <div className={styles.summaryGrid}>
-        <div className={styles.summaryCard}>
-          <div className={styles.summaryCardTitle}>프로젝트 개요</div>
-          <div className={styles.summaryCardContent}>
-            {data.projectOverview || '-'}
-          </div>
-        </div>
-        <div className={styles.summaryCard}>
-          <div className={styles.summaryCardTitle}>
-            반제품 품질 부적합 구분
-          </div>
-          <div className={styles.nonConformityGrid}>
-            <div className={styles.nonConformityItem}>
-              <span className={styles.nonConformityLabel}>양극재:</span>
-              <span className={styles.nonConformityValue}>
-                {data.nonConformity.cathodeMaterial}
-              </span>
-            </div>
-            <div className={styles.nonConformityItem}>
-              <span className={styles.nonConformityLabel}>음극재:</span>
-              <span className={styles.nonConformityValue}>
-                {data.nonConformity.anodeMaterial}
-              </span>
-            </div>
-            <div className={styles.nonConformityItem}>
-              <span className={styles.nonConformityLabel}>도전재:</span>
-              <span className={styles.nonConformityValue}>
-                {data.nonConformity.conductiveMaterial}
-              </span>
-            </div>
-            <div className={styles.nonConformityItem}>
-              <span className={styles.nonConformityLabel}>집전체:</span>
-              <span className={styles.nonConformityValue}>
-                {data.nonConformity.currentCollector}
-              </span>
-            </div>
-            <div className={styles.nonConformityItem}>
-              <span className={styles.nonConformityLabel}>분리막:</span>
-              <span className={styles.nonConformityValue}>
-                {data.nonConformity.separator}
-              </span>
-            </div>
-            <div className={styles.nonConformityItem}>
-              <span className={styles.nonConformityLabel}>전해액:</span>
-              <span className={styles.nonConformityValue}>
-                {data.nonConformity.electrolyte}
-              </span>
-            </div>
-            <div className={styles.nonConformityItem}>
-              <span className={styles.nonConformityLabel}>파우치:</span>
-              <span className={styles.nonConformityValue}>
-                {data.nonConformity.pouch}
-              </span>
-            </div>
-            <div className={styles.nonConformityItem}>
-              <span className={styles.nonConformityLabel}>리드탭:</span>
-              <span className={styles.nonConformityValue}>
-                {data.nonConformity.leadTab}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 특이사항 */}
+      {/* 부적합 구분 */}
       <div className={styles.tableSection}>
         <div className={styles.tableTitleRow}>
-          <h3 className={styles.tableTitle}>특이사항</h3>
+          <h3 className={styles.tableTitle}>반제품 품질 부적합 구분</h3>
         </div>
-        <div className={styles.textCell}>
-          <textarea
-            className={styles.textArea}
-            value={data.remarks || ''}
-            readOnly
-            placeholder="특이사항 없음"
-          />
+        <div className={styles.nonConformityGrid}>
+          {CATEGORY_LABELS.map(({ key, label }) => (
+            <div key={key} className={styles.nonConformityItem}>
+              <span className={styles.nonConformityLabel}>{label}:</span>
+              <span className={styles.nonConformityValue}>{nonConformityCounts[key]}</span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -105,31 +47,42 @@ const SummaryTable: React.FC<SummaryTableProps> = ({ data }) => {
           <h3 className={styles.tableTitle}>IQC List</h3>
         </div>
         <table className={styles.iqcTable}>
+          <colgroup>
+            <col style={{ width: '60px' }} />
+            <col style={{ width: '100px' }} />
+            <col style={{ width: '120px' }} />
+            <col />
+            <col style={{ width: '120px' }} />
+            <col style={{ width: '100px' }} />
+            <col style={{ width: '120px' }} />
+          </colgroup>
           <thead>
             <tr>
-              <th style={{ width: '60px' }}>No</th>
-              <th style={{ width: '150px' }}>구분</th>
-              <th>기준</th>
-              <th style={{ width: '120px' }}>결과</th>
-              <th style={{ width: '100px' }}>검사자</th>
-              <th style={{ width: '120px' }}>검사일</th>
+              <th>No</th>
+              <th>구분</th>
+              <th>품목</th>
+              <th>품명</th>
+              <th>Lot No.</th>
+              <th>검사자</th>
+              <th>검사일</th>
             </tr>
           </thead>
           <tbody>
-            {data.iqcList && data.iqcList.length > 0 ? (
-              data.iqcList.map((item) => (
-                <tr key={item.no}>
-                  <td>{item.no}</td>
+            {items.length > 0 ? (
+              items.map((item, idx) => (
+                <tr key={item.id}>
+                  <td>{idx + 1}</td>
                   <td>{item.category}</td>
-                  <td style={{ textAlign: 'left' }}>{item.standard}</td>
-                  <td>{item.result}</td>
-                  <td>{item.inspector}</td>
-                  <td>{item.date}</td>
+                  <td>{item.type}</td>
+                  <td style={{ textAlign: 'left' }}>{item.name}</td>
+                  <td>{item.lotNo || '-'}</td>
+                  <td>{item.inspector || '-'}</td>
+                  <td>{item.inspectionDate || '-'}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={6} className={styles.noDataRow}>
+                <td colSpan={7} className={styles.noDataRow}>
                   검사 데이터가 없습니다.
                 </td>
               </tr>

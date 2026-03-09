@@ -1,19 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
-import type { CathodeMaterial1Data, CathodeMaterial1Result, CathodeMaterial1CoaResult } from '../IQCTypes';
+import type { IQCItem, IQCResult, IQCCoaRef } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
 
 interface CathodeMaterial1TableProps {
-  data?: CathodeMaterial1Data;
+  data?: IQCItem;
   productionId: number;
-  onSave?: (data: Partial<CathodeMaterial1Data>) => Promise<void>;
+  onSave?: (data: Partial<IQCItem>) => Promise<void>;
 }
 
-const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
-  data,
-  onSave,
-}) => {
+const getDefaultResults = (): IQCResult[] => [
+  { category: '입도', item: 'D5',      unit: 'μm',    spec: 'N/A', refCoa: '',    refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
+  { category: '입도', item: 'D50',     unit: 'μm',    spec: '',    refCoa: '',    refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
+  { category: '입도', item: 'D95',     unit: 'μm',    spec: 'N/A', refCoa: '',    refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
+  { category: '수분',                  unit: 'ppm',   spec: 'TBD', refCoa: '',    refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
+  { category: '탭밀도',                unit: 'g/cc',  spec: '',    refCoa: '',    refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
+  { category: 'pH',                    unit: '',      spec: 'N/A', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
+  { category: 'Half cell', item: '0.1C',    unit: 'mAh/g', spec: '',    refCoa: '',    refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
+  { category: 'Half cell', item: '1st 효율', unit: '%',    spec: '',    refCoa: '',    refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
+  { category: 'Half cell', item: '0.5C',    unit: 'mAh/g', spec: 'TBD', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
+  { category: 'Half cell', item: '1.0C',    unit: 'mAh/g', spec: 'TBD', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
+];
+
+const getDefaultCoaRefs = (): IQCCoaRef[] => [
+  { attrName: 'Dmin(μm)',     attrValue: '' },
+  { attrName: 'Dmax(μm)',     attrValue: '' },
+  { attrName: 'BET(m²/g)',    attrValue: '' },
+  { attrName: 'LiOH(%)',      attrValue: '' },
+  { attrName: 'Li₂CO₃(%)',   attrValue: '' },
+  { attrName: 'Fe(ppm)',      attrValue: '' },
+];
+
+const defaultItem = (): IQCItem => ({
+  id: 0,
+  category: '양극재',
+  type: '',
+  name: '',
+  manufacturer: '',
+  lotNo: '',
+  usage: '',
+  receiptDate: '',
+  inspectionDate: '',
+  inspector: '',
+  remark: '',
+  results: getDefaultResults(),
+  coaRefs: getDefaultCoaRefs(),
+  images: [],
+});
+
+const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState<IQCItem>(defaultItem());
 
   // 자재 선택 관련 state
   const [materials, setMaterials] = useState<{ id: number; type: string; name: string; company: string }[]>([]);
@@ -23,12 +60,23 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
   const [selectedCompany, setSelectedCompany] = useState('');
   const [selectedLot, setSelectedLot] = useState('');
 
+  useEffect(() => {
+    if (data) {
+      setEditData({
+        ...data,
+        results: data.results && data.results.length > 0 ? data.results : getDefaultResults(),
+        coaRefs: data.coaRefs && data.coaRefs.length > 0 ? data.coaRefs : getDefaultCoaRefs(),
+        images: data.images ?? [],
+      });
+    } else {
+      setEditData(defaultItem());
+    }
+  }, [data]);
+
   // 편집 모드 진입 시 자재 목록 fetch
   useEffect(() => {
     if (isEditing) {
-      getMaterialsByCategory('양극재').then((res) => {
-        setMaterials(res);
-      });
+      getMaterialsByCategory('양극재').then(setMaterials);
     }
   }, [isEditing]);
 
@@ -48,7 +96,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
     if (!type) {
       setSelectedName('');
       setSelectedCompany('');
-      setEditData((prev) => ({ ...prev, productCode: '', productName: '', manufacturer: '', lotNo: '' }));
+      setEditData((prev) => ({ ...prev, type: '', name: '', manufacturer: '', lotNo: '' }));
       return;
     }
 
@@ -57,14 +105,14 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
     const autoName = names.length === 1 ? names[0] : '';
     setSelectedName(autoName);
     setSelectedCompany('');
-    setEditData((prev) => ({ ...prev, productCode: type, productName: autoName, manufacturer: '', lotNo: '' }));
+    setEditData((prev) => ({ ...prev, type, name: autoName, manufacturer: '', lotNo: '' }));
 
     if (autoName) {
       const nameFiltered = filtered.filter((m) => m.name === autoName);
       const companies = [...new Set(nameFiltered.map((m) => m.company))];
       const autoCompany = companies.length === 1 ? companies[0] : '';
       setSelectedCompany(autoCompany);
-      setEditData((prev) => ({ ...prev, productCode: type, productName: autoName, manufacturer: autoCompany, lotNo: '' }));
+      setEditData((prev) => ({ ...prev, type, name: autoName, manufacturer: autoCompany, lotNo: '' }));
 
       if (autoCompany) {
         getMaterialLots({ category: '양극재', type }).then((res) => {
@@ -74,11 +122,11 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
           setSelectedLot(autoLot);
           setEditData((prev) => ({
             ...prev,
-            productCode: type,
-            productName: autoName,
+            type,
+            name: autoName,
             manufacturer: autoCompany,
             lotNo: autoLot,
-            receiveDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiveDate) : prev.receiveDate,
+            receiptDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiptDate) : prev.receiptDate,
           }));
         });
       }
@@ -92,7 +140,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
 
     if (!name) {
       setSelectedCompany('');
-      setEditData((prev) => ({ ...prev, productName: '', manufacturer: '', lotNo: '' }));
+      setEditData((prev) => ({ ...prev, name: '', manufacturer: '', lotNo: '' }));
       return;
     }
 
@@ -100,7 +148,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
     const companies = [...new Set(filtered.map((m) => m.company))];
     const autoCompany = companies.length === 1 ? companies[0] : '';
     setSelectedCompany(autoCompany);
-    setEditData((prev) => ({ ...prev, productName: name, manufacturer: autoCompany, lotNo: '' }));
+    setEditData((prev) => ({ ...prev, name, manufacturer: autoCompany, lotNo: '' }));
 
     if (autoCompany) {
       getMaterialLots({ category: '양극재', type: selectedType }).then((res) => {
@@ -110,10 +158,10 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
         setSelectedLot(autoLot);
         setEditData((prev) => ({
           ...prev,
-          productName: name,
+          name,
           manufacturer: autoCompany,
           lotNo: autoLot,
-          receiveDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiveDate) : prev.receiveDate,
+          receiptDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiptDate) : prev.receiptDate,
         }));
       });
     }
@@ -136,7 +184,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
         ...prev,
         manufacturer: company,
         lotNo: autoLot,
-        receiveDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiveDate) : prev.receiveDate,
+        receiptDate: autoLot ? (lotFiltered[0].receivedDate || prev.receiptDate) : prev.receiptDate,
       }));
     });
   };
@@ -147,74 +195,9 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
     setEditData((prev) => ({
       ...prev,
       lotNo: lot,
-      receiveDate: found?.receivedDate || prev.receiveDate,
+      receiptDate: found?.receivedDate || prev.receiptDate,
     }));
   };
-
-  // 기본 검사 항목 템플릿
-  const getDefaultInspectionResults = (): CathodeMaterial1Result[] => [
-    { item: '입도', subItem: 'D5', unit: 'μm', standard: 'N/A', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-    { item: '입도', subItem: 'D50', unit: 'μm', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-    { item: '입도', subItem: 'D95', unit: 'μm', standard: 'N/A', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-    { item: '수분', unit: 'ppm', standard: 'TBD', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-    { item: '탭밀도', unit: 'g/cc', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-    { item: 'pH', unit: '', standard: 'N/A', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-    { item: 'Half cell', subItem: '0.1C', unit: 'mAh/g', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-    { item: 'Half cell', subItem: '1st 효율', unit: '%', standard: '', refCoa: '', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-    { item: 'Half cell', subItem: '0.5C', unit: 'mAh/g', standard: 'TBD', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-    { item: 'Half cell', subItem: '1.0C', unit: 'mAh/g', standard: 'TBD', refCoa: 'N/A', refLastData: '', sample1: '', sample2: '', sample3: '', average: '', pass: null, remarks: '' },
-  ];
-
-  const getDefaultCoaResults = (): CathodeMaterial1CoaResult => ({
-    dMin: '',
-    dMax: '',
-    bet: '',
-    lioh: '',
-    li2co3: '',
-    fe: '',
-  });
-
-  const [editData, setEditData] = useState<CathodeMaterial1Data>({
-    id: 0,
-    productCode: '',
-    productName: '',
-    manufacturer: '',
-    lotNo: '',
-    usage: '',
-    receiveDate: '',
-    inspectionDate: '',
-    inspector: '',
-    inspectionResults: getDefaultInspectionResults(),
-    coaResults: getDefaultCoaResults(),
-    images: {},
-    remarks: '',
-  });
-
-  useEffect(() => {
-    if (data) {
-      setEditData({
-        ...data,
-        inspectionResults: data.inspectionResults ?? getDefaultInspectionResults(),
-        coaResults: data.coaResults ?? getDefaultCoaResults(),
-      });
-    } else {
-      setEditData({
-        id: 0,
-        productCode: '',
-        productName: '',
-        manufacturer: '',
-        lotNo: '',
-        usage: '',
-        receiveDate: '',
-        inspectionDate: '',
-        inspector: '',
-        inspectionResults: getDefaultInspectionResults(),
-        coaResults: getDefaultCoaResults(),
-        images: {},
-        remarks: '',
-      });
-    }
-  }, [data]);
 
   const handleSave = async () => {
     if (onSave) {
@@ -226,49 +209,47 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
 
   const handleCancel = () => {
     resetSelections();
-    if (data) {
-      setEditData(data);
-    } else {
-      setEditData({
-        id: 0,
-        productCode: '',
-        productName: '',
-        manufacturer: '',
-        lotNo: '',
-        usage: '',
-        receiveDate: '',
-        inspectionDate: '',
-        inspector: '',
-        inspectionResults: getDefaultInspectionResults(),
-        coaResults: getDefaultCoaResults(),
-        images: {},
-        remarks: '',
-      });
-    }
+    setEditData(data ? {
+      ...data,
+      results: data.results && data.results.length > 0 ? data.results : getDefaultResults(),
+      coaRefs: data.coaRefs && data.coaRefs.length > 0 ? data.coaRefs : getDefaultCoaRefs(),
+      images: data.images ?? [],
+    } : defaultItem());
     setIsEditing(false);
+  };
+
+  const results = editData.results ?? [];
+  const coaRefs = editData.coaRefs ?? [];
+
+  const updateResult = (index: number, field: keyof IQCResult, value: string | boolean | null) => {
+    const updated = [...results];
+    (updated[index] as any)[field] = value;
+    setEditData({ ...editData, results: updated });
+  };
+
+  const getPassDisplay = (pass: boolean | null | undefined) => {
+    if (pass === null || pass === undefined) return { text: '미판정', color: '#94a3b8' };
+    return pass ? { text: '합', color: '#16a34a' } : { text: '불', color: '#dc2626' };
   };
 
   // 검사 결과 행 렌더링
   const renderInspectionRows = () => {
     const rows: React.JSX.Element[] = [];
     let i = 0;
-    const inspectionResults = editData.inspectionResults ?? [];
 
-    while (i < inspectionResults.length) {
-      const current = inspectionResults[i];
+    while (i < results.length) {
+      const current = results[i];
 
-      // 같은 항목의 세부 항목들을 찾기
+      // 같은 category의 subItem들을 묶기
       const subItems = [current];
       let j = i + 1;
-      while (j < inspectionResults.length &&
-             inspectionResults[j].item === current.item &&
-             inspectionResults[j].subItem) {
-        subItems.push(inspectionResults[j]);
+      while (j < results.length && results[j].category === current.category && results[j].item) {
+        subItems.push(results[j]);
         j++;
       }
 
-      // 세부 항목이 있는 경우
-      if (subItems.length > 1 || current.subItem) {
+      if (subItems.length > 1 || current.item) {
+        // 세부 항목이 있는 경우
         subItems.forEach((result, subIndex) => {
           const actualIndex = i + subIndex;
           rows.push(
@@ -278,36 +259,26 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
                   {isEditing ? (
                     <input
                       type="text"
-                      value={result.item}
+                      value={result.category}
                       onChange={(e) => {
-                        const updated = [...editData.inspectionResults];
-                        for (let k = 0; k < subItems.length; k++) {
-                          updated[i + k].item = e.target.value;
-                        }
-                        setEditData({ ...editData, inspectionResults: updated });
+                        const updated = [...results];
+                        for (let k = 0; k < subItems.length; k++) updated[i + k].category = e.target.value;
+                        setEditData({ ...editData, results: updated });
                       }}
                       className={styles.tableInput}
                     />
-                  ) : (
-                    result.item
-                  )}
+                  ) : result.category}
                 </td>
               )}
               <td className={styles.subItemCell}>
                 {isEditing ? (
                   <input
                     type="text"
-                    value={result.subItem || ''}
-                    onChange={(e) => {
-                      const updated = [...editData.inspectionResults];
-                      updated[actualIndex].subItem = e.target.value;
-                      setEditData({ ...editData, inspectionResults: updated });
-                    }}
+                    value={result.item || ''}
+                    onChange={(e) => updateResult(actualIndex, 'item', e.target.value)}
                     className={styles.tableInput}
                   />
-                ) : (
-                  result.subItem || ''
-                )}
+                ) : result.item || ''}
               </td>
               {renderResultCells(result, actualIndex)}
             </tr>
@@ -315,24 +286,18 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
         });
         i = j;
       } else {
-        // 세부 항목이 없는 경우
+        // 세부 항목 없는 경우
         rows.push(
           <tr key={i}>
             <td colSpan={2} className={styles.itemCell}>
               {isEditing ? (
                 <input
                   type="text"
-                  value={current.item}
-                  onChange={(e) => {
-                    const updated = [...editData.inspectionResults];
-                    updated[i].item = e.target.value;
-                    setEditData({ ...editData, inspectionResults: updated });
-                  }}
+                  value={current.category}
+                  onChange={(e) => updateResult(i, 'category', e.target.value)}
                   className={styles.tableInput}
                 />
-              ) : (
-                current.item
-              )}
+              ) : current.category}
             </td>
             {renderResultCells(current, i)}
           </tr>
@@ -344,49 +309,35 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
     return rows;
   };
 
-  // 결과 셀 렌더링
-  const renderResultCells = (result: CathodeMaterial1Result, index: number) => {
-    const updateField = (field: keyof CathodeMaterial1Result, value: string | boolean | null) => {
-      const updated = [...editData.inspectionResults];
-      (updated[index] as any)[field] = value;
-      setEditData({ ...editData, inspectionResults: updated });
-    };
-
-    const getPassDisplay = (pass: boolean | null) => {
-      if (pass === null) return { text: '미판정', color: '#94a3b8' };
-      return pass ? { text: '합', color: '#16a34a' } : { text: '불', color: '#dc2626' };
-    };
-
-    const passDisplay = getPassDisplay(result.pass);
-
+  const renderResultCells = (result: IQCResult, index: number) => {
+    const passDisplay = getPassDisplay(result.isPassed);
     return (
       <>
-        <td>{isEditing ? <input type="text" value={result.unit} onChange={(e) => updateField('unit', e.target.value)} className={styles.tableInput} /> : result.unit}</td>
-        <td>{isEditing ? <input type="text" value={result.standard} onChange={(e) => updateField('standard', e.target.value)} className={styles.tableInput} /> : result.standard}</td>
-        <td>{isEditing ? <input type="text" value={result.refCoa} onChange={(e) => updateField('refCoa', e.target.value)} className={styles.tableInput} /> : result.refCoa}</td>
-        <td>{isEditing ? <input type="text" value={result.refLastData} onChange={(e) => updateField('refLastData', e.target.value)} className={styles.tableInput} /> : result.refLastData}</td>
-        <td>{isEditing ? <input type="text" value={result.sample1} onChange={(e) => updateField('sample1', e.target.value)} className={styles.tableInput} /> : result.sample1}</td>
-        <td>{isEditing ? <input type="text" value={result.sample2} onChange={(e) => updateField('sample2', e.target.value)} className={styles.tableInput} /> : result.sample2}</td>
-        <td>{isEditing ? <input type="text" value={result.sample3} onChange={(e) => updateField('sample3', e.target.value)} className={styles.tableInput} /> : result.sample3}</td>
-        <td>{isEditing ? <input type="text" value={result.average} onChange={(e) => updateField('average', e.target.value)} className={styles.tableInput} /> : result.average}</td>
+        <td>{isEditing ? <input type="text" value={result.unit ?? ''} onChange={(e) => updateResult(index, 'unit', e.target.value)} className={styles.tableInput} /> : result.unit}</td>
+        <td>{isEditing ? <input type="text" value={result.spec ?? ''} onChange={(e) => updateResult(index, 'spec', e.target.value)} className={styles.tableInput} /> : result.spec}</td>
+        <td>{isEditing ? <input type="text" value={result.refCoa ?? ''} onChange={(e) => updateResult(index, 'refCoa', e.target.value)} className={styles.tableInput} /> : result.refCoa}</td>
+        <td>{isEditing ? <input type="text" value={String(result.refLastData ?? '')} onChange={(e) => updateResult(index, 'refLastData', e.target.value)} className={styles.tableInput} /> : result.refLastData}</td>
+        <td>{isEditing ? <input type="text" value={String(result.sample1 ?? '')} onChange={(e) => updateResult(index, 'sample1', e.target.value)} className={styles.tableInput} /> : result.sample1}</td>
+        <td>{isEditing ? <input type="text" value={String(result.sample2 ?? '')} onChange={(e) => updateResult(index, 'sample2', e.target.value)} className={styles.tableInput} /> : result.sample2}</td>
+        <td>{isEditing ? <input type="text" value={String(result.sample3 ?? '')} onChange={(e) => updateResult(index, 'sample3', e.target.value)} className={styles.tableInput} /> : result.sample3}</td>
+        <td>{result.average ?? ''}</td>
         <td className={styles.passCell} style={{ color: passDisplay.color, fontWeight: 600 }}>
           {isEditing ? (
             <select
-              value={result.pass === null ? 'null' : result.pass ? 'true' : 'false'}
+              value={result.isPassed === null || result.isPassed === undefined ? 'null' : result.isPassed ? 'true' : 'false'}
               onChange={(e) => {
                 const val = e.target.value;
-                updateField('pass', val === 'null' ? null : val === 'true');
+                updateResult(index, 'isPassed', val === 'null' ? null : val === 'true');
               }}
               className={styles.tableSelect}
             >
+              <option value="null">미판정</option>
               <option value="true">합</option>
               <option value="false">불</option>
             </select>
-          ) : (
-            passDisplay.text
-          )}
+          ) : passDisplay.text}
         </td>
-        <td>{isEditing ? <input type="text" value={result.remarks} onChange={(e) => updateField('remarks', e.target.value)} className={styles.tableInput} /> : result.remarks}</td>
+        <td>{isEditing ? <input type="text" value={result.note ?? ''} onChange={(e) => updateResult(index, 'note', e.target.value)} className={styles.tableInput} /> : result.note}</td>
       </>
     );
   };
@@ -442,41 +393,27 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
           <tr>
             <td>
               {isEditing ? (
-                <select
-                  value={selectedType}
-                  onChange={(e) => handleTypeChange(e.target.value)}
-                  className={styles.tableSelect}
-                >
+                <select value={selectedType} onChange={(e) => handleTypeChange(e.target.value)} className={styles.tableSelect}>
                   <option value="">선택</option>
                   {[...new Set(materials.map((m) => m.type))].map((type) => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
-              ) : editData.productCode}
+              ) : editData.type}
             </td>
             <td>
               {isEditing ? (
-                <select
-                  value={selectedName}
-                  onChange={(e) => handleNameChange(e.target.value)}
-                  disabled={!selectedType}
-                  className={styles.tableSelect}
-                >
+                <select value={selectedName} onChange={(e) => handleNameChange(e.target.value)} disabled={!selectedType} className={styles.tableSelect}>
                   <option value="">선택</option>
                   {[...new Set(materials.filter((m) => m.type === selectedType).map((m) => m.name))].map((name) => (
                     <option key={name} value={name}>{name}</option>
                   ))}
                 </select>
-              ) : editData.productName}
+              ) : editData.name}
             </td>
             <td>
               {isEditing ? (
-                <select
-                  value={selectedCompany}
-                  onChange={(e) => handleCompanyChange(e.target.value)}
-                  disabled={!selectedName}
-                  className={styles.tableSelect}
-                >
+                <select value={selectedCompany} onChange={(e) => handleCompanyChange(e.target.value)} disabled={!selectedName} className={styles.tableSelect}>
                   <option value="">선택</option>
                   {[...new Set(materials.filter((m) => m.type === selectedType && m.name === selectedName).map((m) => m.company))].map((company) => (
                     <option key={company} value={company}>{company}</option>
@@ -486,12 +423,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
             </td>
             <td>
               {isEditing ? (
-                <select
-                  value={selectedLot}
-                  onChange={(e) => handleLotChange(e.target.value)}
-                  disabled={!selectedCompany}
-                  className={styles.tableSelect}
-                >
+                <select value={selectedLot} onChange={(e) => handleLotChange(e.target.value)} disabled={!selectedCompany} className={styles.tableSelect}>
                   <option value="">선택</option>
                   {lots.map((l) => (
                     <option key={l.lot} value={l.lot}>{l.lot}</option>
@@ -499,10 +431,10 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
                 </select>
               ) : editData.lotNo}
             </td>
-            <td>{isEditing ? <input type="text" value={editData.usage} onChange={(e) => setEditData({ ...editData, usage: e.target.value })} className={styles.tableInput} /> : editData.usage}</td>
-            <td>{isEditing ? <input type="date" value={editData.receiveDate} onChange={(e) => setEditData({ ...editData, receiveDate: e.target.value })} className={styles.tableInput} /> : editData.receiveDate}</td>
-            <td>{isEditing ? <input type="date" value={editData.inspectionDate} onChange={(e) => setEditData({ ...editData, inspectionDate: e.target.value })} className={styles.tableInput} /> : editData.inspectionDate}</td>
-            <td>{isEditing ? <input type="text" value={editData.inspector} onChange={(e) => setEditData({ ...editData, inspector: e.target.value })} className={styles.tableInput} /> : editData.inspector}</td>
+            <td>{isEditing ? <input type="text" value={editData.usage ?? ''} onChange={(e) => setEditData({ ...editData, usage: e.target.value })} className={styles.tableInput} /> : editData.usage}</td>
+            <td>{isEditing ? <input type="date" value={editData.receiptDate ?? ''} onChange={(e) => setEditData({ ...editData, receiptDate: e.target.value })} className={styles.tableInput} /> : editData.receiptDate}</td>
+            <td>{isEditing ? <input type="date" value={editData.inspectionDate ?? ''} onChange={(e) => setEditData({ ...editData, inspectionDate: e.target.value })} className={styles.tableInput} /> : editData.inspectionDate}</td>
+            <td>{isEditing ? <input type="text" value={editData.inspector ?? ''} onChange={(e) => setEditData({ ...editData, inspector: e.target.value })} className={styles.tableInput} /> : editData.inspector}</td>
           </tr>
         </tbody>
       </table>
@@ -513,15 +445,15 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
           <col style={{ width: '8%' }} />
           <col style={{ width: '7%' }} />
           <col style={{ width: '6%' }} />
-          <col style={{ width: '10%' }} />
+          <col style={{ width: '9%' }} />
+          <col style={{ width: '7%' }} />
+          <col style={{ width: '7%' }} />
           <col style={{ width: '8%' }} />
           <col style={{ width: '8%' }} />
-          <col style={{ width: '9%' }} />
-          <col style={{ width: '9%' }} />
-          <col style={{ width: '9%' }} />
           <col style={{ width: '8%' }} />
           <col style={{ width: '7%' }} />
-          <col style={{ width: '11%' }} />
+          <col style={{ width: '7%' }} />
+          <col style={{ width: '10%' }} />
         </colgroup>
         <thead>
           <tr>
@@ -554,31 +486,35 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
       </div>
       <table className={styles.iqcTable}>
         <colgroup>
-          <col style={{ width: '16.66%' }} />
-          <col style={{ width: '16.66%' }} />
-          <col style={{ width: '16.66%' }} />
-          <col style={{ width: '16.66%' }} />
-          <col style={{ width: '16.66%' }} />
-          <col style={{ width: '16.7%' }} />
+          {coaRefs.map((_, i) => (
+            <col key={i} style={{ width: `${100 / coaRefs.length}%` }} />
+          ))}
         </colgroup>
         <thead>
           <tr>
-            <th>D<sub>min</sub>(μm)</th>
-            <th>D<sub>max</sub>(μm)</th>
-            <th>BET(m²/g)</th>
-            <th>LiOH(%)</th>
-            <th>Li<sub>2</sub>CO<sub>3</sub>(%)</th>
-            <th>Fe(ppm)</th>
+            {coaRefs.map((ref, i) => (
+              <th key={i}>{ref.attrName}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>{isEditing ? <input type="text" value={editData.coaResults.dMin} onChange={(e) => setEditData({ ...editData, coaResults: { ...editData.coaResults, dMin: e.target.value } })} className={styles.tableInput} /> : editData.coaResults.dMin}</td>
-            <td>{isEditing ? <input type="text" value={editData.coaResults.dMax} onChange={(e) => setEditData({ ...editData, coaResults: { ...editData.coaResults, dMax: e.target.value } })} className={styles.tableInput} /> : editData.coaResults.dMax}</td>
-            <td>{isEditing ? <input type="text" value={editData.coaResults.bet} onChange={(e) => setEditData({ ...editData, coaResults: { ...editData.coaResults, bet: e.target.value } })} className={styles.tableInput} /> : editData.coaResults.bet}</td>
-            <td>{isEditing ? <input type="text" value={editData.coaResults.lioh} onChange={(e) => setEditData({ ...editData, coaResults: { ...editData.coaResults, lioh: e.target.value } })} className={styles.tableInput} /> : editData.coaResults.lioh}</td>
-            <td>{isEditing ? <input type="text" value={editData.coaResults.li2co3} onChange={(e) => setEditData({ ...editData, coaResults: { ...editData.coaResults, li2co3: e.target.value } })} className={styles.tableInput} /> : editData.coaResults.li2co3}</td>
-            <td>{isEditing ? <input type="text" value={editData.coaResults.fe} onChange={(e) => setEditData({ ...editData, coaResults: { ...editData.coaResults, fe: e.target.value } })} className={styles.tableInput} /> : editData.coaResults.fe}</td>
+            {coaRefs.map((ref, i) => (
+              <td key={i}>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={ref.attrValue ?? ''}
+                    onChange={(e) => {
+                      const updated = [...coaRefs];
+                      updated[i] = { ...updated[i], attrValue: e.target.value };
+                      setEditData({ ...editData, coaRefs: updated });
+                    }}
+                    className={styles.tableInput}
+                  />
+                ) : ref.attrValue}
+              </td>
+            ))}
           </tr>
         </tbody>
       </table>
@@ -588,36 +524,21 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
         <h3 className={styles.tableTitle}>■ 수입검사 결과 이미지</h3>
       </div>
       <div className={styles.imageGrid}>
-        <div className={styles.imageBox}>
-          <div className={styles.imageLabel}>PSD</div>
-          <div className={styles.imageContent}>
-            {editData.images.psd ? (
-              <img src={editData.images.psd} alt="PSD" className={styles.resultImage} />
-            ) : (
-              <span className={styles.noImage}>이미지 없음</span>
-            )}
-          </div>
-        </div>
-        <div className={styles.imageBox}>
-          <div className={styles.imageLabel}>Half cell</div>
-          <div className={styles.imageContent}>
-            {editData.images.halfCell ? (
-              <img src={editData.images.halfCell} alt="Half cell" className={styles.resultImage} />
-            ) : (
-              <span className={styles.noImage}>이미지 없음</span>
-            )}
-          </div>
-        </div>
-        <div className={styles.imageBox}>
-          <div className={styles.imageLabel}>FE-SEM(배율: x1,000)</div>
-          <div className={styles.imageContent}>
-            {editData.images.feSem ? (
-              <img src={editData.images.feSem} alt="FE-SEM" className={styles.resultImage} />
-            ) : (
-              <span className={styles.noImage}>이미지 없음</span>
-            )}
-          </div>
-        </div>
+        {['PSD', 'Half cell', 'FE-SEM(배율: x1,000)'].map((label) => {
+          const img = (editData.images ?? []).find((im) => im.imageType === label);
+          return (
+            <div key={label} className={styles.imageBox}>
+              <div className={styles.imageLabel}>{label}</div>
+              <div className={styles.imageContent}>
+                {img?.filePath ? (
+                  <img src={img.filePath} alt={label} className={styles.resultImage} />
+                ) : (
+                  <span className={styles.noImage}>이미지 없음</span>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Remark */}
@@ -628,13 +549,13 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({
         {isEditing ? (
           <textarea
             className={styles.remarkTextarea}
-            value={editData.remarks}
-            onChange={(e) => setEditData({ ...editData, remarks: e.target.value })}
+            value={editData.remark ?? ''}
+            onChange={(e) => setEditData({ ...editData, remark: e.target.value })}
             placeholder="비고를 입력하세요..."
           />
         ) : (
           <pre className={styles.remarkContent}>
-            {editData.remarks || '비고 없음'}
+            {editData.remark || '비고 없음'}
           </pre>
         )}
       </div>

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/quality/iqc/IQCPage.module.css';
-import { getIQCProject, getIQCSummary, getIQCList, getCathodeMaterial1, saveCathodeMaterial1 } from '../../../api/quality/IQCService';
+import { getIQCProject, getIQCList, createIQC, updateIQC } from '../../../api/quality/IQCService';
 import { createIQCMenus } from './menuConfig';
-import type { IQCProject, IQCMenuType, IQCSummary, IQCListItem, CathodeMaterial1Data } from './IQCTypes';
+import type { IQCProject, IQCMenuType, IQCItem } from './IQCTypes';
 import SummaryTable from './tables/SummaryTable';
 import CathodeMaterial1Table from './tables/CathodeMaterial1Table';
 import CathodeMaterial2Table from './tables/CathodeMaterial2Table';
@@ -23,9 +23,7 @@ export default function IQCPage() {
 
   const [project, setProject] = useState<IQCProject | null>(null);
   const [loading, setLoading] = useState(true);
-  const [summaryData, setSummaryData] = useState<IQCSummary | null>(null);
-  const [iqcListData, setIqcListData] = useState<IQCListItem[]>([]);
-  const [cathodeMaterial1Data, setCathodeMaterial1Data] = useState<CathodeMaterial1Data | null>(null);
+  const [iqcItems, setIqcItems] = useState<IQCItem[]>([]);
 
   const searchParams = new URLSearchParams(location.search);
   const menu = searchParams.get('menu') as IQCMenuType | null;
@@ -33,7 +31,6 @@ export default function IQCPage() {
   useEffect(() => {
     const loadProject = async () => {
       if (!projectId) return;
-
       try {
         const found = await getIQCProject(Number(projectId));
         setProject(found);
@@ -43,50 +40,47 @@ export default function IQCPage() {
         setLoading(false);
       }
     };
-
     loadProject();
   }, [projectId]);
 
   useEffect(() => {
-    const loadSummaryData = async () => {
-      if (!projectId || menu !== 'Summary') return;
-
+    const loadItems = async () => {
+      if (!projectId) return;
       try {
-        const [summary, list] = await Promise.all([
-          getIQCSummary(Number(projectId)),
-          getIQCList(Number(projectId)),
-        ]);
-        setSummaryData(summary);
-        setIqcListData(list);
+        const items = await getIQCList(Number(projectId));
+        setIqcItems(items);
       } catch (err) {
-        console.error('Summary 데이터 조회 실패:', err);
+        console.error('IQC 목록 조회 실패:', err);
       }
     };
+    loadItems();
+  }, [projectId]);
 
-    loadSummaryData();
-  }, [projectId, menu]);
+  /** category에 해당하는 첫 번째 IQCItem 반환 */
+  const getItemByCategory = (category: string): IQCItem | undefined =>
+    iqcItems.find((item) => item.category === category);
 
-  useEffect(() => {
-    const loadCathodeMaterial1Data = async () => {
-      if (!projectId || menu !== 'CathodeMaterial1') return;
-
-      try {
-        const data = await getCathodeMaterial1(Number(projectId));
-        setCathodeMaterial1Data(data);
-      } catch (err) {
-        console.error('양극재1 데이터 조회 실패:', err);
-      }
-    };
-
-    loadCathodeMaterial1Data();
-  }, [projectId, menu]);
-
-  const handleSaveCathodeMaterial1 = async (data: Partial<CathodeMaterial1Data>) => {
+  /** CathodeMaterial1 저장 핸들러 */
+  const handleSaveCathodeMaterial1 = async (data: Partial<IQCItem>) => {
     if (!projectId) return;
-
     try {
-      const saved = await saveCathodeMaterial1(Number(projectId), data);
-      setCathodeMaterial1Data(saved);
+      const existing = getItemByCategory('양극재');
+      let saved: IQCItem;
+      if (existing) {
+        saved = await updateIQC(existing.id, data);
+      } else {
+        saved = await createIQC(Number(projectId), {
+          category: '양극재',
+          type: data.type ?? '',
+          name: data.name ?? '',
+          ...data,
+        });
+      }
+      setIqcItems((prev) =>
+        existing
+          ? prev.map((item) => (item.id === existing.id ? saved : item))
+          : [...prev, saved]
+      );
       alert('저장되었습니다.');
     } catch (err) {
       console.error('양극재1 저장 실패:', err);
@@ -106,22 +100,11 @@ export default function IQCPage() {
 
     switch (menu) {
       case 'Summary':
-        return (
-          <SummaryTable
-            data={
-              summaryData
-                ? {
-                    ...summaryData,
-                    iqcList: iqcListData,
-                  }
-                : undefined
-            }
-          />
-        );
+        return <SummaryTable items={iqcItems} />;
       case 'CathodeMaterial1':
         return (
           <CathodeMaterial1Table
-            data={cathodeMaterial1Data ?? undefined}
+            data={getItemByCategory('양극재')}
             productionId={Number(projectId)}
             onSave={handleSaveCathodeMaterial1}
           />
@@ -149,7 +132,6 @@ export default function IQCPage() {
 
   return (
     <div>
-      {/* 프로젝트 정보 헤더 */}
       <div className={styles.projectHeader}>
         <h2>프로젝트: {project.name}</h2>
         <button className={styles.backButton} onClick={() => navigate('/quality/iqc')}>
@@ -157,10 +139,8 @@ export default function IQCPage() {
         </button>
       </div>
 
-      {/* IQC 하위 메뉴 */}
       <SubmenuBar menus={iqcMenus} />
 
-      {/* IQC 컨텐츠 영역 */}
       <div className={styles.content}>
         {renderContent()}
       </div>
