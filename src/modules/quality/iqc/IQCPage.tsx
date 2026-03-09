@@ -60,20 +60,38 @@ export default function IQCPage() {
   const getItemByCategory = (category: string): IQCItem | undefined =>
     iqcItems.find((item) => item.category === category);
 
+  /** IQCItem에서 서버 전송용 바디로 변환 */
+  const toRequestBody = (data: Partial<IQCItem>) => {
+    const { id: _id, isPassed: _isPassed, ...body } = data as IQCItem;
+
+    // results 필드 타입 변환: 빈 문자열→undefined(number), null isPassed→true(기본값)
+    const results = body.results?.map((r) => ({
+      ...r,
+      refLastData: r.refLastData !== '' && r.refLastData !== undefined ? Number(r.refLastData) : undefined,
+      sample1: r.sample1 !== '' && r.sample1 !== undefined ? Number(r.sample1) : undefined,
+      sample2: r.sample2 !== '' && r.sample2 !== undefined ? Number(r.sample2) : undefined,
+      sample3: r.sample3 !== '' && r.sample3 !== undefined ? Number(r.sample3) : undefined,
+      isPassed: r.isPassed ?? true,
+    }));
+
+    return { ...body, results };
+  };
+
   /** CathodeMaterial1 저장 핸들러 */
   const handleSaveCathodeMaterial1 = async (data: Partial<IQCItem>) => {
     if (!projectId) return;
     try {
       const existing = getItemByCategory('양극재');
+      const body = toRequestBody(data);
       let saved: IQCItem;
       if (existing) {
-        saved = await updateIQC(existing.id, data);
+        saved = await updateIQC(existing.id, body);
       } else {
         saved = await createIQC(Number(projectId), {
+          ...body,
           category: '양극재',
-          type: data.type ?? '',
-          name: data.name ?? '',
-          ...data,
+          type: body.type ?? '',
+          name: body.name ?? '',
         });
       }
       setIqcItems((prev) =>
