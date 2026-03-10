@@ -59,6 +59,12 @@ export interface IQCImage {
   filePath?: string;
 }
 
+/** PSD raw data 항목 */
+export interface IQCPsdData {
+  size: number;
+  volumeIn: number;
+}
+
 /** IQC 단건 (목록 및 상세 공통) */
 export interface IQCItem {
   id: number;
@@ -73,6 +79,7 @@ export interface IQCItem {
   inspector?: string;
   isPassed?: boolean;
   remark?: string;
+  psdData?: IQCPsdData[];
   results?: IQCResult[];
   coaRefs?: IQCCoaRef[];
   images?: IQCImage[];
