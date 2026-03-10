@@ -484,7 +484,6 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
       {/* 기타 CoA 참조 결과 */}
       <div className={styles.tableTitleRow} style={{ marginTop: '16px' }}>
         <h3 className={styles.tableTitle}>■ 기타 CoA 참조 결과</h3>
-        <span className={styles.noteText}>※ 부적합</span>
       </div>
       <table className={styles.iqcTable}>
         <colgroup>

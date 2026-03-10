@@ -296,12 +296,6 @@
   font-weight: 600;
 }
 
-/* 부적합 표시 텍스트 */
-.noteText {
-  color: #dc2626;
-  font-size: 13px;
-  font-weight: 500;
-}
 
 /* 이미지 그리드 */
 .imageGrid {
