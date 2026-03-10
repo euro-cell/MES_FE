@@ -128,7 +128,36 @@ export default function IQCPage() {
           />
         );
       case 'CathodeMaterial2':
-        return <CathodeMaterial2Table />;
+        return (
+          <CathodeMaterial2Table
+            data={getItemByCategory('양극재2')}
+            productionId={Number(projectId)}
+            onSave={async (data) => {
+              try {
+                const { id: _id, isPassed: _isPassed, ...body } = data as IQCItem;
+                const results = body.results?.map((r) => ({
+                  ...r,
+                  refLastData: r.refLastData !== '' && r.refLastData !== undefined ? Number(r.refLastData) : undefined,
+                  sample1: r.sample1 !== '' && r.sample1 !== undefined ? Number(r.sample1) : undefined,
+                  sample2: r.sample2 !== '' && r.sample2 !== undefined ? Number(r.sample2) : undefined,
+                  sample3: r.sample3 !== '' && r.sample3 !== undefined ? Number(r.sample3) : undefined,
+                  isPassed: r.isPassed ?? true,
+                }));
+                const reqBody = { ...body, results };
+                const existing = getItemByCategory('양극재2');
+                const saved = existing
+                  ? await updateIQC(existing.id, reqBody)
+                  : await createIQC(Number(projectId), { ...reqBody, category: '양극재2', type: reqBody.type ?? '', name: reqBody.name ?? '' });
+                setIqcItems((prev) =>
+                  existing ? prev.map((item) => (item.id === existing.id ? saved : item)) : [...prev, saved]
+                );
+                alert('저장되었습니다.');
+              } catch {
+                alert('저장에 실패했습니다.');
+              }
+            }}
+          />
+        );
       case 'AnodeMaterial':
         return <AnodeMaterialTable />;
       case 'ConductiveMaterial':
