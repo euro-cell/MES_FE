@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import type { IQCItem, IQCResult, IQCCoaRef } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
+import { uploadIQCImages, deleteIQCImage } from '../../../../api/quality/IQCService';
 
 interface CathodeMaterial1TableProps {
   data?: IQCItem;
   productionId: number;
   onSave?: (data: Partial<IQCItem>) => Promise<void>;
 }
+
+const IMAGE_TYPES = ['PSD', 'Half cell', 'FE-SEM(배율: x1,000)'];
 
 const getDefaultResults = (): IQCResult[] => [
   { category: '입도', item: 'D5',      unit: 'μm',    spec: 'N/A', refCoa: '',    refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
@@ -224,6 +227,44 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
     const updated = [...results];
     (updated[index] as any)[field] = value;
     setEditData({ ...editData, results: updated });
+  };
+
+  const [uploadingType, setUploadingType] = useState<string | null>(null);
+
+  const handleImageUpload = async (imageType: string, files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    if (!data?.id) {
+      alert('먼저 저장 후 이미지를 업로드해주세요.');
+      return;
+    }
+    setUploadingType(imageType);
+    try {
+      const uploaded = await uploadIQCImages(data.id, imageType, Array.from(files));
+      setEditData((prev) => ({
+        ...prev,
+        images: [
+          ...(prev.images ?? []).filter((im) => im.imageType !== imageType),
+          ...uploaded,
+        ],
+      }));
+    } catch {
+      alert('이미지 업로드에 실패했습니다.');
+    } finally {
+      setUploadingType(null);
+    }
+  };
+
+  const handleImageDelete = async (imageId: number, _imageType: string) => {
+    if (!confirm('이미지를 삭제하시겠습니까?')) return;
+    try {
+      await deleteIQCImage(imageId);
+      setEditData((prev) => ({
+        ...prev,
+        images: (prev.images ?? []).filter((im) => im.id !== imageId),
+      }));
+    } catch {
+      alert('이미지 삭제에 실패했습니다.');
+    }
   };
 
   const getPassDisplay = (pass: boolean | null | undefined) => {
@@ -525,14 +566,46 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
         <h3 className={styles.tableTitle}>■ 수입검사 결과 이미지</h3>
       </div>
       <div className={styles.imageGrid}>
-        {['PSD', 'Half cell', 'FE-SEM(배율: x1,000)'].map((label) => {
-          const img = (editData.images ?? []).find((im) => im.imageType === label);
+        {IMAGE_TYPES.map((label) => {
+          const imgs = (editData.images ?? []).filter((im) => im.imageType === label);
+          const isUploading = uploadingType === label;
           return (
             <div key={label} className={styles.imageBox}>
-              <div className={styles.imageLabel}>{label}</div>
+              <div className={styles.imageLabel}>
+                {label}
+                {isEditing && (
+                  <>
+                    <label className={styles.imageUploadBtn} style={{ marginLeft: '8px', cursor: isUploading ? 'not-allowed' : 'pointer' }}>
+                      {isUploading ? '업로드 중...' : '+ 추가'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        style={{ display: 'none' }}
+                        disabled={isUploading}
+                        onChange={(e) => handleImageUpload(label, e.target.files)}
+                      />
+                    </label>
+                  </>
+                )}
+              </div>
               <div className={styles.imageContent}>
-                {img?.filePath ? (
-                  <img src={img.filePath} alt={label} className={styles.resultImage} />
+                {imgs.length > 0 ? (
+                  <div className={styles.imageList}>
+                    {imgs.map((img) => (
+                      <div key={img.id} className={styles.imageItem}>
+                        <img src={img.filePath?.replace('data/uploads', '/uploads')} alt={label} className={styles.resultImage} />
+                        {isEditing && img.id && (
+                          <button
+                            className={styles.imageDeleteBtn}
+                            onClick={() => handleImageDelete(img.id!, label)}
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   <span className={styles.noImage}>이미지 없음</span>
                 )}

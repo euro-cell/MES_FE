@@ -8,5 +8,11 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 80,
     allowedHosts: true,
+    proxy: {
+      '/uploads': {
+        target: 'http://192.168.0.41:8080',
+        changeOrigin: true,
+      },
+    },
   },
 });

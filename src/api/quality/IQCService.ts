@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { IQCProject, IQCItem, IQCItemRequest } from '../../modules/quality/iqc/IQCTypes';
+import type { IQCProject, IQCItem, IQCItemRequest, IQCImage } from '../../modules/quality/iqc/IQCTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -66,6 +66,31 @@ export const updateIQC = async (
 /** IQC 삭제 */
 export const deleteIQC = async (id: number): Promise<void> => {
   await axios.delete(`${API_BASE}/quality/iqc/detail/${id}`, {
+    withCredentials: true,
+  });
+};
+
+/** IQC 이미지 업로드 */
+export const uploadIQCImages = async (
+  iqcId: number,
+  imageType: string,
+  files: File[]
+): Promise<IQCImage[]> => {
+  const formData = new FormData();
+  formData.append('imageType', imageType);
+  files.forEach((file) => formData.append('files', file));
+
+  const res = await axios.post(
+    `${API_BASE}/quality/iqc/detail/${iqcId}/images`,
+    formData,
+    { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+  return res.data;
+};
+
+/** IQC 이미지 삭제 */
+export const deleteIQCImage = async (imageId: number): Promise<void> => {
+  await axios.delete(`${API_BASE}/quality/iqc/images/${imageId}`, {
     withCredentials: true,
   });
 };
