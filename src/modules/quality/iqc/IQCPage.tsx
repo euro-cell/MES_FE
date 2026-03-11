@@ -181,7 +181,27 @@ export default function IQCPage() {
           />
         );
       case 'ConductiveMaterial':
-        return <ConductiveMaterialTable />;
+        return (
+          <ConductiveMaterialTable
+            data={getItemByCategory('도전재')}
+            productionId={Number(projectId)}
+            onSave={async (data) => {
+              try {
+                const existing = getItemByCategory('도전재');
+                const body = toRequestBody(data);
+                const saved = existing
+                  ? await updateIQC(existing.id, body)
+                  : await createIQC(Number(projectId), { ...body, category: '도전재', type: body.type ?? '', name: body.name ?? '' });
+                setIqcItems((prev) =>
+                  existing ? prev.map((item) => (item.id === existing.id ? saved : item)) : [...prev, saved]
+                );
+                alert('저장되었습니다.');
+              } catch {
+                alert('저장에 실패했습니다.');
+              }
+            }}
+          />
+        );
       case 'CurrentCollector':
         return <CurrentCollectorTable />;
       case 'Separator':
