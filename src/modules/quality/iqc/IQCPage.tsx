@@ -225,7 +225,27 @@ export default function IQCPage() {
           />
         );
       case 'Separator':
-        return <SeparatorTable />;
+        return (
+          <SeparatorTable
+            data={getItemByCategory('분리막')}
+            productionId={Number(projectId)}
+            onSave={async (data) => {
+              try {
+                const existing = getItemByCategory('분리막');
+                const body = toRequestBody(data);
+                const saved = existing
+                  ? await updateIQC(existing.id, body)
+                  : await createIQC(Number(projectId), { ...body, category: '분리막', type: body.type ?? '', name: body.name ?? '' });
+                setIqcItems((prev) =>
+                  existing ? prev.map((item) => (item.id === existing.id ? saved : item)) : [...prev, saved]
+                );
+                alert('저장되었습니다.');
+              } catch {
+                alert('저장에 실패했습니다.');
+              }
+            }}
+          />
+        );
       case 'Electrolyte':
         return <ElectrolyteTable />;
       case 'Pouch':
