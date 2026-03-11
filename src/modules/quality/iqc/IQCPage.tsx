@@ -203,7 +203,27 @@ export default function IQCPage() {
           />
         );
       case 'CurrentCollector':
-        return <CurrentCollectorTable />;
+        return (
+          <CurrentCollectorTable
+            data={getItemByCategory('집전체')}
+            productionId={Number(projectId)}
+            onSave={async (data) => {
+              try {
+                const existing = getItemByCategory('집전체');
+                const body = toRequestBody(data);
+                const saved = existing
+                  ? await updateIQC(existing.id, body)
+                  : await createIQC(Number(projectId), { ...body, category: '집전체', type: body.type ?? '', name: body.name ?? '' });
+                setIqcItems((prev) =>
+                  existing ? prev.map((item) => (item.id === existing.id ? saved : item)) : [...prev, saved]
+                );
+                alert('저장되었습니다.');
+              } catch {
+                alert('저장에 실패했습니다.');
+              }
+            }}
+          />
+        );
       case 'Separator':
         return <SeparatorTable />;
       case 'Electrolyte':
