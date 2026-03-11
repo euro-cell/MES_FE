@@ -247,7 +247,27 @@ export default function IQCPage() {
           />
         );
       case 'Electrolyte':
-        return <ElectrolyteTable />;
+        return (
+          <ElectrolyteTable
+            data={getItemByCategory('전해액')}
+            productionId={Number(projectId)}
+            onSave={async (data) => {
+              try {
+                const existing = getItemByCategory('전해액');
+                const body = toRequestBody(data);
+                const saved = existing
+                  ? await updateIQC(existing.id, body)
+                  : await createIQC(Number(projectId), { ...body, category: '전해액', type: body.type ?? '', name: body.name ?? '' });
+                setIqcItems((prev) =>
+                  existing ? prev.map((item) => (item.id === existing.id ? saved : item)) : [...prev, saved]
+                );
+                alert('저장되었습니다.');
+              } catch {
+                alert('저장에 실패했습니다.');
+              }
+            }}
+          />
+        );
       case 'Pouch':
         return <PouchTable />;
       case 'LeadTab':
