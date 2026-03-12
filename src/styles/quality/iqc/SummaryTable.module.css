@@ -1,0 +1,253 @@
+.wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #fff;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+/* 페이지 헤더 */
+.pageHeader {
+  background: #215C98;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+}
+
+.pageHeaderTitle {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.pageHeaderSub {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* 상단 3분할 */
+.topSection {
+  display: grid;
+  grid-template-columns: 1fr 180px 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.topCard {
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* 프로젝트 개요 / 등급 범례 테이블 */
+.infoTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.infoTable td,
+.infoTable th {
+  border: 1px solid #d1d5db;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.infoHeader {
+  background: #215C98;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  padding: 8px;
+}
+
+.infoLabel {
+  background: #f1f5f9;
+  font-weight: 600;
+  white-space: nowrap;
+  width: 90px;
+}
+
+.inlineInput {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  background: transparent;
+}
+
+.gradeCell {
+  font-weight: 700;
+  text-align: center;
+  width: 40px;
+}
+
+/* 특이사항 */
+.specialNotesLabel {
+  background: #215C98;
+  color: #fff;
+  font-weight: 700;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.specialNotesArea {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 13px;
+  padding: 8px 10px;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+/* 섹션 공통 */
+.tableSection {
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  background: #215C98;
+  color: #fff;
+  font-weight: 700;
+  padding: 7px 12px;
+  font-size: 14px;
+  border-radius: 4px 4px 0 0;
+}
+
+/* 메인 테이블 */
+.mainTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.th {
+  background: #215C98;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  padding: 7px 4px;
+  border: 1px solid #3a72a8;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.categoryCell {
+  background: #215C98;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #3a72a8;
+  padding: 6px 4px;
+  font-size: 12px;
+}
+
+.td {
+  border: 1px solid #d1d5db;
+  padding: 5px 6px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 12px;
+}
+
+.tdNum {
+  border: 1px solid #d1d5db;
+  padding: 5px 6px;
+  text-align: right;
+  vertical-align: middle;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.passCell {
+  border: 1px solid #d1d5db;
+  padding: 5px 4px;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.remarkCell {
+  border: 1px solid #d1d5db;
+  padding: 5px 6px;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 12px;
+  white-space: normal;
+  word-break: keep-all;
+}
+
+/* Remark 섹션 */
+.remarkSection {
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.remarkText {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.8;
+  font-family: inherit;
+  white-space: pre-wrap;
+  color: #374151;
+}
+
+/* 패딩 제거용 컨테이너 오버라이드 */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+}
+
+/* 진한 테이블 border + 패딩 오버라이드 */
+.container table th,
+.container table td {
+  border: 1px solid #94a3b8;
+  padding: 0;
+}
+
+.container table th {
+  border-color: #1a3d73;
+}
+
+/* 인쇄 */
+@media print {
+  .wrapper {
+    max-width: 100%;
+  }
+
+  .topSection {
+    break-inside: avoid;
+  }
+
+  .mainTable thead {
+    display: table-header-group;
+  }
+
+  .tableSection {
+    break-inside: auto;
+  }
+
+  .mainTable tr {
+    break-inside: avoid;
+  }
+
+  .specialNotesArea {
+    border: 1px solid #d1d5db;
+  }
+
+  .inlineInput {
+    border-bottom: 1px solid #999;
+  }
+}

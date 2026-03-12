@@ -328,7 +328,7 @@ export default function IQCPage() {
 
       <SubmenuBar menus={iqcMenus} />
 
-      <div className={styles.content}>
+      <div className={styles.content} style={menu === 'Summary' ? { padding: 0, boxShadow: 'none' } : undefined}>
         {renderContent()}
       </div>
     </div>
