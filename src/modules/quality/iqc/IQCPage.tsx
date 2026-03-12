@@ -269,7 +269,27 @@ export default function IQCPage() {
           />
         );
       case 'Pouch':
-        return <PouchTable />;
+        return (
+          <PouchTable
+            data={getItemByCategory('파우치')}
+            productionId={Number(projectId)}
+            onSave={async (data) => {
+              try {
+                const existing = getItemByCategory('파우치');
+                const body = toRequestBody(data);
+                const saved = existing
+                  ? await updateIQC(existing.id, body)
+                  : await createIQC(Number(projectId), { ...body, category: '파우치', type: body.type ?? '', name: body.name ?? '' });
+                setIqcItems((prev) =>
+                  existing ? prev.map((item) => (item.id === existing.id ? saved : item)) : [...prev, saved]
+                );
+                alert('저장되었습니다.');
+              } catch {
+                alert('저장에 실패했습니다.');
+              }
+            }}
+          />
+        );
       case 'LeadTab':
         return <LeadTabTable />;
       default:
