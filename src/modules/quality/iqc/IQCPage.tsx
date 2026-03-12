@@ -9,7 +9,7 @@ import SummaryTable from './tables/SummaryTable';
 import CathodeMaterial1Table from './tables/CathodeMaterial1Table';
 import CathodeMaterial2Table from './tables/CathodeMaterial2Table';
 import AnodeMaterialTable from './tables/AnodeMaterialTable';
-import ConductiveMaterialTable from './tables/ConductiveMaterialTable';
+import ConductiveAdditiveTable from './tables/ConductiveAdditiveTable';
 import CurrentCollectorTable from './tables/CurrentCollectorTable';
 import SeparatorTable from './tables/SeparatorTable';
 import ElectrolyteTable from './tables/ElectrolyteTable';
@@ -180,9 +180,9 @@ export default function IQCPage() {
             }}
           />
         );
-      case 'ConductiveMaterial':
+      case 'ConductiveAdditive':
         return (
-          <ConductiveMaterialTable
+          <ConductiveAdditiveTable
             data={getItemByCategory('도전재')}
             productionId={Number(projectId)}
             onSave={async (data) => {

@@ -3,7 +3,7 @@ import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import type { IQCItem, IQCResult, IQCCoaRef } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
 
-interface ConductiveMaterialTableProps {
+interface ConductiveAdditiveTableProps {
   data?: IQCItem;
   productionId: number;
   onSave?: (data: Partial<IQCItem>) => Promise<void>;
@@ -37,7 +37,7 @@ const defaultItem = (): IQCItem => ({
   images: [],
 });
 
-const ConductiveMaterialTable: React.FC<ConductiveMaterialTableProps> = ({ data, onSave }) => {
+const ConductiveAdditiveTable: React.FC<ConductiveAdditiveTableProps> = ({ data, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<IQCItem>(defaultItem());
 
@@ -290,4 +290,4 @@ const ConductiveMaterialTable: React.FC<ConductiveMaterialTableProps> = ({ data,
   );
 };
 
-export default ConductiveMaterialTable;
+export default ConductiveAdditiveTable;
