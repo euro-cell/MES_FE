@@ -172,7 +172,20 @@ const CurrentCollectorTable: React.FC<CurrentCollectorTableProps> = ({ data, onS
         <h3 className={styles.tableTitle}>■ 수입검사 결과</h3>
         <div>
           {!isEditing ? (
-            <button className={styles.specButton} onClick={() => setIsEditing(true)}>{data ? '수정' : '등록'}</button>
+            <button className={styles.specButton} onClick={() => {
+                if (data) {
+                  setSelectedType(data.type ?? '');
+                  setSelectedName(data.name ?? '');
+                  setSelectedCompany(data.manufacturer ?? '');
+                  setSelectedLots(data.lotNo ? data.lotNo.split(', ') : []);
+                  if (data.type && data.name) {
+                    getMaterialLots({ category: '집전체', type: data.type }).then((res) => {
+                      setLots(res.filter((l) => l.name === data.name));
+                    });
+                  }
+                }
+                setIsEditing(true);
+              }}>{data ? '수정' : '등록'}</button>
           ) : (
             <>
               <button className={styles.saveButton} onClick={handleSave} style={{ marginRight: '8px' }}>저장</button>

@@ -347,7 +347,21 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
         <h3 className={styles.tableTitle}>■ 수입검사 결과</h3>
         <div>
           {!isEditing ? (
-            <button className={styles.specButton} onClick={() => setIsEditing(true)}>
+            <button className={styles.specButton} onClick={() => {
+                if (data) {
+                  setSelectedType(data.type ?? '');
+                  setSelectedName(data.name ?? '');
+                  setSelectedCompany(data.manufacturer ?? '');
+                  const lots = data.lotNo ? data.lotNo.split(', ') : [];
+                  setSelectedLots(lots);
+                  if (data.type && data.name) {
+                    getMaterialLots({ category: '양극재', type: data.type }).then((res) => {
+                      setLots(res.filter((l) => l.name === data.name));
+                    });
+                  }
+                }
+                setIsEditing(true);
+              }}>
               {data ? '수정' : '등록'}
             </button>
           ) : (
