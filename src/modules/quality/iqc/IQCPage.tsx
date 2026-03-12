@@ -291,7 +291,27 @@ export default function IQCPage() {
           />
         );
       case 'LeadTab':
-        return <LeadTabTable />;
+        return (
+          <LeadTabTable
+            data={getItemByCategory('리드탭')}
+            productionId={Number(projectId)}
+            onSave={async (data) => {
+              try {
+                const existing = getItemByCategory('리드탭');
+                const body = toRequestBody(data);
+                const saved = existing
+                  ? await updateIQC(existing.id, body)
+                  : await createIQC(Number(projectId), { ...body, category: '리드탭', type: body.type ?? '', name: body.name ?? '' });
+                setIqcItems((prev) =>
+                  existing ? prev.map((item) => (item.id === existing.id ? saved : item)) : [...prev, saved]
+                );
+                alert('저장되었습니다.');
+              } catch {
+                alert('저장에 실패했습니다.');
+              }
+            }}
+          />
+        );
       default:
         return <div className={styles.placeholder}>메뉴를 선택하세요.</div>;
     }
