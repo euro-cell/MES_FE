@@ -584,24 +584,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
           const isUploading = uploadingType === label;
           return (
             <div key={label} className={styles.imageBox}>
-              <div className={styles.imageLabel}>
-                {label}
-                {isEditing && (
-                  <>
-                    <label className={styles.imageUploadBtn} style={{ marginLeft: '8px', cursor: isUploading ? 'not-allowed' : 'pointer' }}>
-                      {isUploading ? '업로드 중...' : '+ 추가'}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        style={{ display: 'none' }}
-                        disabled={isUploading}
-                        onChange={(e) => handleImageUpload(label, e.target.files)}
-                      />
-                    </label>
-                  </>
-                )}
-              </div>
+              <div className={styles.imageLabel}>{label}</div>
               <div className={styles.imageContent}>
                 {imgs.length > 0 ? (
                   <div className={styles.imageList}>
@@ -609,16 +592,16 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
                       <div key={img.id} className={styles.imageItem}>
                         <img src={img.filePath?.replace('data/uploads', '/uploads')} alt={label} className={styles.resultImage} />
                         {isEditing && img.id && (
-                          <button
-                            className={styles.imageDeleteBtn}
-                            onClick={() => handleImageDelete(img.id!, label)}
-                          >
-                            ✕
-                          </button>
+                          <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!, label)}>✕</button>
                         )}
                       </div>
                     ))}
                   </div>
+                ) : isEditing ? (
+                  <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', cursor: isUploading ? 'not-allowed' : 'pointer', color: '#94a3b8', fontSize: '13px', flexDirection: 'column', gap: '4px' }}>
+                    {isUploading ? '업로드 중...' : <><span style={{ fontSize: '24px' }}>+</span><span>이미지 업로드</span></>}
+                    <input type="file" accept="image/*" multiple style={{ display: 'none' }} disabled={isUploading} onChange={(e) => handleImageUpload(label, e.target.files)} />
+                  </label>
                 ) : (
                   <span className={styles.noImage}>이미지 없음</span>
                 )}
