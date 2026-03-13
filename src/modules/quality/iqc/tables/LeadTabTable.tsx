@@ -170,6 +170,13 @@ const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
   const updateResult = (index: number, field: keyof IQCResult, value: string | boolean | null) => {
     const updated = [...results];
     (updated[index] as any)[field] = value;
+    if (field === 'sample1' || field === 'sample2' || field === 'sample3') {
+      const s1 = parseFloat(String(field === 'sample1' ? value : (updated[index].sample1 ?? '')));
+      const s2 = parseFloat(String(field === 'sample2' ? value : (updated[index].sample2 ?? '')));
+      const s3 = parseFloat(String(field === 'sample3' ? value : (updated[index].sample3 ?? '')));
+      const valid = [s1, s2, s3].filter((v) => !isNaN(v));
+      updated[index].average = valid.length > 0 ? (valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(2) : '';
+    }
     setEditData({ ...editData, results: updated });
   };
 
@@ -219,7 +226,7 @@ const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
       <td>{isEditing ? <input type="text" value={String(result.sample1 ?? '')} onChange={(e) => updateResult(index, 'sample1', e.target.value)} className={styles.tableInput} /> : result.sample1}</td>
       <td>{isEditing ? <input type="text" value={String(result.sample2 ?? '')} onChange={(e) => updateResult(index, 'sample2', e.target.value)} className={styles.tableInput} /> : result.sample2}</td>
       <td>{isEditing ? <input type="text" value={String(result.sample3 ?? '')} onChange={(e) => updateResult(index, 'sample3', e.target.value)} className={styles.tableInput} /> : result.sample3}</td>
-      <td>{result.average ?? ''}</td>
+      <td>{result.average != null && result.average !== '' ? parseFloat(String(result.average)).toFixed(2) : ''}</td>
       <td className={styles.passCell} style={{ color: passDisplay.color, fontWeight: 600 }}>
         {isEditing ? (
           <select value={result.isPassed === null || result.isPassed === undefined ? 'null' : result.isPassed ? 'true' : 'false'} onChange={(e) => { const v = e.target.value; updateResult(index, 'isPassed', v === 'null' ? null : v === 'true'); }} className={styles.tableSelect}>
