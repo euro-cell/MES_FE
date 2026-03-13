@@ -174,7 +174,11 @@ const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
   };
 
   const handleImageUpload = async (imageType: string, files: FileList | null) => {
-    if (!files || !data?.id) return;
+    if (!files || files.length === 0) return;
+    if (!data?.id) {
+      alert('먼저 저장 후 이미지를 업로드해주세요.');
+      return;
+    }
     setUploadingType(imageType);
     try {
       const uploaded = await uploadIQCImages(data.id, imageType, Array.from(files));
@@ -185,6 +189,8 @@ const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
           ...uploaded,
         ],
       }));
+    } catch {
+      alert('이미지 업로드에 실패했습니다.');
     } finally {
       setUploadingType(null);
     }
