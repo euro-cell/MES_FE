@@ -56,6 +56,7 @@ export interface IQCCoaRef {
 export interface IQCImage {
   id?: number;
   imageType: string;      // PSD, Half cell, FE-SEM 등
+  imageLabel?: string;    // 사용자가 입력한 표시용 레이블
   filePath?: string;
 }
 

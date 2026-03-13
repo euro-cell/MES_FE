@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import type { IQCItem, IQCResult, IQCCoaRef, IQCPsdData } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
-import { uploadIQCImages, deleteIQCImage } from '../../../../api/quality/IQCService';
+import { uploadIQCImages, deleteIQCImage, updateIQCImageLabel } from '../../../../api/quality/IQCService';
 
 /** 붙여넣기 텍스트 → IQCPsdData[] 파싱 */
 function parsePsdText(text: string): IQCPsdData[] {
@@ -48,10 +48,8 @@ interface AnodeMaterialTableProps {
 const IMAGE_TYPES = ['PSD', 'Half cell', 'FE-SEM(배율: x1,000)'];
 
 
-// PSD 참조: 슬롯 2개
-const PSD_REF_LABELS = ['; 250401 lot 샘플1', '; 250401 lot 샘플2'];
-// SEM Image 참조: 슬롯 3개
-const SEM_REF_LABELS = ['제품소개자료;', '1천배;', '10천배;'];
+const PSD_REF_COUNT = 2;
+const SEM_REF_COUNT = 3;
 
 const getDefaultResults = (): IQCResult[] => [
   { category: '입도', item: 'D10', unit: '㎛',    spec: '3.0±1.5',  refCoa: '',    refLastData: '', sample1: '', sample2: '', sample3: '', isPassed: null, note: '' },
@@ -100,6 +98,8 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
   const [uploadingType, setUploadingType] = useState<string | null>(null);
   const [psdText, setPsdText] = useState('');
   const [psdData, setPsdData] = useState<IQCPsdData[]>([]);
+  const [psdRefLabels, setPsdRefLabels] = useState<string[]>(Array(PSD_REF_COUNT).fill(''));
+  const [semRefLabels, setSemRefLabels] = useState<string[]>(Array(SEM_REF_COUNT).fill(''));
 
   useEffect(() => {
     if (data) {
@@ -110,9 +110,23 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
         images: data.images ?? [],
       });
       setPsdData(data.psdData ?? []);
+      // PSD/SEM 참조 이미지 레이블 복원
+      const imgs = data.images ?? [];
+      setPsdRefLabels(
+        Array.from({ length: PSD_REF_COUNT }, (_, i) =>
+          imgs.find((im) => im.imageType === `PSD_REF_${i}`)?.imageLabel ?? ''
+        )
+      );
+      setSemRefLabels(
+        Array.from({ length: SEM_REF_COUNT }, (_, i) =>
+          imgs.find((im) => im.imageType === `SEM_REF_${i}`)?.imageLabel ?? ''
+        )
+      );
     } else {
       setEditData(defaultItem());
       setPsdData([]);
+      setPsdRefLabels(Array(PSD_REF_COUNT).fill(''));
+      setSemRefLabels(Array(SEM_REF_COUNT).fill(''));
     }
   }, [data]);
 
@@ -213,18 +227,39 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
       : defaultItem();
     setEditData(restored);
     setPsdData(data?.psdData ?? []);
+    const imgs = data?.images ?? [];
+    setPsdRefLabels(Array.from({ length: PSD_REF_COUNT }, (_, i) => imgs.find((im) => im.imageType === `PSD_REF_${i}`)?.imageLabel ?? ''));
+    setSemRefLabels(Array.from({ length: SEM_REF_COUNT }, (_, i) => imgs.find((im) => im.imageType === `SEM_REF_${i}`)?.imageLabel ?? ''));
     setIsEditing(false);
   };
 
-  const handleImageUpload = async (imageType: string, files: FileList | null) => {
+  const handleImageUpload = async (imageType: string, files: FileList | null, imageLabel?: string) => {
     if (!files || files.length === 0) return;
     if (!data?.id) { alert('먼저 저장 후 이미지를 업로드해주세요.'); return; }
     setUploadingType(imageType);
     try {
-      const uploaded = await uploadIQCImages(data.id, imageType, Array.from(files));
+      const uploaded = await uploadIQCImages(data.id, imageType, Array.from(files), imageLabel);
       setEditData((prev) => ({ ...prev, images: [...(prev.images ?? []).filter((im) => im.imageType !== imageType), ...uploaded] }));
     } catch { alert('이미지 업로드에 실패했습니다.'); }
     finally { setUploadingType(null); }
+  };
+
+  const handleRefLabelChange = async (imageType: string, label: string, setter: React.Dispatch<React.SetStateAction<string[]>>, idx: number) => {
+    setter((prev) => { const next = [...prev]; next[idx] = label; return next; });
+    // 해당 슬롯에 이미 업로드된 이미지가 있으면 백엔드 레이블도 업데이트
+    const imgs = (editData.images ?? []).filter((im) => im.imageType === imageType);
+    for (const img of imgs) {
+      if (img.id) {
+        try { await updateIQCImageLabel(img.id, label); } catch { /* 무시 */ }
+      }
+    }
+    // editData 내 imageLabel도 동기화
+    setEditData((prev) => ({
+      ...prev,
+      images: (prev.images ?? []).map((im) =>
+        im.imageType === imageType ? { ...im, imageLabel: label } : im
+      ),
+    }));
   };
 
   const handleImageDelete = async (imageId: number) => {
@@ -529,18 +564,28 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
         {/* 좌: PSD 참조 결과 — 슬롯 2개 세로 배치 */}
         <div style={{ flex: '0 0 50%', borderRight: '1px solid #ccc' }}>
           <h3 className={styles.tableTitle} style={{ margin: '8px 0 8px 4px' }}>■ PSD 참조 결과</h3>
-          {PSD_REF_LABELS.map((label: string, idx: number) => {
+          {Array.from({ length: PSD_REF_COUNT }, (_, idx) => {
             const imageType = `PSD_REF_${idx}`;
+            const label = psdRefLabels[idx] ?? '';
             const imgs = (editData.images ?? []).filter((im) => im.imageType === imageType);
             const isUploading = uploadingType === imageType;
             return (
               <div key={idx} className={styles.imageBox} style={{ marginBottom: '4px' }}>
                 <div className={styles.imageLabel} style={{ textAlign: 'right', background: '#fff' }}>
-                  {label}
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={label}
+                      placeholder="레이블 입력"
+                      onChange={(e) => handleRefLabelChange(imageType, e.target.value, setPsdRefLabels, idx)}
+                      className={styles.tableInput}
+                      style={{ width: '160px' }}
+                    />
+                  ) : label}
                   {isEditing && (
                     <label className={styles.imageUploadBtn} style={{ marginLeft: '8px', cursor: isUploading ? 'not-allowed' : 'pointer' }}>
                       {isUploading ? '업로드 중...' : '+ 추가'}
-                      <input type="file" accept="image/*" multiple style={{ display: 'none' }} disabled={isUploading} onChange={(e) => handleImageUpload(imageType, e.target.files)} />
+                      <input type="file" accept="image/*" multiple style={{ display: 'none' }} disabled={isUploading} onChange={(e) => handleImageUpload(imageType, e.target.files, label)} />
                     </label>
                   )}
                 </div>
@@ -564,18 +609,28 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
         {/* 우: SEM Image 참조 결과 — 슬롯 3개 세로 배치 */}
         <div style={{ flex: '0 0 50%' }}>
           <h3 className={styles.tableTitle} style={{ margin: '8px 0 8px 4px' }}>■ SEM Image 참조 결과</h3>
-          {SEM_REF_LABELS.map((label: string, idx: number) => {
+          {Array.from({ length: SEM_REF_COUNT }, (_, idx) => {
             const imageType = `SEM_REF_${idx}`;
+            const label = semRefLabels[idx] ?? '';
             const imgs = (editData.images ?? []).filter((im) => im.imageType === imageType);
             const isUploading = uploadingType === imageType;
             return (
               <div key={idx} className={styles.imageBox} style={{ marginBottom: '4px' }}>
                 <div className={styles.imageLabel} style={{ textAlign: 'right', background: '#fff' }}>
-                  {label}
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={label}
+                      placeholder="레이블 입력"
+                      onChange={(e) => handleRefLabelChange(imageType, e.target.value, setSemRefLabels, idx)}
+                      className={styles.tableInput}
+                      style={{ width: '160px' }}
+                    />
+                  ) : label}
                   {isEditing && (
                     <label className={styles.imageUploadBtn} style={{ marginLeft: '8px', cursor: isUploading ? 'not-allowed' : 'pointer' }}>
                       {isUploading ? '업로드 중...' : '+ 추가'}
-                      <input type="file" accept="image/*" multiple style={{ display: 'none' }} disabled={isUploading} onChange={(e) => handleImageUpload(imageType, e.target.files)} />
+                      <input type="file" accept="image/*" multiple style={{ display: 'none' }} disabled={isUploading} onChange={(e) => handleImageUpload(imageType, e.target.files, label)} />
                     </label>
                   )}
                 </div>

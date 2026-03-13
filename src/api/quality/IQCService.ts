@@ -74,10 +74,12 @@ export const deleteIQC = async (id: number): Promise<void> => {
 export const uploadIQCImages = async (
   iqcId: number,
   imageType: string,
-  files: File[]
+  files: File[],
+  imageLabel?: string
 ): Promise<IQCImage[]> => {
   const formData = new FormData();
   formData.append('imageType', imageType);
+  if (imageLabel !== undefined) formData.append('imageLabel', imageLabel);
   files.forEach((file) => formData.append('files', file));
 
   const res = await axios.post(
@@ -86,6 +88,15 @@ export const uploadIQCImages = async (
     { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } }
   );
   return res.data;
+};
+
+/** IQC 이미지 레이블 수정 */
+export const updateIQCImageLabel = async (imageId: number, imageLabel: string): Promise<void> => {
+  await axios.patch(
+    `${API_BASE}/quality/iqc/images/${imageId}/label`,
+    { imageLabel },
+    { withCredentials: true }
+  );
 };
 
 /** IQC 이미지 삭제 */
