@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { IQCProject, IQCItem, IQCItemRequest, IQCImage } from '../../modules/quality/iqc/IQCTypes';
+import type { IQCProject, IQCItem, IQCItemRequest, IQCImage, IQCFile } from '../../modules/quality/iqc/IQCTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -102,6 +102,31 @@ export const updateIQCImageLabel = async (imageId: number, imageLabel: string): 
 /** IQC 이미지 삭제 */
 export const deleteIQCImage = async (imageId: number): Promise<void> => {
   await axios.delete(`${API_BASE}/quality/iqc/images/${imageId}`, {
+    withCredentials: true,
+  });
+};
+
+/** IQC 파일 업로드 (PDF 등) */
+export const uploadIQCFile = async (
+  iqcId: number,
+  fileType: string,
+  file: File
+): Promise<IQCFile> => {
+  const formData = new FormData();
+  formData.append('fileType', fileType);
+  formData.append('file', file);
+
+  const res = await axios.post(
+    `${API_BASE}/quality/iqc/detail/${iqcId}/files`,
+    formData,
+    { withCredentials: true, headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+  return res.data;
+};
+
+/** IQC 파일 삭제 */
+export const deleteIQCFile = async (fileId: number): Promise<void> => {
+  await axios.delete(`${API_BASE}/quality/iqc/files/${fileId}`, {
     withCredentials: true,
   });
 };

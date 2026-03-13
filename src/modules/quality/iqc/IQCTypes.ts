@@ -60,6 +60,14 @@ export interface IQCImage {
   filePath?: string;
 }
 
+/** IQC 첨부 파일 (PDF 등) */
+export interface IQCFile {
+  id?: number;
+  fileType: string;       // PSD_DOC 등
+  fileName: string;       // 원본 파일명
+  filePath?: string;
+}
+
 /** PSD raw data 항목 */
 export interface IQCPsdData {
   size: number;
@@ -84,6 +92,7 @@ export interface IQCItem {
   results?: IQCResult[];
   coaRefs?: IQCCoaRef[];
   images?: IQCImage[];
+  files?: IQCFile[];
 }
 
 /** IQC 생성/수정 요청 바디 */

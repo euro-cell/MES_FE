@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import type { IQCItem, IQCResult, IQCCoaRef, IQCPsdData } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
-import { uploadIQCImages, deleteIQCImage, updateIQCImageLabel } from '../../../../api/quality/IQCService';
+import { uploadIQCImages, deleteIQCImage, updateIQCImageLabel, uploadIQCFile, deleteIQCFile } from '../../../../api/quality/IQCService';
 
 /** 붙여넣기 텍스트 → IQCPsdData[] 파싱 */
 function parsePsdText(text: string): IQCPsdData[] {
@@ -100,6 +100,8 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
   const [psdData, setPsdData] = useState<IQCPsdData[]>([]);
   const [psdRefLabels, setPsdRefLabels] = useState<string[]>(Array(PSD_REF_COUNT).fill(''));
   const [semRefLabels, setSemRefLabels] = useState<string[]>(Array(SEM_REF_COUNT).fill(''));
+  const [psdFiles, setPsdFiles] = useState<{ id?: number; fileName: string; filePath?: string }[]>([]);
+  const [uploadingPsdFile, setUploadingPsdFile] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -122,11 +124,13 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
           imgs.find((im) => im.imageType === `SEM_REF_${i}`)?.imageLabel ?? ''
         )
       );
+      setPsdFiles((data.files ?? []).filter((f) => f.fileType === 'PSD_DOC'));
     } else {
       setEditData(defaultItem());
       setPsdData([]);
       setPsdRefLabels(Array(PSD_REF_COUNT).fill(''));
       setSemRefLabels(Array(SEM_REF_COUNT).fill(''));
+      setPsdFiles([]);
     }
   }, [data]);
 
@@ -230,6 +234,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
     const imgs = data?.images ?? [];
     setPsdRefLabels(Array.from({ length: PSD_REF_COUNT }, (_, i) => imgs.find((im) => im.imageType === `PSD_REF_${i}`)?.imageLabel ?? ''));
     setSemRefLabels(Array.from({ length: SEM_REF_COUNT }, (_, i) => imgs.find((im) => im.imageType === `SEM_REF_${i}`)?.imageLabel ?? ''));
+    setPsdFiles((data?.files ?? []).filter((f) => f.fileType === 'PSD_DOC'));
     setIsEditing(false);
   };
 
@@ -268,6 +273,25 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
       await deleteIQCImage(imageId);
       setEditData((prev) => ({ ...prev, images: (prev.images ?? []).filter((im) => im.id !== imageId) }));
     } catch { alert('이미지 삭제에 실패했습니다.'); }
+  };
+
+  const handlePsdFileUpload = async (file: File | null) => {
+    if (!file) return;
+    if (!data?.id) { alert('먼저 저장 후 파일을 업로드해주세요.'); return; }
+    setUploadingPsdFile(true);
+    try {
+      const uploaded = await uploadIQCFile(data.id, 'PSD_DOC', file);
+      setPsdFiles((prev) => [...prev, uploaded]);
+    } catch { alert('파일 업로드에 실패했습니다.'); }
+    finally { setUploadingPsdFile(false); }
+  };
+
+  const handlePsdFileDelete = async (fileId: number) => {
+    if (!confirm('파일을 삭제하시겠습니까?')) return;
+    try {
+      await deleteIQCFile(fileId);
+      setPsdFiles((prev) => prev.filter((f) => f.id !== fileId));
+    } catch { alert('파일 삭제에 실패했습니다.'); }
   };
 
   const results = editData.results ?? [];
@@ -497,6 +521,51 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
           <textarea className={styles.remarkTextarea} value={editData.remark ?? ''} onChange={(e) => setEditData({ ...editData, remark: e.target.value })} placeholder="비고를 입력하세요..." />
         ) : (
           <pre className={styles.remarkContent}>{editData.remark || '비고 없음'}</pre>
+        )}
+      </div>
+
+      {/* PSD 자료 */}
+      <div className={styles.tableTitleRow} style={{ marginTop: '16px' }}>
+        <h3 className={styles.tableTitle}>■ PSD 자료</h3>
+        {isEditing && (
+          <label style={{ cursor: uploadingPsdFile ? 'not-allowed' : 'pointer', fontSize: '13px', color: '#2563eb', fontWeight: 600 }}>
+            {uploadingPsdFile ? '업로드 중...' : '+ PDF 추가'}
+            <input
+              type="file"
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              disabled={uploadingPsdFile}
+              onChange={(e) => handlePsdFileUpload(e.target.files?.[0] ?? null)}
+            />
+          </label>
+        )}
+      </div>
+      <div style={{ padding: '8px 0' }}>
+        {psdFiles.length === 0 ? (
+          <span style={{ color: '#94a3b8', fontSize: '13px' }}>첨부 파일 없음</span>
+        ) : (
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {psdFiles.map((f) => (
+              <li key={f.id ?? f.fileName} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <a
+                  href={f.filePath?.replace('data/uploads', '/uploads')}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ fontSize: '13px', color: '#2563eb', textDecoration: 'underline' }}
+                >
+                  📄 {f.fileName}
+                </a>
+                {isEditing && f.id && (
+                  <button
+                    onClick={() => handlePsdFileDelete(f.id!)}
+                    style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: '13px' }}
+                  >
+                    ✕
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 
