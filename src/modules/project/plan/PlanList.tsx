@@ -60,7 +60,7 @@ export default function PlanList() {
                     variant='register'
                     disabled={item.isPlan}
                     tooltip='이미 계획이 등록되어 있습니다.'
-                    onClick={() => !item.isPlan && navigate('register', { state: { project: item } })}
+                    onClick={() => !item.isPlan && navigate(`register/${item.id}`)}
                   />
 
                   <TooltipButton
@@ -68,7 +68,7 @@ export default function PlanList() {
                     variant='view'
                     disabled={!item.isPlan}
                     tooltip='계획이 등록되어 있지 않습니다.'
-                    onClick={() => item.isPlan && navigate('view', { state: { project: item } })}
+                    onClick={() => item.isPlan && navigate(`view/${item.id}`)}
                   />
 
                   <TooltipButton
@@ -76,7 +76,7 @@ export default function PlanList() {
                     variant='edit'
                     disabled={!item.isPlan}
                     tooltip='계획이 등록되어 있지 않습니다.'
-                    onClick={() => navigate('edit', { state: { project: item } })}
+                    onClick={() => navigate(`edit/${item.id}`)}
                   />
 
                   <TooltipButton

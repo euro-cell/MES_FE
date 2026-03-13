@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getProductionPlan } from '../../../api/project/plan';
 import { exportPlanToStyledExcel } from './exportExcel';
 import styles from '../../../styles/project/plan/PlanView.module.css';
@@ -46,10 +46,9 @@ interface PlanResponse {
 }
 
 export default function PlanView() {
-  const { state } = useLocation();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const project = state?.project;
-  const productionId = project?.id;
+  const productionId = id ? Number(id) : null;
 
   const [planData, setPlanData] = useState<PlanResponse | null>(null);
 
@@ -79,10 +78,10 @@ export default function PlanView() {
   return (
     <div className={styles.planView}>
       <div className={styles.header}>
-        <h3>📊 생산 일정 조회 - {project?.name}</h3>
+        <h3>📊 생산 일정 조회 - {planData.production?.name}</h3>
         <div className={styles.actions}>
           <button
-            onClick={() => exportPlanToStyledExcel(planData!, project?.name || 'Schedule')}
+            onClick={() => exportPlanToStyledExcel(planData!, planData.production?.name || 'Schedule')}
             className={styles.excelBtn}
           >
             📥 엑셀 다운로드

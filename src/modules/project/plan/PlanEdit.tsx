@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styles from '../../../styles/project/plan/PlanRegister.module.css';
 import { getProductionPlan, updateProductionPlan } from '../../../api/project/plan';
@@ -15,8 +15,9 @@ interface ProcessRow {
 
 export default function PlanEdit() {
   const navigate = useNavigate();
-  const { state } = useLocation();
-  const project = state?.project;
+  const { id } = useParams<{ id: string }>();
+  const projectId = id ? Number(id) : null;
+  const [projectName, setProjectName] = useState('');
 
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState('');
@@ -34,13 +35,14 @@ export default function PlanEdit() {
 
   /** 🔹 기존 계획 불러오기 */
   useEffect(() => {
-    if (!project?.id) return;
+    if (!projectId) return;
 
     const fetchPlan = async () => {
       try {
-        const res = await getProductionPlan(project.id);
+        const res = await getProductionPlan(projectId);
         const data = Array.isArray(res) ? res[0] : res;
 
+        if (data.production?.name) setProjectName(data.production.name);
         setStartDate(data.startDate.split('T')[0]);
         setEndDate(data.endDate.split('T')[0]);
 
@@ -97,7 +99,7 @@ export default function PlanEdit() {
     };
 
     fetchPlan();
-  }, [project?.id]);
+  }, [projectId]);
 
   /** 날짜 변경 */
   const handleChange = (field: 'start' | 'end', value: string) => {
@@ -137,7 +139,7 @@ export default function PlanEdit() {
     const payload: PlanPayload = { startDate, endDate, weekInfo, processPlans };
 
     try {
-      await updateProductionPlan(project.id, payload); // ✅ 수정용 PATCH
+      await updateProductionPlan(projectId!, payload); // ✅ 수정용 PATCH
       alert('✅ 수정 완료!');
       navigate('/project/plan');
     } catch (err) {
@@ -235,7 +237,7 @@ export default function PlanEdit() {
   return (
     <div className={styles.planRegisterPage}>
       <div className={styles.header}>
-        <h3>✏️ 생산계획 수정 - {project?.name}</h3>
+        <h3>✏️ 생산계획 수정 - {projectName}</h3>
         <button className={styles.backBtn} onClick={() => navigate(-1)}>
           ← 돌아가기
         </button>

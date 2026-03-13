@@ -1,7 +1,7 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import styles from '../../../styles/project/plan/PlanRegister.module.css';
-import { savePlan } from '../../../api/project/plan';
+import { savePlan, getPlanProjects } from '../../../api/project/plan';
 import type { PlanPayload } from './PlanTypes';
 import DateInput from '../../../components/DateInput';
 
@@ -15,13 +15,22 @@ interface ProcessRow {
 
 export default function PlanRegister() {
   const navigate = useNavigate();
-  const { state } = useLocation();
-  const project = state?.project;
+  const { id } = useParams<{ id: string }>();
+  const projectId = id ? Number(id) : null;
+  const [projectName, setProjectName] = useState('');
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [weekInfo, setWeekInfo] = useState('');
   const [processPlans, setProcessPlans] = useState<Record<string, { start: string; end: string }>>({});
+
+  useEffect(() => {
+    if (!projectId) return;
+    getPlanProjects().then(projects => {
+      const found = projects.find(p => p.id === projectId);
+      if (found) setProjectName(found.name);
+    });
+  }, [projectId]);
 
   /** 주차 계산 */
   const getWeekOfMonth = (date: Date): number => {
@@ -71,7 +80,7 @@ export default function PlanRegister() {
     const payload: PlanPayload = { startDate, endDate, weekInfo, processPlans };
 
     try {
-      await savePlan(project.id, payload);
+      await savePlan(projectId!, payload);
       alert('✅ 저장 완료!');
       navigate('/project/plan');
     } catch (err) {
@@ -167,7 +176,7 @@ export default function PlanRegister() {
   return (
     <div className={styles.planRegisterPage}>
       <div className={styles.header}>
-        <h3>📅 생산계획 등록 - {project?.name}</h3>
+        <h3>📅 생산계획 등록 - {projectName}</h3>
         <button className={styles.backBtn} onClick={() => navigate(-1)}>
           ← 돌아가기
         </button>
