@@ -89,7 +89,7 @@ export default function SpecList() {
                     disabled={!item.specStatus && !item.materialStatus}
                     tooltip='설계나 자재가 등록되어 있지 않습니다.'
                     onClick={() =>
-                      (item.specStatus || item.materialStatus) && navigate('view', { state: { project: item } })
+                      (item.specStatus || item.materialStatus) && navigate(`view/${item.id}`)
                     }
                   />
                 </div>
@@ -103,13 +103,7 @@ export default function SpecList() {
                     disabled={item.specStatus}
                     tooltip='이미 설계가 등록되어 있습니다.'
                     onClick={() =>
-                      !item.specStatus &&
-                      navigate('new', {
-                        state: {
-                          projectName: item.name,
-                          productionId: item.id,
-                        },
-                      })
+                      !item.specStatus && navigate(`new/${item.id}`)
                     }
                   />
 
@@ -119,13 +113,7 @@ export default function SpecList() {
                     disabled={!item.specStatus}
                     tooltip='등록된 설계가 없습니다.'
                     onClick={() =>
-                      item.specStatus &&
-                      navigate('edit', {
-                        state: {
-                          projectName: item.name,
-                          productionId: item.id,
-                        },
-                      })
+                      item.specStatus && navigate(`edit/${item.id}`)
                     }
                   />
 
@@ -147,13 +135,7 @@ export default function SpecList() {
                     disabled={item.materialStatus}
                     tooltip='이미 자재가 등록되어 있습니다.'
                     onClick={() =>
-                      !item.materialStatus &&
-                      navigate('material/new', {
-                        state: {
-                          projectName: item.name,
-                          productionId: item.id,
-                        },
-                      })
+                      !item.materialStatus && navigate(`material/new/${item.id}`)
                     }
                   />
 
@@ -163,13 +145,7 @@ export default function SpecList() {
                     disabled={!item.materialStatus}
                     tooltip='등록된 자재가 없습니다.'
                     onClick={() =>
-                      item.materialStatus &&
-                      navigate('material/edit', {
-                        state: {
-                          projectName: item.name,
-                          productionId: item.id,
-                        },
-                      })
+                      item.materialStatus && navigate(`material/edit/${item.id}`)
                     }
                   />
 

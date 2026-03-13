@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { getSpecificationByProject, getMaterialsByProduction } from '../../../../api/project/spec';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getSpecificationByProject, getMaterialsByProduction, getSpecificationSummary } from '../../../../api/project/spec';
 import { exportSpecToExcel } from './exportExcel';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
@@ -8,22 +8,23 @@ import styles from '../../../../styles/project/spec/specView.module.css';
 
 export default function SpecView() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { project } = (location.state as { project: any }) || {};
+  const { id } = useParams<{ id: string }>();
+  const productionId = id ? Number(id) : null;
+  const [projectName, setProjectName] = useState('');
   const [form, setForm] = useState<SpecForm>(initialSpecForm);
   const [materials, setMaterials] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!project) {
-      alert('⚠️ 프로젝트 정보가 없습니다.');
-      navigate(-1);
-      return;
-    }
+    if (!productionId) return;
 
     const fetchData = async () => {
       try {
-        const specData = await getSpecificationByProject(project.id);
+        const summary = await getSpecificationSummary();
+        const found = summary.find((p: any) => p.id === productionId);
+        if (found) setProjectName(found.name);
+
+        const specData = await getSpecificationByProject(productionId);
         const safeSpec: SpecForm = {
           cathode: specData.cathode ?? initialSpecForm.cathode,
           anode: specData.anode ?? initialSpecForm.anode,
@@ -32,7 +33,7 @@ export default function SpecView() {
         };
         setForm(safeSpec);
 
-        const materialData = await getMaterialsByProduction(project.id);
+        const materialData = await getMaterialsByProduction(productionId);
         setMaterials(materialData.materials ?? {});
       } catch (err: any) {
         console.error('❌ 조회 실패:', err);
@@ -43,7 +44,7 @@ export default function SpecView() {
     };
 
     fetchData();
-  }, [project, navigate]);
+  }, [productionId]);
 
   if (loading) return <div>로딩 중...</div>;
 
@@ -62,12 +63,12 @@ export default function SpecView() {
         <button className={styles.backBtn} onClick={() => navigate(-1)}>
           ← 목록으로
         </button>
-        <button className={styles.excelBtn} onClick={() => exportSpecToExcel(form, materials, project.name)}>
+        <button className={styles.excelBtn} onClick={() => exportSpecToExcel(form, materials, projectName)}>
           📥 엑셀 다운로드
         </button>
       </div>
 
-      <h2>{project.name} 전지 설계 조회</h2>
+      <h2>{projectName} 전지 설계 조회</h2>
 
       <table className={styles.specViewTable}>
         <thead>

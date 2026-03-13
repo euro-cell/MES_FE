@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from '../../../../styles/project/spec/materialNew.module.css';
 import { getMaterialCategories, getMaterialsByCategory } from '../../../../api/material';
-import { getMaterialsByProduction, updateProductionMaterial } from '../../../../api/project/spec';
+import { getMaterialsByProduction, updateProductionMaterial, getSpecificationSummary } from '../../../../api/project/spec';
 
 export interface Row {
   id: number;
@@ -27,14 +27,20 @@ interface Material {
 
 export default function MaterialEdit() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { projectName, productionId } = location.state || {};
-
-  if (!projectName || !productionId) return <p style={{ color: 'red' }}>⚠️ 프로젝트 정보가 없습니다.</p>;
-
+  const { id } = useParams<{ id: string }>();
+  const productionId = id ? Number(id) : null;
+  const [projectName, setProjectName] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
   const [materialsMap, setMaterialsMap] = useState<Record<number, Material[]>>({});
   const [rows, setRows] = useState<Row[]>([]);
+
+  useEffect(() => {
+    if (!productionId) return;
+    getSpecificationSummary().then((list: any[]) => {
+      const found = list.find(p => p.id === productionId);
+      if (found) setProjectName(found.name);
+    });
+  }, [productionId]);
 
   // ✅ 분류 목록 로드
   useEffect(() => {
@@ -53,7 +59,7 @@ export default function MaterialEdit() {
   useEffect(() => {
     const fetchExistingMaterials = async () => {
       try {
-        const res = await getMaterialsByProduction(productionId);
+        const res = await getMaterialsByProduction(productionId!);
         const grouped = res.materials || {};
 
         const loadedRows: Row[] = [];
@@ -145,7 +151,7 @@ export default function MaterialEdit() {
         })),
       };
 
-      await updateProductionMaterial(productionId, payload.materials);
+      await updateProductionMaterial(productionId!, payload.materials);
       alert('✅ 자재 소요량이 수정되었습니다.');
       navigate(-1);
     } catch (err) {

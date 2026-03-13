@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { getSpecificationByProject, updateSpecification } from '../../../../api/project/spec';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getSpecificationByProject, updateSpecification, getSpecificationSummary } from '../../../../api/project/spec';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
 import SpecSectionCathode from './sections/SpecSectionCathode';
@@ -11,20 +11,21 @@ import styles from '../../../../styles/project/spec/specNew.module.css';
 
 export default function SpecEdit() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { projectName, productionId } = location.state || {};
+  const { id } = useParams<{ id: string }>();
+  const productionId = id ? Number(id) : null;
+  const [projectName, setProjectName] = useState('');
   const [form, setForm] = useState<SpecForm>(initialSpecForm);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!projectName || !productionId) {
-      alert('⚠️ 프로젝트 정보가 없습니다.');
-      navigate(-1);
-      return;
-    }
+    if (!productionId) return;
 
     const fetchData = async () => {
       try {
+        const summary = await getSpecificationSummary();
+        const found = summary.find((p: any) => p.id === productionId);
+        if (found) setProjectName(found.name);
+
         const data = await getSpecificationByProject(productionId);
         const safeData: SpecForm = {
           cathode: data.cathode ?? initialSpecForm.cathode,
@@ -42,7 +43,7 @@ export default function SpecEdit() {
     };
 
     fetchData();
-  }, [projectName, productionId, navigate]);
+  }, [productionId]);
 
   const handleChange = (section: string, field: string, index: number, key: string, value: string) => {
     setForm(prev => {
@@ -79,11 +80,9 @@ export default function SpecEdit() {
 
   const handleSubmit = async () => {
     try {
-      await updateSpecification(productionId, form);
+      await updateSpecification(productionId!, form);
       alert('✅ 설계 정보가 수정되었습니다.');
-      navigate('../view', {
-        state: { project: { id: productionId, name: projectName } },
-      });
+      navigate(`../view/${productionId}`);
     } catch (err: any) {
       console.error('❌ 설계 수정 실패:', err);
       if (err.response) {

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from '../../../../styles/project/spec/materialNew.module.css';
 import { initialIds, initialRows } from './MaterialInitialRows';
 import { getMaterialCategories, getMaterialsByCategory } from '../../../../api/material';
-import { postMaterialRequirements } from '../../../../api/project/spec';
+import { postMaterialRequirements, getSpecificationSummary } from '../../../../api/project/spec';
 
 export interface Row {
   id: number;
@@ -28,14 +28,20 @@ interface Material {
 
 export default function MaterialNew() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { projectName, productionId } = location.state || {};
-
-  if (!projectName || !productionId) return <p style={{ color: 'red' }}>⚠️ 프로젝트 정보가 없습니다.</p>;
-
+  const { id } = useParams<{ id: string }>();
+  const productionId = id ? Number(id) : null;
+  const [projectName, setProjectName] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
   const [materialsMap, setMaterialsMap] = useState<Record<number, Material[]>>({});
   const [rows, setRows] = useState<Row[]>(initialRows);
+
+  useEffect(() => {
+    if (!productionId) return;
+    getSpecificationSummary().then((list: any[]) => {
+      const found = list.find(p => p.id === productionId);
+      if (found) setProjectName(found.name);
+    });
+  }, [productionId]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -156,7 +162,7 @@ export default function MaterialNew() {
           quantity: parseFloat(r.quantity),
         })),
       };
-      await postMaterialRequirements(productionId, payload);
+      await postMaterialRequirements(productionId!, payload);
       alert('✅ 자재 소요량이 등록되었습니다.');
       navigate(-1);
     } catch (err: any) {

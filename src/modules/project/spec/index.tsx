@@ -11,11 +11,11 @@ export default function SpecPage() {
     <div className='module-page'>
       <Routes>
         <Route path='' element={<SpecList />} />
-        <Route path='new' element={<SpecNew />} />
-        <Route path='view' element={<SpecView />} />
-        <Route path='edit' element={<SpecEdit />} />
-        <Route path='material/new' element={<MaterialNew />} />
-        <Route path='material/edit' element={<MaterialEdit />} />
+        <Route path='new/:id' element={<SpecNew />} />
+        <Route path='view/:id' element={<SpecView />} />
+        <Route path='edit/:id' element={<SpecEdit />} />
+        <Route path='material/new/:id' element={<MaterialNew />} />
+        <Route path='material/edit/:id' element={<MaterialEdit />} />
       </Routes>
     </div>
   );

@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { createSpecification } from '../../../../api/project/spec';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { createSpecification, getSpecificationSummary } from '../../../../api/project/spec';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
 import SpecSectionCathode from './sections/SpecSectionCathode';
@@ -11,12 +11,18 @@ import styles from '../../../../styles/project/spec/specNew.module.css';
 
 export default function SpecNew() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { projectName, productionId } = location.state || {};
-
-  if (!projectName || !productionId) return <p style={{ color: 'red' }}>⚠️ 프로젝트 정보가 없습니다.</p>;
-
+  const { id } = useParams<{ id: string }>();
+  const productionId = id ? Number(id) : null;
+  const [projectName, setProjectName] = useState('');
   const [form, setForm] = useState<SpecForm>(initialSpecForm);
+
+  useEffect(() => {
+    if (!productionId) return;
+    getSpecificationSummary().then((list: any[]) => {
+      const found = list.find(p => p.id === productionId);
+      if (found) setProjectName(found.name);
+    });
+  }, [productionId]);
 
   const handleChange = (section: string, field: string, index: number, key: string, value: string) => {
     setForm(prev => {
@@ -53,7 +59,7 @@ export default function SpecNew() {
 
   const handleSubmit = async () => {
     try {
-      await createSpecification(productionId, form);
+      await createSpecification(productionId!, form);
       alert('✅ 설계 정보가 저장되었습니다.');
       navigate(-1);
     } catch (err: any) {
