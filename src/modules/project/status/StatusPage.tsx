@@ -69,7 +69,6 @@ export default function StatusPage() {
 
       try {
         const info = await getProductionStatusInfo(Number(projectId));
-        console.log('🚀 ~ statusInfo:', info);
         setStatusInfo(info);
       } catch (err) {
         console.error('생산 현황 정보 조회 실패:', err);
@@ -265,11 +264,7 @@ export default function StatusPage() {
       <div className={styles.categoryRow}>
         <SubmenuBar menus={categoryMenus} />
         {category && (
-          <button
-            className={styles.downloadBtn}
-            onClick={handleExcelDownload}
-            disabled={excelDownloading}
-          >
+          <button className={styles.downloadBtn} onClick={handleExcelDownload} disabled={excelDownloading}>
             {excelDownloading ? '다운로드 중...' : '📥 엑셀 다운로드'}
           </button>
         )}
