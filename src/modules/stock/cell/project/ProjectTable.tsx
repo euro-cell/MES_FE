@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   useReactTable,
   getCoreRowModel,
@@ -166,6 +167,8 @@ export default function ProjectTable({ data }: ProjectTableProps) {
   const [columnFilters, setColumnFilters] = useState<{ id: string; value: string[] }[]>([]);
   const [columnSizing, setColumnSizing] = useState<Record<string, number>>({});
   const tableRef = useRef<HTMLTableElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
 
   const hasAllProjectNo = data.every(item => item.projectNo);
   const hasAllModel = data.every(item => item.model);
@@ -299,12 +302,30 @@ export default function ProjectTable({ data }: ProjectTableProps) {
     isRestocked: '재입고',
   };
 
+  const rows = table.getRowModel().rows;
+
+  const virtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 37,
+    overscan: 10,
+  });
+
+  const virtualRows = virtualizer.getVirtualItems();
+  const totalSize = virtualizer.getTotalSize();
+  const paddingTop = virtualRows.length > 0 ? virtualRows[0].start : 0;
+  const paddingBottom = virtualRows.length > 0 ? totalSize - virtualRows[virtualRows.length - 1].end : 0;
+
   if (data.length === 0) {
     return <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>데이터가 없습니다.</div>;
   }
 
   return (
-    <div className={styles.tableSection}>
+    <div
+      ref={scrollRef}
+      className={styles.tableSection}
+      style={{ height: 'calc(100vh - 180px)', overflowY: 'auto' }}
+    >
       <table ref={tableRef} className={styles.dataTable} style={{ width: '100%' }}>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
@@ -326,8 +347,6 @@ export default function ProjectTable({ data }: ProjectTableProps) {
                       {flexRender(header.column.columnDef.header, header.getContext())}
                     </div>
                   )}
-
-                  {/* 리사이즈 핸들 */}
                   <div
                     className={styles.resizeHandle}
                     onMouseDown={header.getResizeHandler()}
@@ -341,15 +360,20 @@ export default function ProjectTable({ data }: ProjectTableProps) {
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map(row => (
-            <tr key={row.id} style={row.original.isShipped ? { backgroundColor: '#fff9e6' } : undefined}>
-              {row.getVisibleCells().map(cell => (
-                <td key={cell.id} data-col={cell.column.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
+          {paddingTop > 0 && <tr><td style={{ height: paddingTop }} /></tr>}
+          {virtualRows.map(virtualRow => {
+            const row = rows[virtualRow.index];
+            return (
+              <tr key={row.id} style={row.original.isShipped ? { backgroundColor: '#fff9e6' } : undefined}>
+                {row.getVisibleCells().map(cell => (
+                  <td key={cell.id} data-col={cell.column.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
+          {paddingBottom > 0 && <tr><td style={{ height: paddingBottom }} /></tr>}
         </tbody>
       </table>
     </div>
