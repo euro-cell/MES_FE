@@ -13,6 +13,7 @@ export default function SpecView() {
   const [projectName, setProjectName] = useState('');
   const [form, setForm] = useState<SpecForm>(initialSpecForm);
   const [materials, setMaterials] = useState<Record<string, any[]>>({});
+  const [hasSpec, setHasSpec] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function SpecView() {
           cell: specData.cell ?? initialSpecForm.cell,
         };
         setForm(safeSpec);
+        setHasSpec(true);
       } catch (err) {
         console.error('❌ 설계 조회 실패:', err);
       }
@@ -77,6 +79,9 @@ export default function SpecView() {
 
       <h2>{projectName} 전지 설계 조회</h2>
 
+      {!hasSpec ? (
+        <p>등록된 설계 정보가 없습니다.</p>
+      ) : (
       <table className={styles.specViewTable}>
         <thead>
           <tr>
@@ -221,6 +226,7 @@ export default function SpecView() {
           </tr>
         </tbody>
       </table>
+      )}
 
       <div className={styles.materialSection}>
         <h3>자재 소요량</h3>
