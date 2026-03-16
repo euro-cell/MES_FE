@@ -136,8 +136,9 @@ export default function WeldingRegister() {
         leadTabSpec: '',
       }));
     } else if (rangeName === 'leadTabLot') {
-      // 리드탭1 LOT 선택 시 제조사, 스팩 자동 입력
-      const selectedLot = leadTab1Lots.find(l => l.lot === value);
+      // 리드탭1 LOT 선택 시 제조사, 스팩 자동 입력 (첫 번째 선택 lot 기준)
+      const firstLot = typeof value === 'string' ? value.split(',')[0].trim() : value;
+      const selectedLot = leadTab1Lots.find(l => l.lot === firstLot);
       setFormValues(prev => ({
         ...prev,
         [rangeName]: value,
@@ -154,8 +155,9 @@ export default function WeldingRegister() {
         leadTab2Spec: '',
       }));
     } else if (rangeName === 'leadTab2Lot') {
-      // 리드탭2 LOT 선택 시 제조사, 스팩 자동 입력
-      const selectedLot = leadTab2Lots.find(l => l.lot === value);
+      // 리드탭2 LOT 선택 시 제조사, 스팩 자동 입력 (첫 번째 선택 lot 기준)
+      const firstLot2 = typeof value === 'string' ? value.split(',')[0].trim() : value;
+      const selectedLot = leadTab2Lots.find(l => l.lot === firstLot2);
       setFormValues(prev => ({
         ...prev,
         [rangeName]: value,
@@ -163,8 +165,9 @@ export default function WeldingRegister() {
         leadTab2Spec: selectedLot?.spec || '',
       }));
     } else if (rangeName === 'piTapeLot') {
-      // PI 테이프 LOT 선택 시 제조사, 스팩 자동 입력
-      const selectedTape = tapeLots.find(t => t.lot === value);
+      // PI 테이프 LOT 선택 시 제조사, 스팩 자동 입력 (첫 번째 선택 lot 기준)
+      const firstTapeLot = typeof value === 'string' ? value.split(',')[0].trim() : value;
+      const selectedTape = tapeLots.find(t => t.lot === firstTapeLot);
       setFormValues(prev => ({
         ...prev,
         [rangeName]: value,
@@ -250,12 +253,14 @@ export default function WeldingRegister() {
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
-    // 리드탭 타입/LOT 선택박스 (항상 표시)
+    // 리드탭 타입 선택박스
     leadTabType: leadTabTypes,
-    leadTabLot: leadTab1LotOptions,
     leadTab2Type: leadTabTypes,
+  };
+  const multiSelectFields: Record<string, string[]> = {
+    // 리드탭/테이프 LOT 다중선택
+    leadTabLot: leadTab1LotOptions,
     leadTab2Lot: leadTab2LotOptions,
-    // PI 테이프 LOT 선택박스
     piTapeLot: tapeLotOptions,
   };
 
@@ -305,6 +310,7 @@ export default function WeldingRegister() {
           integerFields={WELDING_INTEGER_FIELDS}
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
           selectFields={selectFields}
+          multiSelectFields={multiSelectFields}
           dateFields={['manufactureDate']}
           tooltips={fieldTooltips}
           formulaRefs={formulaRefs}

@@ -80,18 +80,20 @@ export default function CoatingEdit() {
         newValues.spec = '';
       }
 
-      // 호일 LOT 선택 시 제조사, 스펙 자동입력
+      // 호일 LOT 선택 시 제조사, 스펙 자동입력 (첫 번째 선택 lot 기준)
       if (rangeName === 'materialLot' && value) {
-        const foilInfo = getFoilLotInfo(value);
+        const firstLot = typeof value === 'string' ? value.split(',')[0].trim() : value;
+        const foilInfo = getFoilLotInfo(firstLot);
         if (foilInfo) {
           newValues.manufacturer = foilInfo.manufacturer;
           newValues.spec = foilInfo.spec;
         }
       }
 
-      // 슬러리 LOT 선택 시 고형분, 점도 자동입력
+      // 슬러리 LOT 선택 시 고형분, 점도 자동입력 (첫 번째 선택 lot 기준)
       if (rangeName === 'materialLot2' && value) {
-        const slurryInfo = getSlurryLotInfo(value);
+        const firstLot2 = typeof value === 'string' ? value.split(',')[0].trim() : value;
+        const slurryInfo = getSlurryLotInfo(firstLot2);
         if (slurryInfo) {
           newValues.solidContent = slurryInfo.solidContent;
           newValues.viscosity = String(slurryInfo.viscosity);
@@ -158,17 +160,16 @@ export default function CoatingEdit() {
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
-    // 자재 투입 정보 1 (호일)
     materialType: FOIL_TYPE_OPTIONS,
-    ...(foilLotOptions.length > 0 && { materialLot: foilLotOptions }),
-    // 자재 투입 정보 2 (슬러리)
     materialType2: ['Slurry'],
-    ...(slurryLotOptions.length > 0 && { materialLot2: slurryLotOptions }),
-    // 코팅면
     coatingSide1: coatingSideOptions,
     coatingSide2: coatingSideOptions,
     coatingSide3: coatingSideOptions,
     coatingSide4: coatingSideOptions,
+  };
+  const multiSelectFields: Record<string, string[]> = {
+    ...(foilLotOptions.length > 0 && { materialLot: foilLotOptions }),
+    ...(slurryLotOptions.length > 0 && { materialLot2: slurryLotOptions }),
   };
 
   return (
@@ -202,6 +203,7 @@ export default function CoatingEdit() {
           integerFields={COATING_INTEGER_FIELDS}
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...COATING_AUTO_FILL_FIELDS]}
           selectFields={selectFields}
+          multiSelectFields={multiSelectFields}
           dateFields={['manufactureDate']}
         />
       </div>

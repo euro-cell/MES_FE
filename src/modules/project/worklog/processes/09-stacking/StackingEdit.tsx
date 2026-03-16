@@ -148,7 +148,8 @@ export default function StackingEdit() {
   // 분리막 LOT 선택 시 제조사, 스팩 자동 입력 + 양품 수량 자동계산
   const handleCellChange = (rangeName: string, value: any) => {
     if (rangeName === 'separatorLot') {
-      const selectedSeparator = separatorLots.find(s => s.lot === value);
+      const firstLot = typeof value === 'string' ? value.split(',')[0].trim() : value;
+      const selectedSeparator = separatorLots.find(s => s.lot === firstLot);
       setFormValues(prev => ({
         ...prev,
         [rangeName]: value,
@@ -221,6 +222,8 @@ export default function StackingEdit() {
   const stackingSelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+  };
+  const stackingMultiSelectFields: Record<string, string[]> = {
     ...(separatorLotOptions.length > 0 && { separatorLot: separatorLotOptions }),
   };
 
@@ -255,6 +258,7 @@ export default function StackingEdit() {
           integerFields={STACKING_INTEGER_FIELDS}
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...SEPARATOR_AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
           selectFields={stackingSelectFields}
+          multiSelectFields={stackingMultiSelectFields}
           dateFields={['manufactureDate']}
           tooltips={fieldTooltips}
           formulaRefs={formulaRefs}

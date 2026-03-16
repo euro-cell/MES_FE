@@ -161,7 +161,8 @@ export default function FillingRegister() {
   // 전해액 LOT 선택 시 제조사, 스팩 자동 입력 + 자동계산
   const handleCellChange = (rangeName: string, value: any) => {
     if (rangeName === 'electrolyteLot') {
-      const selectedElectrolyte = electrolyteLots.find(e => e.lot === value);
+      const firstLot = typeof value === 'string' ? value.split(',')[0].trim() : value;
+      const selectedElectrolyte = electrolyteLots.find(e => e.lot === firstLot);
       setFormValues(prev => ({
         ...prev,
         [rangeName]: value,
@@ -244,7 +245,8 @@ export default function FillingRegister() {
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
-    // 전해액 LOT 선택박스
+  };
+  const multiSelectFields: Record<string, string[]> = {
     electrolyteLot: electrolyteLotOptions,
   };
 
@@ -288,6 +290,7 @@ export default function FillingRegister() {
           integerFields={FILLING_INTEGER_FIELDS}
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
           selectFields={selectFields}
+          multiSelectFields={multiSelectFields}
           dateFields={['manufactureDate']}
           tooltips={fieldTooltips}
           formulaRefs={formulaRefs}

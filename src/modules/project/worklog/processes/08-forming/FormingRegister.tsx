@@ -136,7 +136,8 @@ export default function FormingRegister() {
   // 파우치 LOT 선택 시 제조사, 스팩 자동 입력 + 양품 수량 자동계산
   const handleCellChange = (rangeName: string, value: any) => {
     if (rangeName === 'pouchLot') {
-      const selectedPouch = pouchLots.find(p => p.lot === value);
+      const firstLot = typeof value === 'string' ? value.split(',')[0].trim() : value;
+      const selectedPouch = pouchLots.find(p => p.lot === firstLot);
       setFormValues(prev => ({
         ...prev,
         [rangeName]: value,
@@ -197,6 +198,8 @@ export default function FormingRegister() {
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+  };
+  const multiSelectFields: Record<string, string[]> = {
     ...(pouchLotOptions.length > 0 && { pouchLot: pouchLotOptions }),
   };
 
@@ -243,6 +246,7 @@ export default function FormingRegister() {
         integerFields={FORMING_INTEGER_FIELDS}
         readOnlyFields={[...COMMON_READONLY_FIELDS, ...POUCH_AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
         selectFields={selectFields}
+        multiSelectFields={multiSelectFields}
         dateFields={['manufactureDate']}
         tooltips={fieldTooltips}
         formulaRefs={formulaRefs}

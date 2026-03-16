@@ -173,7 +173,10 @@ export default function BinderRegister() {
       material1Name: materialCategories,
       material2Name: materialCategories,
     }),
-    // 자재투입정보 LOT 드롭다운 (카테고리 선택 시 연동)
+  };
+
+  const binderMultiSelectFields: Record<string, string[]> = {
+    // 자재투입정보 LOT 다중선택
     ...(material1LotOptions.length > 0 && { material1Lot: material1LotOptions }),
     ...(material2LotOptions.length > 0 && { material2Lot: material2LotOptions }),
   };
@@ -232,6 +235,7 @@ export default function BinderRegister() {
           integerFields={BINDER_INTEGER_FIELDS}
           readOnlyFields={COMMON_READONLY_FIELDS}
           selectFields={binderSelectFields}
+          multiSelectFields={binderMultiSelectFields}
           dateFields={['manufactureDate']}
           headerButton={
             <button

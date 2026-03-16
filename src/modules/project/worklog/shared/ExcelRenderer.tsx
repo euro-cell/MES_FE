@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, useCallback, useState } from 'react';
+import { useMemo, useRef, useEffect, useCallback, useState, useId } from 'react';
 import ExcelJS from 'exceljs';
 import toast from 'react-hot-toast';
 import { formatCellValue, isCellInMerge, type MergeRange, type NamedRangeInfo } from './excelUtils';
@@ -134,6 +134,72 @@ function FormulaTooltip({
   );
 }
 
+// 다중선택 드롭다운 컴포넌트
+function MultiSelectDropdown({
+  options,
+  value,
+  onChange,
+  dataRangeName,
+}: {
+  options: string[];
+  value: string; // 쉼표로 구분된 선택값
+  onChange: (value: string) => void;
+  dataRangeName?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const id = useId();
+
+  const selected = useMemo(() => (value ? value.split(',').map(v => v.trim()).filter(Boolean) : []), [value]);
+
+  const toggle = (option: string) => {
+    const next = selected.includes(option)
+      ? selected.filter(v => v !== option)
+      : [...selected, option];
+    onChange(next.join(', '));
+  };
+
+  // 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    if (open) document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [open]);
+
+  const displayText = selected.length === 0 ? '선택...' : selected.join(', ');
+
+  return (
+    <div ref={containerRef} className={styles.multiSelectContainer} data-range-name={dataRangeName} id={id}>
+      <button
+        type='button'
+        className={styles.multiSelectTrigger}
+        onClick={() => setOpen(prev => !prev)}
+      >
+        <span className={selected.length === 0 ? styles.multiSelectPlaceholder : ''}>{displayText}</span>
+        <span className={styles.multiSelectArrow}>{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <div className={styles.multiSelectDropdown}>
+          {options.map(option => (
+            <label key={option} className={styles.multiSelectOption}>
+              <input
+                type='checkbox'
+                checked={selected.includes(option)}
+                onChange={() => toggle(option)}
+              />
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface CellData {
   value: any;
   numFmt?: string;
@@ -163,6 +229,7 @@ interface ExcelRendererProps {
   integerFields?: string[];
   readOnlyFields?: string[];
   selectFields?: Record<string, string[]>;
+  multiSelectFields?: Record<string, string[]>; // 다중선택 드롭다운 필드
   comboFields?: Record<string, string[]>; // 선택 + 직접입력 가능한 콤보박스 필드
   placeholders?: Record<string, string>;
   uppercaseFields?: string[]; // 대문자+숫자만 허용하는 필드
@@ -343,6 +410,7 @@ export default function ExcelRenderer({
   integerFields = [],
   readOnlyFields = [],
   selectFields = {},
+  multiSelectFields = {},
   comboFields = {},
   placeholders = {},
   uppercaseFields = [],
@@ -562,8 +630,8 @@ export default function ExcelRenderer({
                 // 읽기 전용 필드는 연한 노란색 배경
                 if (isReadOnly) {
                   cellStyle.backgroundColor = '#FFFDE7';
-                } else if (isEditable && rangeName && selectFields[rangeName]) {
-                  // 선택박스 필드는 연두색 배경
+                } else if (isEditable && rangeName && (selectFields[rangeName] || multiSelectFields[rangeName])) {
+                  // 선택박스/다중선택 필드는 연두색 배경
                   cellStyle.backgroundColor = '#f0fdf4';
                 } else if (backgroundColor && !isEditable) {
                   // 편집 가능한 셀이 아닌 경우에만 배경색 적용
@@ -585,8 +653,8 @@ export default function ExcelRenderer({
                   delete cellStyle.borderTop;
                 }
 
-                // 셀 클래스 결정: 선택박스 > 편집가능 > 없음
-                const isSelectField = isEditable && rangeName && selectFields[rangeName];
+                // 셀 클래스 결정: 선택박스/다중선택 > 편집가능 > 없음
+                const isSelectField = isEditable && rangeName && (selectFields[rangeName] || multiSelectFields[rangeName]);
                 const cellClassName = isSelectField
                   ? styles.selectCell
                   : isEditable
@@ -648,6 +716,13 @@ export default function ExcelRenderer({
                               }
                             }
                           }}
+                          dataRangeName={rangeName}
+                        />
+                      ) : multiSelectFields[rangeName] ? (
+                        <MultiSelectDropdown
+                          options={multiSelectFields[rangeName]}
+                          value={cellValues[rangeName] ?? ''}
+                          onChange={value => handleInputChange(rangeName, value)}
                           dataRangeName={rangeName}
                         />
                       ) : selectFields[rangeName] ? (

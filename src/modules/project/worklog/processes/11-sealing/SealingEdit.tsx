@@ -154,7 +154,8 @@ export default function SealingEdit() {
   // 파우치 LOT 선택 시 제조사 자동 입력 + 양품 수량 자동계산
   const handleCellChange = (rangeName: string, value: any) => {
     if (rangeName === 'pouchLot') {
-      const selectedPouch = pouchLots.find(p => p.lot === value);
+      const firstLot = typeof value === 'string' ? value.split(',')[0].trim() : value;
+      const selectedPouch = pouchLots.find(p => p.lot === firstLot);
       setFormValues(prev => ({
         ...prev,
         [rangeName]: value,
@@ -226,7 +227,8 @@ export default function SealingEdit() {
   const sealingSelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
-    // 파우치 LOT 선택박스
+  };
+  const sealingMultiSelectFields: Record<string, string[]> = {
     pouchLot: pouchLotOptions,
   };
 
@@ -260,6 +262,7 @@ export default function SealingEdit() {
           integerFields={SEALING_INTEGER_FIELDS}
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}
           selectFields={sealingSelectFields}
+          multiSelectFields={sealingMultiSelectFields}
           dateFields={['manufactureDate']}
           tooltips={fieldTooltips}
           formulaRefs={formulaRefs}

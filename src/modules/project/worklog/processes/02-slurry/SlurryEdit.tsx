@@ -901,20 +901,18 @@ export default function SlurryEdit() {
     material1LotOptions, material2LotOptions, material3LotOptions,
     material4LotOptions, material5LotOptions, material6LotOptions,
   ];
-  const materialLotFields: Record<string, string[]> = {};
+  const materialLotMultiSelectFields: Record<string, string[]> = {};
   const binderLotComboFields: Record<string, string[]> = {};
   for (let i = 1; i <= 6; i++) {
     const materialName = formValues[`material${i}Name`];
     if (materialName === '바인더') {
-      // 바인더 행은 콤보박스 (선택 + 직접입력)
       if (binderSolutionLotOptions.length > 0) {
         binderLotComboFields[`material${i}Lot`] = binderSolutionLotOptions;
       }
     } else {
-      // 그 외는 자재 LOT 선택박스
       const opts = materialLotOptionsFromMaterial[i - 1];
       if (opts && opts.length > 0) {
-        materialLotFields[`material${i}Lot`] = opts;
+        materialLotMultiSelectFields[`material${i}Lot`] = opts;
       }
     }
   }
@@ -924,7 +922,6 @@ export default function SlurryEdit() {
     ...(plantOptions.length > 0 ? { plant: plantOptions } : {}),
     ...pdMixerNameFields,
     ...materialNameFields,
-    ...materialLotFields,
   };
 
   return (
@@ -957,6 +954,7 @@ export default function SlurryEdit() {
           numericFields={SLURRY_NUMERIC_FIELDS}
           readOnlyFields={dynamicReadOnlyFields}
           selectFields={slurrySelectFields}
+          multiSelectFields={materialLotMultiSelectFields}
           comboFields={binderLotComboFields}
           dateFields={['manufactureDate']}
           uppercaseFields={['lot']}
