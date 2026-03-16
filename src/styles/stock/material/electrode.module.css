@@ -185,6 +185,21 @@
   justify-content: center;
 }
 
+.coaButton {
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.coaButton:hover {
+  background-color: #4f46e5;
+}
+
 .editButton {
   background-color: #f59e0b;
   color: white;

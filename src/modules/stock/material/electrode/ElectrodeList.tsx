@@ -11,6 +11,7 @@ import type { ElectrodeMaterial, MaterialHistory } from './types';
 import AddMaterialModal from './AddMaterialModal';
 import DeleteMaterialModal from './DeleteMaterialModal';
 import UploadMaterialModal, { type MaterialUploadData } from '../shared/UploadMaterialModal';
+import CoAModal from '../shared/CoAModal';
 import styles from '../../../../styles/stock/material/electrode.module.css';
 
 const INITIAL_FORM_DATA: Omit<ElectrodeMaterial, 'id'> = {
@@ -44,6 +45,7 @@ export default function ElectrodeList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [coaMaterial, setCoaMaterial] = useState<ElectrodeMaterial | null>(null);
 
   const loadMaterials = async (includeZero: boolean = false) => {
     try {
@@ -196,6 +198,14 @@ export default function ElectrodeList() {
     setShowUploadModal(false);
   };
 
+  const handleOpenCoAModal = (material: ElectrodeMaterial) => {
+    setCoaMaterial(material);
+  };
+
+  const handleCloseCoAModal = () => {
+    setCoaMaterial(null);
+  };
+
   const handleImportMaterials = async (data: MaterialUploadData[]) => {
     const result = await importElectrodeMaterials(data);
     // 데이터 새로고침
@@ -310,6 +320,9 @@ export default function ElectrodeList() {
                     <td>{material.note}</td>
                     <td className={styles.inventoryCell}>{material.stock}</td>
                     <td className={styles.managementCell}>
+                      <button className={styles.coaButton} onClick={() => handleOpenCoAModal(material)}>
+                        CoA
+                      </button>
                       <button className={styles.editButton} onClick={() => handleEditMaterial(material)}>
                         수정
                       </button>
@@ -390,6 +403,17 @@ export default function ElectrodeList() {
         onImport={handleImportMaterials}
         processType='전극'
       />
+
+      {coaMaterial && (
+        <CoAModal
+          show={true}
+          materialId={coaMaterial.id}
+          materialName={coaMaterial.name}
+          lotNo={coaMaterial.lotNo}
+          process='전극'
+          onClose={handleCloseCoAModal}
+        />
+      )}
     </div>
   );
 }

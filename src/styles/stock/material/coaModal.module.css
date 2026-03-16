@@ -1,0 +1,186 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.modalHeader h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.materialInfo {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.closeButton:hover {
+  color: #333;
+}
+
+.modalBody {
+  padding: 20px;
+}
+
+.uploadArea {
+  margin-bottom: 16px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadButton {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.uploadButton:hover:not(.disabled) {
+  background-color: #2563eb;
+}
+
+.uploadButton.disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.loadingText,
+.emptyText {
+  text-align: center;
+  padding: 30px 0;
+  color: #999;
+  font-size: 14px;
+}
+
+.coaTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.coaTable thead {
+  background-color: #f0f0f0;
+  border-bottom: 2px solid #ddd;
+}
+
+.coaTable th {
+  padding: 10px 8px;
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+  border-right: 1px solid #ccc;
+}
+
+.coaTable th:last-child {
+  border-right: none;
+}
+
+.coaTable tbody tr {
+  border-bottom: 1px solid #eee;
+}
+
+.coaTable tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.coaTable td {
+  padding: 10px 8px;
+  text-align: center;
+  border-right: 1px solid #ccc;
+}
+
+.coaTable td:last-child {
+  border-right: none;
+}
+
+.fileNameCell {
+  text-align: left !important;
+  word-break: break-all;
+}
+
+.actionCell {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.downloadButton {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.downloadButton:hover {
+  background-color: #059669;
+}
+
+.deleteButton {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.deleteButton:hover {
+  background-color: #dc2626;
+}
