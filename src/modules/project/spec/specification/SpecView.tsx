@@ -23,7 +23,11 @@ export default function SpecView() {
         const summary = await getSpecificationSummary();
         const found = summary.find((p: any) => p.id === productionId);
         if (found) setProjectName(found.name);
+      } catch (err) {
+        console.error('❌ 프로젝트 목록 조회 실패:', err);
+      }
 
+      try {
         const specData = await getSpecificationByProject(productionId);
         const safeSpec: SpecForm = {
           cathode: specData.cathode ?? initialSpecForm.cathode,
@@ -32,15 +36,18 @@ export default function SpecView() {
           cell: specData.cell ?? initialSpecForm.cell,
         };
         setForm(safeSpec);
+      } catch (err) {
+        console.error('❌ 설계 조회 실패:', err);
+      }
 
+      try {
         const materialData = await getMaterialsByProduction(productionId);
         setMaterials(materialData.materials ?? {});
-      } catch (err: any) {
-        console.error('❌ 조회 실패:', err);
-        alert('설계 또는 자재 정보를 불러오는 중 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
+      } catch (err) {
+        console.error('❌ 자재 소요량 조회 실패:', err);
       }
+
+      setLoading(false);
     };
 
     fetchData();
