@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/components/moduleIndex.module.css';
@@ -13,23 +14,29 @@ const CELL_MENUS = [
   { title: '프로젝트별 입/출고 현황', path: '/stock/cell/project' },
 ];
 
-const handleDownload = async () => {
-  try {
-    const { downloadCellExcel } = await import('../../../api/stock/InOutService');
-    await downloadCellExcel();
-  } catch (error) {
-    console.error('엑셀 다운로드 실패:', error);
-    alert('엑셀 다운로드에 실패했습니다.');
-  }
-};
-
 export default function CellIndex() {
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (isDownloading) return;
+    setIsDownloading(true);
+    try {
+      const { downloadCellExcel } = await import('../../../api/stock/InOutService');
+      await downloadCellExcel();
+    } catch (error) {
+      console.error('엑셀 다운로드 실패:', error);
+      alert('엑셀 다운로드에 실패했습니다.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className={styles.modulePage}>
       <div className={styles.submenuWrapper}>
         <SubmenuBar menus={CELL_MENUS} />
-        <button className={styles.downloadBtn} onClick={handleDownload}>
-          📥 엑셀 다운로드
+        <button className={styles.downloadBtn} onClick={handleDownload} disabled={isDownloading}>
+          {isDownloading ? '⏳ 다운로드 중...' : '📥 엑셀 다운로드'}
         </button>
       </div>
 
