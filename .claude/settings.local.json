@@ -22,7 +22,8 @@
       "Bash(npm install:*)",
       "Bash(tree:*)",
       "Bash(dir:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(npm audit:*)"
     ],
     "deny": [],
     "ask": []
