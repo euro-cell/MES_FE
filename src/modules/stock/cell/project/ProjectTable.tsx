@@ -1,130 +1,357 @@
-import { useMemo } from 'react';
-import { AgGridReact } from 'ag-grid-react';
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import {
-  AllCommunityModule,
-  ModuleRegistry,
-  themeQuartz,
-  type ColDef,
-  type ValueGetterParams,
-  type ValueFormatterParams,
-} from 'ag-grid-community';
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  flexRender,
+  type ColumnDef,
+  type SortingState,
+  type FilterFn,
+  type Column,
+} from '@tanstack/react-table';
 import type { CellInventoryDetail } from '../../../../api/stock/ProjectService';
-
-ModuleRegistry.registerModules([AllCommunityModule]);
+import styles from '../../../../styles/stock/cell/ProjectDetail.module.css';
 
 interface ProjectTableProps {
   data: CellInventoryDetail[];
 }
 
+const multiSelectFilter: FilterFn<CellInventoryDetail> = (row, columnId, filterValue: string[]) => {
+  if (!filterValue || filterValue.length === 0) return true;
+  const cellValue = String(row.getValue(columnId) ?? '');
+  return filterValue.includes(cellValue);
+};
+
+// ── 컬럼 필터 드롭다운 ────────────────────────────────────────────
+interface ColumnFilterDropdownProps {
+  column: Column<CellInventoryDetail>;
+  allData: CellInventoryDetail[];
+  label: string;
+}
+
+function ColumnFilterDropdown({ column, allData, label }: ColumnFilterDropdownProps) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const [pending, setPending] = useState<Set<string>>(new Set());
+  const ref = useRef<HTMLDivElement>(null);
+
+  const allValues = useMemo(() => {
+    const set = new Set<string>();
+    for (const row of allData) {
+      const raw = (row as unknown as Record<string, unknown>)[column.id];
+      let val: string;
+      if (column.id === 'isShipped') val = raw ? '출고' : '';
+      else if (column.id === 'isRestocked') val = raw ? '재입고' : '';
+      else val = String(raw ?? '');
+      set.add(val);
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'ko'));
+  }, [allData, column.id]);
+
+  const currentFilter = (column.getFilterValue() as string[] | undefined) ?? [];
+  const isActive = currentFilter.length > 0;
+
+  const openDropdown = useCallback(() => {
+    setPending(new Set(currentFilter.length > 0 ? currentFilter : allValues));
+    setSearch('');
+    setOpen(true);
+  }, [currentFilter, allValues]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const filtered = useMemo(
+    () => allValues.filter(v => v.toLowerCase().includes(search.toLowerCase())),
+    [allValues, search],
+  );
+
+  const allChecked = filtered.every(v => pending.has(v));
+
+  const toggle = (val: string) => {
+    setPending(prev => {
+      const next = new Set(prev);
+      next.has(val) ? next.delete(val) : next.add(val);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (allChecked) {
+      setPending(prev => {
+        const next = new Set(prev);
+        filtered.forEach(v => next.delete(v));
+        return next;
+      });
+    } else {
+      setPending(prev => {
+        const next = new Set(prev);
+        filtered.forEach(v => next.add(v));
+        return next;
+      });
+    }
+  };
+
+  const apply = () => {
+    const selected = Array.from(pending);
+    column.setFilterValue(selected.length === allValues.length ? undefined : selected);
+    setOpen(false);
+  };
+
+  const reset = () => {
+    column.setFilterValue(undefined);
+    setOpen(false);
+  };
+
+  return (
+    <div className={styles.dropdownWrapper} ref={ref}>
+      <div className={styles.thInner}>
+        <span
+          style={{
+            cursor: column.getCanSort() ? 'pointer' : 'default',
+            userSelect: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 3,
+          }}
+          onClick={column.getToggleSortingHandler()}
+        >
+          {label}
+          {column.getIsSorted() === 'asc' && <span className={styles.sortIcon}>▲</span>}
+          {column.getIsSorted() === 'desc' && <span className={styles.sortIcon}>▼</span>}
+        </span>
+        <button className={`${styles.filterBtn} ${isActive ? styles.active : ''}`} onClick={openDropdown} title='필터'>
+          ▼
+        </button>
+      </div>
+
+      {open && (
+        <div className={styles.dropdown}>
+          <div className={styles.dropdownSearch}>
+            <input autoFocus placeholder='검색...' value={search} onChange={e => setSearch(e.target.value)} />
+          </div>
+          <div className={styles.dropdownList}>
+            <label className={styles.dropdownItem}>
+              <input type='checkbox' checked={allChecked} onChange={toggleAll} />
+              (전체 선택)
+            </label>
+            {filtered.map(val => (
+              <label key={val} className={styles.dropdownItem}>
+                <input type='checkbox' checked={pending.has(val)} onChange={() => toggle(val)} />
+                {val === '' ? '(빈 값)' : val}
+              </label>
+            ))}
+          </div>
+          <div className={styles.dropdownFooter}>
+            <button className={styles.btnApply} onClick={apply}>
+              적용
+            </button>
+            <button onClick={reset}>초기화</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── 메인 테이블 컴포넌트 ──────────────────────────────────────────
 export default function ProjectTable({ data }: ProjectTableProps) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<{ id: string; value: string[] }[]>([]);
+  const [columnSizing, setColumnSizing] = useState<Record<string, number>>({});
+  const tableRef = useRef<HTMLTableElement>(null);
+
   const hasAllProjectNo = data.every(item => item.projectNo);
   const hasAllModel = data.every(item => item.model);
   const showProjectNoAndModel = hasAllProjectNo && hasAllModel;
 
-  const columnDefs = useMemo<ColDef<CellInventoryDetail>[]>(() => {
-    const baseCols: ColDef<CellInventoryDetail>[] = [
+  const columns = useMemo<ColumnDef<CellInventoryDetail>[]>(() => {
+    const baseCols: ColumnDef<CellInventoryDetail>[] = [
       {
-        headerName: 'No.',
-        valueGetter: (params: ValueGetterParams<CellInventoryDetail>) =>
-          params.node?.rowIndex != null ? params.node.rowIndex + 1 : '',
-        width: 70,
-        filter: false,
+        id: 'no',
+        header: 'No.',
+        cell: ({ row }) => row.index + 1,
+        enableSorting: false,
+        enableColumnFilter: false,
+        size: 50,
+        minSize: 40,
       },
-      { headerName: 'Lot No.', field: 'lot', filter: 'agTextColumnFilter' },
-      { headerName: '프로젝트명', field: 'projectName', filter: 'agTextColumnFilter' },
+      { accessorKey: 'lot', header: 'Lot No.', filterFn: multiSelectFilter, size: 130 },
+      { accessorKey: 'projectName', header: '프로젝트명', filterFn: multiSelectFilter, size: 150 },
     ];
 
     if (showProjectNoAndModel) {
       baseCols.push(
-        { headerName: 'Project No.', field: 'projectNo', filter: 'agTextColumnFilter' },
-        { headerName: '모델', field: 'model', filter: 'agTextColumnFilter' }
+        { accessorKey: 'projectNo', header: 'Project No.', filterFn: multiSelectFilter, size: 130 },
+        { accessorKey: 'model', header: '모델', filterFn: multiSelectFilter, size: 100 },
       );
     }
 
     baseCols.push(
-      { headerName: '등급', field: 'grade', filter: 'agTextColumnFilter' },
+      { accessorKey: 'grade', header: '등급', filterFn: multiSelectFilter, size: 80 },
       {
-        headerName: 'NCR 등급',
-        field: 'ncrGrade',
-        filter: 'agTextColumnFilter',
-        valueFormatter: (params: ValueFormatterParams) => params.value || '-'
+        accessorKey: 'ncrGrade',
+        header: 'NCR 등급',
+        cell: ({ getValue }) => getValue<string>() || '-',
+        filterFn: multiSelectFilter,
+        size: 90,
       },
-      { headerName: '보관 일자', field: 'date', filter: 'agTextColumnFilter' },
-      { headerName: '보관 위치', field: 'storageLocation', filter: 'agTextColumnFilter' },
+      { accessorKey: 'date', header: '보관 일자', filterFn: multiSelectFilter, size: 110 },
+      { accessorKey: 'storageLocation', header: '보관 위치', filterFn: multiSelectFilter, size: 60 },
       {
-        headerName: '출고 일자',
-        field: 'shippingDate',
-        filter: 'agTextColumnFilter',
-        valueFormatter: (params: ValueFormatterParams) => params.value || '-'
-      },
-      {
-        headerName: '출고 현황',
-        field: 'shippingStatus',
-        filter: 'agTextColumnFilter',
-        valueFormatter: (params: ValueFormatterParams) => params.value || '-'
-      },
-      { headerName: '인계자', field: 'deliverer', filter: 'agTextColumnFilter' },
-      { headerName: '인수자', field: 'receiver', filter: 'agTextColumnFilter' },
-      {
-        headerName: '상세',
-        field: 'details',
-        filter: 'agTextColumnFilter',
-        valueFormatter: (params: ValueFormatterParams) => params.value || '-'
+        accessorKey: 'shippingDate',
+        header: '출고 일자',
+        cell: ({ getValue }) => getValue<string>() || '-',
+        filterFn: multiSelectFilter,
+        size: 110,
       },
       {
-        headerName: '상태',
-        field: 'isShipped',
-        filter: 'agTextColumnFilter',
-        valueGetter: (params: ValueGetterParams<CellInventoryDetail>) =>
-          params.data?.isShipped ? '출고' : ''
+        accessorKey: 'shippingStatus',
+        header: '출고 현황',
+        cell: ({ getValue }) => getValue<string>() || '-',
+        filterFn: multiSelectFilter,
+        size: 110,
+      },
+      { accessorKey: 'deliverer', header: '인계자', filterFn: multiSelectFilter, size: 90 },
+      { accessorKey: 'receiver', header: '인수자', filterFn: multiSelectFilter, size: 90 },
+      {
+        accessorKey: 'details',
+        header: '상세',
+        cell: ({ getValue }) => getValue<string>() || '-',
+        filterFn: multiSelectFilter,
+        size: 120,
       },
       {
-        headerName: '재입고',
-        field: 'isRestocked',
-        filter: 'agTextColumnFilter',
-        valueGetter: (params: ValueGetterParams<CellInventoryDetail>) =>
-          params.data?.isRestocked ? '재입고' : ''
-      }
+        accessorKey: 'isShipped',
+        header: '상태',
+        cell: ({ getValue }) => (getValue<boolean>() ? '출고' : ''),
+        filterFn: multiSelectFilter,
+        size: 70,
+      },
+      {
+        accessorKey: 'isRestocked',
+        header: '재입고',
+        cell: ({ getValue }) => (getValue<boolean>() ? '재입고' : ''),
+        filterFn: multiSelectFilter,
+        size: 80,
+      },
     );
 
     return baseCols;
   }, [showProjectNoAndModel]);
 
-  const defaultColDef = useMemo<ColDef>(() => ({
-    sortable: true,
-    resizable: true,
-    floatingFilter: true,
-    flex: 1,
-    minWidth: 100,
-  }), []);
+  const table = useReactTable({
+    data,
+    columns,
+    state: { sorting, columnFilters, columnSizing },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: updater => {
+      setColumnFilters(
+        prev => (typeof updater === 'function' ? updater(prev) : updater) as { id: string; value: string[] }[],
+      );
+    },
+    onColumnSizingChange: setColumnSizing,
+    columnResizeMode: 'onChange',
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
 
-  const getRowStyle = (params: { data?: CellInventoryDetail }) => {
-    if (params.data?.isShipped) {
-      return { backgroundColor: '#fff9e6' };
+  // 더블클릭: 해당 컬럼의 모든 셀 내용 중 가장 긴 것에 맞춰 너비 자동 조정
+  const autoSizeColumn = useCallback((columnId: string) => {
+    if (!tableRef.current) return;
+    const cells = tableRef.current.querySelectorAll<HTMLElement>(`[data-col="${columnId}"]`);
+    let maxWidth = 0;
+    cells.forEach(cell => {
+      // 임시로 overflow visible로 실제 scrollWidth 측정
+      const prev = cell.style.overflow;
+      cell.style.overflow = 'visible';
+      maxWidth = Math.max(maxWidth, cell.scrollWidth);
+      cell.style.overflow = prev;
+    });
+    if (maxWidth > 0) {
+      setColumnSizing(prev => ({ ...prev, [columnId]: maxWidth + 16 }));
     }
-    return undefined;
+  }, []);
+
+  const headerLabelMap: Record<string, string> = {
+    no: 'No.',
+    lot: 'Lot No.',
+    projectName: '프로젝트명',
+    projectNo: 'Project No.',
+    model: '모델',
+    grade: '등급',
+    ncrGrade: 'NCR 등급',
+    date: '보관 일자',
+    storageLocation: '보관 위치',
+    shippingDate: '출고 일자',
+    shippingStatus: '출고 현황',
+    deliverer: '인계자',
+    receiver: '인수자',
+    details: '상세',
+    isShipped: '상태',
+    isRestocked: '재입고',
   };
 
   if (data.length === 0) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>
-        데이터가 없습니다.
-      </div>
-    );
+    return <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>데이터가 없습니다.</div>;
   }
 
   return (
-    <div style={{ width: '100%', height: '600px' }}>
-      <AgGridReact<CellInventoryDetail>
-        theme={themeQuartz}
-        rowData={data}
-        columnDefs={columnDefs}
-        defaultColDef={defaultColDef}
-        getRowStyle={getRowStyle}
-        pagination={true}
-        paginationPageSize={50}
-        paginationPageSizeSelector={[20, 50, 100]}
-      />
+    <div className={styles.tableSection}>
+      <table ref={tableRef} className={styles.dataTable} style={{ width: '100%' }}>
+        <thead>
+          {table.getHeaderGroups().map(headerGroup => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map(header => (
+                <th
+                  key={header.id}
+                  data-col={header.column.id}
+                  style={{ position: 'relative', ...(columnSizing[header.column.id] ? { width: columnSizing[header.column.id] } : {}) }}
+                >
+                  {header.column.getCanFilter() ? (
+                    <ColumnFilterDropdown
+                      column={header.column}
+                      allData={data}
+                      label={headerLabelMap[header.column.id] ?? header.column.id}
+                    />
+                  ) : (
+                    <div className={styles.thInner}>
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                    </div>
+                  )}
+
+                  {/* 리사이즈 핸들 */}
+                  <div
+                    className={styles.resizeHandle}
+                    onMouseDown={header.getResizeHandler()}
+                    onTouchStart={header.getResizeHandler()}
+                    onDoubleClick={() => autoSizeColumn(header.column.id)}
+                    title='드래그: 너비 조정 / 더블클릭: 자동 맞춤'
+                  />
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map(row => (
+            <tr key={row.id} style={row.original.isShipped ? { backgroundColor: '#fff9e6' } : undefined}>
+              {row.getVisibleCells().map(cell => (
+                <td key={cell.id} data-col={cell.column.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
