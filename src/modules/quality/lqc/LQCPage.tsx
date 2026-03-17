@@ -4,16 +4,16 @@ import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/quality/lqc/LQCPage.module.css';
 import { getLQCProject } from '../../../api/quality/LQCService';
 import { createCategoryMenus, createProcessMenus } from './processConfig';
-import MixingCathodeTable from './components/MixingCathodeTable';
-import MixingAnodeTable from './components/MixingAnodeTable';
-import CoatingDashboard from './components/CoatingDashboard';
-import PressDashboard from './components/PressDashboard';
-import VDDashboard from './components/VDDashboard';
-import CoatingAnodeDashboard from './components/CoatingAnodeDashboard';
-import PressAnodeDashboard from './components/PressAnodeDashboard';
-import VDAnodeDashboard from './components/VDAnodeDashboard';
-import SealingTopTable from './components/SealingTopTable';
-import FinalSealingTable from './components/FinalSealingTable';
+import MixingCathodeTable from './components/mixing/MixingCathodeTable';
+import MixingAnodeTable from './components/mixing/MixingAnodeTable';
+import CoatingDashboard from './components/coating/CoatingDashboard';
+import PressDashboard from './components/press/PressDashboard';
+import VDDashboard from './components/vd/VDDashboard';
+import CoatingAnodeDashboard from './components/coating/CoatingAnodeDashboard';
+import PressAnodeDashboard from './components/press/PressAnodeDashboard';
+import VDAnodeDashboard from './components/vd/VDAnodeDashboard';
+import SealingTopTable from './components/assembly/SealingTopTable';
+import FinalSealingTable from './components/assembly/FinalSealingTable';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCPage() {
