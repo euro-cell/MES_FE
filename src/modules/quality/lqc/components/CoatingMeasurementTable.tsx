@@ -139,15 +139,17 @@ export default function CoatingMeasurementTable({ projectId, onNChange, onDataCh
           <thead>
             <tr>
               <th>군번호</th>
-              {Array.from({ length: 8 }, (_, i) => <th key={i}>X{i + 1}</th>)}
-              <th>USL</th>
+              {Array.from({ length: 8 }, (_, i) => (
+                <th key={i} className={i === 0 ? styles.groupBorder : undefined}>X{i + 1}</th>
+              ))}
+              <th className={styles.groupBorder}>USL</th>
               <th>LSL</th>
-              <th>Xbar</th>
+              <th className={styles.groupBorder}>Xbar</th>
               <th>R</th>
-              <th>CL (Xbar)</th>
+              <th className={styles.groupBorder}>CL (Xbar)</th>
               <th>UCL (Xbar)</th>
               <th>LCL (Xbar)</th>
-              <th>CL (R)</th>
+              <th className={styles.groupBorder}>CL (R)</th>
               <th>UCL (R)</th>
               <th>LCL (R)</th>
             </tr>
@@ -158,16 +160,16 @@ export default function CoatingMeasurementTable({ projectId, onNChange, onDataCh
                 <tr key={row.rowIndex}>
                   <td>{row.rowIndex}</td>
                   {Array.from({ length: 8 }, (_, i) => (
-                    <td key={i}>{fmt(row.measurements[i] ?? null, 2)}</td>
+                    <td key={i} className={i === 0 ? styles.groupBorder : undefined}>{fmt(row.measurements[i] ?? null, 2)}</td>
                   ))}
-                  <td>{fmt(row.usl, 2)}</td>
+                  <td className={styles.groupBorder}>{fmt(row.usl, 2)}</td>
                   <td>{fmt(row.lsl, 2)}</td>
-                  <td>{fmt(row.xbar, 4)}</td>
+                  <td className={styles.groupBorder}>{fmt(row.xbar, 4)}</td>
                   <td>{fmt(row.r, 4)}</td>
-                  <td>{fmt(row.xbar_cl, 4)}</td>
+                  <td className={styles.groupBorder}>{fmt(row.xbar_cl, 4)}</td>
                   <td>{fmt(row.xbar_ucl, 4)}</td>
                   <td>{fmt(row.xbar_lcl, 4)}</td>
-                  <td>{fmt(row.r_cl, 4)}</td>
+                  <td className={styles.groupBorder}>{fmt(row.r_cl, 4)}</td>
                   <td>{fmt(row.r_ucl, 4)}</td>
                   <td>{fmt(row.r_lcl, 4)}</td>
                 </tr>
