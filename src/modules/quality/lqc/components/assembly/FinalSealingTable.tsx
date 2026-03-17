@@ -90,8 +90,8 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
   useEffect(() => {
     const loadSpecs = async () => {
       try {
-        const specsData = await getLQCSpecs(projectId, 'AssemblyFinalSealing', 'finalSealing');
-        const spec = specsData.find(s => s.itemType === 'finalSealing');
+        const specsData = await getLQCSpecs(projectId, 'ASSEMBLY_FINAL_SEALING', 'FINAL_SEALING');
+        const spec = specsData.find(s => s.itemType === 'FINAL_SEALING');
         if (spec) setSpecs(spec.specs);
       } catch (error) {
         console.error('Failed to load specs:', error);
@@ -107,7 +107,7 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
 
   const handleSaveSpec = async (newSpecs: Record<string, SpecValue>) => {
     try {
-      await saveLQCSpec(projectId, 'AssemblyFinalSealing', 'finalSealing', newSpecs);
+      await saveLQCSpec(projectId, 'ASSEMBLY_FINAL_SEALING', 'FINAL_SEALING', newSpecs);
       setSpecs(newSpecs);
       setIsSpecModalOpen(false);
     } catch (error) {

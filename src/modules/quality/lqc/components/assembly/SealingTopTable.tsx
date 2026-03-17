@@ -100,8 +100,8 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
   useEffect(() => {
     const loadSpecs = async () => {
       try {
-        const specsData = await getLQCSpecs(projectId, 'AssemblySealing', 'top');
-        const spec = specsData.find(s => s.itemType === 'top');
+        const specsData = await getLQCSpecs(projectId, 'ASSEMBLY_SEALING', 'SEALING');
+        const spec = specsData.find(s => s.itemType === 'SEALING');
         if (spec) setSpecs(spec.specs);
       } catch (error) {
         console.error('Failed to load specs:', error);
@@ -117,7 +117,7 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
 
   const handleSaveSpec = async (newSpecs: Record<string, SpecValue>) => {
     try {
-      await saveLQCSpec(projectId, 'AssemblySealing', 'top', newSpecs);
+      await saveLQCSpec(projectId, 'ASSEMBLY_SEALING', 'SEALING', newSpecs);
       setSpecs(newSpecs);
       setIsSpecModalOpen(false);
     } catch (error) {
