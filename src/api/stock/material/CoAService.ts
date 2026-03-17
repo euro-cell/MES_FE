@@ -38,6 +38,19 @@ export const deleteCoA = async (id: number): Promise<void> => {
   });
 };
 
+export const viewCoA = async (id: number, fileName: string): Promise<void> => {
+  const response = await axios.get(`${API_BASE}/material/coa/${id}/download`, {
+    responseType: 'blob',
+    withCredentials: true,
+  });
+
+  const mimeType = fileName.endsWith('.pdf') ? 'application/pdf' : response.data.type;
+  const blob = new Blob([response.data], { type: mimeType });
+  const url = window.URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+};
+
 export const downloadCoA = async (id: number, fileName: string): Promise<void> => {
   const response = await axios.get(`${API_BASE}/material/coa/${id}/download`, {
     responseType: 'blob',

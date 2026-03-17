@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { getCoAList, uploadCoA, deleteCoA, downloadCoA } from '../../../../api/stock/material/CoAService';
+import { getCoAList, uploadCoA, deleteCoA, downloadCoA, viewCoA } from '../../../../api/stock/material/CoAService';
 import type { MaterialCoa } from '../../../../api/stock/material/CoAService';
 import styles from '../../../../styles/stock/material/coaModal.module.css';
 
@@ -63,6 +63,15 @@ export default function CoAModal({ show, materialId, materialName, lotNo, proces
     }
   };
 
+  const handleView = async (id: number, fileName: string) => {
+    try {
+      await viewCoA(id, fileName);
+    } catch (err) {
+      console.error('CoA 열기 실패:', err);
+      alert('파일 열기에 실패했습니다.');
+    }
+  };
+
   const handleDownload = async (id: number, fileName: string) => {
     try {
       await downloadCoA(id, fileName);
@@ -122,7 +131,7 @@ export default function CoAModal({ show, materialId, materialName, lotNo, proces
               <tbody>
                 {coaList.map(coa => (
                   <tr key={coa.id}>
-                    <td className={styles.fileNameCell}>{coa.fileName}</td>
+                    <td className={styles.fileNameCell} onClick={() => handleView(coa.id, coa.fileName)} style={{ cursor: 'pointer' }}>{coa.fileName}</td>
                     <td>{new Date(coa.createdAt).toLocaleDateString('ko-KR')}</td>
                     <td className={styles.actionCell}>
                       <button className={styles.downloadButton} onClick={() => handleDownload(coa.id, coa.fileName)}>
