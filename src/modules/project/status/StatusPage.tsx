@@ -289,7 +289,16 @@ export default function StatusPage() {
         {!monthlyData && (
           <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
             {!category && <p>공정 카테고리를 선택하세요.</p>}
-            {category && !monthParam && <p>월을 선택하세요.</p>}
+            {category && monthMenus.length === 0 && (
+              <div className={styles.noPlanBanner}>
+                <span className={styles.noPlanIcon}>⚠️</span>
+                <div className={styles.noPlanContent}>
+                  <p className={styles.noPlanTitle}>생산 계획이 등록되어 있지 않습니다.</p>
+                  <p className={styles.noPlanDesc}>해당 프로젝트에 생산 계획을 먼저 등록해 주세요.</p>
+                </div>
+              </div>
+            )}
+            {category && monthMenus.length > 0 && !monthParam && <p>월을 선택하세요.</p>}
             {category === 'Electrode' && monthParam && !electrodeType && <p>양극/음극을 선택하세요.</p>}
           </div>
         )}
