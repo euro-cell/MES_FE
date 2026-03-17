@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,6 +20,8 @@ interface RChartProps {
 }
 
 export default function RChart({ data }: RChartProps) {
+  const [expanded, setExpanded] = useState(false);
+
   const valid = data.filter(row => row.measurements.some(v => v !== null));
 
   if (valid.length === 0) return null;
@@ -38,7 +41,7 @@ export default function RChart({ data }: RChartProps) {
         borderColor: '#993300',
         backgroundColor: '#993300',
         borderWidth: 1,
-        pointStyle: 'rectRot' as const, // 다이아몬드
+        pointStyle: 'rectRot' as const,
         pointRadius: 5,
         pointHoverRadius: 7,
         tension: 0,
@@ -69,7 +72,7 @@ export default function RChart({ data }: RChartProps) {
         borderColor: '#FF0000',
         backgroundColor: '#FF0000',
         borderWidth: 2,
-        pointStyle: 'rect' as const, // 사각형
+        pointStyle: 'rect' as const,
         pointRadius: 4,
         pointHoverRadius: 6,
         tension: 0,
@@ -77,7 +80,7 @@ export default function RChart({ data }: RChartProps) {
     ],
   };
 
-  const options = {
+  const makeOptions = (fontSize: number) => ({
     responsive: true,
     maintainAspectRatio: false,
     layout: { padding: { left: 20, right: 20 } },
@@ -89,7 +92,7 @@ export default function RChart({ data }: RChartProps) {
       title: {
         display: true,
         text: 'R Chart',
-        font: { size: 14 },
+        font: { size: fontSize },
       },
       tooltip: {
         callbacks: {
@@ -115,13 +118,79 @@ export default function RChart({ data }: RChartProps) {
         title: { display: true, text: 'R' },
       },
     },
-  };
+  });
 
   return (
-    <div className={styles.tableSection}>
-      <div style={{ height: 270 }}>
-        <Line data={chartData} options={options as Parameters<typeof Line>[0]['options']} />
+    <>
+      <div className={styles.tableSection}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 6 }}>
+          <button
+            onClick={() => setExpanded(true)}
+            style={{
+              padding: '4px 12px',
+              fontSize: 12,
+              border: '1px solid #cbd5e1',
+              borderRadius: 6,
+              background: '#f1f5f9',
+              color: '#334155',
+              cursor: 'pointer',
+            }}
+          >
+            ⛶ 확대
+          </button>
+        </div>
+        <div style={{ height: 270 }}>
+          <Line data={chartData} options={makeOptions(14) as Parameters<typeof Line>[0]['options']} />
+        </div>
       </div>
-    </div>
+
+      {/* 확대 모달 */}
+      {expanded && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onClick={() => setExpanded(false)}
+        >
+          <div
+            style={{
+              background: '#fff',
+              borderRadius: 12,
+              padding: 24,
+              width: '85vw',
+              maxWidth: 1100,
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <span style={{ fontWeight: 600, fontSize: 15 }}>R Chart</span>
+              <button
+                onClick={() => setExpanded(false)}
+                style={{
+                  padding: '4px 12px',
+                  fontSize: 13,
+                  border: '1px solid #cbd5e1',
+                  borderRadius: 6,
+                  background: '#f1f5f9',
+                  color: '#334155',
+                  cursor: 'pointer',
+                }}
+              >
+                ✕ 닫기
+              </button>
+            </div>
+            <div style={{ height: '60vh' }}>
+              <Line data={chartData} options={makeOptions(16) as Parameters<typeof Line>[0]['options']} />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
