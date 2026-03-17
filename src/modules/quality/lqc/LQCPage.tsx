@@ -12,7 +12,8 @@ import VDDashboard from './components/VDDashboard';
 import CoatingAnodeDashboard from './components/CoatingAnodeDashboard';
 import PressAnodeDashboard from './components/PressAnodeDashboard';
 import VDAnodeDashboard from './components/VDAnodeDashboard';
-import AssemblyJRTable from './components/AssemblyJRTable';
+import SealingTopTable from './components/SealingTopTable';
+import FinalSealingTable from './components/FinalSealingTable';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCPage() {
@@ -63,8 +64,8 @@ export default function LQCPage() {
       {/* 공정 카테고리 탭 메뉴 */}
       <SubmenuBar menus={categoryMenus} />
 
-      {/* 세부 공정 탭 메뉴 (조립공정은 서브메뉴 없음) */}
-      {category && category !== 'Assembly' && processMenus.length > 0 && (
+      {/* 세부 공정 탭 메뉴 */}
+      {category && processMenus.length > 0 && (
         <div style={{ marginTop: '10px' }}>
           <SubmenuBar menus={processMenus} />
         </div>
@@ -74,8 +75,6 @@ export default function LQCPage() {
       <div className={styles.content}>
         {!category ? (
           <div className={styles.placeholder}>공정을 선택하세요.</div>
-        ) : category === 'Assembly' ? (
-          <AssemblyJRTable projectId={Number(projectId)} />
         ) : !process ? (
           <div className={styles.placeholder}>세부 공정을 선택하세요.</div>
         ) : process === 'MixingCathode' ? (
@@ -94,6 +93,10 @@ export default function LQCPage() {
           <PressAnodeDashboard projectId={Number(projectId)} />
         ) : process === 'VDAnode' ? (
           <VDAnodeDashboard projectId={Number(projectId)} />
+        ) : process === 'Sealing' ? (
+          <SealingTopTable projectId={Number(projectId)} />
+        ) : process === 'FinalSealing' ? (
+          <FinalSealingTable projectId={Number(projectId)} />
         ) : (
           <div className={styles.placeholder}>{process} LQC 내용</div>
         )}

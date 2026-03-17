@@ -22,7 +22,10 @@ export const PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
     { id: 'PressAnode', category: 'Electrode', title: 'Press(Anode)', electrode: 'A' },
     { id: 'VDAnode', category: 'Electrode', title: 'VD(Anode)', electrode: 'A' },
   ],
-  Assembly: [], // 조립공정은 서브메뉴 없이 바로 J/R 테이블 표시
+  Assembly: [
+    { id: 'Sealing', category: 'Assembly', title: 'Sealing' },
+    { id: 'FinalSealing', category: 'Assembly', title: 'Final Sealing' },
+  ],
   Formation: [],
 };
 
