@@ -6,7 +6,7 @@ import { getLQCProject } from '../../../api/quality/LQCService';
 import { createCategoryMenus, createProcessMenus } from './processConfig';
 import MixingCathodeTable from './components/MixingCathodeTable';
 import MixingAnodeTable from './components/MixingAnodeTable';
-import CoatingCathodeTable from './components/CoatingCathodeTable';
+import CoatingDashboard from './components/CoatingDashboard';
 import CoatingAnodeTable from './components/CoatingAnodeTable';
 import PressCathodeTable from './components/PressCathodeTable';
 import PressAnodeTable from './components/PressAnodeTable';
@@ -81,7 +81,7 @@ export default function LQCPage() {
         ) : process === 'MixingCathode' ? (
           <MixingCathodeTable projectId={Number(projectId)} />
         ) : process === 'CoatingCathode' ? (
-          <CoatingCathodeTable projectId={Number(projectId)} />
+          <CoatingDashboard projectId={Number(projectId)} />
         ) : process === 'PressCathode' ? (
           <PressCathodeTable projectId={Number(projectId)} />
         ) : process === 'VDCathode' ? (
