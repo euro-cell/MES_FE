@@ -3,10 +3,10 @@
 ======================== */
 .sidebar {
   width: fit-content;
-  min-width: 180px;
+  min-width: 120px;
   background: #1b263b;
   color: white;
-  padding: 20px 16px;
+  padding: 20px 4px;
   display: flex;
   flex-direction: column;
   white-space: nowrap;
@@ -30,10 +30,12 @@
 
 /* 상위 메뉴 */
 .menuTitle {
-  padding: 10px 12px;
+  padding: 10px 6px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
   font-weight: 600;
   color: #f8fafc;
 }
