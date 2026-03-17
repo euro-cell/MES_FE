@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { getLQCPressData, type PressData } from '../../../../api/quality/LQCService';
+import { getLQCCoatingData, type CoatingData } from '../../../../api/quality/LQCService';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
 
-export interface PressMeasurementRow {
+export interface CoatingAnodeMeasurementRow {
   rowIndex: number;
   measurements: (number | null)[];
   usl: number;
@@ -17,12 +17,12 @@ export interface PressMeasurementRow {
   r_lcl: number;
 }
 
-interface PressMeasurementTableProps {
+interface CoatingAnodeMeasurementTableProps {
   projectId: number;
   usl?: number | null;
   lsl?: number | null;
   onNChange?: (n: number) => void;
-  onDataChange?: (rows: PressMeasurementRow[]) => void;
+  onDataChange?: (rows: CoatingAnodeMeasurementRow[]) => void;
 }
 
 const CONTROL_CHART_CONSTANTS: Record<number, { A2: number; D4: number; D3: number }> = {
@@ -38,11 +38,11 @@ const CONTROL_CHART_CONSTANTS: Record<number, { A2: number; D4: number; D3: numb
 
 const normalizeMeasurements = (raw: (number | null)[]): (number | null)[] => {
   const padded = [...raw];
-  while (padded.length < 4) padded.push(null);
-  return padded.slice(0, 4);
+  while (padded.length < 8) padded.push(null);
+  return padded.slice(0, 8);
 };
 
-const calculateN = (rows: PressMeasurementRow[]): number => {
+const calculateN = (rows: CoatingAnodeMeasurementRow[]): number => {
   const firstValid = rows.find(row => row.measurements.some(v => v !== null));
   if (!firstValid) return 0;
   return firstValid.measurements.filter(v => v !== null).length;
@@ -53,16 +53,16 @@ const fmt = (value: number | null | undefined, decimals: number): string => {
   return (value as number).toFixed(decimals);
 };
 
-function toPressMeasurementRows(data: PressData[], usl: number, lsl: number): PressMeasurementRow[] {
+function toCoatingAnodeMeasurementRows(data: CoatingData[], usl: number, lsl: number): CoatingAnodeMeasurementRow[] {
   const validData = data.filter(d => {
-    const raw = [d.thicknessTop, d.thicknessMiddle, d.thicknessBottom];
+    const raw = [d.doubleSideTop, d.doubleSideMiddle, d.doubleSideBottom];
     return raw.some(v => v !== null && v !== undefined);
   });
 
   if (validData.length === 0) return [];
 
   const rowBases = validData.map(d => {
-    const raw: (number | null)[] = [d.thicknessTop, d.thicknessMiddle, d.thicknessBottom];
+    const raw: (number | null)[] = [d.doubleSideTop, d.doubleSideMiddle, d.doubleSideBottom];
     const valid = raw.filter((v): v is number => v !== null && v !== undefined);
     const xbar = valid.reduce((a, b) => a + b, 0) / valid.length;
     const r = Math.max(...valid) - Math.min(...valid);
@@ -97,8 +97,8 @@ function toPressMeasurementRows(data: PressData[], usl: number, lsl: number): Pr
   }));
 }
 
-export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, onDataChange }: PressMeasurementTableProps) {
-  const [rows, setRows] = useState<PressMeasurementRow[]>([]);
+export default function CoatingAnodeMeasurementTable({ projectId, usl, lsl, onNChange, onDataChange }: CoatingAnodeMeasurementTableProps) {
+  const [rows, setRows] = useState<CoatingAnodeMeasurementRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -106,8 +106,8 @@ export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, 
     const load = async () => {
       try {
         setLoading(true);
-        const data = await getLQCPressData(projectId, 'C');
-        const converted = toPressMeasurementRows(data, usl ?? 94, lsl ?? 88);
+        const data = await getLQCCoatingData(projectId, 'A');
+        const converted = toCoatingAnodeMeasurementRows(data, usl ?? 25.93, lsl ?? 24.93);
         setRows(converted);
         onDataChange?.(converted);
       } catch (err) {
@@ -130,13 +130,13 @@ export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, 
 
   return (
     <div className={styles.tableSection}>
-      <h3 className={styles.tableTitle}>전극 두께 Xbar-R 관리도 (SPC)</h3>
+      <h3 className={styles.tableTitle}>양면 면적밀도 Xbar-R 관리도 (SPC)</h3>
       <div className={styles.tableWrapper}>
         <table className={styles.lqcTable}>
           <thead>
             <tr>
               <th>군번호</th>
-              {Array.from({ length: 4 }, (_, i) => (
+              {Array.from({ length: 8 }, (_, i) => (
                 <th key={i} className={i === 0 ? styles.groupBorder : undefined}>X{i + 1}</th>
               ))}
               <th className={styles.groupBorder}>USL</th>
@@ -156,10 +156,8 @@ export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, 
               rows.map(row => (
                 <tr key={row.rowIndex}>
                   <td>{row.rowIndex}</td>
-                  {Array.from({ length: 4 }, (_, i) => (
-                    <td key={i} className={i === 0 ? styles.groupBorder : undefined}>
-                      {fmt(row.measurements[i] ?? null, 2)}
-                    </td>
+                  {Array.from({ length: 8 }, (_, i) => (
+                    <td key={i} className={i === 0 ? styles.groupBorder : undefined}>{fmt(row.measurements[i] ?? null, 2)}</td>
                   ))}
                   <td className={styles.groupBorder}>{fmt(row.usl, 2)}</td>
                   <td>{fmt(row.lsl, 2)}</td>
@@ -175,7 +173,7 @@ export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, 
               ))
             ) : (
               <tr>
-                <td colSpan={16} className={styles.noDataRow}>데이터 없음</td>
+                <td colSpan={20} className={styles.noDataRow}>데이터 없음</td>
               </tr>
             )}
           </tbody>

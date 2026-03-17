@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
-import CoatingCathodeTable from './CoatingCathodeTable';
-import CoatingMeasurementTable, { type MeasurementRow } from './CoatingMeasurementTable';
-import XbarChart from './XbarChart';
-import RChart from './RChart';
+import CoatingAnodeTable from './CoatingAnodeTable';
+import CoatingAnodeMeasurementTable, { type CoatingAnodeMeasurementRow } from './CoatingAnodeMeasurementTable';
+import CoatingAnodeXbarChart from './CoatingAnodeXbarChart';
+import CoatingAnodeRChart from './CoatingAnodeRChart';
 import ControlChartConstantsTable from './ControlChartConstantsTable';
 import { getLQCSpecs } from '../../../../api/quality/LQCService';
 
-interface CoatingDashboardProps {
+interface CoatingAnodeDashboardProps {
   projectId: number;
 }
 
-export default function CoatingDashboard({ projectId }: CoatingDashboardProps) {
+export default function CoatingAnodeDashboard({ projectId }: CoatingAnodeDashboardProps) {
   const [currentN, setCurrentN] = useState<number>(0);
-  const [measurementData, setMeasurementData] = useState<MeasurementRow[]>([]);
+  const [measurementData, setMeasurementData] = useState<CoatingAnodeMeasurementRow[]>([]);
   const [usl, setUsl] = useState<number | null>(null);
   const [lsl, setLsl] = useState<number | null>(null);
 
   useEffect(() => {
     const loadSpecs = async () => {
       try {
-        const specs = await getLQCSpecs(projectId, 'COATING_CATHODE');
+        const specs = await getLQCSpecs(projectId, 'COATING_ANODE');
         const coatingSpec = specs.find(s => s.itemType === 'COATING');
         const ds = coatingSpec?.specs?.doubleSideDensity;
         if (ds?.target !== undefined && ds?.tolerance !== undefined) {
@@ -36,16 +36,16 @@ export default function CoatingDashboard({ projectId }: CoatingDashboardProps) {
 
   return (
     <div className={styles.tableContainer}>
-      <CoatingCathodeTable projectId={projectId} />
-      <CoatingMeasurementTable
+      <CoatingAnodeTable projectId={projectId} />
+      <CoatingAnodeMeasurementTable
         projectId={projectId}
         usl={usl}
         lsl={lsl}
         onNChange={setCurrentN}
         onDataChange={setMeasurementData}
       />
-      <XbarChart data={measurementData} />
-      <RChart data={measurementData} />
+      <CoatingAnodeXbarChart data={measurementData} />
+      <CoatingAnodeRChart data={measurementData} />
       <ControlChartConstantsTable currentN={currentN} />
     </div>
   );

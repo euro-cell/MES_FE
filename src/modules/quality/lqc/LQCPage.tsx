@@ -9,11 +9,9 @@ import MixingAnodeTable from './components/MixingAnodeTable';
 import CoatingDashboard from './components/CoatingDashboard';
 import PressDashboard from './components/PressDashboard';
 import VDDashboard from './components/VDDashboard';
-import CoatingAnodeTable from './components/CoatingAnodeTable';
-
-import PressAnodeTable from './components/PressAnodeTable';
-
-import VDAnodeTable from './components/VDAnodeTable';
+import CoatingAnodeDashboard from './components/CoatingAnodeDashboard';
+import PressAnodeDashboard from './components/PressAnodeDashboard';
+import VDAnodeDashboard from './components/VDAnodeDashboard';
 import AssemblyJRTable from './components/AssemblyJRTable';
 import type { LQCProject } from './LQCTypes';
 
@@ -91,11 +89,11 @@ export default function LQCPage() {
         ) : process === 'MixingAnode' ? (
           <MixingAnodeTable projectId={Number(projectId)} />
         ) : process === 'CoatingAnode' ? (
-          <CoatingAnodeTable projectId={Number(projectId)} />
+          <CoatingAnodeDashboard projectId={Number(projectId)} />
         ) : process === 'PressAnode' ? (
-          <PressAnodeTable projectId={Number(projectId)} />
+          <PressAnodeDashboard projectId={Number(projectId)} />
         ) : process === 'VDAnode' ? (
-          <VDAnodeTable projectId={Number(projectId)} />
+          <VDAnodeDashboard projectId={Number(projectId)} />
         ) : (
           <div className={styles.placeholder}>{process} LQC 내용</div>
         )}

@@ -10,44 +10,43 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import type { PressMeasurementRow } from './PressMeasurementTable';
+import type { VDAnodeMeasurementRow } from './VDAnodeMeasurementTable';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-interface PressXbarChartProps {
-  data: PressMeasurementRow[];
+interface VDAnodeXbarChartProps {
+  data: VDAnodeMeasurementRow[];
 }
 
-export default function PressXbarChart({ data }: PressXbarChartProps) {
+export default function VDAnodeXbarChart({ data }: VDAnodeXbarChartProps) {
   const [expanded, setExpanded] = useState(false);
 
   const valid = data.filter(row => row.measurements.some(v => v !== null));
   if (valid.length === 0) return null;
 
-  const labels = valid.map(row => String(row.rowIndex));
+  const maxIndex = Math.max(...valid.map(d => d.rowIndex));
+  const dataLabels = Array.from({ length: maxIndex }, (_, i) => String(i + 1));
+  const labels = ['', ...dataLabels, ''];
 
-  const allValues = valid.flatMap(d => [d.xbar, d.xbar_cl, d.xbar_ucl, d.xbar_lcl, d.usl, d.lsl]).filter((v): v is number => v !== null && !isNaN(v));
-  const dataMin = Math.min(...allValues);
-  const dataMax = Math.max(...allValues);
-  const lsl = valid[0]?.lsl ?? 88;
-  const usl = valid[0]?.usl ?? 94;
-  const range = Math.max(usl - lsl, dataMax - dataMin, 1);
-  const margin = range * 0.1;
-  const yMin = parseFloat((Math.min(lsl, dataMin) - margin).toFixed(1));
-  const yMax = parseFloat((Math.max(usl, dataMax) + margin).toFixed(1));
-  const step = 1.5;
-  const tickCount = Math.round((yMax - yMin) / step) + 1;
-  const yTicks = Array.from({ length: tickCount }, (_, i) =>
-    parseFloat((yMin + i * step).toFixed(1))
-  );
+  const byIndex = Object.fromEntries(valid.map(d => [d.rowIndex, d]));
+  const fillRef = (key: keyof typeof valid[0]): (number | null)[] =>
+    labels.map(() => {
+      const v = valid[0][key];
+      return typeof v === 'number' ? v : null;
+    });
+  const xbarData: (number | null)[] = [null, ...dataLabels.map((_, i) => { const r = byIndex[i + 1]; return r ? r.xbar : null; }), null];
+
+  const yMin = 0;
+  const yMax = 300;
+  const yTicks = [0, 100, 200, 300];
 
   const chartData = {
     labels,
     datasets: [
       {
         label: 'Xbar',
-        data: valid.map(d => d.xbar),
+        data: xbarData,
         borderColor: '#993300',
         backgroundColor: '#993300',
         borderWidth: 1,
@@ -55,10 +54,11 @@ export default function PressXbarChart({ data }: PressXbarChartProps) {
         pointRadius: 5,
         pointHoverRadius: 7,
         tension: 0,
+        spanGaps: false,
       },
       {
         label: 'CL',
-        data: valid.map(d => d.xbar_cl),
+        data: fillRef('xbar_cl'),
         borderColor: '#339966',
         backgroundColor: 'transparent',
         borderWidth: 2,
@@ -68,7 +68,7 @@ export default function PressXbarChart({ data }: PressXbarChartProps) {
       },
       {
         label: 'UCL',
-        data: valid.map(d => d.xbar_ucl),
+        data: fillRef('xbar_ucl'),
         borderColor: '#FF0000',
         backgroundColor: 'transparent',
         borderWidth: 2,
@@ -78,7 +78,7 @@ export default function PressXbarChart({ data }: PressXbarChartProps) {
       },
       {
         label: 'LCL',
-        data: valid.map(d => d.xbar_lcl),
+        data: fillRef('xbar_lcl'),
         borderColor: '#FF0000',
         backgroundColor: 'transparent',
         borderWidth: 2,
@@ -88,17 +88,7 @@ export default function PressXbarChart({ data }: PressXbarChartProps) {
       },
       {
         label: 'USL',
-        data: valid.map(d => d.usl),
-        borderColor: '#0000FF',
-        backgroundColor: 'transparent',
-        borderWidth: 3,
-        pointRadius: 0,
-        pointHoverRadius: 0,
-        tension: 0,
-      },
-      {
-        label: 'LSL',
-        data: valid.map(d => d.lsl),
+        data: fillRef('usl'),
         borderColor: '#0000FF',
         backgroundColor: 'transparent',
         borderWidth: 3,
@@ -117,7 +107,7 @@ export default function PressXbarChart({ data }: PressXbarChartProps) {
       legend: { position: 'top' as const, labels: { usePointStyle: true, pointStyle: 'line' } },
       title: {
         display: true,
-        text: 'Xbar Chart _ Cathode Press',
+        text: 'Xbar Chart _ Anode VD',
         font: { size: fontSize },
       },
       tooltip: {
@@ -136,12 +126,12 @@ export default function PressXbarChart({ data }: PressXbarChartProps) {
         min: yMin,
         max: yMax,
         ticks: {
-          callback: (value: number | string) => Number(value).toFixed(1),
+          callback: (value: number | string) => Number(value).toFixed(0),
         },
         afterBuildTicks: (axis: { ticks: { value: number }[] }) => {
           axis.ticks = yTicks.map(v => ({ value: v }));
         },
-        title: { display: true, text: '두께 (㎛)' },
+        title: { display: true, text: '수분함량 (ppm)' },
       },
     },
   });
@@ -194,7 +184,7 @@ export default function PressXbarChart({ data }: PressXbarChartProps) {
             onClick={e => e.stopPropagation()}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <span style={{ fontWeight: 600, fontSize: 15 }}>Xbar Chart _ Cathode Press</span>
+              <span style={{ fontWeight: 600, fontSize: 15 }}>Xbar Chart _ Anode VD</span>
               <button
                 onClick={() => setExpanded(false)}
                 style={{

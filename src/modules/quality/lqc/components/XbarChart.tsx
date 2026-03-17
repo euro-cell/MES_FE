@@ -28,11 +28,19 @@ export default function XbarChart({ data }: XbarChartProps) {
 
   const labels = valid.map(row => String(row.rowIndex));
 
-  const yMin = valid[0]?.lsl ?? 24.13;
-  const yMax = valid[0]?.usl ?? 25.13;
-  const tickCount = Math.round((yMax - yMin) / 0.25) + 1;
+  const allValues = valid.flatMap(d => [d.xbar, d.xbar_cl, d.xbar_ucl, d.xbar_lcl, d.usl, d.lsl]).filter((v): v is number => v !== null && !isNaN(v));
+  const dataMin = Math.min(...allValues);
+  const dataMax = Math.max(...allValues);
+  const lsl = valid[0]?.lsl ?? 24.13;
+  const usl = valid[0]?.usl ?? 25.13;
+  const range = Math.max(usl - lsl, dataMax - dataMin, 0.5);
+  const margin = range * 0.1;
+  const yMin = parseFloat((Math.min(lsl, dataMin) - margin).toFixed(2));
+  const yMax = parseFloat((Math.max(usl, dataMax) + margin).toFixed(2));
+  const step = 0.25;
+  const tickCount = Math.round((yMax - yMin) / step) + 1;
   const yTicks = Array.from({ length: tickCount }, (_, i) =>
-    parseFloat((yMin + i * 0.25).toFixed(2))
+    parseFloat((yMin + i * step).toFixed(2))
   );
 
   const chartData = {

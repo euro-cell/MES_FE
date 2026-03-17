@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getLQCPressData, type PressData } from '../../../../api/quality/LQCService';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
 
-export interface PressMeasurementRow {
+export interface PressAnodeMeasurementRow {
   rowIndex: number;
   measurements: (number | null)[];
   usl: number;
@@ -17,12 +17,12 @@ export interface PressMeasurementRow {
   r_lcl: number;
 }
 
-interface PressMeasurementTableProps {
+interface PressAnodeMeasurementTableProps {
   projectId: number;
   usl?: number | null;
   lsl?: number | null;
   onNChange?: (n: number) => void;
-  onDataChange?: (rows: PressMeasurementRow[]) => void;
+  onDataChange?: (rows: PressAnodeMeasurementRow[]) => void;
 }
 
 const CONTROL_CHART_CONSTANTS: Record<number, { A2: number; D4: number; D3: number }> = {
@@ -42,7 +42,7 @@ const normalizeMeasurements = (raw: (number | null)[]): (number | null)[] => {
   return padded.slice(0, 4);
 };
 
-const calculateN = (rows: PressMeasurementRow[]): number => {
+const calculateN = (rows: PressAnodeMeasurementRow[]): number => {
   const firstValid = rows.find(row => row.measurements.some(v => v !== null));
   if (!firstValid) return 0;
   return firstValid.measurements.filter(v => v !== null).length;
@@ -53,7 +53,7 @@ const fmt = (value: number | null | undefined, decimals: number): string => {
   return (value as number).toFixed(decimals);
 };
 
-function toPressMeasurementRows(data: PressData[], usl: number, lsl: number): PressMeasurementRow[] {
+function toPressAnodeMeasurementRows(data: PressData[], usl: number, lsl: number): PressAnodeMeasurementRow[] {
   const validData = data.filter(d => {
     const raw = [d.thicknessTop, d.thicknessMiddle, d.thicknessBottom];
     return raw.some(v => v !== null && v !== undefined);
@@ -97,8 +97,8 @@ function toPressMeasurementRows(data: PressData[], usl: number, lsl: number): Pr
   }));
 }
 
-export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, onDataChange }: PressMeasurementTableProps) {
-  const [rows, setRows] = useState<PressMeasurementRow[]>([]);
+export default function PressAnodeMeasurementTable({ projectId, usl, lsl, onNChange, onDataChange }: PressAnodeMeasurementTableProps) {
+  const [rows, setRows] = useState<PressAnodeMeasurementRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -106,8 +106,8 @@ export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, 
     const load = async () => {
       try {
         setLoading(true);
-        const data = await getLQCPressData(projectId, 'C');
-        const converted = toPressMeasurementRows(data, usl ?? 94, lsl ?? 88);
+        const data = await getLQCPressData(projectId, 'A');
+        const converted = toPressAnodeMeasurementRows(data, usl ?? 94, lsl ?? 88);
         setRows(converted);
         onDataChange?.(converted);
       } catch (err) {

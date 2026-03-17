@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { getLQCPressData, type PressData } from '../../../../api/quality/LQCService';
+import { getLQCVDData, type VDData } from '../../../../api/quality/LQCService';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
 
-export interface PressMeasurementRow {
+export interface VDAnodeMeasurementRow {
   rowIndex: number;
   measurements: (number | null)[];
   usl: number;
-  lsl: number;
+  lsl: null;
   xbar: number;
   r: number;
   xbar_cl: number;
@@ -17,12 +17,10 @@ export interface PressMeasurementRow {
   r_lcl: number;
 }
 
-interface PressMeasurementTableProps {
+interface VDAnodeMeasurementTableProps {
   projectId: number;
-  usl?: number | null;
-  lsl?: number | null;
   onNChange?: (n: number) => void;
-  onDataChange?: (rows: PressMeasurementRow[]) => void;
+  onDataChange?: (rows: VDAnodeMeasurementRow[]) => void;
 }
 
 const CONTROL_CHART_CONSTANTS: Record<number, { A2: number; D4: number; D3: number }> = {
@@ -35,6 +33,7 @@ const CONTROL_CHART_CONSTANTS: Record<number, { A2: number; D4: number; D3: numb
   8: { A2: 0.373, D4: 1.864, D3: 0.136 },
 };
 
+const USL = 300;
 
 const normalizeMeasurements = (raw: (number | null)[]): (number | null)[] => {
   const padded = [...raw];
@@ -42,7 +41,7 @@ const normalizeMeasurements = (raw: (number | null)[]): (number | null)[] => {
   return padded.slice(0, 4);
 };
 
-const calculateN = (rows: PressMeasurementRow[]): number => {
+const calculateN = (rows: VDAnodeMeasurementRow[]): number => {
   const firstValid = rows.find(row => row.measurements.some(v => v !== null));
   if (!firstValid) return 0;
   return firstValid.measurements.filter(v => v !== null).length;
@@ -53,16 +52,15 @@ const fmt = (value: number | null | undefined, decimals: number): string => {
   return (value as number).toFixed(decimals);
 };
 
-function toPressMeasurementRows(data: PressData[], usl: number, lsl: number): PressMeasurementRow[] {
-  const validData = data.filter(d => {
-    const raw = [d.thicknessTop, d.thicknessMiddle, d.thicknessBottom];
-    return raw.some(v => v !== null && v !== undefined);
-  });
+function toVDAnodeMeasurementRows(data: VDData[]): VDAnodeMeasurementRow[] {
+  const validData = data.filter(d =>
+    [d.moisture1, d.moisture2, d.moisture3].some(v => v !== null && v !== undefined)
+  );
 
   if (validData.length === 0) return [];
 
   const rowBases = validData.map(d => {
-    const raw: (number | null)[] = [d.thicknessTop, d.thicknessMiddle, d.thicknessBottom];
+    const raw: (number | null)[] = [d.moisture1, d.moisture2, d.moisture3];
     const valid = raw.filter((v): v is number => v !== null && v !== undefined);
     const xbar = valid.reduce((a, b) => a + b, 0) / valid.length;
     const r = Math.max(...valid) - Math.min(...valid);
@@ -84,8 +82,8 @@ function toPressMeasurementRows(data: PressData[], usl: number, lsl: number): Pr
   return rowBases.map((b, i) => ({
     rowIndex: i + 1,
     measurements: normalizeMeasurements(b.raw),
-    usl: usl,
-    lsl: lsl,
+    usl: USL,
+    lsl: null,
     xbar: b.xbar,
     r: b.r,
     xbar_cl,
@@ -97,8 +95,8 @@ function toPressMeasurementRows(data: PressData[], usl: number, lsl: number): Pr
   }));
 }
 
-export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, onDataChange }: PressMeasurementTableProps) {
-  const [rows, setRows] = useState<PressMeasurementRow[]>([]);
+export default function VDAnodeMeasurementTable({ projectId, onNChange, onDataChange }: VDAnodeMeasurementTableProps) {
+  const [rows, setRows] = useState<VDAnodeMeasurementRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -106,8 +104,8 @@ export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, 
     const load = async () => {
       try {
         setLoading(true);
-        const data = await getLQCPressData(projectId, 'C');
-        const converted = toPressMeasurementRows(data, usl ?? 94, lsl ?? 88);
+        const data = await getLQCVDData(projectId, 'A');
+        const converted = toVDAnodeMeasurementRows(data);
         setRows(converted);
         onDataChange?.(converted);
       } catch (err) {
@@ -117,7 +115,7 @@ export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, 
       }
     };
     load();
-  }, [projectId, usl, lsl]);
+  }, [projectId]);
 
   useEffect(() => {
     if (rows.length > 0) {
@@ -130,7 +128,7 @@ export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, 
 
   return (
     <div className={styles.tableSection}>
-      <h3 className={styles.tableTitle}>전극 두께 Xbar-R 관리도 (SPC)</h3>
+      <h3 className={styles.tableTitle}>전극 수분함량 Xbar-R 관리도 (SPC)</h3>
       <div className={styles.tableWrapper}>
         <table className={styles.lqcTable}>
           <thead>
@@ -162,7 +160,7 @@ export default function PressMeasurementTable({ projectId, usl, lsl, onNChange, 
                     </td>
                   ))}
                   <td className={styles.groupBorder}>{fmt(row.usl, 2)}</td>
-                  <td>{fmt(row.lsl, 2)}</td>
+                  <td>{''}</td>
                   <td className={styles.groupBorder}>{fmt(row.xbar, 4)}</td>
                   <td>{fmt(row.r, 4)}</td>
                   <td className={styles.groupBorder}>{fmt(row.xbar_cl, 4)}</td>

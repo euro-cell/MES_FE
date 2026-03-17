@@ -19,6 +19,8 @@ export interface MeasurementRow {
 
 interface CoatingMeasurementTableProps {
   projectId: number;
+  usl?: number | null;
+  lsl?: number | null;
   onNChange?: (n: number) => void;
   onDataChange?: (rows: MeasurementRow[]) => void;
 }
@@ -34,9 +36,6 @@ const CONTROL_CHART_CONSTANTS: Record<number, { A2: number; D4: number; D3: numb
    8: { A2: 0.373, D4: 1.864, D3: 0.136 },
 };
 
-// 기준값 (target=24.63, tolerance=±0.5)
-const USL = 25.13;
-const LSL = 24.13;
 
 const normalizeMeasurements = (raw: (number | null)[]): (number | null)[] => {
   const padded = [...raw];
@@ -55,7 +54,7 @@ const fmt = (value: number | null | undefined, decimals: number): string => {
   return (value as number).toFixed(decimals);
 };
 
-function toMeasurementRows(data: CoatingData[]): MeasurementRow[] {
+function toMeasurementRows(data: CoatingData[], usl: number, lsl: number): MeasurementRow[] {
   const validData = data.filter(d => {
     const raw = [d.doubleSideTop, d.doubleSideMiddle, d.doubleSideBottom];
     return raw.some(v => v !== null && v !== undefined);
@@ -87,8 +86,8 @@ function toMeasurementRows(data: CoatingData[]): MeasurementRow[] {
   return rowBases.map((b, i) => ({
     rowIndex: i + 1,
     measurements: normalizeMeasurements(b.raw),
-    usl: USL,
-    lsl: LSL,
+    usl: usl,
+    lsl: lsl,
     xbar: b.xbar,
     r: b.r,
     xbar_cl,
@@ -100,7 +99,7 @@ function toMeasurementRows(data: CoatingData[]): MeasurementRow[] {
   }));
 }
 
-export default function CoatingMeasurementTable({ projectId, onNChange, onDataChange }: CoatingMeasurementTableProps) {
+export default function CoatingMeasurementTable({ projectId, usl, lsl, onNChange, onDataChange }: CoatingMeasurementTableProps) {
   const [rows, setRows] = useState<MeasurementRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -110,7 +109,7 @@ export default function CoatingMeasurementTable({ projectId, onNChange, onDataCh
       try {
         setLoading(true);
         const data = await getLQCCoatingData(projectId, 'C');
-        const converted = toMeasurementRows(data);
+        const converted = toMeasurementRows(data, usl ?? 25.13, lsl ?? 24.13);
         setRows(converted);
         onDataChange?.(converted);
       } catch (err) {
@@ -120,7 +119,7 @@ export default function CoatingMeasurementTable({ projectId, onNChange, onDataCh
       }
     };
     load();
-  }, [projectId]);
+  }, [projectId, usl, lsl]);
 
   useEffect(() => {
     if (rows.length > 0) {

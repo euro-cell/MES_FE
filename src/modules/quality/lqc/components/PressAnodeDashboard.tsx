@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/lqc/LQCTable.module.css';
-import PressCathodeTable from './PressCathodeTable';
-import PressMeasurementTable, { type PressMeasurementRow } from './PressMeasurementTable';
-import PressXbarChart from './PressXbarChart';
-import PressRChart from './PressRChart';
+import PressAnodeTable from './PressAnodeTable';
+import PressAnodeMeasurementTable, { type PressAnodeMeasurementRow } from './PressAnodeMeasurementTable';
+import PressAnodeXbarChart from './PressAnodeXbarChart';
+import PressAnodeRChart from './PressAnodeRChart';
 import ControlChartConstantsTable from './ControlChartConstantsTable';
 import { getLQCSpecs } from '../../../../api/quality/LQCService';
 
-interface PressDashboardProps {
+interface PressAnodeDashboardProps {
   projectId: number;
 }
 
-export default function PressDashboard({ projectId }: PressDashboardProps) {
+export default function PressAnodeDashboard({ projectId }: PressAnodeDashboardProps) {
   const [currentN, setCurrentN] = useState<number>(0);
-  const [pressData, setPressData] = useState<PressMeasurementRow[]>([]);
+  const [pressData, setPressData] = useState<PressAnodeMeasurementRow[]>([]);
   const [usl, setUsl] = useState<number | null>(null);
   const [lsl, setLsl] = useState<number | null>(null);
 
   useEffect(() => {
     const loadSpecs = async () => {
       try {
-        const specs = await getLQCSpecs(projectId, 'PRESS_CATHODE');
+        const specs = await getLQCSpecs(projectId, 'PRESS_ANODE');
         const pressSpec = specs.find(s => s.itemType === 'PRESS');
         const th = pressSpec?.specs?.thickness;
         if (th?.target !== undefined && th?.tolerance !== undefined) {
@@ -36,16 +36,16 @@ export default function PressDashboard({ projectId }: PressDashboardProps) {
 
   return (
     <div className={styles.tableContainer}>
-      <PressCathodeTable projectId={projectId} />
-      <PressMeasurementTable
+      <PressAnodeTable projectId={projectId} />
+      <PressAnodeMeasurementTable
         projectId={projectId}
         usl={usl}
         lsl={lsl}
         onNChange={setCurrentN}
         onDataChange={setPressData}
       />
-      <PressXbarChart data={pressData} />
-      <PressRChart data={pressData} />
+      <PressAnodeXbarChart data={pressData} />
+      <PressAnodeRChart data={pressData} />
       <ControlChartConstantsTable currentN={currentN} />
     </div>
   );
