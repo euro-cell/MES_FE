@@ -8,10 +8,11 @@ import MixingCathodeTable from './components/MixingCathodeTable';
 import MixingAnodeTable from './components/MixingAnodeTable';
 import CoatingDashboard from './components/CoatingDashboard';
 import PressDashboard from './components/PressDashboard';
+import VDDashboard from './components/VDDashboard';
 import CoatingAnodeTable from './components/CoatingAnodeTable';
 
 import PressAnodeTable from './components/PressAnodeTable';
-import VDCathodeTable from './components/VDCathodeTable';
+
 import VDAnodeTable from './components/VDAnodeTable';
 import AssemblyJRTable from './components/AssemblyJRTable';
 import type { LQCProject } from './LQCTypes';
@@ -86,7 +87,7 @@ export default function LQCPage() {
         ) : process === 'PressCathode' ? (
           <PressDashboard projectId={Number(projectId)} />
         ) : process === 'VDCathode' ? (
-          <VDCathodeTable projectId={Number(projectId)} />
+          <VDDashboard projectId={Number(projectId)} />
         ) : process === 'MixingAnode' ? (
           <MixingAnodeTable projectId={Number(projectId)} />
         ) : process === 'CoatingAnode' ? (
