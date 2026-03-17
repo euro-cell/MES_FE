@@ -121,8 +121,8 @@ export default function PressAnodeTable({ projectId }: PressAnodeTableProps) {
   useEffect(() => {
     const loadSpecs = async () => {
       try {
-        const specs = await getLQCSpecs(projectId, 'PressAnode');
-        const pressSpec = specs.find(s => s.itemType === 'press');
+        const specs = await getLQCSpecs(projectId, 'PRESS_ANODE');
+        const pressSpec = specs.find(s => s.itemType === 'PRESS');
         if (pressSpec) {
           setPressSpecs(pressSpec.specs);
         }
@@ -154,7 +154,7 @@ export default function PressAnodeTable({ projectId }: PressAnodeTableProps) {
   // 규격 저장 핸들러
   const handleSaveSpec = async (specs: Record<string, SpecValue>) => {
     try {
-      await saveLQCSpec(projectId, 'PressAnode', 'press', specs);
+      await saveLQCSpec(projectId, 'PRESS_ANODE', 'PRESS', specs);
       setPressSpecs(specs);
       setIsSpecModalOpen(false);
     } catch (error) {

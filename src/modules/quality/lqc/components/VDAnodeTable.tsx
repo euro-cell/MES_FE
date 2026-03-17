@@ -120,8 +120,8 @@ export default function VDAnodeTable({ projectId }: VDAnodeTableProps) {
   useEffect(() => {
     const loadSpecs = async () => {
       try {
-        const specs = await getLQCSpecs(projectId, 'VDAnode');
-        const vdSpec = specs.find(s => s.itemType === 'vd');
+        const specs = await getLQCSpecs(projectId, 'VD_ANODE');
+        const vdSpec = specs.find(s => s.itemType === 'VD');
         if (vdSpec) {
           setVdSpecs(vdSpec.specs);
         }
@@ -153,7 +153,7 @@ export default function VDAnodeTable({ projectId }: VDAnodeTableProps) {
   // 규격 저장 핸들러
   const handleSaveSpec = async (specs: Record<string, SpecValue>) => {
     try {
-      await saveLQCSpec(projectId, 'VDAnode', 'vd', specs);
+      await saveLQCSpec(projectId, 'VD_ANODE', 'VD', specs);
       setVdSpecs(specs);
       setIsSpecModalOpen(false);
     } catch (error) {

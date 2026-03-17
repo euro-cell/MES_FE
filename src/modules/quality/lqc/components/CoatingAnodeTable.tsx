@@ -124,8 +124,8 @@ export default function CoatingAnodeTable({ projectId }: CoatingAnodeTableProps)
   useEffect(() => {
     const loadSpecs = async () => {
       try {
-        const specs = await getLQCSpecs(projectId, 'CoatingAnode');
-        const coatingSpec = specs.find(s => s.itemType === 'coating');
+        const specs = await getLQCSpecs(projectId, 'COATING_ANODE');
+        const coatingSpec = specs.find(s => s.itemType === 'COATING');
         if (coatingSpec) {
           setCoatingSpecs(coatingSpec.specs);
         }
@@ -157,7 +157,7 @@ export default function CoatingAnodeTable({ projectId }: CoatingAnodeTableProps)
   // 규격 저장 핸들러
   const handleSaveSpec = async (specs: Record<string, SpecValue>) => {
     try {
-      await saveLQCSpec(projectId, 'CoatingAnode', 'coating', specs);
+      await saveLQCSpec(projectId, 'COATING_ANODE', 'COATING', specs);
       setCoatingSpecs(specs);
       setIsSpecModalOpen(false);
     } catch (error) {

@@ -121,8 +121,8 @@ export default function PressCathodeTable({ projectId }: PressCathodeTableProps)
   useEffect(() => {
     const loadSpecs = async () => {
       try {
-        const specs = await getLQCSpecs(projectId, 'PressCathode');
-        const pressSpec = specs.find(s => s.itemType === 'press');
+        const specs = await getLQCSpecs(projectId, 'PRESS_CATHODE');
+        const pressSpec = specs.find(s => s.itemType === 'PRESS');
         if (pressSpec) {
           setPressSpecs(pressSpec.specs);
         }
@@ -154,7 +154,7 @@ export default function PressCathodeTable({ projectId }: PressCathodeTableProps)
   // 규격 저장 핸들러
   const handleSaveSpec = async (specs: Record<string, SpecValue>) => {
     try {
-      await saveLQCSpec(projectId, 'PressCathode', 'press', specs);
+      await saveLQCSpec(projectId, 'PRESS_CATHODE', 'PRESS', specs);
       setPressSpecs(specs);
       setIsSpecModalOpen(false);
     } catch (error) {
