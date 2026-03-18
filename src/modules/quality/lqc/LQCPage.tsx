@@ -15,6 +15,7 @@ import VDAnodeDashboard from './components/vd/VDAnodeDashboard';
 import SealingTopTable from './components/assembly/SealingTopTable';
 import SealingMeasurementTable from './components/assembly/SealingMeasurementTable';
 import FinalSealingTable from './components/assembly/FinalSealingTable';
+import ControlChartConstantsTable from './components/common/ControlChartConstantsTable';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCPage() {
@@ -98,6 +99,7 @@ export default function LQCPage() {
           <>
             <SealingTopTable projectId={Number(projectId)} />
             <SealingMeasurementTable projectId={Number(projectId)} />
+            <ControlChartConstantsTable currentN={6} />
           </>
         ) : process === 'FinalSealing' ? (
           <FinalSealingTable projectId={Number(projectId)} />
