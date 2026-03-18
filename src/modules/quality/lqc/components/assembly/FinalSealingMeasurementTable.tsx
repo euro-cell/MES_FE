@@ -3,6 +3,7 @@ import { getLQCFinalSealingData } from '../../../../../api/quality/LQCService';
 import { SpcTable } from './SealingMeasurementTable';
 import type { SealingMeasurementRow } from './SealingMeasurementTable';
 import ControlChartConstantsTable from '../common/ControlChartConstantsTable';
+import SealingXbarChart from './SealingXbarChart';
 
 const GROUP_SIZE = 8;
 
@@ -117,6 +118,13 @@ export default function FinalSealingMeasurementTable({
           rLcl: v => v.toFixed(9),
           r: v => v.toFixed(0),
         }}
+      />
+      <SealingXbarChart
+        title="Xbar Chart _ Final Sealing"
+        yMin={250}
+        yMax={290}
+        yStep={10}
+        data={rows}
       />
       <ControlChartConstantsTable currentN={rows.length > 0 ? Math.max(...rows.map(r => r.measurements.filter(v => v !== null).length)) : GROUP_SIZE} />
     </>
