@@ -17,11 +17,23 @@ export default defineConfig(() => {
             '/api': {
               target: apiTarget,
               changeOrigin: true,
-              rewrite: (path) => path.replace(/^\/api/, ''),
+              rewrite: path => path.replace(/^\/api/, ''),
+              configure: proxy => {
+                proxy.on('proxyReq', (proxyReq, req) => {
+                  const clientIp = req.socket.remoteAddress?.replace('::ffff:', '') ?? '';
+                  proxyReq.setHeader('X-Forwarded-For', clientIp);
+                });
+              },
             },
             '/uploads': {
               target: apiTarget,
               changeOrigin: true,
+              configure: proxy => {
+                proxy.on('proxyReq', (proxyReq, req) => {
+                  const clientIp = req.socket.remoteAddress?.replace('::ffff:', '') ?? '';
+                  proxyReq.setHeader('X-Forwarded-For', clientIp);
+                });
+              },
             },
           }
         : undefined,
