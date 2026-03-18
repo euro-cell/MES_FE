@@ -1,4 +1,14 @@
 import { useState, useEffect } from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 import styles from '../../../../../styles/quality/lqc/LQCTable.module.css';
 import SpecEditModal from '../common/SpecEditModal';
 import {
@@ -7,6 +17,8 @@ import {
   getLQCFinalSealingData,
   type SpecValue,
 } from '../../../../../api/quality/LQCService';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const MAX_COLS = 10;
 
@@ -129,6 +141,55 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
 
   const totalColSpan = 3 + 1 + MAX_COLS; // No. + 작업일자 + Lot + 평균 + 1~10
 
+  // 차트 데이터
+  const chartLabels = data.map(d => d.workDate);
+  const chartAvgValues = rowAvgs.map(v => v ?? 0);
+
+  const getChartRange = () => {
+    const spec = specs.thickness;
+    if (spec?.target !== undefined && spec?.tolerance !== undefined) {
+      return { min: spec.target - spec.tolerance, max: spec.target + spec.tolerance };
+    }
+    const valid = rowAvgs.filter((v): v is number => v !== null);
+    if (valid.length > 0) {
+      const dataMin = Math.min(...valid);
+      const dataMax = Math.max(...valid);
+      const padding = (dataMax - dataMin) * 0.2 || 5;
+      return { min: Math.floor(dataMin - padding), max: Math.ceil(dataMax + padding) };
+    }
+    return { min: 250, max: 290 };
+  };
+
+  const chartRange = getChartRange();
+
+  const chartData = {
+    labels: chartLabels,
+    datasets: [{
+      label: 'Final Sealing 두께',
+      data: chartAvgValues,
+      backgroundColor: '#f59e0b',
+      borderColor: '#d97706',
+      borderWidth: 1,
+    }],
+  };
+
+  const chartOptions = {
+    indexAxis: 'y' as const,
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: 'Final Sealing 결과' },
+    },
+    scales: {
+      x: {
+        min: chartRange.min,
+        max: chartRange.max,
+        title: { display: true, text: 'Thicnkess(㎛)' },
+      },
+    },
+  };
+
   return (
     <div className={styles.tableContainer}>
       <div className={styles.tableSection}>
@@ -138,7 +199,8 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
             규격 설정
           </button>
         </div>
-        <div style={{ overflow: 'auto' }}>
+        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+        <div style={{ overflow: 'auto', flex: 1 }}>
           <table className={styles.lqcTable}>
             <thead>
               <tr>
@@ -196,6 +258,12 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
               )}
             </tbody>
           </table>
+        </div>
+        {hasData && (
+          <div style={{ flex: '0 0 340px', height: `${Math.max(200, data.length * 28 + 60)}px` }}>
+            <Bar data={chartData} options={chartOptions} />
+          </div>
+        )}
         </div>
       </div>
 
