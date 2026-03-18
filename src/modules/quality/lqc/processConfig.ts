@@ -26,7 +26,10 @@ export const PROCESS_CONFIG: Record<string, ProcessInfo[]> = {
     { id: 'Sealing', category: 'Assembly', title: 'Sealing' },
     { id: 'FinalSealing', category: 'Assembly', title: 'Final Sealing' },
   ],
-  Formation: [],
+  Formation: [
+    { id: 'PreFormation', category: 'Formation', title: 'Pre Formation' },
+    { id: 'MainFormation', category: 'Formation', title: 'Main Formation' },
+  ],
 };
 
 export const getProcessesByCategory = (category: string): ProcessInfo[] => {
