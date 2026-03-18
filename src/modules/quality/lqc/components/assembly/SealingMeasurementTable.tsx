@@ -98,14 +98,43 @@ function toMeasurementRows(
 
 const outOfControlStyle: React.CSSProperties = { backgroundColor: '#ef4444', color: '#fff' };
 
+interface SpcFormatter {
+  measurement: (v: number) => string;
+  r: (v: number) => string;
+  xbar: (v: number) => string;
+  xbarCl: (v: number) => string;
+  xbarUcl: (v: number) => string;
+  xbarLcl: (v: number) => string;
+  rCl: (v: number) => string;
+  rUcl: (v: number) => string;
+  rLcl: (v: number) => string;
+}
+
+const defaultFormatter: SpcFormatter = {
+  measurement: v => fmt(v, 0),
+  r: v => fmt(v, 2),
+  xbar: v => fmt(v, 2),
+  xbarCl: v => fmt(v, 2),
+  xbarUcl: v => fmt(v, 2),
+  xbarLcl: v => fmt(v, 2),
+  rCl: v => fmt(v, 2),
+  rUcl: v => fmt(v, 2),
+  rLcl: v => fmt(v, 2),
+};
+
 interface SpcTableProps {
   title: string;
   inspectionItem: string;
   rows: SealingMeasurementRow[];
   groupSize: number;
+  displaySize?: number;
+  checkRLcl?: boolean;
+  formatter?: Partial<SpcFormatter>;
 }
 
-function SpcTable({ title, inspectionItem, rows, groupSize }: SpcTableProps) {
+export function SpcTable({ title, inspectionItem, rows, groupSize, displaySize, checkRLcl = false, formatter }: SpcTableProps) {
+  const colCount = displaySize ?? groupSize;
+  const f: SpcFormatter = { ...defaultFormatter, ...formatter };
   return (
     <div className={styles.tableSection}>
       {/* 메타 정보 */}
@@ -123,7 +152,7 @@ function SpcTable({ title, inspectionItem, rows, groupSize }: SpcTableProps) {
           <thead>
             <tr>
               <th rowSpan={2}>군번호</th>
-              {Array.from({ length: GROUP_SIZE }, (_, i) => (
+              {Array.from({ length: colCount }, (_, i) => (
                 <th key={i} rowSpan={2} className={i === 0 ? styles.groupBorder : undefined}>
                   X{i + 1}
                 </th>
@@ -148,11 +177,11 @@ function SpcTable({ title, inspectionItem, rows, groupSize }: SpcTableProps) {
             {rows.length > 0 ? (
               rows.map(row => {
                 const xbarOoc = row.xbar > row.xbar_ucl || row.xbar < row.xbar_lcl;
-                const rOoc = row.r > row.r_ucl;
+                const rOoc = row.r > row.r_ucl || (checkRLcl && row.r < row.r_lcl);
                 return (
                   <tr key={row.rowIndex}>
                     <td>{row.rowIndex}</td>
-                    {row.measurements.map((v, i) => (
+                    {row.measurements.slice(0, colCount).map((v, i) => (
                       <td key={i} className={i === 0 ? styles.groupBorder : undefined}>
                         {v !== null ? fmt(v, 0) : ''}
                       </td>
@@ -160,21 +189,21 @@ function SpcTable({ title, inspectionItem, rows, groupSize }: SpcTableProps) {
                     <td className={styles.groupBorder}>{fmt(row.usl, 0)}</td>
                     <td>{fmt(row.lsl, 0)}</td>
                     <td className={styles.groupBorder} style={xbarOoc ? outOfControlStyle : undefined}>
-                      {fmt(row.xbar, 2)}
+                      {f.xbar(row.xbar)}
                     </td>
-                    <td style={rOoc ? outOfControlStyle : undefined}>{fmt(row.r, 2)}</td>
-                    <td className={styles.groupBorder}>{fmt(row.xbar_cl, 2)}</td>
-                    <td>{fmt(row.xbar_ucl, 2)}</td>
-                    <td>{fmt(row.xbar_lcl, 2)}</td>
-                    <td className={styles.groupBorder}>{fmt(row.r_cl, 2)}</td>
-                    <td>{fmt(row.r_ucl, 2)}</td>
-                    <td>{fmt(row.r_lcl, 2)}</td>
+                    <td style={rOoc ? outOfControlStyle : undefined}>{f.r(row.r)}</td>
+                    <td className={styles.groupBorder}>{f.xbarCl(row.xbar_cl)}</td>
+                    <td>{f.xbarUcl(row.xbar_ucl)}</td>
+                    <td>{f.xbarLcl(row.xbar_lcl)}</td>
+                    <td className={styles.groupBorder}>{f.rCl(row.r_cl)}</td>
+                    <td>{f.rUcl(row.r_ucl)}</td>
+                    <td>{f.rLcl(row.r_lcl)}</td>
                   </tr>
                 );
               })
             ) : (
               <tr>
-                <td colSpan={1 + GROUP_SIZE + 2 + 4 + 4} className={styles.noDataRow}>
+                <td colSpan={1 + colCount + 2 + 4 + 4} className={styles.noDataRow}>
                   데이터 없음
                 </td>
               </tr>
