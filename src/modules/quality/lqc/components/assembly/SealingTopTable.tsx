@@ -1,4 +1,14 @@
 import { useState, useEffect } from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 import styles from '../../../../../styles/quality/lqc/LQCTable.module.css';
 import SpecEditModal from '../common/SpecEditModal';
 import {
@@ -7,6 +17,8 @@ import {
   getLQCSealingData,
   type SpecValue,
 } from '../../../../../api/quality/LQCService';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface SealingTopData {
   id: number;
@@ -176,6 +188,86 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
   const sideSpec = formatSpec(specs.sideSealing, 'target-tolerance');
   const topSpec = formatSpec(specs.topSealing, 'target-tolerance');
 
+  // 차트 라벨 (작업일자)
+  const chartLabels = data.map(d => d.workDate);
+
+  // X축 범위 계산 헬퍼
+  const getChartRange = (values: (number | null)[], specKey: string) => {
+    const spec = specs[specKey];
+    if (spec?.target !== undefined && spec?.tolerance !== undefined) {
+      return { min: spec.target - spec.tolerance, max: spec.target + spec.tolerance };
+    }
+    const valid = values.filter((v): v is number => v !== null);
+    if (valid.length > 0) {
+      const dataMin = Math.min(...valid);
+      const dataMax = Math.max(...valid);
+      const padding = (dataMax - dataMin) * 0.2 || 5;
+      return { min: Math.floor(dataMin - padding), max: Math.ceil(dataMax + padding) };
+    }
+    return { min: 0, max: 100 };
+  };
+
+  const sideAvgValues = rowAvgValues.map(d => d.sideAvg);
+  const topAvgValues = rowAvgValues.map(d => d.topAvg);
+  const sideRange = getChartRange(sideAvgValues, 'sideSealing');
+  const topRange = getChartRange(topAvgValues, 'topSealing');
+
+  const sideChartData = {
+    labels: chartLabels,
+    datasets: [{
+      label: 'Side Sealing 두께',
+      data: sideAvgValues.map(v => v ?? 0),
+      backgroundColor: '#f59e0b',
+      borderColor: '#d97706',
+      borderWidth: 1,
+    }],
+  };
+
+  const topChartData = {
+    labels: chartLabels,
+    datasets: [{
+      label: 'Top Sealing 두께',
+      data: topAvgValues.map(v => v ?? 0),
+      backgroundColor: '#f59e0b',
+      borderColor: '#d97706',
+      borderWidth: 1,
+    }],
+  };
+
+  const sideChartOptions = {
+    indexAxis: 'y' as const,
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: 'Side Sealing 결과' },
+    },
+    scales: {
+      x: {
+        min: sideRange.min,
+        max: sideRange.max,
+        title: { display: true, text: 'Thicnkess(㎛)' },
+      },
+    },
+  };
+
+  const topChartOptions = {
+    indexAxis: 'y' as const,
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: 'Top Sealing 결과 (Tab)' },
+    },
+    scales: {
+      x: {
+        min: topRange.min,
+        max: topRange.max,
+        title: { display: true, text: 'Thickness(㎛)' },
+      },
+    },
+  };
+
   return (
     <div className={styles.tableContainer}>
       <div className={styles.tableSection}>
@@ -311,6 +403,21 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
           </table>
         </div>
       </div>
+
+      {/* Sealing 차트 */}
+      {hasData && (
+        <div className={styles.tableSection}>
+          <h3 className={styles.tableTitle}>Sealing 차트</h3>
+          <div style={{ display: 'flex', gap: '20px', marginTop: '16px' }}>
+            <div style={{ flex: 1, height: `${Math.max(200, data.length * 28 + 60)}px` }}>
+              <Bar data={sideChartData} options={sideChartOptions} />
+            </div>
+            <div style={{ flex: 1, height: `${Math.max(200, data.length * 28 + 60)}px` }}>
+              <Bar data={topChartData} options={topChartOptions} />
+            </div>
+          </div>
+        </div>
+      )}
 
       <SpecEditModal
         isOpen={isSpecModalOpen}
