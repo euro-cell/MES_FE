@@ -25,6 +25,7 @@ interface SealingMeasurementTableProps {
   topLsl?: number | null;
   onNChange?: (n: number) => void;
   onDataChange?: (rows: SealingMeasurementRow[]) => void;
+  onTopDataChange?: (rows: SealingMeasurementRow[]) => void;
 }
 
 const CONTROL_CHART_CONSTANTS: Record<number, { A2: number; D4: number; D3: number }> = {
@@ -193,6 +194,7 @@ export default function SealingMeasurementTable({
   topLsl,
   onNChange,
   onDataChange,
+  onTopDataChange,
 }: SealingMeasurementTableProps) {
   const [sideRows, setSideRows] = useState<SealingMeasurementRow[]>([]);
   const [topRows, setTopRows] = useState<SealingMeasurementRow[]>([]);
@@ -209,6 +211,7 @@ export default function SealingMeasurementTable({
         setSideRows(side);
         setTopRows(top);
         onDataChange?.(side);
+        onTopDataChange?.(top);
         if (side.length > 0) onNChange?.(GROUP_SIZE);
       } catch (err) {
         setError(err instanceof Error ? err.message : '데이터를 불러오지 못했습니다.');
