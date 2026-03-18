@@ -342,7 +342,7 @@ export interface FormationPreFormation {
   equipment: string; // 설비 - 호기
   chNo: number; // CH No. - 행/열
   pfc: number; // PFC - Ah
-  rfd: number; // RFD - Ah
+  pfd: number; // PFD - Ah
   forEff1: number; // For.EFF_1 - %
 }
 

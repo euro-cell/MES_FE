@@ -93,7 +93,7 @@ export default function FormationGrid({ data }: FormationGridProps) {
             <th>설비</th>
             <th>CH No.</th>
             <th>PFC</th>
-            <th>RFD</th>
+            <th>PFD</th>
             <th className={styles.groupPreFormationEnd}>For.EFF_1</th>
             {/* Final Sealing */}
             <th>
@@ -213,7 +213,7 @@ export default function FormationGrid({ data }: FormationGridProps) {
                 <td>{row.preFormation.equipment}</td>
                 <td>{row.preFormation.chNo}</td>
                 <td>{row.preFormation.pfc}</td>
-                <td>{row.preFormation.rfd}</td>
+                <td>{row.preFormation.pfd}</td>
                 <td className={styles.groupPreFormationEnd}>{row.preFormation.forEff1}</td>
                 {/* Final Sealing */}
                 <td>{row.finalSealing.pouchSealingThickness}</td>
