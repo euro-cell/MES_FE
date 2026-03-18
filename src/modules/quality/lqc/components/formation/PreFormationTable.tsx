@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { getLQCPreFormationData, type PreFormationItem } from '../../../../../api/quality/LQCService';
 import styles from '../../../../../styles/quality/lqc/LQCTable.module.css';
+import PreFormationNormalDistTable from './PreFormationNormalDistTable';
 
 interface PreFormationTableProps {
   projectId: number;
@@ -62,6 +63,7 @@ export default function PreFormationTable({ projectId }: PreFormationTableProps)
   const hasData = items.length > 0;
 
   return (
+    <>
     <div className={styles.tableSection}>
       <h3 className={styles.tableTitle}>● Pre-Formation</h3>
       <div className={styles.tableWrapper}>
@@ -147,5 +149,10 @@ export default function PreFormationTable({ projectId }: PreFormationTableProps)
         </div>
       </div>
     </div>
+    <PreFormationNormalDistTable
+      chargeData={pfcNums}
+      dischargeData={pfdNums}
+    />
+    </>
   );
 }
