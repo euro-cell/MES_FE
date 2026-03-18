@@ -1,35 +1,17 @@
 import styles from '../../../../../styles/quality/lqc/LQCTable.module.css';
+import {
+  CLASS_INTERVAL,
+  CHARGE_CLASSES,
+  DISCHARGE_CLASSES,
+  calcMean,
+  calcStdev,
+  calcFrequency,
+  calcDensity,
+} from './preFormationCalc';
 
 interface PreFormationNormalDistTableProps {
   chargeData: number[];
   dischargeData: number[];
-}
-
-const CLASS_INTERVAL = 0.5;
-const CHARGE_CLASSES = Array.from({ length: 41 }, (_, i) => 32 + i * CLASS_INTERVAL);
-const DISCHARGE_CLASSES = Array.from({ length: 41 }, (_, i) => 22 + i * CLASS_INTERVAL);
-
-function calcMean(data: number[]): number {
-  return data.reduce((a, b) => a + b, 0) / data.length;
-}
-
-function calcStdev(data: number[], mean: number): number {
-  return Math.sqrt(data.map(v => Math.pow(v - mean, 2)).reduce((a, b) => a + b, 0) / data.length);
-}
-
-function calcFrequency(data: number[], classes: number[]): number[] {
-  return classes.map((cls, i) => {
-    const lower = i === 0 ? -Infinity : classes[i - 1];
-    return data.filter(v => v > lower && v <= cls).length;
-  });
-}
-
-function normalPDF(x: number, mean: number, stdev: number): number {
-  return (1 / (stdev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stdev, 2));
-}
-
-function calcDensity(classes: number[], mean: number, stdev: number): number[] {
-  return classes.map(cls => normalPDF(cls, mean, stdev) * CLASS_INTERVAL);
 }
 
 function fmtDensity(v: number): string {
@@ -50,11 +32,10 @@ export default function PreFormationNormalDistTable({ chargeData, dischargeData 
   const chargeDensity = calcDensity(CHARGE_CLASSES, chargeMean, chargeStdev);
   const dischargeDensity = calcDensity(DISCHARGE_CLASSES, dischargeMean, dischargeStdev);
 
-  // 기타 행: 계급 범위 밖 데이터 카운트
   const chargeOther = chargeData.filter(v => v <= CHARGE_CLASSES[0] - CLASS_INTERVAL || v > CHARGE_CLASSES[CHARGE_CLASSES.length - 1]).length;
   const dischargeOther = dischargeData.filter(v => v <= DISCHARGE_CLASSES[0] - CLASS_INTERVAL || v > DISCHARGE_CLASSES[DISCHARGE_CLASSES.length - 1]).length;
 
-  const rowCount = CHARGE_CLASSES.length; // 41
+  const rowCount = CHARGE_CLASSES.length;
 
   return (
     <div className={styles.tableSection}>
@@ -98,7 +79,6 @@ export default function PreFormationNormalDistTable({ chargeData, dischargeData 
                 </tr>
               );
             })}
-            {/* 기타 행 */}
             <tr>
               <td className={styles.groupBorder}>기타</td>
               <td>{chargeOther}</td>
