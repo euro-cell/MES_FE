@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getLQCFinalSealingData } from '../../../../../api/quality/LQCService';
 import { SpcTable } from './SealingMeasurementTable';
 import type { SealingMeasurementRow } from './SealingMeasurementTable';
+import ControlChartConstantsTable from '../common/ControlChartConstantsTable';
 
 const GROUP_SIZE = 8;
 
@@ -98,23 +99,26 @@ export default function FinalSealingMeasurementTable({
   if (error) return <div style={{ padding: 16, color: 'red' }}>오류: {error}</div>;
 
   return (
-    <SpcTable
-      title="Final Sealing 검사"
-      inspectionItem="두께"
-      rows={rows}
-      groupSize={rows.length > 0 ? Math.max(...rows.map(r => r.measurements.filter(v => v !== null).length)) : GROUP_SIZE}
-      displaySize={GROUP_SIZE}
-      checkRLcl={true}
-      formatter={{
-        xbar: v => v.toFixed(3),
-        xbarCl: v => v.toFixed(7),
-        xbarUcl: v => v.toFixed(7),
-        xbarLcl: v => v.toFixed(3),
-        rCl: v => v.toFixed(8),
-        rUcl: v => v.toFixed(8),
-        rLcl: v => v.toFixed(9),
-        r: v => v.toFixed(0),
-      }}
-    />
+    <>
+      <SpcTable
+        title="Final Sealing 검사"
+        inspectionItem="두께"
+        rows={rows}
+        groupSize={rows.length > 0 ? Math.max(...rows.map(r => r.measurements.filter(v => v !== null).length)) : GROUP_SIZE}
+        displaySize={GROUP_SIZE}
+        checkRLcl={true}
+        formatter={{
+          xbar: v => v.toFixed(3),
+          xbarCl: v => v.toFixed(7),
+          xbarUcl: v => v.toFixed(7),
+          xbarLcl: v => v.toFixed(3),
+          rCl: v => v.toFixed(8),
+          rUcl: v => v.toFixed(8),
+          rLcl: v => v.toFixed(9),
+          r: v => v.toFixed(0),
+        }}
+      />
+      <ControlChartConstantsTable currentN={rows.length > 0 ? Math.max(...rows.map(r => r.measurements.filter(v => v !== null).length)) : GROUP_SIZE} />
+    </>
   );
 }

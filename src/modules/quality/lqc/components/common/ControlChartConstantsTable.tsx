@@ -42,6 +42,7 @@ const CONTROL_CHART_CONSTANTS: ControlChartConstant[] = [
 const calcE2 = (n: number, A2: number): number => Math.sqrt(n) * A2;
 
 const fmt3 = (v: number) => v.toFixed(3);
+const formatE2 = (v: number) => parseFloat(v.toPrecision(15)).toString();
 
 export default function ControlChartConstantsTable({ currentN }: ControlChartConstantsTableProps) {
   const current = CONTROL_CHART_CONSTANTS.find(c => c.n === currentN);
@@ -144,7 +145,7 @@ export default function ControlChartConstantsTable({ currentN }: ControlChartCon
                   <td>{fmt3(c.A2)}</td>
                   <td>{fmt3(c.D4)}</td>
                   <td>{c.n <= 6 ? fmt3(0) : fmt3(c.D3)}</td>
-                  <td><em>{fmt3(calcE2(c.n, c.A2))}</em></td>
+                  <td><em>{formatE2(calcE2(c.n, c.A2))}</em></td>
                 </tr>
               );
             })}
