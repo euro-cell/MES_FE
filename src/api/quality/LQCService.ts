@@ -239,6 +239,24 @@ export const getLQCAssemblyJRData = async (
   return res.data;
 };
 
+/** Final Sealing 데이터 응답 타입 */
+export interface FinalSealingData {
+  id: number;
+  workDate: string;
+  lot: string;
+  thicknesses: (number | null)[];
+}
+
+/** Final Sealing 데이터 조회 */
+export const getLQCFinalSealingData = async (
+  productionId: number
+): Promise<FinalSealingData[]> => {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${productionId}/final-sealing`, {
+    withCredentials: true,
+  });
+  return res.data;
+};
+
 /** Sealing 데이터 응답 타입 */
 export interface SealingData {
   id: number;

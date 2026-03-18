@@ -4,24 +4,17 @@ import SpecEditModal from '../common/SpecEditModal';
 import {
   getLQCSpecs,
   saveLQCSpec,
+  getLQCFinalSealingData,
   type SpecValue,
 } from '../../../../../api/quality/LQCService';
 
-interface FinalSealingData {
+const MAX_COLS = 10;
+
+interface FinalSealingRow {
   id: number;
   workDate: string;
   lot: string;
-  shift: string;
-  thickness1: number | null;
-  thickness2: number | null;
-  thickness3: number | null;
-  thickness4: number | null;
-  thickness5: number | null;
-  thickness6: number | null;
-  thickness7: number | null;
-  thickness8: number | null;
-  thickness9: number | null;
-  thickness10: number | null;
+  thicknesses: (number | null)[];
 }
 
 interface FinalSealingTableProps {
@@ -77,15 +70,10 @@ const calcStdev = (values: (number | null)[]): number | null => {
   return Math.sqrt(valid.map(v => Math.pow(v - avg, 2)).reduce((a, b) => a + b, 0) / valid.length);
 };
 
-const getThicknessValues = (row: FinalSealingData): (number | null)[] => [
-  row.thickness1, row.thickness2, row.thickness3, row.thickness4, row.thickness5,
-  row.thickness6, row.thickness7, row.thickness8, row.thickness9, row.thickness10,
-];
-
 export default function FinalSealingTable({ projectId }: FinalSealingTableProps) {
   const [isSpecModalOpen, setIsSpecModalOpen] = useState(false);
   const [specs, setSpecs] = useState<Record<string, SpecValue>>({});
-  const [data, setData] = useState<FinalSealingData[]>([]);
+  const [data, setData] = useState<FinalSealingRow[]>([]);
 
   useEffect(() => {
     const loadSpecs = async () => {
@@ -100,9 +88,22 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
     loadSpecs();
   }, [projectId]);
 
-  // TODO: 서비스단 연동 시 API 호출 추가
   useEffect(() => {
-    setData([]);
+    const loadData = async () => {
+      try {
+        const apiData = await getLQCFinalSealingData(projectId);
+        const mapped: FinalSealingRow[] = apiData.map(item => ({
+          id: item.id,
+          workDate: item.workDate,
+          lot: item.lot,
+          thicknesses: Array.from({ length: MAX_COLS }, (_, i) => item.thicknesses[i] ?? null),
+        }));
+        setData(mapped);
+      } catch (error) {
+        console.error('Failed to load final sealing data:', error);
+      }
+    };
+    loadData();
   }, [projectId]);
 
   const handleSaveSpec = async (newSpecs: Record<string, SpecValue>) => {
@@ -116,43 +117,17 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
   };
 
   const hasData = data.length > 0;
+  const rowAvgs = data.map(row => calcAvg(row.thicknesses));
 
-  const rowAvgs = data.map(row => calcAvg(getThicknessValues(row)));
+  // 열별 통계 (c0~c9)
+  const colStats = Array.from({ length: MAX_COLS }, (_, i) => ({
+    avg: calcAvg(data.map(d => d.thicknesses[i] ?? null)),
+    max: calcMax(data.map(d => d.thicknesses[i] ?? null)),
+    min: calcMin(data.map(d => d.thicknesses[i] ?? null)),
+    stdev: calcStdev(data.map(d => d.thicknesses[i] ?? null)),
+  }));
 
-  const stats = {
-    avg: {
-      avg: calcAvg(rowAvgs),
-      c1: calcAvg(data.map(d => d.thickness1)), c2: calcAvg(data.map(d => d.thickness2)),
-      c3: calcAvg(data.map(d => d.thickness3)), c4: calcAvg(data.map(d => d.thickness4)),
-      c5: calcAvg(data.map(d => d.thickness5)), c6: calcAvg(data.map(d => d.thickness6)),
-      c7: calcAvg(data.map(d => d.thickness7)), c8: calcAvg(data.map(d => d.thickness8)),
-      c9: calcAvg(data.map(d => d.thickness9)), c10: calcAvg(data.map(d => d.thickness10)),
-    },
-    max: {
-      avg: calcMax(rowAvgs),
-      c1: calcMax(data.map(d => d.thickness1)), c2: calcMax(data.map(d => d.thickness2)),
-      c3: calcMax(data.map(d => d.thickness3)), c4: calcMax(data.map(d => d.thickness4)),
-      c5: calcMax(data.map(d => d.thickness5)), c6: calcMax(data.map(d => d.thickness6)),
-      c7: calcMax(data.map(d => d.thickness7)), c8: calcMax(data.map(d => d.thickness8)),
-      c9: calcMax(data.map(d => d.thickness9)), c10: calcMax(data.map(d => d.thickness10)),
-    },
-    min: {
-      avg: calcMin(rowAvgs),
-      c1: calcMin(data.map(d => d.thickness1)), c2: calcMin(data.map(d => d.thickness2)),
-      c3: calcMin(data.map(d => d.thickness3)), c4: calcMin(data.map(d => d.thickness4)),
-      c5: calcMin(data.map(d => d.thickness5)), c6: calcMin(data.map(d => d.thickness6)),
-      c7: calcMin(data.map(d => d.thickness7)), c8: calcMin(data.map(d => d.thickness8)),
-      c9: calcMin(data.map(d => d.thickness9)), c10: calcMin(data.map(d => d.thickness10)),
-    },
-    stdev: {
-      avg: calcStdev(rowAvgs),
-      c1: calcStdev(data.map(d => d.thickness1)), c2: calcStdev(data.map(d => d.thickness2)),
-      c3: calcStdev(data.map(d => d.thickness3)), c4: calcStdev(data.map(d => d.thickness4)),
-      c5: calcStdev(data.map(d => d.thickness5)), c6: calcStdev(data.map(d => d.thickness6)),
-      c7: calcStdev(data.map(d => d.thickness7)), c8: calcStdev(data.map(d => d.thickness8)),
-      c9: calcStdev(data.map(d => d.thickness9)), c10: calcStdev(data.map(d => d.thickness10)),
-    },
-  };
+  const totalColSpan = 3 + 1 + MAX_COLS; // No. + 작업일자 + Lot + 평균 + 1~10
 
   return (
     <div className={styles.tableContainer}>
@@ -170,55 +145,37 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
                 <th rowSpan={2}>No.</th>
                 <th rowSpan={2}>작업일자</th>
                 <th rowSpan={2}>Lot no.</th>
-                <th rowSpan={2}>Shift</th>
-                <th colSpan={11}>Final Sealing 두께 (㎛)</th>
+                <th colSpan={MAX_COLS + 1}>Final Sealing 두께 (㎛)</th>
               </tr>
               <tr>
                 <th>평균</th>
-                <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
-                <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+                {Array.from({ length: MAX_COLS }, (_, i) => <th key={i}>{i + 1}</th>)}
               </tr>
             </thead>
             <tbody>
               <tr className={styles.specRow}>
-                <td colSpan={4}>규격</td>
-                <td colSpan={11}>{formatSpec(specs.thickness, 'target-tolerance')}</td>
+                <td colSpan={3}>규격</td>
+                <td colSpan={MAX_COLS + 1}>{formatSpec(specs.thickness, 'target-tolerance')}</td>
               </tr>
               <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
-                <td colSpan={4}>Ave.</td>
-                <td>{formatNumber(stats.avg.avg, 0)}</td>
-                <td>{formatNumber(stats.avg.c1, 0)}</td><td>{formatNumber(stats.avg.c2, 0)}</td>
-                <td>{formatNumber(stats.avg.c3, 0)}</td><td>{formatNumber(stats.avg.c4, 0)}</td>
-                <td>{formatNumber(stats.avg.c5, 0)}</td><td>{formatNumber(stats.avg.c6, 0)}</td>
-                <td>{formatNumber(stats.avg.c7, 0)}</td><td>{formatNumber(stats.avg.c8, 0)}</td>
-                <td>{formatNumber(stats.avg.c9, 0)}</td><td>{formatNumber(stats.avg.c10, 0)}</td>
+                <td colSpan={3}>Ave.</td>
+                <td>{formatNumber(calcAvg(rowAvgs), 0)}</td>
+                {colStats.map((s, i) => <td key={i}>{formatNumber(s.avg, 0)}</td>)}
               </tr>
               <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
-                <td colSpan={4}>Max.</td>
-                <td>{formatNumber(stats.max.avg, 0)}</td>
-                <td>{formatNumber(stats.max.c1, 0)}</td><td>{formatNumber(stats.max.c2, 0)}</td>
-                <td>{formatNumber(stats.max.c3, 0)}</td><td>{formatNumber(stats.max.c4, 0)}</td>
-                <td>{formatNumber(stats.max.c5, 0)}</td><td>{formatNumber(stats.max.c6, 0)}</td>
-                <td>{formatNumber(stats.max.c7, 0)}</td><td>{formatNumber(stats.max.c8, 0)}</td>
-                <td>{formatNumber(stats.max.c9, 0)}</td><td>{formatNumber(stats.max.c10, 0)}</td>
+                <td colSpan={3}>Max.</td>
+                <td>{formatNumber(calcMax(rowAvgs), 0)}</td>
+                {colStats.map((s, i) => <td key={i}>{formatNumber(s.max, 0)}</td>)}
               </tr>
               <tr className={`${styles.summaryRow} ${styles.minRow}`}>
-                <td colSpan={4}>Min.</td>
-                <td>{formatNumber(stats.min.avg, 0)}</td>
-                <td>{formatNumber(stats.min.c1, 0)}</td><td>{formatNumber(stats.min.c2, 0)}</td>
-                <td>{formatNumber(stats.min.c3, 0)}</td><td>{formatNumber(stats.min.c4, 0)}</td>
-                <td>{formatNumber(stats.min.c5, 0)}</td><td>{formatNumber(stats.min.c6, 0)}</td>
-                <td>{formatNumber(stats.min.c7, 0)}</td><td>{formatNumber(stats.min.c8, 0)}</td>
-                <td>{formatNumber(stats.min.c9, 0)}</td><td>{formatNumber(stats.min.c10, 0)}</td>
+                <td colSpan={3}>Min.</td>
+                <td>{formatNumber(calcMin(rowAvgs), 0)}</td>
+                {colStats.map((s, i) => <td key={i}>{formatNumber(s.min, 0)}</td>)}
               </tr>
               <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
-                <td colSpan={4}>Stdev.</td>
-                <td>{formatNumber(stats.stdev.avg, 3)}</td>
-                <td>{formatNumber(stats.stdev.c1, 3)}</td><td>{formatNumber(stats.stdev.c2, 3)}</td>
-                <td>{formatNumber(stats.stdev.c3, 3)}</td><td>{formatNumber(stats.stdev.c4, 3)}</td>
-                <td>{formatNumber(stats.stdev.c5, 3)}</td><td>{formatNumber(stats.stdev.c6, 3)}</td>
-                <td>{formatNumber(stats.stdev.c7, 3)}</td><td>{formatNumber(stats.stdev.c8, 3)}</td>
-                <td>{formatNumber(stats.stdev.c9, 3)}</td><td>{formatNumber(stats.stdev.c10, 3)}</td>
+                <td colSpan={3}>Stdev.</td>
+                <td>{formatNumber(calcStdev(rowAvgs), 3)}</td>
+                {colStats.map((s, i) => <td key={i}>{formatNumber(s.stdev, 3)}</td>)}
               </tr>
               {hasData ? (
                 data.map((row, index) => (
@@ -226,23 +183,15 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
                     <td>{index + 1}</td>
                     <td>{row.workDate}</td>
                     <td>{row.lot}</td>
-                    <td>{row.shift}</td>
                     <td>{formatNumber(rowAvgs[index], 0)}</td>
-                    <td>{formatNumber(row.thickness1, 0)}</td>
-                    <td>{formatNumber(row.thickness2, 0)}</td>
-                    <td>{formatNumber(row.thickness3, 0)}</td>
-                    <td>{formatNumber(row.thickness4, 0)}</td>
-                    <td>{formatNumber(row.thickness5, 0)}</td>
-                    <td>{formatNumber(row.thickness6, 0)}</td>
-                    <td>{formatNumber(row.thickness7, 0)}</td>
-                    <td>{formatNumber(row.thickness8, 0)}</td>
-                    <td>{formatNumber(row.thickness9, 0)}</td>
-                    <td>{formatNumber(row.thickness10, 0)}</td>
+                    {row.thicknesses.map((v, i) => (
+                      <td key={i}>{formatNumber(v, 0)}</td>
+                    ))}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={15} className={styles.noDataRow}>데이터 없음</td>
+                  <td colSpan={totalColSpan} className={styles.noDataRow}>데이터 없음</td>
                 </tr>
               )}
             </tbody>
