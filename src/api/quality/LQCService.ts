@@ -238,3 +238,22 @@ export const getLQCAssemblyJRData = async (
   });
   return res.data;
 };
+
+/** Sealing 데이터 응답 타입 */
+export interface SealingData {
+  id: number;
+  workDate: string;
+  lot: string;
+  sideSealing: number[];
+  topSealing: number[];
+}
+
+/** Sealing 데이터 조회 */
+export const getLQCSealingData = async (
+  productionId: number
+): Promise<SealingData[]> => {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${productionId}/sealing`, {
+    withCredentials: true,
+  });
+  return res.data;
+};

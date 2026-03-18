@@ -4,6 +4,7 @@ import SpecEditModal from '../common/SpecEditModal';
 import {
   getLQCSpecs,
   saveLQCSpec,
+  getLQCSealingData,
   type SpecValue,
 } from '../../../../../api/quality/LQCService';
 
@@ -11,7 +12,6 @@ interface SealingTopData {
   id: number;
   workDate: string;
   lot: string;
-  shift: string;
   sideSealing1: number | null;
   sideSealing2: number | null;
   sideSealing3: number | null;
@@ -110,9 +110,33 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
     loadSpecs();
   }, [projectId]);
 
-  // TODO: 서비스단 연동 시 API 호출 추가
   useEffect(() => {
-    setData([]);
+    const loadData = async () => {
+      try {
+        const apiData = await getLQCSealingData(projectId);
+        const mapped: SealingTopData[] = apiData.map(item => ({
+          id: item.id,
+          workDate: item.workDate,
+          lot: item.lot,
+          sideSealing1: item.sideSealing[0] ?? null,
+          sideSealing2: item.sideSealing[1] ?? null,
+          sideSealing3: item.sideSealing[2] ?? null,
+          sideSealing4: item.sideSealing[3] ?? null,
+          sideSealing5: item.sideSealing[4] ?? null,
+          sideSealing6: item.sideSealing[5] ?? null,
+          topSealing1: item.topSealing[0] ?? null,
+          topSealing2: item.topSealing[1] ?? null,
+          topSealing3: item.topSealing[2] ?? null,
+          topSealing4: item.topSealing[3] ?? null,
+          topSealing5: item.topSealing[4] ?? null,
+          topSealing6: item.topSealing[5] ?? null,
+        }));
+        setData(mapped);
+      } catch (error) {
+        console.error('Failed to load sealing data:', error);
+      }
+    };
+    loadData();
   }, [projectId]);
 
   const handleSaveSpec = async (newSpecs: Record<string, SpecValue>) => {
@@ -168,7 +192,6 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
                 <th rowSpan={2}>No.</th>
                 <th rowSpan={2}>작업일자</th>
                 <th rowSpan={2}>Lot no.</th>
-                <th rowSpan={2}>Shift</th>
                 <th colSpan={7}>Side Sealing 두께 (㎛)</th>
                 <th colSpan={7}>Top(Tab) Sealing 두께 (㎛)</th>
               </tr>
@@ -180,13 +203,13 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
             <tbody>
               {/* 규격 행 */}
               <tr className={styles.specRow}>
-                <td colSpan={4}>규격</td>
+                <td colSpan={3}>규격</td>
                 <td colSpan={7}>{sideSpec}</td>
                 <td colSpan={7}>{topSpec}</td>
               </tr>
               {/* Ave. 행 */}
               <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
-                <td colSpan={4}>Ave.</td>
+                <td colSpan={3}>Ave.</td>
                 <td>{formatNumber(sideStats.avg.avg, 0)}</td>
                 <td>{formatNumber(sideStats.avg.c1, 0)}</td>
                 <td>{formatNumber(sideStats.avg.c2, 0)}</td>
@@ -204,7 +227,7 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
               </tr>
               {/* Max. 행 */}
               <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
-                <td colSpan={4}>Max.</td>
+                <td colSpan={3}>Max.</td>
                 <td>{formatNumber(sideStats.max.avg, 0)}</td>
                 <td>{formatNumber(sideStats.max.c1, 0)}</td>
                 <td>{formatNumber(sideStats.max.c2, 0)}</td>
@@ -222,7 +245,7 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
               </tr>
               {/* Min. 행 */}
               <tr className={`${styles.summaryRow} ${styles.minRow}`}>
-                <td colSpan={4}>Min.</td>
+                <td colSpan={3}>Min.</td>
                 <td>{formatNumber(sideStats.min.avg, 0)}</td>
                 <td>{formatNumber(sideStats.min.c1, 0)}</td>
                 <td>{formatNumber(sideStats.min.c2, 0)}</td>
@@ -240,7 +263,7 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
               </tr>
               {/* Stdev. 행 */}
               <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
-                <td colSpan={4}>Stdev.</td>
+                <td colSpan={3}>Stdev.</td>
                 <td>{formatNumber(sideStats.stdev.avg, 3)}</td>
                 <td>{formatNumber(sideStats.stdev.c1, 3)}</td>
                 <td>{formatNumber(sideStats.stdev.c2, 3)}</td>
@@ -263,7 +286,6 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
                     <td>{index + 1}</td>
                     <td>{row.workDate}</td>
                     <td>{row.lot}</td>
-                    <td>{row.shift}</td>
                     <td>{formatNumber(rowAvgValues[index].sideAvg, 0)}</td>
                     <td>{formatNumber(row.sideSealing1, 0)}</td>
                     <td>{formatNumber(row.sideSealing2, 0)}</td>
@@ -282,7 +304,7 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={18} className={styles.noDataRow}>데이터 없음</td>
+                  <td colSpan={17} className={styles.noDataRow}>데이터 없음</td>
                 </tr>
               )}
             </tbody>
