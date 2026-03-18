@@ -15,6 +15,7 @@ import VDAnodeDashboard from './components/vd/VDAnodeDashboard';
 import SealingDashboard from './components/assembly/SealingDashboard';
 import FinalSealingTable from './components/assembly/FinalSealingTable';
 import FinalSealingMeasurementTable from './components/assembly/FinalSealingMeasurementTable';
+import PreFormationTable from './components/formation/PreFormationTable';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCPage() {
@@ -101,6 +102,8 @@ export default function LQCPage() {
             <FinalSealingTable projectId={Number(projectId)} />
             <FinalSealingMeasurementTable projectId={Number(projectId)} />
           </>
+        ) : process === 'PreFormation' ? (
+          <PreFormationTable projectId={Number(projectId)} />
         ) : (
           <div className={styles.placeholder}>{process} LQC 내용</div>
         )}

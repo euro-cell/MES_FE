@@ -257,6 +257,23 @@ export const getLQCFinalSealingData = async (
   return res.data;
 };
 
+/** Pre-Formation 데이터 응답 타입 */
+export interface PreFormationItem {
+  lot: string;
+  pfc: string;
+  pfd: string;
+}
+
+/** Pre-Formation 데이터 조회 */
+export const getLQCPreFormationData = async (
+  projectId: number
+): Promise<PreFormationItem[]> => {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/pre-formation`, {
+    withCredentials: true,
+  });
+  return res.data;
+};
+
 /** Sealing 데이터 응답 타입 */
 export interface SealingData {
   id: number;
