@@ -20,9 +20,11 @@ interface SealingRChartProps {
   yMax: number;
   yStep: number;
   data: SealingMeasurementRow[];
+  clColor?: string;
+  checkRLcl?: boolean;
 }
 
-export default function SealingRChart({ title, yMax, yStep, data }: SealingRChartProps) {
+export default function SealingRChart({ title, yMax, yStep, data, clColor = '#4EA72E', checkRLcl = false }: SealingRChartProps) {
   const [expanded, setExpanded] = useState(false);
 
   const valid = data.filter(row => row.measurements.some(v => v !== null));
@@ -33,7 +35,7 @@ export default function SealingRChart({ title, yMax, yStep, data }: SealingRChar
   const yTicks = Array.from({ length: tickCount }, (_, i) => i * yStep);
 
   const rColors = valid.map(row =>
-    row.r > row.r_ucl ? '#FF0000' : '#80350E'
+    row.r > row.r_ucl || (checkRLcl && row.r < row.r_lcl) ? '#FF0000' : '#993300'
   );
 
   const chartData = {
@@ -42,7 +44,7 @@ export default function SealingRChart({ title, yMax, yStep, data }: SealingRChar
       {
         label: 'R',
         data: valid.map(d => d.r),
-        borderColor: '#80350E',
+        borderColor: '#993300',
         backgroundColor: rColors,
         borderWidth: 1,
         pointStyle: 'rectRot' as const,
@@ -55,7 +57,7 @@ export default function SealingRChart({ title, yMax, yStep, data }: SealingRChar
       {
         label: 'CL',
         data: valid.map(d => d.r_cl),
-        borderColor: '#4EA72E',
+        borderColor: clColor,
         backgroundColor: 'transparent',
         borderWidth: 2,
         pointRadius: 0,

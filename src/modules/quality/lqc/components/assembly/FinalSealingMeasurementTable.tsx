@@ -4,6 +4,7 @@ import { SpcTable } from './SealingMeasurementTable';
 import type { SealingMeasurementRow } from './SealingMeasurementTable';
 import ControlChartConstantsTable from '../common/ControlChartConstantsTable';
 import SealingXbarChart from './SealingXbarChart';
+import SealingRChart from './SealingRChart';
 
 const GROUP_SIZE = 8;
 
@@ -124,6 +125,14 @@ export default function FinalSealingMeasurementTable({
         yMin={250}
         yMax={290}
         yStep={10}
+        data={rows}
+      />
+      <SealingRChart
+        title="R Chart"
+        yMax={40}
+        yStep={5}
+        clColor="#339966"
+        checkRLcl={true}
         data={rows}
       />
       <ControlChartConstantsTable currentN={rows.length > 0 ? Math.max(...rows.map(r => r.measurements.filter(v => v !== null).length)) : GROUP_SIZE} />
