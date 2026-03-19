@@ -50,8 +50,8 @@ export default function MainFormationTable({ projectId }: MainFormationTableProp
   useEffect(() => {
     const loadSpecs = async () => {
       try {
-        const specsData = await getLQCSpecs(projectId, 'FORMATION_MAIN', 'MAIN_FORMATION');
-        const spec = specsData.find(s => s.itemType === 'MAIN_FORMATION');
+        const specsData = await getLQCSpecs(projectId, 'FORMATION_MAIN', 'OCV');
+        const spec = specsData.find(s => s.itemType === 'OCV');
         if (spec) setSpecs(spec.specs);
       } catch (err) {
         console.error('Failed to load specs:', err);
@@ -77,7 +77,7 @@ export default function MainFormationTable({ projectId }: MainFormationTableProp
 
   const handleSaveSpec = async (newSpecs: Record<string, SpecValue>) => {
     try {
-      await saveLQCSpec(projectId, 'FORMATION_MAIN', 'MAIN_FORMATION', newSpecs);
+      await saveLQCSpec(projectId, 'FORMATION_MAIN', 'OCV', newSpecs);
       setSpecs(newSpecs);
       setIsSpecModalOpen(false);
     } catch (err) {
