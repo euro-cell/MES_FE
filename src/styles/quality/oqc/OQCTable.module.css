@@ -1,0 +1,230 @@
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.tableSection {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tableTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tableTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.specButton {
+  padding: 6px 12px;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  background: #eff6ff;
+  color: #3b82f6;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.specButton:hover {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.lqcTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.lqcTable th,
+.lqcTable td {
+  border: 1px solid #e2e8f0;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.lqcTable th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #334155;
+}
+
+.lqcTable td {
+  color: #475569;
+}
+
+.lqcTable tbody tr:hover {
+  background: #f8fafc;
+}
+
+.specRow {
+  background: #fef3c7 !important;
+  font-weight: 500;
+}
+
+.specRow td {
+  color: #92400e !important;
+}
+
+.noDataRow {
+  text-align: center;
+  color: #94a3b8 !important;
+  font-style: italic;
+  padding: 20px 12px !important;
+}
+
+.tableChartWrapper {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.tableWrapper {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.chartWrapper {
+  flex: 0 0 400px;
+  height: 300px;
+}
+
+.noDataChart {
+  flex: 0 0 400px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* 요약 행 스타일 */
+.summaryRow {
+  background: #f8fafc !important;
+  font-weight: 500;
+}
+
+.summaryRow td {
+  color: #334155 !important;
+}
+
+.avgRow {
+  background: #eff6ff !important;
+}
+
+.avgRow td {
+  color: #1d4ed8 !important;
+}
+
+.maxRow {
+  background: #fef2f2 !important;
+}
+
+.maxRow td {
+  color: #dc2626 !important;
+}
+
+.minRow {
+  background: #f0fdf4 !important;
+}
+
+.minRow td {
+  color: #16a34a !important;
+}
+
+.stdevRow {
+  background: #faf5ff !important;
+}
+
+.stdevRow td {
+  color: #7c3aed !important;
+}
+
+.groupBorder {
+  border-left: 2px solid #94a3b8 !important;
+}
+
+/* 차트 그리드 */
+.chartGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* 차트 확대 모달 */
+.chartModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.chartModal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 700px;
+  max-width: 90vw;
+}
+
+.chartModalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.chartModalHeader h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.chartModalClose {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.chartCardHeader {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
+
+.chartExpandBtn {
+  background: none;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.chartExpandBtn:hover {
+  background: #f1f5f9;
+}
