@@ -3,8 +3,12 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/quality/oqc/OQCPage.module.css';
 import { getOQCProject } from '../../../api/quality/OQCService';
-import { createOQCMenus } from './menuConfig';
+import { createOQCMenus } from './processConfig';
 import SummaryTable from './components/SummaryTable';
+import GradingTable from './components/GradingTable';
+import AppearanceTable from './components/AppearanceTable';
+import DimensionTable from './components/DimensionTable';
+import WeightTable from './components/WeightTable';
 import type { OQCProject } from './OQCTypes';
 
 export default function OQCPage() {
@@ -59,6 +63,14 @@ export default function OQCPage() {
           <div className={styles.placeholder}>메뉴를 선택하세요.</div>
         ) : menu === 'Summary' ? (
           <SummaryTable projectId={Number(projectId)} />
+        ) : menu === 'Grading' ? (
+          <GradingTable projectId={Number(projectId)} />
+        ) : menu === 'Appearance' ? (
+          <AppearanceTable projectId={Number(projectId)} />
+        ) : menu === 'Dimension' ? (
+          <DimensionTable projectId={Number(projectId)} />
+        ) : menu === 'Weight' ? (
+          <WeightTable projectId={Number(projectId)} />
         ) : (
           <div className={styles.placeholder}>{menu} 내용</div>
         )}
