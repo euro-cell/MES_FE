@@ -16,6 +16,7 @@ import SealingDashboard from './components/assembly/SealingDashboard';
 import FinalSealingTable from './components/assembly/FinalSealingTable';
 import FinalSealingMeasurementTable from './components/assembly/FinalSealingMeasurementTable';
 import PreFormationTable from './components/formation/PreFormationTable';
+import MainFormationTable from './components/formation/MainFormationTable';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCPage() {
@@ -104,6 +105,8 @@ export default function LQCPage() {
           </>
         ) : process === 'PreFormation' ? (
           <PreFormationTable projectId={Number(projectId)} />
+        ) : process === 'MainFormation' ? (
+          <MainFormationTable projectId={Number(projectId)} />
         ) : (
           <div className={styles.placeholder}>{process} LQC 내용</div>
         )}

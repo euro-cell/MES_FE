@@ -274,6 +274,24 @@ export const getLQCPreFormationData = async (
   return res.data;
 };
 
+export interface MainFormationItem {
+  lot: string;
+  mfc: string;  // 충전 용량 (Ah)
+  mfd: string;  // 방전 용량 (Ah)
+  ocv1: string; // OCV1 (V)
+  ocv2: string; // OCV2 (V)
+}
+
+/** Main-Formation 데이터 조회 */
+export const getLQCMainFormationData = async (
+  projectId: number
+): Promise<MainFormationItem[]> => {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/main-formation`, {
+    withCredentials: true,
+  });
+  return res.data;
+};
+
 /** Sealing 데이터 응답 타입 */
 export interface SealingData {
   id: number;
