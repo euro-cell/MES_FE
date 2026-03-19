@@ -26,6 +26,8 @@ interface DistributionChartProps {
   yMax?: number;
   yStep: number;
   yLabel: string;
+  xLabel?: string;
+  lsl?: number;
 }
 
 export default function DistributionChart({
@@ -38,6 +40,8 @@ export default function DistributionChart({
   yMax: yMaxProp,
   yStep,
   yLabel,
+  xLabel = '용량(Ah)',
+  lsl,
 }: DistributionChartProps) {
   const dataMax = data.length > 0 ? Math.max(...data.map(d => d.y)) : 0;
   const yMax = yMaxProp ?? Math.ceil(dataMax / yStep) * yStep + yStep;
@@ -61,6 +65,18 @@ export default function DistributionChart({
         pointRadius: 0,
         pointHoverRadius: 0,
       },
+      ...(lsl !== undefined ? [{
+        label: 'Lower Spec Limit',
+        data: [{ x: lsl, y: yMin }, { x: lsl, y: yMax }],
+        borderColor: '#0000FF',
+        borderWidth: 1.5,
+        borderDash: [6, 3],
+        backgroundColor: 'transparent',
+        showLine: true,
+        tension: 0,
+        pointRadius: 0,
+        pointHoverRadius: 0,
+      }] : []),
     ],
   };
 
@@ -84,7 +100,7 @@ export default function DistributionChart({
         afterBuildTicks: (axis: { ticks: { value: number }[] }) => {
           axis.ticks = xTicks.map(v => ({ value: v }));
         },
-        title: { display: true, text: '용량(Ah)' },
+        title: { display: true, text: xLabel },
       },
       y: {
         min: yMin,
@@ -99,6 +115,14 @@ export default function DistributionChart({
 
   return (
     <div style={{ height: 320 }}>
+      {lsl !== undefined && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4, justifyContent: 'center' }}>
+          <svg width="30" height="10">
+            <line x1="0" y1="5" x2="30" y2="5" stroke="#0000FF" strokeWidth="1.5" strokeDasharray="6,3" />
+          </svg>
+          <span style={{ fontSize: 12, fontWeight: 'bold', color: '#0000FF' }}>Lower Spec Limit</span>
+        </div>
+      )}
       <Scatter data={chartData} options={options} />
     </div>
   );

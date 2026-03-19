@@ -10,6 +10,17 @@ import {
 import styles from '../../../../../styles/quality/lqc/LQCTable.module.css';
 import SpecEditModal from '../common/SpecEditModal';
 import MainFormationNormalDistTable from './MainFormationNormalDistTable';
+import DistributionChart from './DistributionChart';
+import { calcMean, calcStdev, calcFrequency, calcDensity, toDistPoints } from './preFormationCalc';
+
+const DISCHARGE_INTERVAL = 0.2;
+const OCV2_INTERVAL = 0.005;
+const MF_DISCHARGE_CLASSES = Array.from({ length: 41 }, (_, i) =>
+  parseFloat((34 + i * DISCHARGE_INTERVAL).toFixed(1))
+);
+const MF_OCV2_CLASSES = Array.from({ length: 41 }, (_, i) =>
+  parseFloat((2.5 + i * OCV2_INTERVAL).toFixed(3))
+);
 
 interface MainFormationTableProps {
   projectId: number;
@@ -21,10 +32,6 @@ const fmt4 = (v: number): string => (isNaN(v) ? '-' : v.toFixed(4));
 const calcAvg = (nums: number[]): number => nums.reduce((a, b) => a + b, 0) / nums.length;
 const calcMax = (nums: number[]): number => Math.max(...nums);
 const calcMin = (nums: number[]): number => Math.min(...nums);
-const calcStdev = (nums: number[], mean: number): number => {
-  if (nums.length < 2) return 0;
-  return Math.sqrt(nums.reduce((s, v) => s + (v - mean) ** 2, 0) / (nums.length - 1));
-};
 
 const ROW_HEIGHT = 35;
 const TABLE_HEIGHT = 600;
@@ -109,6 +116,22 @@ export default function MainFormationTable({ projectId }: MainFormationTableProp
   const dvMean = hasData ? calcAvg(dvNums) : 0;
 
   const ocv2SpecVal = specs['ocv2']?.min;
+
+  // 차트 데이터
+  const mfdMean2 = hasData ? calcMean(mfdNums) : 0;
+  const mfdStdev = hasData ? calcStdev(mfdNums, mfdMean2) : 0;
+  const ocv2Mean2 = hasData ? calcMean(ocv2Nums) : 0;
+  const ocv2Stdev = hasData ? calcStdev(ocv2Nums, ocv2Mean2) : 0;
+
+  const mfdFreq = hasData ? calcFrequency(mfdNums, MF_DISCHARGE_CLASSES) : [];
+  const ocv2Freq = hasData ? calcFrequency(ocv2Nums, MF_OCV2_CLASSES) : [];
+  const mfdDensity = hasData ? calcDensity(MF_DISCHARGE_CLASSES, mfdMean2, mfdStdev, DISCHARGE_INTERVAL) : [];
+  const ocv2DensityVals = hasData ? calcDensity(MF_OCV2_CLASSES, ocv2Mean2, ocv2Stdev, OCV2_INTERVAL) : [];
+
+  const mfdDistData = toDistPoints(MF_DISCHARGE_CLASSES, mfdFreq);
+  const mfdNormalData = toDistPoints(MF_DISCHARGE_CLASSES, mfdDensity);
+  const ocv2DistData = toDistPoints(MF_OCV2_CLASSES, ocv2Freq);
+  const ocv2NormalData = toDistPoints(MF_OCV2_CLASSES, ocv2DensityVals);
 
   return (
     <>
@@ -236,6 +259,43 @@ export default function MainFormationTable({ projectId }: MainFormationTableProp
         dischargeData={mfdNums}
         ocv2Data={ocv2Nums}
       />
+
+      {hasData && (
+        <div className={styles.tableSection}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+            <DistributionChart
+              title="MF_Discharge 분포"
+              data={mfdDistData}
+              xMin={34} xMax={42} xStep={1}
+              yMin={0} yStep={20}
+              xLabel="용량(Ah)" yLabel="빈도수(EA)"
+            />
+            <DistributionChart
+              title="MF_Discharge 정규분포"
+              data={mfdNormalData}
+              xMin={34} xMax={42} xStep={1}
+              yMin={0} yStep={0.02}
+              xLabel="용량(Ah)" yLabel="확률밀도"
+            />
+            <DistributionChart
+              title="MF Aging_OCV2 분포"
+              data={ocv2DistData}
+              xMin={2.5} xMax={2.7} xStep={0.02}
+              yMin={0} yStep={10}
+              xLabel="Voltage(V)" yLabel="빈도수(EA)"
+              lsl={ocv2SpecVal}
+            />
+            <DistributionChart
+              title="MF Aging_OCV2 정규분포"
+              data={ocv2NormalData}
+              xMin={2.5} xMax={2.7} xStep={0.02}
+              yMin={0} yStep={0.02}
+              xLabel="Voltage(V)" yLabel="확률밀도"
+              lsl={ocv2SpecVal}
+            />
+          </div>
+        </div>
+      )}
 
       <SpecEditModal
         isOpen={isSpecModalOpen}
