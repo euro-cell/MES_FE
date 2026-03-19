@@ -111,8 +111,8 @@ export default function PreFormationTable({ projectId }: PreFormationTableProps)
                 </tr>
                 <tr className={styles.specRow}>
                   <td colSpan={2}>규격</td>
-                  <td>-</td>
-                  <td>-</td>
+                  <td>TBD</td>
+                  <td>TBD</td>
                 </tr>
                 {hasData && (
                   <>
