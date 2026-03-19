@@ -23,8 +23,8 @@ export function normalPDF(x: number, mean: number, stdev: number): number {
   return (1 / (stdev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stdev, 2));
 }
 
-export function calcDensity(classes: number[], mean: number, stdev: number): number[] {
-  return classes.map(cls => normalPDF(cls, mean, stdev) * CLASS_INTERVAL);
+export function calcDensity(classes: number[], mean: number, stdev: number, interval: number = CLASS_INTERVAL): number[] {
+  return classes.map(cls => normalPDF(cls, mean, stdev) * interval);
 }
 
 export function toDistPoints(classes: number[], values: number[]): DistributionPoint[] {

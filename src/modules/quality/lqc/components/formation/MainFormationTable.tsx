@@ -9,6 +9,7 @@ import {
 } from '../../../../../api/quality/LQCService';
 import styles from '../../../../../styles/quality/lqc/LQCTable.module.css';
 import SpecEditModal from '../common/SpecEditModal';
+import MainFormationNormalDistTable from './MainFormationNormalDistTable';
 
 interface MainFormationTableProps {
   projectId: number;
@@ -230,6 +231,11 @@ export default function MainFormationTable({ projectId }: MainFormationTableProp
           </div>
         </div>
       </div>
+
+      <MainFormationNormalDistTable
+        dischargeData={mfdNums}
+        ocv2Data={ocv2Nums}
+      />
 
       <SpecEditModal
         isOpen={isSpecModalOpen}
