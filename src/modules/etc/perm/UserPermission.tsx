@@ -11,6 +11,11 @@ interface PermissionCell {
   canDelete: boolean;
 }
 
+interface MenuItem {
+  name: string;
+  depth: number;
+}
+
 interface UserPermission {
   userId: number;
   name: string;
@@ -19,7 +24,7 @@ interface UserPermission {
 
 export default function UserPermission() {
   const [users, setUsers] = useState<UserPermission[]>([]);
-  const [menus, setMenus] = useState<string[]>([]);
+  const [menus, setMenus] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
@@ -82,13 +87,13 @@ export default function UserPermission() {
             <th rowSpan={2}>ID</th>
             <th rowSpan={2}>이름</th>
             {menus.map(m => (
-              <th key={m} colSpan={3}>
-                {m}
+              <th key={m.name} colSpan={3}>
+                {m.name}
               </th>
             ))}
           </tr>
           <tr>
-            {menus.map((_, idx) => (
+            {menus.map((_m, idx) => (
               <React.Fragment key={`sub-${idx}`}>
                 <th>추가</th>
                 <th>수정</th>
@@ -104,26 +109,26 @@ export default function UserPermission() {
               <td>{u.userId}</td>
               <td>{u.name}</td>
               {menus.map(m => (
-                <React.Fragment key={`${u.userId}-${m}`}>
+                <React.Fragment key={`${u.userId}-${m.name}`}>
                   <td>
                     <input
                       type='checkbox'
-                      checked={u.menus[m]?.canCreate ?? false}
-                      onChange={() => toggle(u.userId, m, 'canCreate')}
+                      checked={u.menus[m.name]?.canCreate ?? false}
+                      onChange={() => toggle(u.userId, m.name, 'canCreate')}
                     />
                   </td>
                   <td>
                     <input
                       type='checkbox'
-                      checked={u.menus[m]?.canUpdate ?? false}
-                      onChange={() => toggle(u.userId, m, 'canUpdate')}
+                      checked={u.menus[m.name]?.canUpdate ?? false}
+                      onChange={() => toggle(u.userId, m.name, 'canUpdate')}
                     />
                   </td>
                   <td>
                     <input
                       type='checkbox'
-                      checked={u.menus[m]?.canDelete ?? false}
-                      onChange={() => toggle(u.userId, m, 'canDelete')}
+                      checked={u.menus[m.name]?.canDelete ?? false}
+                      onChange={() => toggle(u.userId, m.name, 'canDelete')}
                     />
                   </td>
                 </React.Fragment>

@@ -13,13 +13,18 @@ interface PermissionCell {
   canDelete: boolean;
 }
 
+interface MenuItem {
+  name: string;
+  depth: number;
+}
+
 interface RoleMenuPermission {
   role: RoleType;
   menus: Record<string, PermissionCell>;
 }
 
 export default function RolePermission() {
-  const [menus, setMenus] = useState<string[]>([]);
+  const [menus, setMenus] = useState<MenuItem[]>([]);
   const [permissions, setPermissions] = useState<RoleMenuPermission[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -79,16 +84,16 @@ export default function RolePermission() {
       <table className={styles.permissionTable}>
         <thead>
           <tr>
-            <th rowSpan={2}>직급</th>
-            {menus.map(m => (
-              <th key={m} colSpan={3}>
-                {m}
+            <th rowSpan={2}>메뉴</th>
+            {permissions.map(rolePerm => (
+              <th key={rolePerm.role} colSpan={3}>
+                {ROLE_LABELS[rolePerm.role]}
               </th>
             ))}
           </tr>
           <tr>
-            {menus.map(m => (
-              <React.Fragment key={`${m}-sub`}>
+            {permissions.map(rolePerm => (
+              <React.Fragment key={`${rolePerm.role}-sub`}>
                 <th>추가</th>
                 <th>수정</th>
                 <th>삭제</th>
@@ -97,20 +102,20 @@ export default function RolePermission() {
           </tr>
         </thead>
         <tbody>
-          {permissions.map(rolePerm => (
-            <tr key={rolePerm.role}>
-              <td>{ROLE_LABELS[rolePerm.role]}</td>
-              {menus.map(m => {
-                const perm = rolePerm.menus[m];
+          {menus.map(m => (
+            <tr key={m.name} className={styles[`menuDepth${m.depth}`]}>
+              <td>{m.name}</td>
+              {permissions.map(rolePerm => {
+                const perm = rolePerm.menus[m.name];
                 const isAdmin = rolePerm.role === 'admin';
                 return (
-                  <React.Fragment key={`${rolePerm.role}-${m}`}>
+                  <React.Fragment key={`${rolePerm.role}-${m.name}`}>
                     <td>
                       <input
                         type='checkbox'
                         checked={perm?.canCreate ?? false}
                         disabled={isAdmin}
-                        onChange={() => toggle(rolePerm.role, m, 'canCreate')}
+                        onChange={() => toggle(rolePerm.role, m.name, 'canCreate')}
                       />
                     </td>
                     <td>
@@ -118,7 +123,7 @@ export default function RolePermission() {
                         type='checkbox'
                         checked={perm?.canUpdate ?? false}
                         disabled={isAdmin}
-                        onChange={() => toggle(rolePerm.role, m, 'canUpdate')}
+                        onChange={() => toggle(rolePerm.role, m.name, 'canUpdate')}
                       />
                     </td>
                     <td>
@@ -126,7 +131,7 @@ export default function RolePermission() {
                         type='checkbox'
                         checked={perm?.canDelete ?? false}
                         disabled={isAdmin}
-                        onChange={() => toggle(rolePerm.role, m, 'canDelete')}
+                        onChange={() => toggle(rolePerm.role, m.name, 'canDelete')}
                       />
                     </td>
                   </React.Fragment>
