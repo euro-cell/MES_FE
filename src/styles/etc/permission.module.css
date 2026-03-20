@@ -175,6 +175,34 @@
 }
 
 /* ===========================
+   사용자 선택
+=========================== */
+.userSelector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.userSelector label {
+  font-weight: 600;
+  color: #1b263b;
+}
+
+.userSelector select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  min-width: 160px;
+}
+
+.userSelector select:focus {
+  border-color: #1b263b;
+}
+
+/* ===========================
    메뉴 depth 구분
 =========================== */
 .menuDepth1 td {
