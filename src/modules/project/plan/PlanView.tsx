@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getProductionPlan } from '../../../api/project/plan';
+import { getProjectPlan } from '../../../api/project/plan';
 import { exportPlanToStyledExcel } from './exportExcel';
 import styles from '../../../styles/project/plan/PlanView.module.css';
 
@@ -48,14 +48,14 @@ interface PlanResponse {
 export default function PlanView() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const productionId = id ? Number(id) : null;
+  const projectId = id ? Number(id) : null;
 
   const [planData, setPlanData] = useState<PlanResponse | null>(null);
 
   useEffect(() => {
-    if (!productionId) return;
+    if (!projectId) return;
 
-    getProductionPlan(productionId).then(res => {
+    getProjectPlan(projectId).then(res => {
       let data = Array.isArray(res) ? res[0] : res;
 
       if (
@@ -71,7 +71,7 @@ export default function PlanView() {
       }
       setPlanData(data);
     });
-  }, [productionId]);
+  }, [projectId]);
 
   if (!planData) return <p>📦 데이터를 불러오는 중...</p>;
 

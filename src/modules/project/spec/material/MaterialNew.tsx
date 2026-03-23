@@ -29,19 +29,19 @@ interface Material {
 export default function MaterialNew() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const productionId = id ? Number(id) : null;
+  const projectId = id ? Number(id) : null;
   const [projectName, setProjectName] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
   const [materialsMap, setMaterialsMap] = useState<Record<number, Material[]>>({});
   const [rows, setRows] = useState<Row[]>(initialRows);
 
   useEffect(() => {
-    if (!productionId) return;
+    if (!projectId) return;
     getSpecificationSummary().then((list: any[]) => {
-      const found = list.find(p => p.id === productionId);
+      const found = list.find(p => p.id === projectId);
       if (found) setProjectName(found.name);
     });
-  }, [productionId]);
+  }, [projectId]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -162,7 +162,7 @@ export default function MaterialNew() {
           quantity: parseFloat(r.quantity),
         })),
       };
-      await postMaterialRequirements(productionId!, payload);
+      await postMaterialRequirements(projectId!, payload);
       alert('✅ 자재 소요량이 등록되었습니다.');
       navigate(-1);
     } catch (err: any) {

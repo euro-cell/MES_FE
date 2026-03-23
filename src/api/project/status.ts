@@ -11,7 +11,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 /** 프로젝트 목록 조회 */
 export async function getStatusProjects(): Promise<StatusProject[]> {
   try {
-    const response = await axios.get(`${API_BASE}/production`, {
+    const response = await axios.get(`${API_BASE}/project`, {
       withCredentials: true,
     });
     return response.data;
@@ -43,9 +43,9 @@ export async function getMonthlyStatusData(
 }
 
 /** 생산 현황 기본 정보 조회 (startDate, endDate) */
-export async function getProductionStatusInfo(productionId: number): Promise<ProductionStatusInfo> {
+export async function getProjectStatusInfo(projectId: number): Promise<ProductionStatusInfo> {
   try {
-    const response = await axios.get(`${API_BASE}/production/${productionId}/status`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/status`, {
       withCredentials: true,
     });
     return response.data;
@@ -69,7 +69,7 @@ export async function getRealMonthlyData(
     });
     if (electrodeType) params.append('type', electrodeType);
 
-    const response = await axios.get(`${API_BASE}/production/${projectId}/status/${category}?${params}`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/status/${category}?${params}`, {
       withCredentials: true,
     });
     return response.data;
@@ -80,9 +80,9 @@ export async function getRealMonthlyData(
 }
 
 /** 목표수량 수정 API */
-export async function updateTargetQuantity(productionId: number, request: UpdateTargetRequest): Promise<void> {
+export async function updateTargetQuantity(projectId: number, request: UpdateTargetRequest): Promise<void> {
   try {
-    await axios.patch(`${API_BASE}/production/${productionId}/status/target`, request, {
+    await axios.patch(`${API_BASE}/project/${projectId}/status/target`, request, {
       withCredentials: true,
     });
   } catch (error) {

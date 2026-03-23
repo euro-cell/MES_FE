@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { deleteSpecification, getSpecificationSummary, deleteProductionMaterial } from '../../../api/project/spec';
+import { deleteSpecification, getSpecificationSummary, deleteProjectMaterial } from '../../../api/project/spec';
 import TooltipButton from '../../../components/TooltipButton';
 import styles from '../../../styles/project/spec/specList.module.css';
 
@@ -42,11 +42,11 @@ export default function SpecList() {
     }
   };
 
-  const handleMaterialDelete = async (productionId: number, projectName: string) => {
+  const handleMaterialDelete = async (projectId: number, projectName: string) => {
     if (!confirm(`🗑 ${projectName} 자재 정보를 삭제하시겠습니까?`)) return;
 
     try {
-      await deleteProductionMaterial(productionId);
+      await deleteProjectMaterial(projectId);
       alert('✅ 자재 소요량 정보가 삭제되었습니다.');
       loadData(); // 리스트 새로고침
     } catch (err: any) {

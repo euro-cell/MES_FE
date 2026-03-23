@@ -5,7 +5,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 /** IQC 프로젝트 목록 조회 */
 export const getIQCProjects = async (): Promise<IQCProject[]> => {
-  const res = await axios.get(`${API_BASE}/production`, { withCredentials: true });
+  const res = await axios.get(`${API_BASE}/project`, { withCredentials: true });
   return res.data;
 };
 
@@ -16,9 +16,9 @@ export const getIQCProject = async (projectId: number): Promise<IQCProject | nul
 };
 
 /** IQC 목록 조회 */
-export const getIQCList = async (productionId: number): Promise<IQCItem[]> => {
+export const getIQCList = async (projectId: number): Promise<IQCItem[]> => {
   try {
-    const res = await axios.get(`${API_BASE}/quality/iqc/${productionId}`, {
+    const res = await axios.get(`${API_BASE}/quality/iqc/${projectId}`, {
       withCredentials: true,
     });
     return res.data;
@@ -43,10 +43,10 @@ export const getIQCDetail = async (id: number): Promise<IQCItem | null> => {
 
 /** IQC 생성 */
 export const createIQC = async (
-  productionId: number,
+  projectId: number,
   data: IQCItemRequest
 ): Promise<IQCItem> => {
-  const res = await axios.post(`${API_BASE}/quality/iqc/${productionId}`, data, {
+  const res = await axios.post(`${API_BASE}/quality/iqc/${projectId}`, data, {
     withCredentials: true,
   });
   return res.data;

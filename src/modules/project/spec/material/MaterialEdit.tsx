@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from '../../../../styles/project/spec/materialNew.module.css';
 import { getMaterialCategories, getMaterialsByCategory } from '../../../../api/material';
-import { getMaterialsByProduction, updateProductionMaterial, getSpecificationSummary } from '../../../../api/project/spec';
+import { getMaterialsByProject, updateProjectMaterial, getSpecificationSummary } from '../../../../api/project/spec';
 
 export interface Row {
   id: number;
@@ -28,19 +28,19 @@ interface Material {
 export default function MaterialEdit() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const productionId = id ? Number(id) : null;
+  const projectId = id ? Number(id) : null;
   const [projectName, setProjectName] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
   const [materialsMap, setMaterialsMap] = useState<Record<number, Material[]>>({});
   const [rows, setRows] = useState<Row[]>([]);
 
   useEffect(() => {
-    if (!productionId) return;
+    if (!projectId) return;
     getSpecificationSummary().then((list: any[]) => {
-      const found = list.find(p => p.id === productionId);
+      const found = list.find(p => p.id === projectId);
       if (found) setProjectName(found.name);
     });
-  }, [productionId]);
+  }, [projectId]);
 
   // ✅ 분류 목록 로드
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function MaterialEdit() {
   useEffect(() => {
     const fetchExistingMaterials = async () => {
       try {
-        const res = await getMaterialsByProduction(productionId!);
+        const res = await getMaterialsByProject(projectId!);
         const grouped = res.materials || {};
 
         const loadedRows: Row[] = [];
@@ -92,8 +92,8 @@ export default function MaterialEdit() {
       }
     };
 
-    if (productionId && categories.length > 0) fetchExistingMaterials();
-  }, [productionId, categories]);
+    if (projectId && categories.length > 0) fetchExistingMaterials();
+  }, [projectId, categories]);
 
   // ✅ 선택 핸들러들
   const handleCategoryChange = async (rowId: number, category: string) => {
@@ -151,7 +151,7 @@ export default function MaterialEdit() {
         })),
       };
 
-      await updateProductionMaterial(productionId!, payload.materials);
+      await updateProjectMaterial(projectId!, payload.materials);
       alert('✅ 자재 소요량이 수정되었습니다.');
       navigate(-1);
     } catch (err) {

@@ -12,17 +12,17 @@ import styles from '../../../../styles/project/spec/specNew.module.css';
 export default function SpecNew() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const productionId = id ? Number(id) : null;
+  const projectId = id ? Number(id) : null;
   const [projectName, setProjectName] = useState('');
   const [form, setForm] = useState<SpecForm>(initialSpecForm);
 
   useEffect(() => {
-    if (!productionId) return;
+    if (!projectId) return;
     getSpecificationSummary().then((list: any[]) => {
-      const found = list.find(p => p.id === productionId);
+      const found = list.find(p => p.id === projectId);
       if (found) setProjectName(found.name);
     });
-  }, [productionId]);
+  }, [projectId]);
 
   const handleChange = (section: string, field: string, index: number, key: string, value: string) => {
     setForm(prev => {
@@ -59,7 +59,7 @@ export default function SpecNew() {
 
   const handleSubmit = async () => {
     try {
-      await createSpecification(productionId!, form);
+      await createSpecification(projectId!, form);
       alert('✅ 설계 정보가 저장되었습니다.');
       navigate(-1);
     } catch (err: any) {

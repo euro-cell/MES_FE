@@ -46,7 +46,7 @@ export const SLURRY_MULTILINE_FIELDS = ['remark'];
 
 // 자동계산 필드 (읽기 전용) - 자재투입정보 필드는 SlurryRegister에서 동적으로 계산
 export const SLURRY_READONLY_FIELDS = [
-  'productionId',
+  'projectId',
   'solidContent1Percentage',
   'solidContent2Percentage',
   'solidContent3Percentage',

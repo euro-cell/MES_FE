@@ -108,7 +108,7 @@ export default function FillingEdit() {
         // FillingWorklog 데이터를 Named Range에 맞춰 formValues로 변환
         const values: Record<string, any> = {};
         Object.keys(namedRanges).forEach(rangeName => {
-          if (rangeName === 'productionId' && project) {
+          if (rangeName === 'projectId' && project) {
             values[rangeName] = project.name;
           } else if (rangeName === 'electrolyteUsage' && !(data as any)[rangeName]) {
             // 전해액 사용량이 없으면 안내 문구 표시

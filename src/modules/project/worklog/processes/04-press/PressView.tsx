@@ -47,7 +47,7 @@ export default function PressView() {
         // namedRanges 기반으로 동적으로 cellValues 생성
         const values: Record<string, any> = {};
         Object.keys(namedRanges).forEach(rangeName => {
-          if (rangeName === 'productionId' && project) {
+          if (rangeName === 'projectId' && project) {
             values[rangeName] = project.name;
           } else {
             values[rangeName] = (data as any)[rangeName] ?? '';

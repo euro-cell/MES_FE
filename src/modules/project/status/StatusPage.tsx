@@ -6,7 +6,7 @@ import { createCategoryMenus, createMonthMenus, createElectrodeTypeMenus } from 
 import {
   getMonthlyStatusData,
   getRealMonthlyData,
-  getProductionStatusInfo,
+  getProjectStatusInfo,
   updateTargetQuantity,
 } from '../../../api/project/status';
 import { exportStatusToExcel } from './exportStatusExcel';
@@ -68,7 +68,7 @@ export default function StatusPage() {
       if (!projectId) return;
 
       try {
-        const info = await getProductionStatusInfo(Number(projectId));
+        const info = await getProjectStatusInfo(Number(projectId));
         setStatusInfo(info);
       } catch (err) {
         console.error('생산 현황 정보 조회 실패:', err);

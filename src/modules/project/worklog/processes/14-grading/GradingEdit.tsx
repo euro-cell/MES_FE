@@ -70,7 +70,7 @@ export default function GradingEdit() {
         // GradingWorklog 데이터를 Named Range에 맞춰 formValues로 변환
         const values: Record<string, any> = {};
         Object.keys(namedRanges).forEach(rangeName => {
-          if (rangeName === 'productionId' && project) {
+          if (rangeName === 'projectId' && project) {
             values[rangeName] = project.name;
           } else {
             values[rangeName] = (data as any)[rangeName] ?? '';

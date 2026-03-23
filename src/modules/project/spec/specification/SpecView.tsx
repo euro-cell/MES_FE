@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getSpecificationByProject, getMaterialsByProduction, getSpecificationSummary } from '../../../../api/project/spec';
+import { getSpecificationByProject, getMaterialsByProject, getSpecificationSummary } from '../../../../api/project/spec';
 import { exportSpecToExcel } from './exportExcel';
 import type { SpecForm } from './SpecTypes';
 import { initialSpecForm } from './SpecInitialState';
@@ -9,7 +9,7 @@ import styles from '../../../../styles/project/spec/specView.module.css';
 export default function SpecView() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const productionId = id ? Number(id) : null;
+  const projectId = id ? Number(id) : null;
   const [projectName, setProjectName] = useState('');
   const [form, setForm] = useState<SpecForm>(initialSpecForm);
   const [materials, setMaterials] = useState<Record<string, any[]>>({});
@@ -17,19 +17,19 @@ export default function SpecView() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!productionId) return;
+    if (!projectId) return;
 
     const fetchData = async () => {
       try {
         const summary = await getSpecificationSummary();
-        const found = summary.find((p: any) => p.id === productionId);
+        const found = summary.find((p: any) => p.id === projectId);
         if (found) setProjectName(found.name);
       } catch (err) {
         console.error('❌ 프로젝트 목록 조회 실패:', err);
       }
 
       try {
-        const specData = await getSpecificationByProject(productionId);
+        const specData = await getSpecificationByProject(projectId);
         const safeSpec: SpecForm = {
           cathode: specData.cathode ?? initialSpecForm.cathode,
           anode: specData.anode ?? initialSpecForm.anode,
@@ -43,7 +43,7 @@ export default function SpecView() {
       }
 
       try {
-        const materialData = await getMaterialsByProduction(productionId);
+        const materialData = await getMaterialsByProject(projectId);
         setMaterials(materialData.materials ?? {});
       } catch (err) {
         console.error('❌ 자재 소요량 조회 실패:', err);
@@ -53,7 +53,7 @@ export default function SpecView() {
     };
 
     fetchData();
-  }, [productionId]);
+  }, [projectId]);
 
   if (loading) return <div>로딩 중...</div>;
 

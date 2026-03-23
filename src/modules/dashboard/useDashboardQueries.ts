@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getDashboardSummary, getProductionProgress } from '../../api/dashboard/dashboardService';
+import { getDashboardSummary, getProjectProgress } from '../../api/dashboard/dashboardService';
 import type { DashboardProject, DashboardProjectWithPlan } from './types';
 
 export const useDashboardProjects = () => {
@@ -49,10 +49,10 @@ export const useDashboardProjects = () => {
   });
 };
 
-export const useProductionProgress = (projectId: number | null) => {
+export const useProjectProgress = (projectId: number | null) => {
   return useQuery({
     queryKey: ['dashboard', 'progress', projectId],
-    queryFn: () => getProductionProgress(projectId!),
+    queryFn: () => getProjectProgress(projectId!),
     enabled: projectId !== null,
   });
 };

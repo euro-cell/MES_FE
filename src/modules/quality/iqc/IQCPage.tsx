@@ -123,7 +123,7 @@ export default function IQCPage() {
         return (
           <CathodeMaterial1Table
             data={getItemByCategory('양극재')}
-            productionId={Number(projectId)}
+            projectId={Number(projectId)}
             onSave={handleSaveCathodeMaterial1}
           />
         );
@@ -131,7 +131,7 @@ export default function IQCPage() {
         return (
           <CathodeMaterial2Table
             data={getItemByCategory('양극재2')}
-            productionId={Number(projectId)}
+            projectId={Number(projectId)}
             onSave={async (data) => {
               try {
                 const { id: _id, isPassed: _isPassed, ...body } = data as IQCItem;
@@ -162,7 +162,7 @@ export default function IQCPage() {
         return (
           <AnodeMaterialTable
             data={getItemByCategory('음극재')}
-            productionId={Number(projectId)}
+            projectId={Number(projectId)}
             onSave={async (data) => {
               try {
                 const existing = getItemByCategory('음극재');
@@ -184,7 +184,7 @@ export default function IQCPage() {
         return (
           <ConductiveAdditiveTable
             data={getItemByCategory('도전재')}
-            productionId={Number(projectId)}
+            projectId={Number(projectId)}
             onSave={async (data) => {
               try {
                 const existing = getItemByCategory('도전재');
@@ -206,7 +206,7 @@ export default function IQCPage() {
         return (
           <CurrentCollectorTable
             data={getItemByCategory('집전체')}
-            productionId={Number(projectId)}
+            projectId={Number(projectId)}
             onSave={async (data) => {
               try {
                 const existing = getItemByCategory('집전체');
@@ -228,7 +228,7 @@ export default function IQCPage() {
         return (
           <SeparatorTable
             data={getItemByCategory('분리막')}
-            productionId={Number(projectId)}
+            projectId={Number(projectId)}
             onSave={async (data) => {
               try {
                 const existing = getItemByCategory('분리막');
@@ -250,7 +250,7 @@ export default function IQCPage() {
         return (
           <ElectrolyteTable
             data={getItemByCategory('전해액')}
-            productionId={Number(projectId)}
+            projectId={Number(projectId)}
             onSave={async (data) => {
               try {
                 const existing = getItemByCategory('전해액');
@@ -272,7 +272,7 @@ export default function IQCPage() {
         return (
           <PouchTable
             data={getItemByCategory('파우치')}
-            productionId={Number(projectId)}
+            projectId={Number(projectId)}
             onSave={async (data) => {
               try {
                 const existing = getItemByCategory('파우치');
@@ -294,7 +294,7 @@ export default function IQCPage() {
         return (
           <LeadTabTable
             data={getItemByCategory('리드탭')}
-            productionId={Number(projectId)}
+            projectId={Number(projectId)}
             onSave={async (data) => {
               try {
                 const existing = getItemByCategory('리드탭');

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { DashboardProject } from './types';
-import { deleteProduction } from '../../api/dashboard/dashboardService';
+import { deleteProject } from '../../api/dashboard/dashboardService';
 import styles from '../../styles/dashboard/modal.module.css';
 
 interface Props {
@@ -18,7 +18,7 @@ export default function DashboardDeleteModal({ projects, onClose, refreshProject
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     setLoading(true);
     try {
-      await deleteProduction(selectedId);
+      await deleteProject(selectedId);
       alert('🗑️ 삭제 완료');
       await refreshProjects();
       onClose();

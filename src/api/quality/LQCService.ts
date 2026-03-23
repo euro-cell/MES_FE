@@ -5,7 +5,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 /** LQC 프로젝트 목록 조회 */
 export const getLQCProjects = async (): Promise<LQCProject[]> => {
-  const res = await axios.get(`${API_BASE}/production`, { withCredentials: true });
+  const res = await axios.get(`${API_BASE}/project`, { withCredentials: true });
   return res.data;
 };
 
@@ -249,9 +249,9 @@ export interface FinalSealingData {
 
 /** Final Sealing 데이터 조회 */
 export const getLQCFinalSealingData = async (
-  productionId: number
+  projectId: number
 ): Promise<FinalSealingData[]> => {
-  const res = await axios.get(`${API_BASE}/quality/lqc/${productionId}/final-sealing`, {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/final-sealing`, {
     withCredentials: true,
   });
   return res.data;
@@ -303,9 +303,9 @@ export interface SealingData {
 
 /** Sealing 데이터 조회 */
 export const getLQCSealingData = async (
-  productionId: number
+  projectId: number
 ): Promise<SealingData[]> => {
-  const res = await axios.get(`${API_BASE}/quality/lqc/${productionId}/sealing`, {
+  const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/sealing`, {
     withCredentials: true,
   });
   return res.data;

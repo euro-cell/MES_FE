@@ -44,7 +44,7 @@ export default function CoatingView() {
 
         const values: Record<string, any> = {};
         Object.keys(namedRanges).forEach(rangeName => {
-          if (rangeName === 'productionId' && project) {
+          if (rangeName === 'projectId' && project) {
             values[rangeName] = project.name;
           } else {
             values[rangeName] = (data as any)[rangeName] ?? '';

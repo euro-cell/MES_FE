@@ -5,7 +5,7 @@ import { getMaterialsByCategory, getMaterialLots } from '../../../../api/materia
 
 interface ElectrolyteTableProps {
   data?: IQCItem;
-  productionId: number;
+  projectId: number;
   onSave?: (data: Partial<IQCItem>) => Promise<void>;
 }
 

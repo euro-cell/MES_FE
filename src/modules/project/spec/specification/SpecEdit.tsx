@@ -12,21 +12,21 @@ import styles from '../../../../styles/project/spec/specNew.module.css';
 export default function SpecEdit() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const productionId = id ? Number(id) : null;
+  const projectId = id ? Number(id) : null;
   const [projectName, setProjectName] = useState('');
   const [form, setForm] = useState<SpecForm>(initialSpecForm);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!productionId) return;
+    if (!projectId) return;
 
     const fetchData = async () => {
       try {
         const summary = await getSpecificationSummary();
-        const found = summary.find((p: any) => p.id === productionId);
+        const found = summary.find((p: any) => p.id === projectId);
         if (found) setProjectName(found.name);
 
-        const data = await getSpecificationByProject(productionId);
+        const data = await getSpecificationByProject(projectId);
         const safeData: SpecForm = {
           cathode: data.cathode ?? initialSpecForm.cathode,
           anode: data.anode ?? initialSpecForm.anode,
@@ -43,7 +43,7 @@ export default function SpecEdit() {
     };
 
     fetchData();
-  }, [productionId]);
+  }, [projectId]);
 
   const handleChange = (section: string, field: string, index: number, key: string, value: string) => {
     setForm(prev => {
@@ -80,9 +80,9 @@ export default function SpecEdit() {
 
   const handleSubmit = async () => {
     try {
-      await updateSpecification(productionId!, form);
+      await updateSpecification(projectId!, form);
       alert('✅ 설계 정보가 수정되었습니다.');
-      navigate(`../view/${productionId}`);
+      navigate(`../view/${projectId}`);
     } catch (err: any) {
       console.error('❌ 설계 수정 실패:', err);
       if (err.response) {

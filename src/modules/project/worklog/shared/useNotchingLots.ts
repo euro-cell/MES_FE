@@ -4,10 +4,10 @@ import { getNotchingLots, type NotchingLotsResponse } from '../../../../api/proj
 /**
  * 노칭 작업일지 LOT 목록을 로드하는 커스텀 훅
  * VD 작업일지에서 양극/음극 매거진 LOT 드롭다운에 사용
- * @param productionId - 프로젝트(생산) ID
+ * @param projectId - 프로젝트 ID
  * @returns 양극/음극 LOT 목록, loading, error 상태
  */
-export function useNotchingLots(productionId?: string | number) {
+export function useNotchingLots(projectId?: string | number) {
   const [cathodeLots, setCathodeLots] = useState<string[]>([]);
   const [anodeLots, setAnodeLots] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ export function useNotchingLots(productionId?: string | number) {
 
   useEffect(() => {
     const loadLots = async () => {
-      if (!productionId) {
+      if (!projectId) {
         setCathodeLots([]);
         setAnodeLots([]);
         return;
@@ -24,7 +24,7 @@ export function useNotchingLots(productionId?: string | number) {
       try {
         setLoading(true);
         setError(null);
-        const data: NotchingLotsResponse = await getNotchingLots(Number(productionId));
+        const data: NotchingLotsResponse = await getNotchingLots(Number(projectId));
         setCathodeLots(data.cathodeLots || []);
         setAnodeLots(data.anodeLots || []);
       } catch (err) {
@@ -38,7 +38,7 @@ export function useNotchingLots(productionId?: string | number) {
     };
 
     loadLots();
-  }, [productionId]);
+  }, [projectId]);
 
   return { cathodeLots, anodeLots, loading, error };
 }

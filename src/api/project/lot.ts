@@ -21,7 +21,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 /** 프로젝트 목록 조회 */
 export async function getLotProjects(): Promise<LotProject[]> {
   try {
-    const response = await axios.get(`${API_BASE}/production`, {
+    const response = await axios.get(`${API_BASE}/project`, {
       withCredentials: true,
     });
     return response.data.map((p: any) => ({
@@ -50,7 +50,7 @@ export async function getProjectInfo(projectId: number): Promise<LotProject | nu
 /** Lot 데이터 동기화 */
 export async function syncLotData(projectId: number, process: string): Promise<void> {
   try {
-    await axios.post(`${API_BASE}/production/${projectId}/lot/sync`, null, {
+    await axios.post(`${API_BASE}/project/${projectId}/lot/sync`, null, {
       params: { process: process.toLowerCase() },
       withCredentials: true,
     });
@@ -63,7 +63,7 @@ export async function syncLotData(projectId: number, process: string): Promise<v
 /** Sync 상태 조회 */
 export async function getSyncStatus(projectId: number, process: string): Promise<SyncStatus | null> {
   try {
-    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/sync`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/lot/sync`, {
       params: { process: process.toLowerCase() },
       withCredentials: true,
     });
@@ -77,7 +77,7 @@ export async function getSyncStatus(projectId: number, process: string): Promise
 /** Mixing 데이터 조회 */
 export async function getMixingData(projectId: number): Promise<MixingData[]> {
   try {
-    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/mixing`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/lot/mixing`, {
       withCredentials: true,
     });
     return response.data;
@@ -90,7 +90,7 @@ export async function getMixingData(projectId: number): Promise<MixingData[]> {
 /** Coating 데이터 조회 */
 export async function getCoatingData(projectId: number): Promise<CoatingData[]> {
   try {
-    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/coating`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/lot/coating`, {
       withCredentials: true,
     });
     return response.data;
@@ -103,7 +103,7 @@ export async function getCoatingData(projectId: number): Promise<CoatingData[]> 
 /** Calendering 데이터 조회 */
 export async function getCalenderingData(projectId: number): Promise<CalenderingData[]> {
   try {
-    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/calendering`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/lot/calendering`, {
       withCredentials: true,
     });
     return response.data;
@@ -118,7 +118,7 @@ export async function getSlittingData(projectId: number): Promise<SlittingData[]
   console.log('Slitting 데이터 조회 - projectId:', projectId);
 
   // TODO: 백엔드 API 연동 시 아래 코드로 교체
-  // const response = await axios.get(`${API_BASE}/production/${projectId}/lot/slitting`, {
+  // const response = await axios.get(`${API_BASE}/project/${projectId}/lot/slitting`, {
   //   withCredentials: true,
   // });
   // return response.data;
@@ -155,7 +155,7 @@ export async function getSlittingData(projectId: number): Promise<SlittingData[]
 /** Notching 데이터 조회 */
 export async function getNotchingData(projectId: number): Promise<NotchingData[]> {
   try {
-    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/notching`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/lot/notching`, {
       withCredentials: true,
     });
     return response.data;
@@ -168,7 +168,7 @@ export async function getNotchingData(projectId: number): Promise<NotchingData[]
 /** Stacking 데이터 조회 */
 export async function getStackingData(projectId: number): Promise<StackingData[]> {
   try {
-    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/stacking`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/lot/stacking`, {
       withCredentials: true,
     });
     return response.data;
@@ -181,7 +181,7 @@ export async function getStackingData(projectId: number): Promise<StackingData[]
 /** Welding 데이터 조회 */
 export async function getWeldingData(projectId: number): Promise<WeldingData[]> {
   try {
-    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/welding`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/lot/welding`, {
       withCredentials: true,
     });
     return response.data;
@@ -194,7 +194,7 @@ export async function getWeldingData(projectId: number): Promise<WeldingData[]> 
 /** Sealing/Filling 데이터 조회 */
 export async function getSealingData(projectId: number): Promise<SealingData[]> {
   try {
-    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/sealing`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/lot/sealing`, {
       withCredentials: true,
     });
     return response.data;
@@ -207,7 +207,7 @@ export async function getSealingData(projectId: number): Promise<SealingData[]> 
 /** Formation 데이터 조회 */
 export async function getFormationData(projectId: number): Promise<FormationData[]> {
   try {
-    const response = await axios.get(`${API_BASE}/production/${projectId}/lot/formation`, {
+    const response = await axios.get(`${API_BASE}/project/${projectId}/lot/formation`, {
       withCredentials: true,
     });
     return response.data;
@@ -236,7 +236,7 @@ export async function registerRawData(
   data: Record<string, any>[],
 ): Promise<RegisterRawDataResponse> {
   const response = await axios.post(
-    `${API_BASE}/production/${projectId}/lot/rawdata`,
+    `${API_BASE}/project/${projectId}/lot/rawdata`,
     { headers, data },
     { withCredentials: true },
   );
@@ -245,7 +245,7 @@ export async function registerRawData(
 
 /** Lot 관리 엑셀 다운로드 (모든 공정 데이터 - 각 시트별) */
 export async function downloadLotExcel(projectId: number, projectName: string): Promise<void> {
-  const res = await axios.get(`${API_BASE}/production/${projectId}/lot/export`, {
+  const res = await axios.get(`${API_BASE}/project/${projectId}/lot/export`, {
     withCredentials: true,
     responseType: 'blob',
   });
@@ -281,7 +281,7 @@ export async function downloadLotExcel(projectId: number, projectName: string): 
 /** 셀 Lot으로 통합 검색 */
 export async function searchLot(cellLotNumber: string): Promise<LotSearchResult | null> {
   try {
-    const response = await axios.get(`${API_BASE}/production/lot/search`, {
+    const response = await axios.get(`${API_BASE}/project/lot/search`, {
       params: { lot: cellLotNumber },
       withCredentials: true,
     });

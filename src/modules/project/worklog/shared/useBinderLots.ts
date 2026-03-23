@@ -3,17 +3,17 @@ import { getBinderLots, type BinderLot } from '../../../../api/project/worklog';
 
 /**
  * Binder 작업일지 LOT 목록을 로드하는 커스텀 훅
- * @param productionId - 프로젝트(생산) ID
+ * @param projectId - 프로젝트 ID
  * @returns lots 목록, lotOptions(드롭다운용), loading, error 상태, getLotSolidContent 함수
  */
-export function useBinderLots(productionId?: string | number) {
+export function useBinderLots(projectId?: string | number) {
   const [lots, setLots] = useState<BinderLot[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const loadLots = async () => {
-      if (!productionId) {
+      if (!projectId) {
         setLots([]);
         return;
       }
@@ -21,7 +21,7 @@ export function useBinderLots(productionId?: string | number) {
       try {
         setLoading(true);
         setError(null);
-        const data = await getBinderLots(Number(productionId));
+        const data = await getBinderLots(Number(projectId));
         setLots(data);
       } catch (err) {
         console.error('Binder LOT 조회 실패:', err);
@@ -33,7 +33,7 @@ export function useBinderLots(productionId?: string | number) {
     };
 
     loadLots();
-  }, [productionId]);
+  }, [projectId]);
 
   // LOT 번호 문자열 배열 (드롭다운용)
   const lotOptions = lots.map(l => l.lotNumber);

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import Chart from 'chart.js/auto';
 import { renderProcessChart } from './chartUtils';
-import { createProduction, getProductionProgress } from '../../api/dashboard/dashboardService';
+import { createProject, getProjectProgress } from '../../api/dashboard/dashboardService';
 import { useDashboardProjects } from './useDashboardQueries';
 import type { DashboardProject, DashboardProgressData, DashboardFormState } from './types';
 import DashboardSummary from './DashboardSummary';
@@ -39,7 +39,7 @@ export default function DashboardContent() {
   const renderChart = async (project: DashboardProject) => {
     try {
       if (chart) chart.destroy();
-      const data = await getProductionProgress(project.id);
+      const data = await getProjectProgress(project.id);
       const { newChart, progressData } = renderProcessChart('processChart', project.name, data);
       setChart(newChart);
       setProgress(progressData);
@@ -69,7 +69,7 @@ export default function DashboardContent() {
         <DashboardProjectManager
           form={form}
           setForm={setForm}
-          onSubmit={createProduction}
+          onSubmit={createProject}
           refreshProjects={refreshProjects}
           projects={projects}
         />

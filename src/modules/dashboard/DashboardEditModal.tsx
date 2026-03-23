@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { DashboardProject, DashboardFormState } from './types';
-import { updateProduction } from '../../api/dashboard/dashboardService';
+import { updateProject } from '../../api/dashboard/dashboardService';
 import styles from '../../styles/dashboard/modal.module.css';
 
 interface Props {
@@ -49,7 +49,7 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
     if (!selected) return alert('수정할 프로젝트를 선택하세요.');
     setLoading(true);
     try {
-      await updateProduction(selected.id, form);
+      await updateProject(selected.id, form);
       alert('✅ 수정 완료');
       await refreshProjects();
       onClose();

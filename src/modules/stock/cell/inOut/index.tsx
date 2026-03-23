@@ -47,7 +47,7 @@ export default function InOutIndex() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch(`${API_BASE}/production`);
+        const response = await fetch(`${API_BASE}/project`);
         const data = await response.json();
         const names = data.map((item: any) => item.name || item.projectName);
         setProjectList(names);

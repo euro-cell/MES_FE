@@ -3,17 +3,17 @@ import { getSlurryLots, type SlurryLot } from '../../../../api/project/worklog';
 
 /**
  * 슬러리 작업일지 LOT 목록을 로드하는 커스텀 훅
- * @param productionId - 프로젝트(생산) ID
+ * @param projectId - 프로젝트 ID
  * @returns lots 목록, lotOptions, loading, error 상태 및 LOT 정보 조회 함수
  */
-export function useSlurryLots(productionId?: string | number) {
+export function useSlurryLots(projectId?: string | number) {
   const [lots, setLots] = useState<SlurryLot[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const loadLots = async () => {
-      if (!productionId) {
+      if (!projectId) {
         setLots([]);
         return;
       }
@@ -21,7 +21,7 @@ export function useSlurryLots(productionId?: string | number) {
       try {
         setLoading(true);
         setError(null);
-        const data = await getSlurryLots(Number(productionId));
+        const data = await getSlurryLots(Number(projectId));
         setLots(data);
       } catch (err) {
         console.error('슬러리 LOT 조회 실패:', err);
@@ -33,7 +33,7 @@ export function useSlurryLots(productionId?: string | number) {
     };
 
     loadLots();
-  }, [productionId]);
+  }, [projectId]);
 
   // LOT 번호 문자열 배열 (드롭다운용)
   const lotOptions = lots.map(l => l.lotNumber);

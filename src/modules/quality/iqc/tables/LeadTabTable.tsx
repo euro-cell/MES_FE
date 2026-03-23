@@ -8,7 +8,7 @@ const IMAGE_TYPES = ['모식도면'];
 
 interface LeadTabTableProps {
   data?: IQCItem;
-  productionId: number;
+  projectId: number;
   onSave?: (data: Partial<IQCItem>) => Promise<void>;
 }
 

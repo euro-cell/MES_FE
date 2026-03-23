@@ -229,7 +229,7 @@ export const PROCESS_DEFAULT_FIELDS: Record<ProcessType, string[]> = {
 };
 
 // 불러오기에서 제외할 필드 (프로젝트별, 날짜별로 다른 값)
-const EXCLUDED_FIELDS = ['productionId', 'manufactureDate', 'writer'];
+const EXCLUDED_FIELDS = ['projectId', 'manufactureDate', 'writer'];
 
 /**
  * 작업일지 기본값 저장

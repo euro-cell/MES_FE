@@ -12,7 +12,7 @@ export interface InspectionWorklog {
   plant?: string;
 
   // A. 자재 투입 정보
-  productionId?: string;
+  projectId?: string;
   cellNumberRange?: string;
 
   // B. 생산 정보 - 가스 발생
@@ -71,7 +71,7 @@ export interface InspectionWorklogPayload {
   plant?: any;
 
   // A. 자재 투입 정보
-  productionId?: string;
+  projectId?: string;
   cellNumberRange?: string;
 
   // B. 생산 정보 - 가스 발생

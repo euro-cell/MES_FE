@@ -6,7 +6,7 @@ import { uploadIQCImages, deleteIQCImage } from '../../../../api/quality/IQCServ
 
 interface CathodeMaterial1TableProps {
   data?: IQCItem;
-  productionId: number;
+  projectId: number;
   onSave?: (data: Partial<IQCItem>) => Promise<void>;
 }
 

@@ -41,7 +41,7 @@ function parsePsdText(text: string): IQCPsdData[] {
 
 interface AnodeMaterialTableProps {
   data?: IQCItem;
-  productionId: number;
+  projectId: number;
   onSave?: (data: Partial<IQCItem>) => Promise<void>;
 }
 

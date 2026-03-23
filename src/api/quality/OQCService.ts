@@ -22,7 +22,7 @@ export interface SpecValue {
 
 /** OQC 프로젝트 목록 조회 */
 export const getOQCProjects = async (): Promise<OQCProject[]> => {
-  const res = await axios.get(`${API_BASE}/production`, { withCredentials: true });
+  const res = await axios.get(`${API_BASE}/project`, { withCredentials: true });
   return res.data;
 };
 

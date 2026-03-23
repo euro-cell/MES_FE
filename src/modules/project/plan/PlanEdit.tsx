@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styles from '../../../styles/project/plan/PlanRegister.module.css';
-import { getProductionPlan, updateProductionPlan } from '../../../api/project/plan';
+import { getProjectPlan, updateProjectPlan } from '../../../api/project/plan';
 import type { PlanPayload } from './PlanTypes';
 import DateInput from '../../../components/DateInput';
 
@@ -39,7 +39,7 @@ export default function PlanEdit() {
 
     const fetchPlan = async () => {
       try {
-        const res = await getProductionPlan(projectId);
+        const res = await getProjectPlan(projectId);
         const data = Array.isArray(res) ? res[0] : res;
 
         if (data.production?.name) setProjectName(data.production.name);
@@ -139,7 +139,7 @@ export default function PlanEdit() {
     const payload: PlanPayload = { startDate, endDate, weekInfo, processPlans };
 
     try {
-      await updateProductionPlan(projectId!, payload); // ✅ 수정용 PATCH
+      await updateProjectPlan(projectId!, payload); // ✅ 수정용 PATCH
       alert('✅ 수정 완료!');
       navigate('/project/plan');
     } catch (err) {

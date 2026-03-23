@@ -17,7 +17,7 @@ const categoryNameMap: Record<string, string> = {
 export async function exportStatusToExcel(params: ExportStatusExcelParams): Promise<void> {
   const { projectId, projectName, category } = params;
 
-  const response = await fetch(`${API_BASE}/production/${projectId}/status/${category}/export`, {
+  const response = await fetch(`${API_BASE}/project/${projectId}/status/${category}/export`, {
     method: 'GET',
     credentials: 'include',
   });
