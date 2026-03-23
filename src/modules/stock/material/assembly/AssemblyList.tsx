@@ -12,6 +12,7 @@ import AddAssemblyModal from './AddAssemblyModal';
 import DeleteAssemblyModal from './DeleteAssemblyModal';
 import UploadMaterialModal, { type MaterialUploadData } from '../shared/UploadMaterialModal';
 import CoAModal from '../shared/CoAModal';
+import MaterialTable from '../shared/MaterialTable';
 import styles from '../../../../styles/stock/material/assembly.module.css';
 
 const INITIAL_FORM_DATA: Omit<AssemblyMaterial, 'id'> = {
@@ -267,73 +268,12 @@ export default function AssemblyList() {
           <p style={{ color: 'red', padding: '20px' }}>데이터 조회 실패</p>
         ) : (
           <div className={styles.tableWrapper}>
-            <table className={styles.assemblyTable}>
-              <thead>
-                <tr>
-                  <th>
-                    자재
-                    <br />
-                    (중분류)
-                  </th>
-                  <th>
-                    종류
-                    <br />
-                    (소분류)
-                  </th>
-                  <th>용도</th>
-                  <th>제품명</th>
-                  <th>규격</th>
-                  <th>Lot No.</th>
-                  <th>
-                    제조
-                    <br />
-                    공급처
-                  </th>
-                  <th>
-                    국내
-                    <br />외
-                  </th>
-                  <th>단위</th>
-                  <th>가격</th>
-                  <th>비고</th>
-                  <th>재고</th>
-                  <th>관리</th>
-                </tr>
-              </thead>
-              <tbody>
-                {materials.map(material => (
-                  <tr key={material.id}>
-                    <td>{material.category}</td>
-                    <td>{material.type}</td>
-                    <td>{material.purpose}</td>
-                    <td>{material.name}</td>
-                    <td className={styles.specCell}>
-                      <span title={material.spec} className={styles.specText}>
-                        {material.spec}
-                      </span>
-                    </td>
-                    <td>{material.lotNo}</td>
-                    <td>{material.company}</td>
-                    <td className={styles.domesticCell}>{material.origin}</td>
-                    <td>{material.unit}</td>
-                    <td className={styles.priceCell}>{Math.floor(material.price ?? 0).toLocaleString('ko-KR')}</td>
-                    <td>{material.note}</td>
-                    <td className={styles.inventoryCell}>{material.stock}</td>
-                    <td className={styles.managementCell}>
-                      <button className={styles.coaButton} onClick={() => handleOpenCoAModal(material)}>
-                        CoA
-                      </button>
-                      <button className={styles.editButton} onClick={() => handleEditMaterial(material)}>
-                        수정
-                      </button>
-                      <button className={styles.deleteButton} onClick={() => handleDeleteMaterial(material.id)}>
-                        삭제
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <MaterialTable
+              data={materials}
+              onEdit={handleEditMaterial}
+              onDelete={handleDeleteMaterial}
+              onCoA={handleOpenCoAModal}
+            />
           </div>
         )
       ) : (

@@ -18,10 +18,11 @@
 
 .layoutContent {
   flex: 1;
-  padding: 20px;
+  padding: 20px 10px;
   background: #f8fafc;
   box-sizing: border-box;
   overflow-y: auto;
+  overflow-x: auto;
 }
 
 .layoutContent::-webkit-scrollbar {
