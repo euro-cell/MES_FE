@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '../styles/draw/PdfViewer.module.css';
+import { useViewerControls } from '../hooks/useViewerControls';
 
 interface ImageViewerProps {
   imageUrls: string[];
@@ -15,58 +16,55 @@ function LoadingSpinner() {
   );
 }
 
+// 인접 이미지 prefetch
+function usePrefetch(imageUrls: string[], currentPage: number) {
+  useEffect(() => {
+    const targets = [
+      imageUrls[currentPage],     // 다음 페이지
+      imageUrls[currentPage - 2], // 이전 페이지
+    ].filter((url): url is string => !!url);
+
+    targets.forEach(url => {
+      const img = new Image();
+      img.src = url;
+    });
+  }, [imageUrls, currentPage]);
+}
+
 export default function ImageViewer({ imageUrls, fileName }: ImageViewerProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [scale, setScale] = useState(1.0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [displayedUrl, setDisplayedUrl] = useState(imageUrls[0]);
+
+  const { scale, wrapperRef, zoomIn, zoomOut, resetZoom, isDragging, dragHandlers } = useViewerControls();
 
   const numPages = imageUrls.length;
 
-  const goToPrevPage = () => {
+  usePrefetch(imageUrls, currentPage);
+
+  // imageUrls 변경 시 초기화
+  useEffect(() => {
+    setCurrentPage(1);
+    resetZoom();
     setIsLoading(true);
-    setCurrentPage(prev => Math.max(prev - 1, 1));
+    setDisplayedUrl(imageUrls[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageUrls]);
+
+  const goToPrevPage = () => {
+    if (currentPage <= 1) return;
+    const next = currentPage - 1;
+    setIsLoading(true);
+    setCurrentPage(next);
+    setDisplayedUrl(imageUrls[next - 1]);
   };
 
   const goToNextPage = () => {
+    if (currentPage >= numPages) return;
+    const next = currentPage + 1;
     setIsLoading(true);
-    setCurrentPage(prev => Math.min(prev + 1, numPages));
-  };
-
-  const zoomIn = () => {
-    setScale(prev => Math.min(prev + 0.2, 3.0));
-  };
-
-  const zoomOut = () => {
-    setScale(prev => Math.max(prev - 0.2, 0.5));
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setStartPos({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !wrapperRef.current) return;
-    const dx = e.clientX - startPos.x;
-    const dy = e.clientY - startPos.y;
-    wrapperRef.current.scrollLeft -= dx;
-    wrapperRef.current.scrollTop -= dy;
-    setStartPos({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleImageLoad = () => {
-    setIsLoading(false);
-  };
-
-  const handleImageError = () => {
-    setIsLoading(false);
+    setCurrentPage(next);
+    setDisplayedUrl(imageUrls[next - 1]);
   };
 
   if (!imageUrls || imageUrls.length === 0) {
@@ -79,25 +77,19 @@ export default function ImageViewer({ imageUrls, fileName }: ImageViewerProps) {
     );
   }
 
-  const currentImageUrl = imageUrls[currentPage - 1];
-
   return (
     <div className={styles.pdfViewer}>
       <div className={styles.controls}>
         <div className={styles.pageControls}>
-          <button onClick={goToPrevPage} disabled={currentPage <= 1 || isLoading}>
-            이전
-          </button>
-          <span>
-            {currentPage} / {numPages}
-          </span>
-          <button onClick={goToNextPage} disabled={currentPage >= numPages || isLoading}>
-            다음
-          </button>
+          <button onClick={goToPrevPage} disabled={currentPage <= 1 || isLoading}>이전</button>
+          <span>{currentPage} / {numPages}</span>
+          <button onClick={goToNextPage} disabled={currentPage >= numPages || isLoading}>다음</button>
         </div>
         <div className={styles.zoomControls}>
           <button onClick={zoomOut} disabled={isLoading}>-</button>
-          <span>{Math.round(scale * 100)}%</span>
+          <button className={styles.zoomReset} onClick={resetZoom} disabled={isLoading} title="배율 초기화">
+            {Math.round(scale * 100)}%
+          </button>
           <button onClick={zoomIn} disabled={isLoading}>+</button>
         </div>
       </div>
@@ -105,22 +97,20 @@ export default function ImageViewer({ imageUrls, fileName }: ImageViewerProps) {
       <div
         ref={wrapperRef}
         className={`${styles.documentWrapper} ${isDragging ? styles.dragging : ''}`}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        {...dragHandlers}
       >
         {isLoading && <LoadingSpinner />}
         <div style={{
           transform: `scale(${scale})`,
           transformOrigin: 'top left',
-          visibility: isLoading ? 'hidden' : 'visible'
+          visibility: isLoading ? 'hidden' : 'visible',
         }}>
           <img
-            src={currentImageUrl}
+            key={displayedUrl}
+            src={displayedUrl}
             alt={`Page ${currentPage}`}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
+            onLoad={() => setIsLoading(false)}
+            onError={() => setIsLoading(false)}
             style={{ display: 'block', maxWidth: 'none' }}
             draggable={false}
           />

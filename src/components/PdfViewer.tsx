@@ -1,14 +1,18 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import styles from '../styles/draw/PdfViewer.module.css';
+import { useViewerControls } from '../hooks/useViewerControls';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+// Worker를 로컬 번들로 로드 (CDN 의존 제거)
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
 
-// PDF.js 옵션 설정 (캐싱 및 성능 최적화)
 const options = {
-  cMapUrl: `//unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+  cMapUrl: new URL('pdfjs-dist/cmaps/', import.meta.url).toString(),
   cMapPacked: true,
-  standardFontDataUrl: `//unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
+  standardFontDataUrl: new URL('pdfjs-dist/standard_fonts/', import.meta.url).toString(),
 };
 
 interface PdfViewerProps {
@@ -16,7 +20,6 @@ interface PdfViewerProps {
   fileName?: string;
 }
 
-// 로딩 스피너 컴포넌트
 function LoadingSpinner() {
   return (
     <div className={styles.loadingContainer}>
@@ -29,21 +32,33 @@ function LoadingSpinner() {
 export default function PdfViewer({ fileUrl, fileName }: PdfViewerProps) {
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const [scale, setScale] = useState<number>(1.0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [isDocumentLoading, setIsDocumentLoading] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(true);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(800);
+
+  const { scale, wrapperRef, zoomIn, zoomOut, resetZoom, isDragging, dragHandlers } = useViewerControls();
 
   const isLoading = isDocumentLoading || isPageLoading;
 
-  // fileUrl이 변경될 때마다 로딩 상태 초기화
+  // 컨테이너 너비 감지 (ResizeObserver)
+  useEffect(() => {
+    if (!wrapperRef.current) return;
+    const observer = new ResizeObserver(entries => {
+      const width = entries[0]?.contentRect.width;
+      if (width && width > 0) setContainerWidth(width);
+    });
+    observer.observe(wrapperRef.current);
+    return () => observer.disconnect();
+  }, [wrapperRef]);
+
+  // fileUrl 변경 시 상태 초기화
   const memoizedFile = useMemo(() => {
     setIsDocumentLoading(true);
     setIsPageLoading(true);
     setPageNumber(1);
+    resetZoom();
     return fileUrl;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileUrl]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
@@ -56,44 +71,16 @@ export default function PdfViewer({ fileUrl, fileName }: PdfViewerProps) {
     setIsPageLoading(false);
   };
 
-  const onPageRenderSuccess = () => {
-    setIsPageLoading(false);
-  };
-
   const goToPrevPage = () => {
+    if (pageNumber <= 1) return;
     setIsPageLoading(true);
-    setPageNumber(prev => Math.max(prev - 1, 1));
+    setPageNumber(prev => prev - 1);
   };
 
   const goToNextPage = () => {
+    if (pageNumber >= numPages) return;
     setIsPageLoading(true);
-    setPageNumber(prev => Math.min(prev + 1, numPages));
-  };
-
-  const zoomIn = () => {
-    setScale(prev => Math.min(prev + 0.2, 3.0));
-  };
-
-  const zoomOut = () => {
-    setScale(prev => Math.max(prev - 0.2, 0.5));
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setStartPos({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !wrapperRef.current) return;
-    const dx = e.clientX - startPos.x;
-    const dy = e.clientY - startPos.y;
-    wrapperRef.current.scrollLeft -= dx;
-    wrapperRef.current.scrollTop -= dy;
-    setStartPos({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
+    setPageNumber(prev => prev + 1);
   };
 
   if (!fileUrl) {
@@ -106,23 +93,21 @@ export default function PdfViewer({ fileUrl, fileName }: PdfViewerProps) {
     );
   }
 
+  const pageWidth = containerWidth - 32;
+
   return (
     <div className={styles.pdfViewer}>
       <div className={styles.controls}>
         <div className={styles.pageControls}>
-          <button onClick={goToPrevPage} disabled={pageNumber <= 1 || isLoading}>
-            이전
-          </button>
-          <span>
-            {isLoading ? '-' : pageNumber} / {isLoading ? '-' : numPages}
-          </span>
-          <button onClick={goToNextPage} disabled={pageNumber >= numPages || isLoading}>
-            다음
-          </button>
+          <button onClick={goToPrevPage} disabled={pageNumber <= 1 || isLoading}>이전</button>
+          <span>{isLoading ? '-' : pageNumber} / {isLoading ? '-' : numPages}</span>
+          <button onClick={goToNextPage} disabled={pageNumber >= numPages || isLoading}>다음</button>
         </div>
         <div className={styles.zoomControls}>
           <button onClick={zoomOut} disabled={isLoading}>-</button>
-          <span>{Math.round(scale * 100)}%</span>
+          <button className={styles.zoomReset} onClick={resetZoom} disabled={isLoading} title="배율 초기화">
+            {Math.round(scale * 100)}%
+          </button>
           <button onClick={zoomIn} disabled={isLoading}>+</button>
         </div>
       </div>
@@ -130,10 +115,7 @@ export default function PdfViewer({ fileUrl, fileName }: PdfViewerProps) {
       <div
         ref={wrapperRef}
         className={`${styles.documentWrapper} ${isDragging ? styles.dragging : ''}`}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        {...dragHandlers}
       >
         {isLoading && <LoadingSpinner />}
         <Document
@@ -142,18 +124,32 @@ export default function PdfViewer({ fileUrl, fileName }: PdfViewerProps) {
           onLoadError={onDocumentLoadError}
           options={options}
         >
+          {/* 현재 페이지 */}
           <div style={{
             transform: `scale(${scale})`,
             transformOrigin: 'top left',
-            visibility: isLoading ? 'hidden' : 'visible'
+            visibility: isLoading ? 'hidden' : 'visible',
           }}>
             <Page
               pageNumber={pageNumber}
+              width={pageWidth}
               renderTextLayer={false}
               renderAnnotationLayer={false}
-              onRenderSuccess={onPageRenderSuccess}
+              onRenderSuccess={() => setIsPageLoading(false)}
             />
           </div>
+
+          {/* 다음 페이지 프리렌더 (숨김) */}
+          {!isDocumentLoading && pageNumber < numPages && (
+            <div style={{ position: 'absolute', visibility: 'hidden', pointerEvents: 'none', top: 0, left: 0 }}>
+              <Page
+                pageNumber={pageNumber + 1}
+                width={pageWidth}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+              />
+            </div>
+          )}
         </Document>
       </div>
     </div>

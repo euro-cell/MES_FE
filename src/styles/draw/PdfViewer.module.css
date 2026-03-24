@@ -42,9 +42,15 @@
   background: #f0f0f0;
 }
 
-.pageControls button:disabled {
+.pageControls button:disabled,
+.zoomControls button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.zoomReset {
+  min-width: 52px;
+  font-variant-numeric: tabular-nums;
 }
 
 .pageControls span {

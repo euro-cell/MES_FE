@@ -8,6 +8,9 @@ export default defineConfig(() => {
 
   return {
     plugins: [react()],
+    optimizeDeps: {
+      include: ['pdfjs-dist/build/pdf.worker.min.mjs'],
+    },
     server: {
       host: '0.0.0.0',
       port: 80,
