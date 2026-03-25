@@ -11,6 +11,11 @@ export default defineConfig(() => {
     optimizeDeps: {
       include: ['pdfjs-dist/build/pdf.worker.min.mjs'],
     },
+    preview: {
+      host: '0.0.0.0',
+      port: 80,
+      allowedHosts: true,
+    },
     server: {
       host: '0.0.0.0',
       port: 80,
