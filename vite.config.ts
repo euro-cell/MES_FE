@@ -33,16 +33,6 @@ export default defineConfig(() => {
                 });
               },
             },
-            '/uploads': {
-              target: apiTarget,
-              changeOrigin: true,
-              configure: proxy => {
-                proxy.on('proxyReq', (proxyReq, req) => {
-                  const clientIp = req.socket.remoteAddress?.replace('::ffff:', '') ?? '';
-                  proxyReq.setHeader('X-Forwarded-For', clientIp);
-                });
-              },
-            },
           }
         : undefined,
     },
