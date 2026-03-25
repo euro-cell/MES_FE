@@ -442,7 +442,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
                 <div className={styles.imageList}>
                   {imgs.map((img) => (
                     <div key={img.id} className={styles.imageItem}>
-                      <img src={img.filePath?.replace('data/uploads', '/uploads')} alt={label} className={styles.resultImage} />
+                      <img src={img.fileUrl} alt={label} className={styles.resultImage} />
                       {isEditing && img.id && <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!)}>✕</button>}
                     </div>
                   ))}
@@ -588,7 +588,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
                 <span style={{ fontSize: '18px', flexShrink: 0 }}>📄</span>
                 <span style={{ flex: 1, fontSize: '13px', color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.fileName}</span>
                 <a
-                  href={f.filePath?.replace('data/uploads', '/uploads')}
+                  href={f.fileUrl}
                   target="_blank"
                   rel="noreferrer"
                   style={{ flexShrink: 0, fontSize: '12px', color: '#2563eb', border: '1px solid #93c5fd', borderRadius: '4px', padding: '3px 10px', textDecoration: 'none', whiteSpace: 'nowrap' }}
@@ -727,7 +727,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
                     <div className={styles.imageList}>
                       {imgs.map((img) => (
                         <div key={img.id} className={styles.imageItem}>
-                          <img src={img.filePath?.replace('data/uploads', '/uploads')} alt={label} className={styles.resultImage} />
+                          <img src={img.fileUrl} alt={label} className={styles.resultImage} />
                           {isEditing && img.id && <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!)}>✕</button>}
                         </div>
                       ))}
@@ -778,7 +778,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
                     <div className={styles.imageList}>
                       {imgs.map((img) => (
                         <div key={img.id} className={styles.imageItem}>
-                          <img src={img.filePath?.replace('data/uploads', '/uploads')} alt={label} className={styles.resultImage} />
+                          <img src={img.fileUrl} alt={label} className={styles.resultImage} />
                           {isEditing && img.id && <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!)}>✕</button>}
                         </div>
                       ))}

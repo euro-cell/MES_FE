@@ -10,9 +10,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 const options = {
-  cMapUrl: new URL('pdfjs-dist/cmaps/', import.meta.url).toString(),
+  cMapUrl: 'https://unpkg.com/pdfjs-dist/cmaps/',
   cMapPacked: true,
-  standardFontDataUrl: new URL('pdfjs-dist/standard_fonts/', import.meta.url).toString(),
+  standardFontDataUrl: 'https://unpkg.com/pdfjs-dist/standard_fonts/',
 };
 
 interface PdfViewerProps {

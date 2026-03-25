@@ -5,9 +5,12 @@ export interface DrawingVersion {
   version: number;
   drawingFileName: string | null;
   drawingFilePath: string | null;
+  drawingFileUrl: string | null;
   pdfFileNames: string[];
   pdfFilePaths: string[];
+  pdfFileUrls: string[];
   imageFilePaths: string[];
+  imageFileUrls: string[];
   registrationDate: string;
   changeNote: string | null;
 }

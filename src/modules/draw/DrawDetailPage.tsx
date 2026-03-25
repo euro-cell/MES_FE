@@ -8,15 +8,6 @@ import PdfViewer from '../../components/PdfViewer';
 import ImageViewer from '../../components/ImageViewer';
 import toast from 'react-hot-toast';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
-/** data/ 경로를 URL로 변환 */
-const toFileUrl = (filePath: string) => {
-  // 백슬래시를 슬래시로 변환 후 data/ 제거
-  const normalized = filePath.replace(/\\/g, '/');
-  return `${API_BASE}/${normalized.replace('data/', '')}`;
-};
-
 interface PdfFile {
   version: number;
   fileName: string;
@@ -86,14 +77,14 @@ export default function DrawDetailPage() {
     const files: PdfFile[] = [];
     sortedVersions.forEach(ver => {
       ver.pdfFileNames.forEach((fileName, idx) => {
-        const filePath = ver.pdfFilePaths[idx];
-        const url = filePath ? toFileUrl(filePath) : '';
+        const url = ver.pdfFileUrls?.[idx] ?? '';
 
-        // 해당 PDF의 이미지 파일 경로 필터링 (pdf-{idx+1} 폴더 기반 매칭)
+        // 해당 PDF의 이미지 파일 URL 필터링 (pdf-{idx+1} 폴더 기반 매칭)
         const pdfFolderName = `pdf-${idx + 1}`;
         const imageUrls = (ver.imageFilePaths || [])
-          .filter(imgPath => imgPath.includes(pdfFolderName))
-          .map(imgPath => toFileUrl(imgPath))
+          .map((imgPath, imgIdx) => ({ imgPath, imgUrl: ver.imageFileUrls?.[imgIdx] ?? '' }))
+          .filter(({ imgPath }) => imgPath.includes(pdfFolderName))
+          .map(({ imgUrl }) => imgUrl)
           .sort(); // 페이지 순서대로 정렬
 
         files.push({
@@ -108,10 +99,9 @@ export default function DrawDetailPage() {
   }, [sortedVersions]);
 
   // 파일 다운로드 함수
-  const handleDownload = async (fileName: string, filePath: string) => {
+  const handleDownload = async (fileName: string, fileUrl: string) => {
     try {
-      const url = toFileUrl(filePath);
-      const response = await fetch(url);
+      const response = await fetch(fileUrl);
       const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -338,11 +328,11 @@ export default function DrawDetailPage() {
                 <td>{ver.registrationDate}</td>
                 <td>{ver.changeNote || '-'}</td>
                 <td>
-                  {ver.drawingFileName && ver.drawingFilePath ? (
+                  {ver.drawingFileName && ver.drawingFileUrl ? (
                     <TooltipButton
                       label={ver.drawingFileName}
                       variant='view'
-                      onClick={() => handleDownload(ver.drawingFileName!, ver.drawingFilePath!)}
+                      onClick={() => handleDownload(ver.drawingFileName!, ver.drawingFileUrl!)}
                     />
                   ) : (
                     '-'
@@ -356,7 +346,7 @@ export default function DrawDetailPage() {
                           key={idx}
                           label={name}
                           variant='view'
-                          onClick={() => handleDownload(name, ver.pdfFilePaths[idx])}
+                          onClick={() => handleDownload(name, ver.pdfFileUrls?.[idx] ?? '')}
                         />
                       ))}
                     </div>
@@ -391,10 +381,12 @@ export default function DrawDetailPage() {
                 </button>
               ))}
             </div>
-            {selectedPdf?.imageUrls && selectedPdf.imageUrls.length > 0 ? (
+            {selectedPdf?.fileUrl ? (
+              <PdfViewer fileUrl={selectedPdf.fileUrl} fileName={selectedPdf.fileName} />
+            ) : selectedPdf?.imageUrls && selectedPdf.imageUrls.length > 0 ? (
               <ImageViewer imageUrls={selectedPdf.imageUrls} fileName={selectedPdf.fileName} />
             ) : (
-              <PdfViewer fileUrl={selectedPdf?.fileUrl} fileName={selectedPdf?.fileName} />
+              <PdfViewer fileUrl={undefined} fileName={selectedPdf?.fileName} />
             )}
           </>
         ) : (

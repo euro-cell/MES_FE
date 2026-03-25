@@ -414,7 +414,7 @@ const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
                   <div className={styles.imageList}>
                     {imgs.map((img) => (
                       <div key={img.id} className={styles.imageItem}>
-                        <img src={img.filePath?.replace('data/uploads', '/uploads')} alt={label} className={styles.resultImage} />
+                        <img src={img.fileUrl} alt={label} className={styles.resultImage} />
                         {isEditing && img.id && (
                           <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!)}>✕</button>
                         )}
