@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
 import SpecEditModal from '../../lqc/components/common/SpecEditModal';
+import { getOQCSpec, saveOQCSpec } from '../../../../api/quality/OQCService';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -103,9 +104,21 @@ interface DimensionTableProps {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function DimensionTable({ projectId: _projectId }: DimensionTableProps) {
+export default function DimensionTable({ projectId }: DimensionTableProps) {
   const [specs, setSpecs] = useState<Record<string, SpecValue>>(DEFAULT_SPECS);
   const [isSpecModalOpen, setIsSpecModalOpen] = useState(false);
+
+  useEffect(() => {
+    const loadSpecs = async () => {
+      try {
+        const data = await getOQCSpec(projectId, 'DIMENSION');
+        if (data.length > 0) setSpecs(data[0].specs);
+      } catch {
+        // fallback to defaults
+      }
+    };
+    loadSpecs();
+  }, [projectId]);
 
   const rows = INITIAL_ROWS;
   const stats = calcStats(rows);
@@ -242,7 +255,14 @@ export default function DimensionTable({ projectId: _projectId }: DimensionTable
       <SpecEditModal
         isOpen={isSpecModalOpen}
         onClose={() => setIsSpecModalOpen(false)}
-        onSave={setSpecs}
+        onSave={async (newSpecs) => {
+          try {
+            await saveOQCSpec(projectId, 'DIMENSION', 'DIMENSION', newSpecs);
+            setSpecs(newSpecs);
+          } catch (err) {
+            console.error('Failed to save spec:', err);
+          }
+        }}
         title="치수 검사"
         specs={specs}
         specFields={SPEC_FIELDS}
