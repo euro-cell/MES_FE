@@ -10,6 +10,7 @@ interface AuthStatusResponse {
     name: string;
     role: string;
     employeeNumber: string;
+    department: string;
   };
 }
 

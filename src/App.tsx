@@ -14,6 +14,7 @@ import Quality from './modules/quality';
 import Plant from './modules/plant';
 import Draw from './modules/draw';
 import Etc from './modules/etc';
+import ProfilePage from './pages/ProfilePage';
 
 
 function ProtectedRoute({ children }: { children: ReactElement }) {
@@ -117,6 +118,17 @@ function App() {
           <ProtectedRoute>
             <BaseLayout>
               <Etc />
+            </BaseLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/profile'
+        element={
+          <ProtectedRoute>
+            <BaseLayout>
+              <ProfilePage />
             </BaseLayout>
           </ProtectedRoute>
         }

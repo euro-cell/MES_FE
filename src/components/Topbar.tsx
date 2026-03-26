@@ -39,9 +39,14 @@ const Topbar: React.FC = () => {
 
       <div className={styles.right}>
         {user ? (
-          <span className={styles.userInfo}>
-            {user.name} ({displayRole})
-          </span>
+          <>
+            <span className={styles.userInfo}>
+              {user.name} ({displayRole})
+            </span>
+            <button className={styles.profileBtn} onClick={() => navigate('/profile')}>
+              내 정보
+            </button>
+          </>
         ) : (
           <span className={styles.userInfo}>로그인 사용자</span>
         )}
