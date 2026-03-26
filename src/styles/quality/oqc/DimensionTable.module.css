@@ -94,6 +94,12 @@
   font-weight: bold;
 }
 
+.chartGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
 /* ── Remark ─────────────────────────────────────────────────────── */
 .remarkBlock {
   border: 1px solid #000;
