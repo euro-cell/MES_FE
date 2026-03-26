@@ -1,0 +1,168 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── 테이블 스크롤 래퍼 ─────────────────────────────────────────── */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+/* ── 테이블 기본 ─────────────────────────────────────────────────── */
+.table {
+  border-collapse: collapse;
+  font-size: 12px;
+  font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+  min-width: 900px;
+  width: 100%;
+}
+
+.table th,
+.table td {
+  border: 1px solid #000;
+  padding: 4px 6px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* ── 테이블 타이틀 ───────────────────────────────────────────────── */
+.tableTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tableTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.specButton {
+  padding: 6px 12px;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  background: #eff6ff;
+  color: #3b82f6;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.specButton:hover {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+/* ── 헤더 행 ─────────────────────────────────────────────────────── */
+.headerCell {
+  background: #215c98;
+  color: #fff;
+  font-weight: bold;
+}
+
+.lotIndexCell {
+  background: #215c98;
+  color: #fff;
+  font-weight: bold;
+  min-width: 32px;
+  width: 32px;
+}
+
+/* ── 데이터 셀 ───────────────────────────────────────────────────── */
+.itemNameCell {
+  background: #d6e4f0;
+  font-weight: bold;
+  min-width: 48px;
+}
+
+.descCell {
+  background: #fff;
+  min-width: 140px;
+  text-align: left;
+  padding-left: 8px;
+  white-space: normal;
+}
+
+.specCell {
+  background: #fff;
+  min-width: 48px;
+}
+
+.countCell {
+  background: #fff;
+  min-width: 48px;
+  font-weight: bold;
+}
+
+.countPass {
+  color: #16a34a;
+}
+
+.countFail {
+  color: #dc2626;
+}
+
+.countInput {
+  width: 52px;
+  border: 1px solid #94a3b8;
+  border-radius: 3px;
+  padding: 2px 4px;
+  text-align: center;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.countInput:focus {
+  outline: none;
+  border-color: #215c98;
+}
+
+/* ── Lot no. 셀 ──────────────────────────────────────────────────── */
+.lotCell {
+  background: #fff;
+  min-width: 100px;
+  padding: 2px;
+}
+
+.lotInput {
+  width: 96px;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: 11px;
+  font-family: inherit;
+  padding: 3px 2px;
+}
+
+.lotInput:focus {
+  outline: none;
+  background: #eff6ff;
+  border-radius: 2px;
+}
+
+/* ── Remark ─────────────────────────────────────────────────────── */
+.remarkBlock {
+  border: 1px solid #000;
+  font-size: 12px;
+  font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+}
+
+.remarkHeader {
+  background: #215c98;
+  color: #fff;
+  font-weight: bold;
+  padding: 4px 8px;
+}
+
+.remarkLine {
+  padding: 4px 8px;
+  background: #fff;
+  color: #000;
+  border-top: 1px solid #d1d5db;
+}

@@ -73,7 +73,7 @@ export default function SpecEditModal({ isOpen, onClose, onSave, title, specs, s
               />
             </div>
             <div className={styles.preview}>
-              표시: {spec.target ?? '-'}±{spec.tolerance ?? '-'} {specField.unit}
+              표시: {spec.target ?? '-'}±{spec.tolerance ?? '-'}{specField.unit ? ` ${specField.unit}` : ''}
             </div>
           </div>
         );
@@ -91,7 +91,7 @@ export default function SpecEditModal({ isOpen, onClose, onSave, title, specs, s
               />
             </div>
             <div className={styles.preview}>
-              표시: ≤{spec.max ?? '-'} {specField.unit}
+              표시: ≤{spec.max ?? '-'}{specField.unit ? ` ${specField.unit}` : ''}
             </div>
           </div>
         );
@@ -109,7 +109,7 @@ export default function SpecEditModal({ isOpen, onClose, onSave, title, specs, s
               />
             </div>
             <div className={styles.preview}>
-              표시: ≥{spec.min ?? '-'} {specField.unit}
+              표시: ≥{spec.min ?? '-'}{specField.unit ? ` ${specField.unit}` : ''}
             </div>
           </div>
         );
@@ -136,7 +136,7 @@ export default function SpecEditModal({ isOpen, onClose, onSave, title, specs, s
               />
             </div>
             <div className={styles.preview}>
-              표시: {spec.min ?? '-'} ~ {spec.max ?? '-'} {specField.unit}
+              표시: {spec.min ?? '-'} ~ {spec.max ?? '-'}{specField.unit ? ` ${specField.unit}` : ''}
             </div>
           </div>
         );
@@ -160,7 +160,7 @@ export default function SpecEditModal({ isOpen, onClose, onSave, title, specs, s
           {specFields.map(field => (
             <div key={field.key} className={styles.specItem}>
               <h4>
-                {field.label} ({field.unit})
+                {field.label}{field.unit ? ` (${field.unit})` : ''}
               </h4>
               {renderSpecInput(field)}
             </div>
