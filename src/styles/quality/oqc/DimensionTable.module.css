@@ -1,0 +1,124 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── 테이블 타이틀 ───────────────────────────────────────────────── */
+.tableTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tableTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.specButton {
+  padding: 6px 12px;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  background: #eff6ff;
+  color: #3b82f6;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.specButton:hover {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+/* ── 테이블 ──────────────────────────────────────────────────────── */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  border-collapse: collapse;
+  font-size: 12px;
+  font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+  width: 100%;
+}
+
+.table th,
+.table td {
+  border: 1px solid #000;
+  padding: 4px 8px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.headerCell {
+  background: #215c98;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* ── 특수 행 ─────────────────────────────────────────────────────── */
+.specRow td {
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 500;
+}
+
+.statsRow td {
+  font-weight: 500;
+}
+
+.avgRow td  { background: #eff6ff; color: #1d4ed8; }
+.maxRow td  { background: #fef2f2; color: #dc2626; }
+.minRow td  { background: #f0fdf4; color: #16a34a; }
+.stdevRow td { background: #faf5ff; color: #7c3aed; }
+
+/* ── 데이터 셀 ───────────────────────────────────────────────────── */
+.table tbody tr:hover td {
+  background: #f8fafc;
+}
+
+.lotCell {
+  text-align: left;
+  min-width: 110px;
+}
+
+.outOfSpec {
+  color: #dc2626 !important;
+  font-weight: bold;
+}
+
+/* ── Remark ─────────────────────────────────────────────────────── */
+.remarkBlock {
+  border: 1px solid #000;
+  font-size: 12px;
+  font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+}
+
+.remarkHeader {
+  background: #215c98;
+  color: #fff;
+  font-weight: bold;
+  padding: 4px 8px;
+}
+
+.remarkLine {
+  padding: 4px 8px;
+  background: #fff;
+  color: #000;
+  border-top: 1px solid #d1d5db;
+}
+
+/* ── 샘플링 정책 ─────────────────────────────────────────────────── */
+.samplingPolicy {
+  font-size: 12px;
+  font-weight: bold;
+  color: #215c98;
+  font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+}
