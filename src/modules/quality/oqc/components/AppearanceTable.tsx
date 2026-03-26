@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
 import SpecEditModal from '../../lqc/components/common/SpecEditModal';
+import { getOQCSpec, saveOQCSpec } from '../../../../api/quality/OQCService';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -151,10 +152,22 @@ interface AppearanceTableProps {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function AppearanceTable({ projectId: _projectId }: AppearanceTableProps) {
+export default function AppearanceTable({ projectId }: AppearanceTableProps) {
   const [sheet, setSheet] = useState<AppearanceInspectionSheet>(INITIAL_DATA);
   const [specs, setSpecs] = useState<Record<string, SpecValue>>(DEFAULT_SPECS);
   const [isSpecModalOpen, setIsSpecModalOpen] = useState(false);
+
+  useEffect(() => {
+    const loadSpecs = async () => {
+      try {
+        const data = await getOQCSpec(projectId, 'APPEARANCE');
+        if (data.length > 0) setSpecs(data[0].specs);
+      } catch {
+        // fallback to defaults
+      }
+    };
+    loadSpecs();
+  }, [projectId]);
 
   const handleLotChange = useCallback(
     (itemIdx: number, rowIdx: number, colIdx: number, value: string) => {
@@ -202,9 +215,14 @@ export default function AppearanceTable({ projectId: _projectId }: AppearanceTab
     });
   }, []);
 
-  const handleSaveSpec = useCallback((newSpecs: Record<string, SpecValue>) => {
-    setSpecs(newSpecs);
-  }, []);
+  const handleSaveSpec = useCallback(async (newSpecs: Record<string, SpecValue>) => {
+    try {
+      await saveOQCSpec(projectId, 'APPEARANCE', 'APPEARANCE', newSpecs);
+      setSpecs(newSpecs);
+    } catch (err) {
+      console.error('Failed to save spec:', err);
+    }
+  }, [projectId]);
 
   return (
     <>
