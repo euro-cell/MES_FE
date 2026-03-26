@@ -107,7 +107,7 @@ export default function UserList() {
                   style={{ cursor: 'pointer' }}
                   title='클릭하여 상태 변경'
                 >
-                  {u.isActive ? 'O' : 'X'}
+                  {u.isActive ? '✅' : '❌'}
                 </td>
 
                 <td>{new Date(u.createdAt).toLocaleDateString()}</td>

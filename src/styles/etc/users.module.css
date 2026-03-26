@@ -34,7 +34,6 @@
 }
 
 .userTable td.activeStatus {
-  text-align: center;
   font-size: 18px;
   cursor: pointer;
   transition: transform 0.1s ease;
@@ -45,7 +44,6 @@
 }
 
 .activeStatus {
-  text-align: center;
   font-size: 18px;
   cursor: pointer;
   transition: transform 0.1s ease;
