@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
 import SpecEditModal from '../../lqc/components/common/SpecEditModal';
+import { getOQCSpec, saveOQCSpec } from '../../../../api/quality/OQCService';
 import DistributionChart from '../../lqc/components/formation/DistributionChart';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -382,9 +383,21 @@ interface WeightTableProps {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function WeightTable({ projectId: _projectId }: WeightTableProps) {
+export default function WeightTable({ projectId }: WeightTableProps) {
   const [specs, setSpecs] = useState<Record<string, SpecValue>>(DEFAULT_SPECS);
   const [isSpecModalOpen, setIsSpecModalOpen] = useState(false);
+
+  useEffect(() => {
+    const loadSpecs = async () => {
+      try {
+        const data = await getOQCSpec(projectId, 'WEIGHT');
+        if (data.length > 0) setSpecs(data[0].specs);
+      } catch {
+        // fallback to defaults
+      }
+    };
+    loadSpecs();
+  }, [projectId]);
   const parentRef = useRef<HTMLDivElement>(null);
 
   const rows = INITIAL_ROWS;
@@ -594,7 +607,14 @@ export default function WeightTable({ projectId: _projectId }: WeightTableProps)
       <SpecEditModal
         isOpen={isSpecModalOpen}
         onClose={() => setIsSpecModalOpen(false)}
-        onSave={setSpecs}
+        onSave={async (newSpecs) => {
+          try {
+            await saveOQCSpec(projectId, 'WEIGHT', 'WEIGHT', newSpecs);
+            setSpecs(newSpecs);
+          } catch (err) {
+            console.error('Failed to save spec:', err);
+          }
+        }}
         title="중량 검사"
         specs={specs}
         specFields={SPEC_FIELDS}
