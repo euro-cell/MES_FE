@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import styles from '../../../../styles/quality/oqc/AppearanceTable.module.css';
+import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
 import SpecEditModal from '../../lqc/components/common/SpecEditModal';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -216,14 +216,14 @@ export default function AppearanceTable({ projectId: _projectId }: AppearanceTab
           </button>
         </div>
         <div className={styles.tableWrapper}>
-          <table className={styles.table}>
+          <table className={styles.lqcTable}>
             <thead>
               <tr>
-                <th rowSpan={2} className={styles.headerCell}>항목</th>
-                <th rowSpan={2} className={styles.headerCell}>내용</th>
-                <th rowSpan={2} className={styles.headerCell}>규격</th>
-                <th rowSpan={2} className={styles.headerCell}>수량</th>
-                <th colSpan={10} className={styles.headerCell}>Lot no.</th>
+                <th rowSpan={2} >항목</th>
+                <th rowSpan={2} >내용</th>
+                <th rowSpan={2} >규격</th>
+                <th rowSpan={2} >수량</th>
+                <th colSpan={10} >Lot no.</th>
               </tr>
               <tr>
                 {Array.from({ length: 10 }, (_, i) => (
@@ -269,7 +269,7 @@ export default function AppearanceTable({ projectId: _projectId }: AppearanceTab
                       </>
                     )}
                     {lotRow.map((val, colIdx) => (
-                      <td key={colIdx} className={styles.lotCell}>
+                      <td key={colIdx} className={styles.lotCellInput}>
                         <input
                           type="text"
                           className={styles.lotInput}

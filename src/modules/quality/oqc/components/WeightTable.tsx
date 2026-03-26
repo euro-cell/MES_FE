@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import styles from '../../../../styles/quality/oqc/DimensionTable.module.css';
+import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
 import SpecEditModal from '../../lqc/components/common/SpecEditModal';
 import DistributionChart from '../../lqc/components/formation/DistributionChart';
 
@@ -437,39 +437,39 @@ export default function WeightTable({ projectId: _projectId }: WeightTableProps)
         {/* ── 데이터 테이블 ── */}
         <div className={styles.tableWrapper}>
           <div ref={parentRef} style={{ height: TABLE_HEIGHT, overflowY: 'auto' }}>
-            <table className={styles.table}>
+            <table className={styles.lqcTable}>
               <thead style={{ position: 'sticky', top: 0, zIndex: 2, backgroundColor: '#fff' }}>
                 <tr>
-                  <th rowSpan={2} className={styles.headerCell}>No.</th>
-                  <th rowSpan={2} className={styles.headerCell}>Lot no.</th>
-                  <th className={styles.headerCell}>무게</th>
-                  <th className={styles.headerCell}>두께</th>
+                  <th rowSpan={2} >No.</th>
+                  <th rowSpan={2} >Lot no.</th>
+                  <th >무게</th>
+                  <th >두께</th>
                 </tr>
                 <tr>
-                  <th className={styles.headerCell}>(g)</th>
-                  <th className={styles.headerCell}>(mm)</th>
+                  <th >(g)</th>
+                  <th >(mm)</th>
                 </tr>
                 <tr className={styles.specRow}>
                   <td colSpan={2}>규격</td>
                   <td>{specLabel(weightSpec)}</td>
                   <td>{specLabel(thicknessSpec)}</td>
                 </tr>
-                <tr className={`${styles.statsRow} ${styles.avgRow}`}>
+                <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
                   <td colSpan={2}>Ave.</td>
                   <td>{fmt2(stats.avg.weight)}</td>
                   <td>{fmt2(stats.avg.thickness)}</td>
                 </tr>
-                <tr className={`${styles.statsRow} ${styles.maxRow}`}>
+                <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
                   <td colSpan={2}>Max.</td>
                   <td>{fmt2(stats.max.weight)}</td>
                   <td>{fmt2(stats.max.thickness)}</td>
                 </tr>
-                <tr className={`${styles.statsRow} ${styles.minRow}`}>
+                <tr className={`${styles.summaryRow} ${styles.minRow}`}>
                   <td colSpan={2}>Min.</td>
                   <td>{fmt2(stats.min.weight)}</td>
                   <td>{fmt2(stats.min.thickness)}</td>
                 </tr>
-                <tr className={`${styles.statsRow} ${styles.stdevRow}`}>
+                <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
                   <td colSpan={2}>Stdev.</td>
                   <td>{fmt3(stats.stdev.weight)}</td>
                   <td>{fmt3(stats.stdev.thickness)}</td>
@@ -504,19 +504,19 @@ export default function WeightTable({ projectId: _projectId }: WeightTableProps)
 
         {/* ── 정규분포 테이블 ── */}
         <div className={styles.tableWrapper}>
-          <table className={styles.table}>
+          <table className={styles.lqcTable}>
             <thead>
               <tr>
-                <th colSpan={3} className={styles.headerCell}>무게 정규분포</th>
-                <th colSpan={3} className={styles.headerCell}>두께 정규분포</th>
+                <th colSpan={3} >무게 정규분포</th>
+                <th colSpan={3} >두께 정규분포</th>
               </tr>
               <tr>
-                <th className={styles.headerCell}>계급 (g)</th>
-                <th className={styles.headerCell}>빈도수</th>
-                <th className={styles.headerCell}>확률밀도</th>
-                <th className={styles.headerCell}>계급 (mm)</th>
-                <th className={styles.headerCell}>빈도수</th>
-                <th className={styles.headerCell}>확률밀도</th>
+                <th >계급 (g)</th>
+                <th >빈도수</th>
+                <th >확률밀도</th>
+                <th >계급 (mm)</th>
+                <th >빈도수</th>
+                <th >확률밀도</th>
               </tr>
             </thead>
             <tbody>
@@ -540,7 +540,7 @@ export default function WeightTable({ projectId: _projectId }: WeightTableProps)
 
         {/* ── 차트 영역 ── */}
         <div className={styles.chartGrid}>
-          <div>
+          <div style={{ height: 340 }}>
             <DistributionChart
               title="제품 무게 분포"
               data={weightDist.map(b => ({ x: b.classValue, y: b.frequency }))}
@@ -552,7 +552,7 @@ export default function WeightTable({ projectId: _projectId }: WeightTableProps)
               usl={weightUsl}
             />
           </div>
-          <div>
+          <div style={{ height: 340 }}>
             <DistributionChart
               title="제품 무게 정규분포"
               data={weightDist.map(b => ({ x: b.classValue, y: b.probabilityDensity }))}
@@ -564,7 +564,7 @@ export default function WeightTable({ projectId: _projectId }: WeightTableProps)
               usl={weightUsl}
             />
           </div>
-          <div>
+          <div style={{ height: 340 }}>
             <DistributionChart
               title="제품 두께 분포"
               data={thicknessDist.map(b => ({ x: b.classValue, y: b.frequency }))}
@@ -576,7 +576,7 @@ export default function WeightTable({ projectId: _projectId }: WeightTableProps)
               usl={thickUsl}
             />
           </div>
-          <div>
+          <div style={{ height: 340 }}>
             <DistributionChart
               title="제품 두께 정규분포"
               data={thicknessDist.map(b => ({ x: b.classValue, y: b.probabilityDensity }))}

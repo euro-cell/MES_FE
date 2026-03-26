@@ -58,7 +58,7 @@
 }
 
 .headerCell {
-  background: #215c98;
+  background: #1565c0;
   color: #fff;
   font-weight: bold;
 }
@@ -108,7 +108,7 @@
 }
 
 .remarkHeader {
-  background: #215c98;
+  background: #1565c0;
   color: #fff;
   font-weight: bold;
   padding: 4px 8px;
@@ -125,6 +125,6 @@
 .samplingPolicy {
   font-size: 12px;
   font-weight: bold;
-  color: #215c98;
+  color: #1565c0;
   font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
 }

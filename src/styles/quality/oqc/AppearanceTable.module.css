@@ -61,13 +61,13 @@
 
 /* ── 헤더 행 ─────────────────────────────────────────────────────── */
 .headerCell {
-  background: #215c98;
+  background: #1565c0;
   color: #fff;
   font-weight: bold;
 }
 
 .lotIndexCell {
-  background: #215c98;
+  background: #1565c0;
   color: #fff;
   font-weight: bold;
   min-width: 32px;
@@ -76,7 +76,7 @@
 
 /* ── 데이터 셀 ───────────────────────────────────────────────────── */
 .itemNameCell {
-  background: #d6e4f0;
+  background: #bbdefb;
   font-weight: bold;
   min-width: 48px;
 }

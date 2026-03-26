@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from '../../../../styles/quality/oqc/DimensionTable.module.css';
+import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
 import SpecEditModal from '../../lqc/components/common/SpecEditModal';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -134,23 +134,23 @@ export default function DimensionTable({ projectId: _projectId }: DimensionTable
         </div>
 
         <div className={styles.tableWrapper}>
-          <table className={styles.table}>
+          <table className={styles.lqcTable}>
             <thead>
               {/* Row 2: 대분류 헤더 */}
               <tr>
-                <th rowSpan={2} className={styles.headerCell}>No.</th>
-                <th rowSpan={2} className={styles.headerCell}>제조일자</th>
-                <th rowSpan={2} className={styles.headerCell}>Lot no.</th>
-                <th colSpan={4} className={styles.headerCell}>폭(mm)</th>
-                <th rowSpan={2} className={styles.headerCell}>길이(mm)</th>
-                <th rowSpan={2} className={styles.headerCell}>두께(mm)</th>
+                <th rowSpan={2} >No.</th>
+                <th rowSpan={2} >제조일자</th>
+                <th rowSpan={2} >Lot no.</th>
+                <th colSpan={4} >폭(mm)</th>
+                <th rowSpan={2} >길이(mm)</th>
+                <th rowSpan={2} >두께(mm)</th>
               </tr>
               {/* Row 3: 폭 소분류 */}
               <tr>
-                <th className={styles.headerCell}>상부</th>
-                <th className={styles.headerCell}>중부</th>
-                <th className={styles.headerCell}>하부</th>
-                <th className={styles.headerCell}>평균</th>
+                <th >상부</th>
+                <th >중부</th>
+                <th >하부</th>
+                <th >평균</th>
               </tr>
               {/* 규격 행 */}
               <tr className={styles.specRow} style={{ fontWeight: 500 }}>
@@ -160,7 +160,7 @@ export default function DimensionTable({ projectId: _projectId }: DimensionTable
                 <td>{specLabel(specs['thickness'])}</td>
               </tr>
               {/* 통계 행 */}
-              <tr className={`${styles.statsRow} ${styles.avgRow}`}>
+              <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
                 <td colSpan={3}>Ave.</td>
                 <td>{fmtInt(stats.widthTop.avg)}</td>
                 <td>{fmtInt(stats.widthMiddle.avg)}</td>
@@ -169,7 +169,7 @@ export default function DimensionTable({ projectId: _projectId }: DimensionTable
                 <td>{fmtInt(stats.lengthBottom.avg)}</td>
                 <td>{fmtDec2(stats.thicknessMiddle.avg)}</td>
               </tr>
-              <tr className={`${styles.statsRow} ${styles.maxRow}`}>
+              <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
                 <td colSpan={3}>Max.</td>
                 <td>{fmtInt(stats.widthTop.max)}</td>
                 <td>{fmtInt(stats.widthMiddle.max)}</td>
@@ -178,7 +178,7 @@ export default function DimensionTable({ projectId: _projectId }: DimensionTable
                 <td>{fmtInt(stats.lengthBottom.max)}</td>
                 <td>{fmtDec2(stats.thicknessMiddle.max)}</td>
               </tr>
-              <tr className={`${styles.statsRow} ${styles.minRow}`}>
+              <tr className={`${styles.summaryRow} ${styles.minRow}`}>
                 <td colSpan={3}>Min.</td>
                 <td>{fmtInt(stats.widthTop.min)}</td>
                 <td>{fmtInt(stats.widthMiddle.min)}</td>
@@ -187,7 +187,7 @@ export default function DimensionTable({ projectId: _projectId }: DimensionTable
                 <td>{fmtInt(stats.lengthBottom.min)}</td>
                 <td>{fmtDec2(stats.thicknessMiddle.min)}</td>
               </tr>
-              <tr className={`${styles.statsRow} ${styles.stdevRow}`}>
+              <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
                 <td colSpan={3}>Stdev.</td>
                 <td>{fmtDec3(stats.widthTop.stdev)}</td>
                 <td>{fmtDec3(stats.widthMiddle.stdev)}</td>

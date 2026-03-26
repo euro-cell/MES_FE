@@ -228,3 +228,129 @@
 .chartExpandBtn:hover {
   background: #f1f5f9;
 }
+
+/* ── 공통 컨테이너 ────────────────────────────────────────────── */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── 데이터 셀 ───────────────────────────────────────────────── */
+.lotCell {
+  text-align: left;
+  min-width: 110px;
+}
+
+.outOfSpec {
+  color: #dc2626 !important;
+  font-weight: bold;
+}
+
+/* ── Remark / 샘플링 ─────────────────────────────────────────── */
+.remarkBlock {
+  border: 1px solid #e2e8f0;
+  font-size: 13px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.remarkHeader {
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 600;
+  padding: 6px 12px;
+}
+
+.remarkLine {
+  padding: 6px 12px;
+  background: #fff;
+  color: #475569;
+  border-top: 1px solid #e2e8f0;
+}
+
+.samplingPolicy {
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+}
+
+/* ── 외관 검사 전용 ───────────────────────────────────────────── */
+.itemNameCell {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #334155;
+  min-width: 48px;
+}
+
+.descCell {
+  background: #fff;
+  min-width: 140px;
+  text-align: left;
+  padding-left: 8px !important;
+  white-space: normal !important;
+}
+
+.specCell {
+  background: #fff;
+  min-width: 48px;
+}
+
+.countCell {
+  background: #fff;
+  min-width: 48px;
+  font-weight: 600;
+}
+
+.countPass {
+  color: #16a34a;
+}
+
+.countFail {
+  color: #dc2626;
+}
+
+.countInput {
+  width: 52px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 2px 4px;
+  text-align: center;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.countInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.lotIndexCell {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #334155;
+  min-width: 32px;
+  width: 32px;
+}
+
+.lotCellInput {
+  background: #fff;
+  min-width: 100px;
+  padding: 2px !important;
+}
+
+.lotInput {
+  width: 96px;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: 12px;
+  font-family: inherit;
+  padding: 3px 2px;
+}
+
+.lotInput:focus {
+  outline: none;
+  background: #eff6ff;
+  border-radius: 2px;
+}
