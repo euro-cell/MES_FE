@@ -9,7 +9,6 @@ export interface GradingCell {
   acIr: number;
   ocv3: number;
   ocv4: number | null;
-  deltaV: number | null;
 }
 
 export interface SpecValue {
