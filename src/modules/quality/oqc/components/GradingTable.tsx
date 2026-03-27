@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import CapacityDistTable from './CapacityDistTable';
+import AcIrDistTable from './AcIrDistTable';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   getOQCSpec,
@@ -367,7 +368,10 @@ export default function GradingTable({ projectId }: GradingTableProps) {
         </div>
       </div>
 
-      <CapacityDistTable capacities={rows.map(r => r.capacity)} />
+      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+        <CapacityDistTable capacities={rows.map(r => r.capacity)} />
+        <AcIrDistTable acIrValues={rows.map(r => r.acIr)} />
+      </div>
 
       <SpecEditModal
         isOpen={isSpecModalOpen}
