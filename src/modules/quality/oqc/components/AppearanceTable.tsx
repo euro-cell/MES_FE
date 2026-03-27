@@ -1,7 +1,20 @@
 import { useState, useCallback, useEffect } from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar, Pie } from 'react-chartjs-2';
 import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
 import SpecEditModal from '../../lqc/components/common/SpecEditModal';
 import { getOQCSpec, saveOQCSpec } from '../../../../api/quality/OQCService';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -303,6 +316,72 @@ export default function AppearanceTable({ projectId }: AppearanceTableProps) {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* 차트 영역 */}
+        <div className={styles.chartGrid}>
+          <div style={{ height: 300 }}>
+            <Bar
+              data={{
+                labels: sheet.items.map(item => item.itemName),
+                datasets: [{
+                  label: '불량(ea)',
+                  data: sheet.items.map(item => item.count ?? 0),
+                  backgroundColor: [
+                    'rgba(37,99,235,0.6)',
+                    'rgba(234,179,8,0.6)',
+                    'rgba(22,163,74,0.6)',
+                    'rgba(239,68,68,0.6)',
+                    'rgba(168,85,247,0.6)',
+                  ],
+                  borderColor: [
+                    '#2563eb', '#ca8a04', '#16a34a', '#dc2626', '#9333ea',
+                  ],
+                  borderWidth: 1,
+                }],
+              }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  title: { display: true, text: '제품 외관 검사 결과', font: { size: 13 } },
+                  legend: { display: false },
+                },
+                scales: {
+                  y: { min: 0, max: 800, ticks: { stepSize: 200 }, title: { display: true, text: '불량(ea)' } },
+                },
+              }}
+            />
+          </div>
+          <div style={{ height: 300 }}>
+            <Pie
+              data={{
+                labels: sheet.items.map(item => item.itemName),
+                datasets: [{
+                  data: sheet.items.map(item => item.count ?? 0),
+                  backgroundColor: [
+                    'rgba(37,99,235,0.6)',
+                    'rgba(234,179,8,0.6)',
+                    'rgba(22,163,74,0.6)',
+                    'rgba(239,68,68,0.6)',
+                    'rgba(168,85,247,0.6)',
+                  ],
+                  borderColor: [
+                    '#2563eb', '#ca8a04', '#16a34a', '#dc2626', '#9333ea',
+                  ],
+                  borderWidth: 1,
+                }],
+              }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  title: { display: true, text: '제품 외관 검사 결과', font: { size: 13 } },
+                  legend: { display: true, position: 'right' },
+                },
+              }}
+            />
+          </div>
         </div>
 
         {/* Remark 블록 */}
