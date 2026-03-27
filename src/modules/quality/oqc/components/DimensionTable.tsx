@@ -1,7 +1,21 @@
 import { useState, useEffect } from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Chart } from 'react-chartjs-2';
 import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
 import SpecEditModal from '../../lqc/components/common/SpecEditModal';
 import { getOQCSpec, saveOQCSpec } from '../../../../api/quality/OQCService';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -238,6 +252,76 @@ export default function DimensionTable({ projectId }: DimensionTableProps) {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* 차트 */}
+        <div style={{ height: 340 }}>
+          <Chart
+            type="bar"
+            data={{
+              labels: rows.map(r => r.manufacturedDate),
+              datasets: [
+                {
+                  type: 'bar' as const,
+                  label: '두께(mm)',
+                  data: rows.map(r => r.thicknessMiddle),
+                  backgroundColor: 'rgba(37, 99, 235, 0.6)',
+                  borderColor: '#2563eb',
+                  borderWidth: 1,
+                  yAxisID: 'yLeft',
+                },
+                {
+                  type: 'line' as const,
+                  label: '폭 평균(mm)',
+                  data: rows.map(r => r.widthAvg),
+                  borderColor: '#ca8a04',
+                  backgroundColor: '#ca8a04',
+                  borderWidth: 2,
+                  pointRadius: 3,
+                  yAxisID: 'yRight',
+                },
+                {
+                  type: 'line' as const,
+                  label: '길이(mm)',
+                  data: rows.map(r => r.lengthBottom),
+                  borderColor: '#16a34a',
+                  backgroundColor: '#16a34a',
+                  borderWidth: 2,
+                  pointRadius: 3,
+                  yAxisID: 'yRight',
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: { display: true, text: '제품 치수 검사 결과', font: { size: 13 } },
+                legend: { display: true },
+                tooltip: { mode: 'index', intersect: false },
+              },
+              scales: {
+                x: { ticks: { font: { size: 11 } } },
+                yLeft: {
+                  type: 'linear',
+                  position: 'left',
+                  min: 10.3,
+                  max: 11.3,
+                  ticks: { stepSize: 0.5 },
+                  title: { display: true, text: '두께(mm)' },
+                },
+                yRight: {
+                  type: 'linear',
+                  position: 'right',
+                  min: 190,
+                  max: 220,
+                  ticks: { stepSize: 5 },
+                  title: { display: true, text: '폭/길이(mm)' },
+                  grid: { drawOnChartArea: false },
+                },
+              },
+            }}
+          />
         </div>
 
         {/* Remark 블록 */}
