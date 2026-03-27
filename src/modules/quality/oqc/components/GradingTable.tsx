@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import CapacityDistTable from './CapacityDistTable';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   getOQCSpec,
@@ -365,6 +366,8 @@ export default function GradingTable({ projectId }: GradingTableProps) {
           </div>
         </div>
       </div>
+
+      <CapacityDistTable capacities={rows.map(r => r.capacity)} />
 
       <SpecEditModal
         isOpen={isSpecModalOpen}
