@@ -5,7 +5,7 @@ import styles from '../../../styles/quality/oqc/OQCPage.module.css';
 import { getOQCProject } from '../../../api/quality/OQCService';
 import { createOQCMenus } from './processConfig';
 import SummaryTable from './components/SummaryTable';
-import GradingTable from './components/grading/GradingTable';
+import GradingTable from './components/GradingTable';
 import AppearanceTable from './components/AppearanceTable';
 import DimensionTable from './components/DimensionTable';
 import WeightTable from './components/WeightTable';
