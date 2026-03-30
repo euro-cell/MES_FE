@@ -10,6 +10,7 @@ import CapacityNormChart from './CapacityNormChart';
 import Ocv3DistChart from './Ocv3DistChart';
 import Ocv4DistChart from './Ocv4DistChart';
 import DeltaVDistChart from './DeltaVDistChart';
+import DeltaVNormChart from './DeltaVNormChart';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { getOQCSpec, saveOQCSpec, type GradingCell, type SpecValue } from '../../../../api/quality/OQCService';
 import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
@@ -396,6 +397,10 @@ export default function GradingTable({ projectId }: GradingTableProps) {
         usl={ocv4Usl}
       />
       <DeltaVDistChart
+        deltaVValues={rows.map(r => calcDeltaV(r.ocv3, r.ocv4)).filter((v): v is number => v !== null)}
+        usl={deltaVUsl}
+      />
+      <DeltaVNormChart
         deltaVValues={rows.map(r => calcDeltaV(r.ocv3, r.ocv4)).filter((v): v is number => v !== null)}
         usl={deltaVUsl}
       />

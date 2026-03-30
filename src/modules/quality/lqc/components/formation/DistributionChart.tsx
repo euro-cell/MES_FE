@@ -153,8 +153,8 @@ export default function DistributionChart({
   };
 
   return (
-    <div style={{ height: 320 }}>
-      <Scatter data={chartData} options={options} />
+    <div style={{ height: 320, width: '100%' }}>
+      <Scatter data={chartData} options={{ ...options, responsive: true, maintainAspectRatio: false }} />
     </div>
   );
 }
