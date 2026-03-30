@@ -127,9 +127,11 @@ export default function DistributionChart({
     },
   };
 
+  const hasLegend = lsl !== undefined || usl !== undefined;
+
   return (
     <div style={{ height: 320 }}>
-      {(lsl !== undefined || usl !== undefined) && (
+      {hasLegend && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 4, justifyContent: 'center' }}>
           {lsl !== undefined && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -149,7 +151,9 @@ export default function DistributionChart({
           )}
         </div>
       )}
-      <Scatter data={chartData} options={options} />
+      <div style={{ height: hasLegend ? 292 : 320 }}>
+        <Scatter data={chartData} options={options} />
+      </div>
     </div>
   );
 }
