@@ -372,7 +372,7 @@ export default function GradingTable({ projectId }: GradingTableProps) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-start' }}>
         <CapacityDistTable capacities={rows.map(r => r.capacity)} />
         <AcIrDistTable acIrValues={rows.map(r => r.acIr)} />
         <Ocv3DistTable ocv3Values={rows.map(r => r.ocv3)} />
@@ -380,8 +380,8 @@ export default function GradingTable({ projectId }: GradingTableProps) {
           deltaVValues={rows.map(r => calcDeltaV(r.ocv3, r.ocv4)).filter((v): v is number => v !== null)}
         />
         <Ocv4DistTable ocv4Values={rows.map(r => r.ocv4).filter((v): v is number => v !== null)} />
+        <NcrGradingTable rows={rows} calcDeltaV={calcDeltaV} />
       </div>
-      <NcrGradingTable rows={rows} calcDeltaV={calcDeltaV} />
 
       <SpecEditModal
         isOpen={isSpecModalOpen}
