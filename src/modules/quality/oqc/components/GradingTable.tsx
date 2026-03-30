@@ -12,6 +12,7 @@ import Ocv3DistChart from './Ocv3DistChart';
 import Ocv4DistChart from './Ocv4DistChart';
 import DeltaVDistChart from './DeltaVDistChart';
 import DeltaVNormChart from './DeltaVNormChart';
+import NcrCapacityChart from './NcrCapacityChart';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { getOQCSpec, saveOQCSpec, type GradingCell, type SpecValue } from '../../../../api/quality/OQCService';
 import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
@@ -418,6 +419,12 @@ export default function GradingTable({ projectId }: GradingTableProps) {
           />
         </div>
       </div>
+      <NcrCapacityChart grades={{
+        BA: rows.filter(r => r.capacity > 37.2 && r.capacity <= 37.8).length,
+        BB: rows.filter(r => r.capacity > 36.6 && r.capacity <= 37.2).length,
+        BC: rows.filter(r => r.capacity > 35.9 && r.capacity <= 36.6).length,
+        C:  rows.filter(r => r.capacity <= 35.9).length,
+      }} />
 
       <SpecEditModal
         isOpen={isSpecModalOpen}
