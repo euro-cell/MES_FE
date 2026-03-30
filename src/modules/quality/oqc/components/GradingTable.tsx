@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { calcDeltaV } from './gradingUtils';
 import CapacityDistTable from './CapacityDistTable';
 import AcIrDistTable from './AcIrDistTable';
 import Ocv3DistTable from './Ocv3DistTable';
@@ -144,8 +145,7 @@ const stdevP = (arr: number[]): number => {
   return Math.sqrt(arr.reduce((s, x) => s + (x - mean) ** 2, 0) / arr.length);
 };
 
-export const calcDeltaV = (ocv3: number, ocv4: number | null): number | null =>
-  ocv4 !== null ? Math.round((ocv3 - ocv4) * 10000) / 10 : null;
+
 
 const formatSpec = (spec: SpecValue | undefined): string => {
   if (!spec) return '-';
