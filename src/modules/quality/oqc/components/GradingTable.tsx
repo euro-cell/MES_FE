@@ -388,22 +388,36 @@ export default function GradingTable({ projectId }: GradingTableProps) {
         <Ocv4DistTable ocv4Values={rows.map(r => r.ocv4).filter((v): v is number => v !== null)} />
         <NcrGradingTable rows={rows} calcDeltaV={calcDeltaV} />
       </div>
-      <CapacityDistChart capacities={rows.map(r => r.capacity)} lsl={capacityLsl} />
-      <CapacityNormChart capacities={rows.map(r => r.capacity)} lsl={capacityLsl} />
-      <Ocv3DistChart ocv3Values={rows.map(r => r.ocv3)} lsl={ocv3Lsl} />
-      <Ocv4DistChart
-        ocv4Values={rows.map(r => r.ocv4).filter((v): v is number => v !== null)}
-        lsl={ocv4Lsl}
-        usl={ocv4Usl}
-      />
-      <DeltaVDistChart
-        deltaVValues={rows.map(r => calcDeltaV(r.ocv3, r.ocv4)).filter((v): v is number => v !== null)}
-        usl={deltaVUsl}
-      />
-      <DeltaVNormChart
-        deltaVValues={rows.map(r => calcDeltaV(r.ocv3, r.ocv4)).filter((v): v is number => v !== null)}
-        usl={deltaVUsl}
-      />
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+        <div style={{ flex: '1 1 45%', minWidth: 0 }}>
+          <CapacityDistChart capacities={rows.map(r => r.capacity)} lsl={capacityLsl} />
+        </div>
+        <div style={{ flex: '1 1 45%', minWidth: 0 }}>
+          <CapacityNormChart capacities={rows.map(r => r.capacity)} lsl={capacityLsl} />
+        </div>
+        <div style={{ flex: '1 1 45%', minWidth: 0 }}>
+          <Ocv3DistChart ocv3Values={rows.map(r => r.ocv3)} lsl={ocv3Lsl} />
+        </div>
+        <div style={{ flex: '1 1 45%', minWidth: 0 }}>
+          <Ocv4DistChart
+            ocv4Values={rows.map(r => r.ocv4).filter((v): v is number => v !== null)}
+            lsl={ocv4Lsl}
+            usl={ocv4Usl}
+          />
+        </div>
+        <div style={{ flex: '1 1 45%', minWidth: 0 }}>
+          <DeltaVDistChart
+            deltaVValues={rows.map(r => calcDeltaV(r.ocv3, r.ocv4)).filter((v): v is number => v !== null)}
+            usl={deltaVUsl}
+          />
+        </div>
+        <div style={{ flex: '1 1 45%', minWidth: 0 }}>
+          <DeltaVNormChart
+            deltaVValues={rows.map(r => calcDeltaV(r.ocv3, r.ocv4)).filter((v): v is number => v !== null)}
+            usl={deltaVUsl}
+          />
+        </div>
+      </div>
 
       <SpecEditModal
         isOpen={isSpecModalOpen}
