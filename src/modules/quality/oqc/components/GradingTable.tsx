@@ -14,6 +14,7 @@ import DeltaVDistChart from './DeltaVDistChart';
 import DeltaVNormChart from './DeltaVNormChart';
 import NcrCapacityChart from './NcrCapacityChart';
 import NcrOcv3Chart from './NcrOcv3Chart';
+import NcrDeltaVChart from './NcrDeltaVChart';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { getOQCSpec, saveOQCSpec, type GradingCell, type SpecValue } from '../../../../api/quality/OQCService';
 import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
@@ -431,6 +432,12 @@ export default function GradingTable({ projectId }: GradingTableProps) {
         BB: rows.filter(r => r.ocv3 > 2.180 && r.ocv3 <= 2.189).length,
         BC: rows.filter(r => r.ocv3 > 2.160 && r.ocv3 <= 2.180).length,
         C:  rows.filter(r => r.ocv3 <= 2.160).length,
+      }} />
+      <NcrDeltaVChart grades={{
+        BA: rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 3.0  && dv <= 10.0; }).length,
+        BB: rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 10.0 && dv <= 14.0; }).length,
+        BC: rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 14.0 && dv <= 18.0; }).length,
+        C:  rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 18.0; }).length,
       }} />
 
       <SpecEditModal
