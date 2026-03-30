@@ -7,6 +7,7 @@ import Ocv4DistTable from './Ocv4DistTable';
 import NcrGradingTable from './NcrGradingTable';
 import CapacityDistChart from './CapacityDistChart';
 import CapacityNormChart from './CapacityNormChart';
+import Ocv3DistChart from './Ocv3DistChart';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { getOQCSpec, saveOQCSpec, type GradingCell, type SpecValue } from '../../../../api/quality/OQCService';
 import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
@@ -386,6 +387,7 @@ export default function GradingTable({ projectId }: GradingTableProps) {
       </div>
       <CapacityDistChart capacities={rows.map(r => r.capacity)} lsl={capacityLsl} />
       <CapacityNormChart capacities={rows.map(r => r.capacity)} lsl={capacityLsl} />
+      <Ocv3DistChart ocv3Values={rows.map(r => r.ocv3)} lsl={ocv3Lsl} />
 
       <SpecEditModal
         isOpen={isSpecModalOpen}
