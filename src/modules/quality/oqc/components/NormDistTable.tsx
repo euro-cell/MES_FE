@@ -7,6 +7,7 @@ interface NormDistTableProps {
   bins: number[];
   binWidth: number;
   values: number[];
+  binDecimals?: number;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -24,7 +25,7 @@ function stdevP(arr: number[]): number {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function NormDistTable({ title, bins, binWidth, values }: NormDistTableProps) {
+export default function NormDistTable({ title, bins, binWidth, values, binDecimals = 2 }: NormDistTableProps) {
   const mean = values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
   const stddev = stdevP(values);
 
@@ -61,7 +62,7 @@ export default function NormDistTable({ title, bins, binWidth, values }: NormDis
           <tbody>
             {bins.map((bin, i) => (
               <tr key={bin}>
-                <td style={{ textAlign: 'center' }}>{bin.toFixed(2)}</td>
+                <td style={{ textAlign: 'center' }}>{bin.toFixed(binDecimals)}</td>
                 <td style={{ textAlign: 'center' }}>{frequencies[i]}</td>
                 <td style={{ textAlign: 'right', fontFamily: 'monospace', fontSize: '0.8em' }}>
                   {densities[i].toPrecision(15)}
