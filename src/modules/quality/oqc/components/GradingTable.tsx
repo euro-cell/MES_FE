@@ -3,6 +3,7 @@ import CapacityDistTable from './CapacityDistTable';
 import AcIrDistTable from './AcIrDistTable';
 import Ocv3DistTable from './Ocv3DistTable';
 import DeltaVDistTable from './DeltaVDistTable';
+import Ocv4DistTable from './Ocv4DistTable';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   getOQCSpec,
@@ -375,6 +376,7 @@ export default function GradingTable({ projectId }: GradingTableProps) {
         <AcIrDistTable acIrValues={rows.map(r => r.acIr)} />
         <Ocv3DistTable ocv3Values={rows.map(r => r.ocv3)} />
         <DeltaVDistTable deltaVValues={rows.map(r => calcDeltaV(r.ocv3, r.ocv4)).filter((v): v is number => v !== null)} />
+        <Ocv4DistTable ocv4Values={rows.map(r => r.ocv4).filter((v): v is number => v !== null)} />
       </div>
 
       <SpecEditModal
