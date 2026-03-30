@@ -31,6 +31,7 @@ interface DistributionChartProps {
   xLabel?: string;
   lsl?: number;
   usl?: number;
+  uslColor?: string;
 }
 
 export default function DistributionChart({
@@ -46,6 +47,7 @@ export default function DistributionChart({
   xLabel = '용량(Ah)',
   lsl,
   usl,
+  uslColor = '#FF0000',
 }: DistributionChartProps) {
   const dataMax = data.length > 0 ? Math.max(...data.map(d => d.y)) : 0;
   const yMax = yMaxProp ?? Math.ceil(dataMax / yStep) * yStep + yStep;
@@ -81,7 +83,7 @@ export default function DistributionChart({
       type: 'line',
       scaleID: 'x',
       value: usl,
-      borderColor: '#FF0000',
+      borderColor: uslColor,
       borderWidth: 1.5,
       borderDash: [6, 3],
       label: {
@@ -89,7 +91,7 @@ export default function DistributionChart({
         content: 'USL',
         position: 'start',
         backgroundColor: 'transparent',
-        color: '#FF0000',
+        color: uslColor,
         font: { size: 11, weight: 'bold' },
       },
     };
