@@ -421,24 +421,32 @@ export default function GradingTable({ projectId }: GradingTableProps) {
           />
         </div>
       </div>
-      <NcrCapacityChart grades={{
-        BA: rows.filter(r => r.capacity > 37.2 && r.capacity <= 37.8).length,
-        BB: rows.filter(r => r.capacity > 36.6 && r.capacity <= 37.2).length,
-        BC: rows.filter(r => r.capacity > 35.9 && r.capacity <= 36.6).length,
-        C:  rows.filter(r => r.capacity <= 35.9).length,
-      }} />
-      <NcrOcv3Chart grades={{
-        BA: rows.filter(r => r.ocv3 > 2.189 && r.ocv3 <= 2.190).length,
-        BB: rows.filter(r => r.ocv3 > 2.180 && r.ocv3 <= 2.189).length,
-        BC: rows.filter(r => r.ocv3 > 2.160 && r.ocv3 <= 2.180).length,
-        C:  rows.filter(r => r.ocv3 <= 2.160).length,
-      }} />
-      <NcrDeltaVChart grades={{
-        BA: rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 3.0  && dv <= 10.0; }).length,
-        BB: rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 10.0 && dv <= 14.0; }).length,
-        BC: rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 14.0 && dv <= 18.0; }).length,
-        C:  rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 18.0; }).length,
-      }} />
+      <div style={{ display: 'flex', gap: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <NcrCapacityChart grades={{
+            BA: rows.filter(r => r.capacity > 37.2 && r.capacity <= 37.8).length,
+            BB: rows.filter(r => r.capacity > 36.6 && r.capacity <= 37.2).length,
+            BC: rows.filter(r => r.capacity > 35.9 && r.capacity <= 36.6).length,
+            C:  rows.filter(r => r.capacity <= 35.9).length,
+          }} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <NcrOcv3Chart grades={{
+            BA: rows.filter(r => r.ocv3 > 2.189 && r.ocv3 <= 2.190).length,
+            BB: rows.filter(r => r.ocv3 > 2.180 && r.ocv3 <= 2.189).length,
+            BC: rows.filter(r => r.ocv3 > 2.160 && r.ocv3 <= 2.180).length,
+            C:  rows.filter(r => r.ocv3 <= 2.160).length,
+          }} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <NcrDeltaVChart grades={{
+            BA: rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 3.0  && dv <= 10.0; }).length,
+            BB: rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 10.0 && dv <= 14.0; }).length,
+            BC: rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 14.0 && dv <= 18.0; }).length,
+            C:  rows.filter(r => { const dv = calcDeltaV(r.ocv3, r.ocv4); return dv !== null && dv > 18.0; }).length,
+          }} />
+        </div>
+      </div>
 
       <SpecEditModal
         isOpen={isSpecModalOpen}
