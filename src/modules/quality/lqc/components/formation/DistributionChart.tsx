@@ -7,9 +7,11 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import Annotation from 'chartjs-plugin-annotation';
 import { Scatter } from 'react-chartjs-2';
+import type { TooltipItem } from 'chart.js';
 
-ChartJS.register(LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Annotation);
 
 export interface DistributionPoint {
   x: number;
@@ -55,6 +57,44 @@ export default function DistributionChart({
     parseFloat((yMin + i * yStep).toFixed(10))
   );
 
+  const annotations: Record<string, object> = {};
+  if (lsl !== undefined) {
+    annotations['lsl'] = {
+      type: 'line',
+      scaleID: 'x',
+      value: lsl,
+      borderColor: '#0000FF',
+      borderWidth: 1.5,
+      borderDash: [6, 3],
+      label: {
+        display: true,
+        content: 'LSL',
+        position: 'start',
+        backgroundColor: 'transparent',
+        color: '#0000FF',
+        font: { size: 11, weight: 'bold' },
+      },
+    };
+  }
+  if (usl !== undefined) {
+    annotations['usl'] = {
+      type: 'line',
+      scaleID: 'x',
+      value: usl,
+      borderColor: '#FF0000',
+      borderWidth: 1.5,
+      borderDash: [6, 3],
+      label: {
+        display: true,
+        content: 'USL',
+        position: 'start',
+        backgroundColor: 'transparent',
+        color: '#FF0000',
+        font: { size: 11, weight: 'bold' },
+      },
+    };
+  }
+
   const chartData = {
     datasets: [
       {
@@ -65,32 +105,8 @@ export default function DistributionChart({
         showLine: true,
         tension: 0.4,
         pointRadius: 0,
-        pointHoverRadius: 0,
+        pointHoverRadius: 4,
       },
-      ...(lsl !== undefined ? [{
-        label: 'Lower Spec Limit',
-        data: [{ x: lsl, y: yMin }, { x: lsl, y: yMax }],
-        borderColor: '#0000FF',
-        borderWidth: 1.5,
-        borderDash: [6, 3],
-        backgroundColor: 'transparent',
-        showLine: true,
-        tension: 0,
-        pointRadius: 0,
-        pointHoverRadius: 0,
-      }] : []),
-      ...(usl !== undefined ? [{
-        label: 'Upper Spec Limit',
-        data: [{ x: usl, y: yMin }, { x: usl, y: yMax }],
-        borderColor: '#FF0000',
-        borderWidth: 1.5,
-        borderDash: [6, 3],
-        backgroundColor: 'transparent',
-        showLine: true,
-        tension: 0,
-        pointRadius: 0,
-        pointHoverRadius: 0,
-      }] : []),
     ],
   };
 
@@ -104,7 +120,14 @@ export default function DistributionChart({
         text: title,
         font: { size: 13 },
       },
-      tooltip: { enabled: false },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: (ctx: TooltipItem<'scatter'>) =>
+            `(${ctx.parsed.x}, ${ctx.parsed.y ?? 0})`,
+        },
+      },
+      annotation: { annotations },
     },
     scales: {
       x: {
@@ -127,33 +150,9 @@ export default function DistributionChart({
     },
   };
 
-  const hasLegend = lsl !== undefined || usl !== undefined;
-
   return (
     <div style={{ height: 320 }}>
-      {hasLegend && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 4, justifyContent: 'center' }}>
-          {lsl !== undefined && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <svg width="30" height="10">
-                <line x1="0" y1="5" x2="30" y2="5" stroke="#0000FF" strokeWidth="1.5" strokeDasharray="6,3" />
-              </svg>
-              <span style={{ fontSize: 12, fontWeight: 'bold', color: '#0000FF' }}>LSL</span>
-            </div>
-          )}
-          {usl !== undefined && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <svg width="30" height="10">
-                <line x1="0" y1="5" x2="30" y2="5" stroke="#FF0000" strokeWidth="1.5" strokeDasharray="6,3" />
-              </svg>
-              <span style={{ fontSize: 12, fontWeight: 'bold', color: '#FF0000' }}>USL</span>
-            </div>
-          )}
-        </div>
-      )}
-      <div style={{ height: hasLegend ? 292 : 320 }}>
-        <Scatter data={chartData} options={options} />
-      </div>
+      <Scatter data={chartData} options={options} />
     </div>
   );
 }
