@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
-import styles from '../../../styles/quality/lqc/LQCPage.module.css';
+import styles from '../../../styles/plant/production/PlantProductionPage.module.css';
 import EquipmentList from '../register/EquipmentList';
 import EquipmentForm from '../register/EquipmentForm';
 import MaintenanceList from '../maintenance/MaintenanceList';

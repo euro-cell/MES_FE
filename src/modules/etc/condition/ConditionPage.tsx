@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import SubmenuBar from '../../../components/SubmenuBar';
-import styles from '../../../styles/quality/lqc/LQCPage.module.css';
+import styles from '../../../styles/etc/condition/ConditionPage.module.css';
 
 const CONDITION_MENUS = [{ title: '공정 온/습도', path: '/etc/condition/humidity' }];
 
