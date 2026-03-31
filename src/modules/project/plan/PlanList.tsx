@@ -27,7 +27,6 @@ export default function PlanList() {
       <table className={styles.planTable}>
         <thead>
           <tr>
-            <th>ID</th>
             <th>프로젝트명</th>
             <th>회사</th>
             <th>유형</th>
@@ -43,7 +42,6 @@ export default function PlanList() {
         <tbody>
           {data.map(item => (
             <tr key={item.id}>
-              <td>{item.id}</td>
               <td>{item.name}</td>
               <td>{item.company}</td>
               <td>{item.mode}</td>
