@@ -2,111 +2,93 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+  font-size: 12px;
 }
 
 /* 상단 영역 */
 .topSection {
   display: flex;
   gap: 24px;
-}
-
-.projectOverview {
-  flex: 0 0 auto;
-}
-
-.gradeClassification {
-  flex: 0 0 auto;
-}
-
-.sectionTitle {
-  font-size: 13px;
-  font-weight: 600;
-  color: #1565c0;
-  margin-bottom: 8px;
+  align-items: flex-start;
 }
 
 /* 프로젝트 개요 테이블 */
 .infoTable {
   border-collapse: collapse;
-  font-size: 12px;
   background: #fff;
   border: 1px solid #000;
 }
 
 .infoTable thead th {
-  background: #1565c0;
+  background: #215C98;
   color: #fff;
+  font-weight: 700;
   padding: 6px 12px;
   border: 1px solid #000;
   text-align: center;
-  font-weight: 600;
 }
 
 .infoTable tbody th {
-  background: #bbdefb;
+  background: #215C98;
+  color: #fff;
+  font-weight: 700;
   padding: 6px 12px;
   border: 1px solid #000;
   text-align: center;
-  font-weight: 500;
-  color: #000;
   white-space: nowrap;
 }
 
 .infoTable tbody td {
+  background: #fff;
+  color: #000;
+  font-weight: 700;
   padding: 6px 12px;
   border: 1px solid #000;
   text-align: left;
-  color: #000;
   min-width: 200px;
 }
 
 /* 등급 구분 테이블 */
 .gradeTable {
   border-collapse: collapse;
-  font-size: 12px;
   background: #fff;
   border: 1px solid #000;
 }
 
 .gradeTable thead th {
-  background: #1565c0;
+  background: #215C98;
   color: #fff;
+  font-weight: 700;
   padding: 6px 12px;
   border: 1px solid #000;
   text-align: center;
-  font-weight: 600;
 }
 
 .gradeTable tbody td {
   padding: 6px 12px;
   border: 1px solid #000;
   color: #000;
+  font-weight: 700;
 }
 
-.gradeCellCenter {
+.gradeCenter {
   text-align: center;
-  font-weight: 600;
 }
 
-/* 등급별 색상 */
-.gradeGreen {
-  background: #4caf50;
+.gradeA {
+  background: #DAF2D0;
 }
 
-.gradeYellow {
-  background: #ffeb3b;
+.gradeB {
+  background: #FFC000;
 }
 
-.gradeRed {
-  background: #f44336;
-  color: #fff;
+.gradeC {
+  background: #FBE2D5;
 }
 
-.gradeRed td {
-  color: #fff;
-}
-
-/* OQC List 테이블 */
+/* OQC List */
 .oqcSection {
   width: 100%;
   overflow-x: auto;
@@ -115,52 +97,51 @@
 .oqcTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
   background: #fff;
   border: 1px solid #000;
 }
 
 .oqcTable th,
 .oqcTable td {
-  padding: 6px 8px;
+  padding: 5px 8px;
   border: 1px solid #000;
   text-align: center;
+  color: #000;
 }
 
 .oqcTable thead th {
-  background: #1565c0;
+  background: #215C98;
   color: #fff;
-  font-weight: 600;
-}
-
-.oqcTable tbody td {
-  color: #000;
+  font-weight: 700;
 }
 
 .categoryCell {
-  background: #bbdefb;
-  font-weight: 600;
-  color: #000;
+  background: #215C98;
+  color: #fff;
+  font-weight: 700;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .itemCell {
   text-align: left;
+  white-space: nowrap;
 }
 
 .passCell {
-  background: #4caf50;
-  color: #fff;
-  font-weight: 500;
+  background: #DAF2D0;
+  font-weight: 700;
 }
 
 .failCell {
-  background: #f44336;
-  color: #fff;
-  font-weight: 500;
+  background: #FBE2D5;
+  font-weight: 700;
 }
 
-/* 반응형 */
+.exceededCell {
+  background: #FBE2D5;
+}
+
 @media (max-width: 1200px) {
   .topSection {
     flex-direction: column;
