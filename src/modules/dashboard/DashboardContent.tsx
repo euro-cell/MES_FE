@@ -54,7 +54,10 @@ export default function DashboardContent() {
   };
 
   const refreshProjects = async () => {
-    await queryClient.invalidateQueries({ queryKey: ['dashboard', 'projects'] });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'projects'] }),
+      queryClient.invalidateQueries({ queryKey: ['projects'] }),
+    ]);
   };
 
   if (isLoading) {

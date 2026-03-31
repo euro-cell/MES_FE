@@ -1,26 +1,22 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/project/plan/PlanList.module.css';
-import { getPlanProjects, deleteProjectPlan } from '../../../api/project/plan';
+import { deleteProjectPlan } from '../../../api/project/plan';
+import { useProjects } from '../../../hooks/useProjects';
+import { useQueryClient } from '@tanstack/react-query';
 import type { PlanProject } from './PlanTypes';
 import TooltipButton from '../../../components/TooltipButton';
 
 export default function PlanList() {
-  const [data, setData] = useState<PlanProject[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useProjects();
+  const planData: PlanProject[] = data ?? [];
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const loadData = async () => {
-    const res = await getPlanProjects();
-    setData(res);
-    setLoading(false);
+    await queryClient.invalidateQueries({ queryKey: ['projects'] });
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  if (loading) return <p>⏳ 데이터를 불러오는 중...</p>;
+  if (isLoading) return <p>⏳ 데이터를 불러오는 중...</p>;
 
   return (
     <div className={styles.planList}>
@@ -40,7 +36,7 @@ export default function PlanList() {
           </tr>
         </thead>
         <tbody>
-          {data.map(item => (
+          {planData.map((item: PlanProject) => (
             <tr key={item.id}>
               <td>{item.name}</td>
               <td>{item.company}</td>

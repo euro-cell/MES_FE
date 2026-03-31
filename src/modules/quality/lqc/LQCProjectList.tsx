@@ -1,30 +1,14 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/quality/lqc/LQCProjectList.module.css';
-import { getLQCProjects } from '../../../api/quality/LQCService';
+import { useProjects } from '../../../hooks/useProjects';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCProjectList() {
-  const [projects, setProjects] = useState<LQCProject[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useProjects();
+  const projects: LQCProject[] = data ?? [];
   const navigate = useNavigate();
 
-  const loadProjects = async () => {
-    try {
-      const data = await getLQCProjects();
-      setProjects(data);
-    } catch (err) {
-      console.error('프로젝트 목록 조회 실패:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadProjects();
-  }, []);
-
-  if (loading) return <p>데이터를 불러오는 중...</p>;
+  if (isLoading) return <p>데이터를 불러오는 중...</p>;
 
   return (
     <div className={styles.projectList}>
