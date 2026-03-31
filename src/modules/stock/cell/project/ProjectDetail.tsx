@@ -35,7 +35,7 @@ export default function ProjectDetail() {
 
   return (
     <div>
-      <h3>{projectName} 상세 현황</h3>
+      <h3 style={{ margin: 0 }}>{projectName} 상세 현황</h3>
       {error && <div style={{ color: 'red', marginBottom: '20px' }}>{error}</div>}
       <ProjectTable data={data} />
     </div>
