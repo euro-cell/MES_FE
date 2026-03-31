@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/plant/Equipment.module.css';
 import { getEquipments, deleteEquipment } from '../../../api/plant/EquipmentService';
 import type { Equipment, EquipmentCategory } from './EquipmentTypes';
+import ManualModal from './ManualModal';
 
 interface Props {
   category: EquipmentCategory;
@@ -18,6 +19,7 @@ export default function EquipmentList({ category }: Props) {
   const navigate = useNavigate();
   const [equipments, setEquipments] = useState<Equipment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [manualTarget, setManualTarget] = useState<{ id: number; name: string } | null>(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -130,6 +132,9 @@ export default function EquipmentList({ category }: Props) {
                 <td>{eq.remark || '-'}</td>
                 <td>
                   <div className={styles.actionButtons}>
+                    <button className={styles.manualBtn} onClick={() => setManualTarget({ id: eq.id, name: eq.name })}>
+                      매뉴얼
+                    </button>
                     <button className={styles.editBtn} onClick={() => handleEdit(eq)}>
                       수정
                     </button>
@@ -143,6 +148,13 @@ export default function EquipmentList({ category }: Props) {
           </tbody>
         </table>
       )}
+
+      <ManualModal
+        show={manualTarget !== null}
+        equipmentId={manualTarget?.id ?? 0}
+        equipmentName={manualTarget?.name ?? ''}
+        onClose={() => setManualTarget(null)}
+      />
     </div>
   );
 }
