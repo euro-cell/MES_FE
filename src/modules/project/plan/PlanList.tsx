@@ -77,6 +77,8 @@ export default function PlanList() {
                   <TooltipButton
                     label='삭제'
                     variant='delete'
+                    disabled={!item.isPlan}
+                    tooltip='계획이 등록되어 있지 않습니다.'
                     onClick={() => {
                       if (confirm('생산 계획을 삭제하시겠습니까?')) {
                         deleteProjectPlan(item.id).then(loadData);
