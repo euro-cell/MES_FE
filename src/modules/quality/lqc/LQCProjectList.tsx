@@ -4,11 +4,12 @@ import { useProjects } from '../../../hooks/useProjects';
 import type { LQCProject } from './LQCTypes';
 
 export default function LQCProjectList() {
-  const { data, isLoading } = useProjects();
+  const { data, isLoading, isError } = useProjects();
   const projects: LQCProject[] = data ?? [];
   const navigate = useNavigate();
 
   if (isLoading) return <p>데이터를 불러오는 중...</p>;
+  if (isError) return <p style={{ color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
     <div className={styles.projectList}>

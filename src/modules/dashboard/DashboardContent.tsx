@@ -13,7 +13,7 @@ import styles from '../../styles/dashboard/layout.module.css';
 
 export default function DashboardContent() {
   const queryClient = useQueryClient();
-  const { data, isLoading } = useDashboardProjects();
+  const { data, isLoading, isError } = useDashboardProjects();
 
   const projects = data?.projects ?? [];
   const plans = data?.plans ?? [];
@@ -67,7 +67,7 @@ export default function DashboardContent() {
   return (
     <div className={styles.dashboardContent}>
       <div className={styles.dashboardTop}>
-        <DashboardSummary projects={projects} onSelectProject={renderChart} />
+        <DashboardSummary projects={projects} onSelectProject={renderChart} hasError={isError} />
         <DashboardProgress progress={progress} />
         <DashboardProjectManager
           form={form}
@@ -79,7 +79,7 @@ export default function DashboardContent() {
       </div>
 
       <div className={styles.dashboardBottom}>
-        <DashboardSchedule plans={plans} />
+        <DashboardSchedule plans={plans} hasError={isError} />
       </div>
     </div>
   );

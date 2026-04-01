@@ -119,7 +119,7 @@ export default function DrawPage() {
       {loading ? (
         <div className={styles.loading}>로딩 중...</div>
       ) : error ? (
-        <div className={styles.error}>데이터를 불러오는데 실패했습니다.</div>
+        <div className={styles.error}>서버와 연결할 수 없습니다.</div>
       ) : (
         <table className={styles.ledgerTable}>
           <thead>

@@ -15,6 +15,7 @@ export default function SpecView() {
   const [materials, setMaterials] = useState<Record<string, any[]>>({});
   const [hasSpec, setHasSpec] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     if (!projectId) return;
@@ -38,8 +39,9 @@ export default function SpecView() {
         };
         setForm(safeSpec);
         setHasSpec(true);
-      } catch (err) {
+      } catch (err: any) {
         console.error('❌ 설계 조회 실패:', err);
+        if (!err?.response) setFetchError(true);
       }
 
       try {
@@ -56,6 +58,7 @@ export default function SpecView() {
   }, [projectId]);
 
   if (loading) return <div>로딩 중...</div>;
+  if (fetchError) return <div style={{ textAlign: 'center', padding: '40px', color: '#ef4444' }}>서버와 연결할 수 없습니다.</div>;
 
   const renderArrayRows = (arr: { value: string; remark: string }[], label: string) =>
     arr.map((item, i) => (

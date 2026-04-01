@@ -42,6 +42,7 @@ export default function InOutIndex() {
   const [storageUsage, setStorageUsage] = useState<StorageUsageResponse>({});
   const [showLotWarning, setShowLotWarning] = useState(false);
   const [projectList, setProjectList] = useState<string[]>([]);
+  const [statsError, setStatsError] = useState(false);
 
   // 프로젝트 리스트와 통계 조회
   useEffect(() => {
@@ -60,8 +61,10 @@ export default function InOutIndex() {
       try {
         const data = await fetchCellInventoryStatistics();
         setStatistics(data);
+        setStatsError(false);
       } catch (error) {
         console.error('통계 조회 실패:', error);
+        setStatsError(true);
       }
     };
 
@@ -185,7 +188,7 @@ export default function InOutIndex() {
 
       <div className={styles.divider}></div>
 
-      <InOutTable groupedData={groupedData} />
+      <InOutTable groupedData={groupedData} hasError={statsError} />
     </div>
   );
 }

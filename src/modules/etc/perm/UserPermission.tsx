@@ -26,6 +26,7 @@ export default function UserPermission() {
   const [menus, setMenus] = useState<MenuItem[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -38,6 +39,7 @@ export default function UserPermission() {
       }
     } catch (err) {
       console.error('사용자별 권한 조회 실패:', err);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
@@ -81,6 +83,7 @@ export default function UserPermission() {
   }, []);
 
   if (loading) return <p>로딩 중...</p>;
+  if (fetchError) return <p style={{ textAlign: 'center', padding: '8px 0', color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
     <div className={styles.permissionSection}>

@@ -8,14 +8,17 @@ export default function MaintenanceList() {
   const navigate = useNavigate();
   const [records, setRecords] = useState<MaintenanceRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
+    setFetchError(false);
     try {
       const data = await getMaintenanceRecords();
       setRecords(data);
     } catch (error) {
       console.error('유지보수 기록 조회 실패:', error);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
@@ -68,6 +71,8 @@ export default function MaintenanceList() {
 
       {loading ? (
         <div className={styles.loading}>로딩 중...</div>
+      ) : fetchError ? (
+        <div className={styles.errorState}>서버와 연결할 수 없습니다.</div>
       ) : records.length === 0 ? (
         <div className={styles.emptyState}>등록된 유지보수 기록이 없습니다.</div>
       ) : (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios, { isAxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import styles from '../../styles/draw/Drawing.module.css';
 import { createDrawing } from '../../api/draw/DrawService';

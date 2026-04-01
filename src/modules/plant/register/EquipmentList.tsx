@@ -19,15 +19,18 @@ export default function EquipmentList({ category }: Props) {
   const navigate = useNavigate();
   const [equipments, setEquipments] = useState<Equipment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [manualTarget, setManualTarget] = useState<{ id: number; name: string } | null>(null);
 
   const loadData = async () => {
     setLoading(true);
+    setFetchError(false);
     try {
       const data = await getEquipments(category);
       setEquipments(data);
     } catch (error) {
       console.error('설비 목록 조회 실패:', error);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
@@ -86,6 +89,8 @@ export default function EquipmentList({ category }: Props) {
 
       {loading ? (
         <div className={styles.loading}>로딩 중...</div>
+      ) : fetchError ? (
+        <div className={styles.errorState}>서버와 연결할 수 없습니다.</div>
       ) : equipments.length === 0 ? (
         <div className={styles.emptyState}>등록된 설비가 없습니다.</div>
       ) : (

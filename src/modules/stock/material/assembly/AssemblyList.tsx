@@ -265,7 +265,7 @@ export default function AssemblyList() {
 
       {!showHistory ? (
         error ? (
-          <p style={{ color: 'red', padding: '20px' }}>데이터 조회 실패</p>
+          <p style={{ color: '#ef4444', padding: '20px' }}>서버와 연결할 수 없습니다.</p>
         ) : (
           <div className={styles.tableWrapper}>
             <MaterialTable

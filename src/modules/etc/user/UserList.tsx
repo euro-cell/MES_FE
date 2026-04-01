@@ -8,6 +8,7 @@ import styles from '../../../styles/etc/users.module.css';
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editUser, setEditUser] = useState<User | null>(null);
 
@@ -17,6 +18,7 @@ export default function UserList() {
       setUsers(data);
     } catch (err) {
       console.error(err);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
@@ -62,6 +64,7 @@ export default function UserList() {
   };
 
   if (loading) return <div className='loading'>로딩 중...</div>;
+  if (fetchError) return <div style={{ textAlign: 'center', padding: '40px', color: '#ef4444' }}>서버와 연결할 수 없습니다.</div>;
 
   return (
     <div className={styles.userListContainer}>

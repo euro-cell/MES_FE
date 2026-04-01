@@ -13,16 +13,19 @@ interface ManualModalProps {
 export default function ManualModal({ show, equipmentId, equipmentName, onClose }: ManualModalProps) {
   const [manualList, setManualList] = useState<EquipmentManual[]>([]);
   const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadManualList = async () => {
     setLoading(true);
+    setFetchError(false);
     try {
       const data = await getManualList(equipmentId);
       setManualList(data);
     } catch (err) {
       console.error('매뉴얼 목록 조회 실패:', err);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
@@ -113,6 +116,8 @@ export default function ManualModal({ show, equipmentId, equipmentName, onClose 
 
           {loading ? (
             <p className={styles.loadingText}>불러오는 중...</p>
+          ) : fetchError ? (
+            <p style={{ textAlign: 'center', padding: '20px', color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>
           ) : manualList.length === 0 ? (
             <p className={styles.emptyText}>등록된 매뉴얼이 없습니다.</p>
           ) : (

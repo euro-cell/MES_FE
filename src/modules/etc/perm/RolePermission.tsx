@@ -27,6 +27,7 @@ export default function RolePermission() {
   const [menus, setMenus] = useState<MenuItem[]>([]);
   const [permissions, setPermissions] = useState<RoleMenuPermission[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -37,6 +38,7 @@ export default function RolePermission() {
       setPermissions(res.data.roles);
     } catch (err) {
       console.error('직급별 권한 조회 실패:', err);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
@@ -76,6 +78,7 @@ export default function RolePermission() {
   }, []);
 
   if (loading) return <p>로딩 중...</p>;
+  if (fetchError) return <p style={{ textAlign: 'center', padding: '8px 0', color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
     <div className={styles.permissionSection}>

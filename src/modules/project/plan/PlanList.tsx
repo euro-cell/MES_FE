@@ -7,7 +7,7 @@ import type { PlanProject } from './PlanTypes';
 import TooltipButton from '../../../components/TooltipButton';
 
 export default function PlanList() {
-  const { data, isLoading } = useProjects();
+  const { data, isLoading, isError } = useProjects();
   const planData: PlanProject[] = data ?? [];
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -17,6 +17,7 @@ export default function PlanList() {
   };
 
   if (isLoading) return <p>⏳ 데이터를 불러오는 중...</p>;
+  if (isError) return <p style={{ color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
     <div className={styles.planList}>

@@ -3,13 +3,14 @@ import styles from '../../../../styles/stock/cell/InOut.module.css';
 
 interface InOutTableProps {
   groupedData: GroupedTableData[];
+  hasError?: boolean;
 }
 
 const formatValue = (value: number | null): string => {
   return value === null ? '-' : String(value);
 };
 
-export default function InOutTable({ groupedData }: InOutTableProps) {
+export default function InOutTable({ groupedData, hasError }: InOutTableProps) {
   // 합계 계산
   const calculateTotals = () => {
     let totalHolding = 0;
@@ -48,9 +49,15 @@ export default function InOutTable({ groupedData }: InOutTableProps) {
           </tr>
         </thead>
         <tbody>
-          {!hasData ? (
+          {hasError ? (
             <tr>
-              <td colSpan={7} style={{ textAlign: 'center', padding: '40px' }}>
+              <td colSpan={7} style={{ textAlign: 'center', padding: '20px', color: '#ef4444' }}>
+                서버와 연결할 수 없습니다.
+              </td>
+            </tr>
+          ) : !hasData ? (
+            <tr>
+              <td colSpan={7} style={{ textAlign: 'center', padding: '20px' }}>
                 데이터가 없습니다.
               </td>
             </tr>

@@ -3,9 +3,10 @@ import styles from '../../styles/dashboard/schedule.module.css';
 
 interface Props {
   plans: DashboardProjectWithPlan[];
+  hasError?: boolean;
 }
 
-export default function DashboardSchedule({ plans }: Props) {
+export default function DashboardSchedule({ plans, hasError }: Props) {
   const currentYear = new Date().getFullYear();
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
 
@@ -70,7 +71,9 @@ export default function DashboardSchedule({ plans }: Props) {
 
         {/* 바디 */}
         <div className={styles.scheduleBody}>
-          {plans.length === 0 ? (
+          {hasError ? (
+            <div className={styles.scheduleEmpty} style={{ color: '#ef4444' }}>서버와 연결할 수 없습니다.</div>
+          ) : plans.length === 0 ? (
             <div className={styles.scheduleEmpty}>등록된 프로젝트가 없습니다.</div>
           ) : (
             plans.map(({ project, plan, progress }) => {

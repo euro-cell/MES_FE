@@ -508,6 +508,14 @@
   color: #94a3b8;
 }
 
+.errorState {
+  text-align: center;
+  padding: 40px;
+  color: #ef4444;
+}
+
+/* emptyState와 동일한 레이아웃, 색상만 다름 */
+
 /* ======================
   로딩 상태
 ====================== */

@@ -8,16 +8,18 @@ import styles from '../../../../styles/stock/cell/RackStorage.module.css';
 export default function RackStorageIndex() {
   const [rackData, setRackData] = useState<RackStorageData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
 
   const loadRackData = async () => {
     setIsLoading(true);
+    setFetchError(false);
     try {
       const data = await fetchRackStorageData();
       setRackData(data);
       toast.success('보관 현황이 업데이트 되었습니다.');
     } catch (error) {
       console.error('RACK 데이터 로드 실패:', error);
-      toast.error('보관 현황 조회 실패');
+      setFetchError(true);
     } finally {
       setIsLoading(false);
     }
@@ -41,18 +43,22 @@ export default function RackStorageIndex() {
         </button>
       </div>
 
-      {rackData ? (
+      {isLoading ? (
+        <div className={styles.loadingContainer}>
+          <p>데이터를 불러오는 중입니다...</p>
+        </div>
+      ) : fetchError ? (
+        <div className={styles.loadingContainer}>
+          <p style={{ color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>
+        </div>
+      ) : rackData ? (
         <>
           <RackStorageGrid locations={rackData.locations} />
           <div className={styles.footer}>
             <p className={styles.updateTime}>마지막 업데이트: {new Date(rackData.updatedAt).toLocaleString('ko-KR')}</p>
           </div>
         </>
-      ) : (
-        <div className={styles.loadingContainer}>
-          <p>데이터를 불러오는 중입니다...</p>
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }

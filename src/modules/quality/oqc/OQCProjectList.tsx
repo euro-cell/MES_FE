@@ -4,11 +4,12 @@ import { useProjects } from '../../../hooks/useProjects';
 import type { OQCProject } from './OQCTypes';
 
 export default function OQCProjectList() {
-  const { data, isLoading } = useProjects();
+  const { data, isLoading, isError } = useProjects();
   const projects: OQCProject[] = data ?? [];
   const navigate = useNavigate();
 
   if (isLoading) return <p>데이터를 불러오는 중...</p>;
+  if (isError) return <p style={{ color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
     <div className={styles.projectList}>

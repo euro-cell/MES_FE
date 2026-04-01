@@ -47,6 +47,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
   const navigate = useNavigate();
   const [worklogs, setWorklogs] = useState<WorklogEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [downloading, setDownloading] = useState(false);
@@ -231,7 +232,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
       setWorklogs(data);
     } catch (err) {
       console.error('작업일지 조회 실패:', err);
-      setWorklogs([]);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
@@ -353,6 +354,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
   };
 
   if (loading) return <p>작업일지를 불러오는 중...</p>;
+  if (fetchError) return <p style={{ textAlign: 'center', padding: '40px', color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
     <div className={styles.worklogList}>

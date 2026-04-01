@@ -13,14 +13,17 @@ interface SpecItem {
 
 export default function SpecList() {
   const [list, setList] = useState<SpecItem[]>([]);
+  const [fetchError, setFetchError] = useState(false);
   const navigate = useNavigate();
 
   const loadData = async () => {
     try {
       const data = await getSpecificationSummary();
       setList(data);
+      setFetchError(false);
     } catch (err) {
       console.error('❌ 스펙 리스트 조회 실패:', err);
+      setFetchError(true);
     }
   };
 
@@ -63,6 +66,8 @@ export default function SpecList() {
   useEffect(() => {
     loadData();
   }, []);
+
+  if (fetchError) return <p style={{ color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
     <div className={styles.specList}>

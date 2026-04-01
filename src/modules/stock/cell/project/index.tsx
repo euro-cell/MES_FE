@@ -9,6 +9,7 @@ import type { ProjectStatistics } from '../inOut/types';
 export default function ProjectIndex() {
   const [projects, setProjects] = useState<ProjectStatistics[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -17,6 +18,7 @@ export default function ProjectIndex() {
         setProjects(data);
       } catch (err) {
         console.error('프로젝트 목록 조회 실패:', err);
+        setFetchError(true);
       } finally {
         setLoading(false);
       }
@@ -26,6 +28,7 @@ export default function ProjectIndex() {
   }, []);
 
   if (loading) return <p>데이터를 불러오는 중...</p>;
+  if (fetchError) return <p style={{ textAlign: 'center', padding: '40px', color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   // 프로젝트 목록을 메뉴 형식으로 변환 (projectName 기준 중복 제거)
   const uniqueProjectNames = [...new Set(projects.map(p => p.projectName))];

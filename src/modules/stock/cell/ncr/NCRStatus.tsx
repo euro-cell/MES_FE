@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from '../../../../api/axiosInstance';
 import toast from 'react-hot-toast';
+import axios from '../../../../api/axiosInstance';
 import NCRStatusTable from './NCRStatusTable';
 import NCRDetailSection from './NCRDetailSection';
 import type { NCRStatisticsResponse } from './types';
@@ -25,9 +25,7 @@ export default function NCRStatus() {
       toast.success('NCR 통계가 조회되었습니다.');
     } catch (err: any) {
       console.error('NCR 통계 조회 실패:', err);
-      const errorMsg = err.response?.data?.message || '데이터를 불러오는 중 오류가 발생했습니다.';
-      setError(errorMsg);
-      toast.error(`${errorMsg}`);
+      setError('서버와 연결할 수 없습니다.');
     } finally {
       setLoading(false);
     }
@@ -52,7 +50,7 @@ export default function NCRStatus() {
     return (
       <div className={styles.ncrContainer}>
         <div style={{ padding: '40px', textAlign: 'center', color: '#dc2626' }}>
-          <p>{error || '데이터를 불러올 수 없습니다.'}</p>
+          <p>{error}</p>
           <button
             onClick={loadStatistics}
             style={{

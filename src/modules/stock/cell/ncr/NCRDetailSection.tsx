@@ -38,6 +38,7 @@ export default function NCRDetailSection() {
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
   const [detailData, setDetailData] = useState<NCRDetailData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedData, setEditedData] = useState<NCRDetailData | null>(null);
 
@@ -55,6 +56,7 @@ export default function NCRDetailSection() {
         setProjects(projectList);
       } catch (err) {
         console.error('프로젝트 목록 로드 실패:', err);
+        setFetchError(true);
       }
     };
     loadProjects();
@@ -380,6 +382,7 @@ export default function NCRDetailSection() {
             </option>
           ))}
         </select>
+        {fetchError && <span style={{ color: '#ef4444', fontSize: '13px', marginLeft: '8px' }}>서버와 연결할 수 없습니다.</span>}
       </div>
 
       {/* 편집/저장 버튼 */}
