@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../axiosInstance';
 import type { WorklogProject } from '../../modules/project/worklog/WorklogTypes';
 import type { BinderWorklog, BinderWorklogPayload } from '../../modules/project/worklog/processes/01-binder/BinderTypes';
 import type { SlurryWorklog, SlurryWorklogPayload } from '../../modules/project/worklog/processes/02-slurry/SlurryTypes';

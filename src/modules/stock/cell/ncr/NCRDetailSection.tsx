@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../../../api/axiosInstance';
 import styles from '../../../../styles/stock/cell/NCRStatus.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;

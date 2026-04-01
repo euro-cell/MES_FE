@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../axiosInstance';
 import type { Equipment, EquipmentPayload, EquipmentCategory } from '../../modules/plant/register/EquipmentTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;

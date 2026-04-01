@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../axiosInstance';
 import type { RackLocation, RackStorageData } from '../../modules/stock/cell/rackStorage/types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;

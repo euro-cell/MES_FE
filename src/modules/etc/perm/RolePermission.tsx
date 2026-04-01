@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../../api/axiosInstance';
 import styles from '../../../styles/etc/permission.module.css';
 import { ROLE_LABELS } from '../user/userRoleMap';
 

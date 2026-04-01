@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../axiosInstance';
 import type { PlanProject, PlanPayload } from '../../modules/project/plan/PlanTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../axiosInstance';
 import type { IQCProject, IQCItem, IQCItemRequest, IQCImage, IQCFile } from '../../modules/quality/iqc/IQCTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;

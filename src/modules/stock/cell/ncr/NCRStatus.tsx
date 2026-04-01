@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../../../api/axiosInstance';
 import toast from 'react-hot-toast';
 import NCRStatusTable from './NCRStatusTable';
 import NCRDetailSection from './NCRDetailSection';

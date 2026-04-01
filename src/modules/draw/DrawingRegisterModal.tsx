@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import styles from '../../styles/draw/Drawing.module.css';
 import { createDrawing } from '../../api/draw/DrawService';
@@ -94,7 +94,7 @@ export default function DrawingRegisterModal({
       onSuccess();
     } catch (err) {
       console.error('도면 등록 실패:', err);
-      if (axios.isAxiosError(err) && err.response?.status === 409) {
+      if (isAxiosError(err) && err.response?.status === 409) {
         toast.error('이미 존재하는 도면번호입니다.');
       } else {
         toast.error('도면 등록에 실패했습니다.');

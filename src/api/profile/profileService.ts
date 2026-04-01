@@ -1,6 +1,6 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-import axios from 'axios';
+import axios from '../axiosInstance';
 
 export interface ChangePasswordRequest {
   currentPassword: string;

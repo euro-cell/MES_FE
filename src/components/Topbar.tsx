@@ -1,7 +1,7 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 import React from 'react';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { ROLE_LABELS } from '../modules/etc/user/userRoleMap';
