@@ -1,8 +1,10 @@
 import type { RackLocation } from './types';
+import type { LegendRange } from './index';
 import styles from '../../../../styles/stock/cell/RackStorage.module.css';
 
 interface RackStorageGridProps {
   locations: RackLocation[];
+  hoveredLegend: LegendRange | null;
 }
 
 const getUsageColor = (usage: number): string => {
@@ -15,11 +17,20 @@ const getUsageColor = (usage: number): string => {
   return '#d32f2f'; // 빨강 (100%)
 };
 
+const getLegendRangeForUsage = (usage: number): LegendRange => {
+  if (usage <= 30) return 'range0';
+  if (usage <= 50) return 'range30';
+  if (usage <= 70) return 'range50';
+  if (usage <= 85) return 'range70';
+  if (usage <= 99) return 'range85';
+  return 'range100';
+};
+
 const getTextColor = (): string => {
   return '#333333';
 };
 
-export default function RackStorageGrid({ locations }: RackStorageGridProps) {
+export default function RackStorageGrid({ locations, hoveredLegend }: RackStorageGridProps) {
   const getLocationByKey = (key: string): RackLocation | undefined => {
     return locations.find(loc => loc.key === key);
   };
@@ -32,6 +43,7 @@ export default function RackStorageGrid({ locations }: RackStorageGridProps) {
 
     const bgColor = getUsageColor(location.usage);
     const textColor = getTextColor();
+    const dimmed = hoveredLegend !== null && getLegendRangeForUsage(location.usage) !== hoveredLegend;
 
     return (
       <div
@@ -39,6 +51,8 @@ export default function RackStorageGrid({ locations }: RackStorageGridProps) {
         style={{
           backgroundColor: bgColor,
           color: textColor,
+          opacity: dimmed ? 0.2 : 1,
+          transition: 'opacity 0.15s',
         }}
       >
         <div className={styles.cellContent}>
@@ -101,36 +115,6 @@ export default function RackStorageGrid({ locations }: RackStorageGridProps) {
       {/* 바닥 표시 */}
       <div className={styles.floorBar}>테이블</div>
 
-      {/* 범례 */}
-      <div className={styles.legend}>
-        <div className={styles.legendTitle}>사용률 범례</div>
-        <div className={styles.legendItems}>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{ backgroundColor: '#c8e6c9' }}></div>
-            <span>0-30%</span>
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{ backgroundColor: '#a5d6a7' }}></div>
-            <span>30-50%</span>
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{ backgroundColor: '#ffee58' }}></div>
-            <span>50-70%</span>
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{ backgroundColor: '#ffca28' }}></div>
-            <span>70-85%</span>
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{ backgroundColor: '#ff7043' }}></div>
-            <span>85-99%</span>
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{ backgroundColor: '#d32f2f' }}></div>
-            <span>100% (가득찼음)</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
