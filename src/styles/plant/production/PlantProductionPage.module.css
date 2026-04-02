@@ -1,11 +1,32 @@
 .content {
   border-radius: 8px;
-  padding: 20px 0px;
+  /* padding: 20px 0px; */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .placeholder {
-  text-align: center;
-  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  gap: 6px;
+  color: #94a3b8;
+}
+
+.placeholderIcon {
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.placeholderText {
+  font-size: 16px;
+  font-weight: 500;
   color: #64748b;
+}
+
+.placeholderSub {
+  font-size: 13px;
+  color: #94a3b8;
 }

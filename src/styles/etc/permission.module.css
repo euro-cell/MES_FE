@@ -9,18 +9,11 @@
   box-sizing: border-box;
 }
 
-.permissionPage h1 {
-  color: #1b263b;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: 600;
-}
-
 /* ===========================
    각 섹션 (직급별 / 사용자별)
 =========================== */
 .permissionSection {
-  margin-bottom: 40px;
+  margin-bottom: 10px;
   padding: 20px;
   background: #ffffff;
   border-radius: 10px;
@@ -28,41 +21,42 @@
   position: relative;
 }
 
-.permissionSection h2 {
-  color: #1b263b;
-  font-size: 20px;
-  font-weight: 600;
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 15px;
   border-bottom: 2px solid #e0e0e0;
   padding-bottom: 6px;
 }
 
-/* ===========================
-   필터 영역 (직급 / 사용자 선택)
-=========================== */
-.filter {
-  margin-bottom: 15px;
+.sectionHeader h2 {
+  color: #1b263b;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.sectionHeaderLeft {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
 
-.filter label {
-  font-weight: 500;
-  color: #333;
-}
-
-.filter select,
-.filter input {
-  padding: 6px 8px;
-  border: 1px solid #ccc;
+.saveButton {
+  padding: 8px 16px;
+  border: none;
+  background: #1b263b;
+  color: white;
   border-radius: 6px;
-  outline: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.2s;
 }
 
-.filter select:focus,
-.filter input:focus {
-  border-color: #1b263b;
+.saveButton:hover {
+  background: #33415c;
 }
 
 /* ===========================
@@ -93,7 +87,6 @@
   color: #1b263b;
 }
 
-
 .permissionTable td input[type='checkbox'] {
   transform: scale(1.1);
   cursor: pointer;
@@ -107,72 +100,6 @@
 /* ===========================
    하단 저장 버튼 영역
 =========================== */
-.actions {
-  margin-top: 20px;
-  text-align: right;
-  position: sticky;
-  bottom: 10px;
-  background: white;
-  padding-top: 8px;
-  border-top: 1px solid #eee;
-}
-
-.actions button {
-  padding: 10px 18px;
-  border: none;
-  background: #1b263b;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.actions button:hover {
-  background: #33415c;
-  transform: translateY(-1px);
-}
-
-/* ===========================
-   직급별 다중 권한 테이블
-=========================== */
-.permissionTable.multiRole th[colspan='3'] {
-  background: #e9ecef;
-  font-weight: 600;
-  color: #1b263b;
-  text-transform: uppercase;
-}
-
-.permissionTable.multiRole th {
-  font-size: 13px;
-}
-
-.permissionTable.multiRole td {
-  padding: 6px;
-}
-
-.permissionTable.multiRole td input[type='checkbox'] {
-  transform: scale(1.05);
-}
-
-.multiRole th[colspan='3'] {
-  background: #e9ecef;
-  font-weight: 600;
-  color: #1b263b;
-  text-transform: uppercase;
-}
-
-.multiRole th {
-  font-size: 13px;
-}
-
-.multiRole td {
-  padding: 6px;
-}
-
-.multiRole td input[type='checkbox'] {
-  transform: scale(1.05);
-}
 
 /* ===========================
    사용자 선택
@@ -181,7 +108,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 16px;
 }
 
 .userSelector label {

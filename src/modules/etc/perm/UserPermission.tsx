@@ -87,20 +87,24 @@ export default function UserPermission() {
 
   return (
     <div className={styles.permissionSection}>
-      <h2>사용자별 권한</h2>
-
-      <div className={styles.userSelector}>
-        <label>사용자 선택</label>
-        <select
-          value={selectedUserId ?? ''}
-          onChange={e => setSelectedUserId(Number(e.target.value))}
-        >
-          {users.map(u => (
-            <option key={u.userId} value={u.userId}>
-              {u.name}
-            </option>
-          ))}
-        </select>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionHeaderLeft}>
+          <h2>사용자별 권한</h2>
+          <div className={styles.userSelector}>
+            <label>사용자 선택</label>
+            <select
+              value={selectedUserId ?? ''}
+              onChange={e => setSelectedUserId(Number(e.target.value))}
+            >
+              {users.map(u => (
+                <option key={u.userId} value={u.userId}>
+                  {u.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <button className={styles.saveButton} onClick={handleSave}>사용자 권한 저장</button>
       </div>
 
       {selectedUser && (
@@ -147,9 +151,6 @@ export default function UserPermission() {
         </table>
       )}
 
-      <div className={styles.actions}>
-        <button onClick={handleSave}>사용자 권한 저장</button>
-      </div>
     </div>
   );
 }

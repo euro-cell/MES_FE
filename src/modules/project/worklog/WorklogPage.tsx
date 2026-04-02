@@ -59,13 +59,13 @@ export default function WorklogPage() {
 
       {/* 공정 탭 메뉴 (2단계) */}
       {category && (
-        <div style={{ marginTop: '10px' }}>
+        <div>
           <SubmenuBar menus={processMenus} />
         </div>
       )}
 
       {/* 선택된 공정의 작업일지 리스트 */}
-      <div style={{ marginTop: '20px' }}>
+      <div style={{ marginTop: '5px' }}>
         {currentProcess && processId && (
           <WorklogList projectId={Number(projectId)} processId={processId} processTitle={currentProcess.title} />
         )}

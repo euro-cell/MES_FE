@@ -22,7 +22,13 @@ export default function PlantProductionPage() {
           <Route path='list/form' element={<EquipmentForm />} />
           <Route path='history' element={<MaintenanceList />} />
           <Route path='history/form' element={<MaintenanceForm />} />
-          <Route path='*' element={<div className={styles.placeholder}>메뉴를 선택하세요.</div>} />
+          <Route path='*' element={
+            <div className={styles.placeholder}>
+              <span className={styles.placeholderIcon}>🔧</span>
+              <span className={styles.placeholderText}>메뉴를 선택하세요.</span>
+              <span className={styles.placeholderSub}>왼쪽 메뉴에서 항목을 선택해주세요.</span>
+            </div>
+          } />
         </Routes>
       </div>
     </div>

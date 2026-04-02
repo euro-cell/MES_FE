@@ -5,13 +5,8 @@ import styles from '../../../styles/etc/permission.module.css';
 export default function PermissionPage() {
   return (
     <div className={styles.permissionPage}>
-      <section className={styles.permissionSection}>
-        <RolePermission />
-      </section>
-
-      <section className={styles.permissionSection}>
-        <UserPermission />
-      </section>
+      <RolePermission />
+      <UserPermission />
     </div>
   );
 }

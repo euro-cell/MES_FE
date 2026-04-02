@@ -54,6 +54,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
 
   const loadWorklogs = async () => {
     setLoading(true);
+    setFetchError(false);
     try {
       let data: WorklogEntry[];
 
