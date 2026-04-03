@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
-import axios from '../../../api/axiosInstance';
+import { fetchUserPermissions, updateUserPermission } from '../../../api/etc/permissionService';
 import styles from '../../../styles/etc/permission.module.css';
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 interface PermissionCell {
   canCreate: boolean;
@@ -31,11 +29,11 @@ export default function UserPermission() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_BASE}/permission/user`, { withCredentials: true });
-      setUsers(res.data.users);
-      setMenus(res.data.menus);
-      if (res.data.users.length > 0) {
-        setSelectedUserId(res.data.users[0].userId);
+      const data = await fetchUserPermissions();
+      setUsers(data.users);
+      setMenus(data.menus);
+      if (data.users.length > 0) {
+        setSelectedUserId(data.users[0].userId);
       }
     } catch (err) {
       console.error('사용자별 권한 조회 실패:', err);
@@ -62,15 +60,15 @@ export default function UserPermission() {
                 },
               },
             }
-          : u
-      )
+          : u,
+      ),
     );
   };
 
   const handleSave = async () => {
     if (!selectedUser) return;
     try {
-      await axios.put(`${API_BASE}/permission/user`, [selectedUser], { withCredentials: true });
+      await updateUserPermission([selectedUser]);
       alert('사용자별 권한이 저장되었습니다.');
     } catch (err) {
       console.error('사용자별 권한 저장 실패:', err);
@@ -83,7 +81,8 @@ export default function UserPermission() {
   }, []);
 
   if (loading) return <p>로딩 중...</p>;
-  if (fetchError) return <p style={{ textAlign: 'center', padding: '8px 0', color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
+  if (fetchError)
+    return <p style={{ textAlign: 'center', padding: '8px 0', color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
     <div className={styles.permissionSection}>
@@ -92,10 +91,7 @@ export default function UserPermission() {
           <h2>사용자별 권한</h2>
           <div className={styles.userSelector}>
             <label>사용자 선택</label>
-            <select
-              value={selectedUserId ?? ''}
-              onChange={e => setSelectedUserId(Number(e.target.value))}
-            >
+            <select value={selectedUserId ?? ''} onChange={e => setSelectedUserId(Number(e.target.value))}>
               {users.map(u => (
                 <option key={u.userId} value={u.userId}>
                   {u.name}
@@ -104,7 +100,9 @@ export default function UserPermission() {
             </select>
           </div>
         </div>
-        <button className={styles.saveButton} onClick={handleSave}>사용자 권한 저장</button>
+        <button className={styles.saveButton} onClick={handleSave}>
+          사용자 권한 저장
+        </button>
       </div>
 
       {selectedUser && (
@@ -150,7 +148,6 @@ export default function UserPermission() {
           </tbody>
         </table>
       )}
-
     </div>
   );
 }

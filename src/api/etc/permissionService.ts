@@ -11,3 +11,13 @@ export const updateUserPermissions = async (data: any[]) => {
   const res = await axios.put(`${API_BASE}/permission/user/all`, data, { withCredentials: true });
   return res.data;
 };
+
+export const fetchUserPermissions = async () => {
+  const res = await axios.get(`${API_BASE}/permission/user`, { withCredentials: true });
+  return res.data;
+};
+
+export const updateUserPermission = async (data: any[]) => {
+  const res = await axios.put(`${API_BASE}/permission/user`, data, { withCredentials: true });
+  return res.data;
+};
