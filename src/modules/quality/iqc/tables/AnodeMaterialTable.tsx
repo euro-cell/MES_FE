@@ -98,7 +98,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
   const [psdData, setPsdData] = useState<IQCPsdData[]>([]);
   const [psdRefLabels, setPsdRefLabels] = useState<string[]>(['', '']);
   const [semRefLabels, setSemRefLabels] = useState<string[]>(['', '', '']);
-  const [psdFiles, setPsdFiles] = useState<{ id?: number; fileName: string; filePath?: string }[]>([]);
+  const [psdFiles, setPsdFiles] = useState<{ id?: number; fileName: string; filePath?: string; fileUrl?: string }[]>([]);
   const [uploadingPsdFile, setUploadingPsdFile] = useState(false);
 
   useEffect(() => {

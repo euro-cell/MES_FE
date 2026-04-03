@@ -12,7 +12,6 @@ export interface GradingWorklog {
   plant?: string;
 
   // A. 자재 투입 정보
-  projectId?: string;
   cellNumberRange?: string;
 
   // B. 생산 정보 - OCV2
@@ -92,7 +91,6 @@ export interface GradingWorklogPayload {
   plant?: any;
 
   // A. 자재 투입 정보
-  projectId?: string;
   cellNumberRange?: string;
 
   // B. 생산 정보 - OCV2

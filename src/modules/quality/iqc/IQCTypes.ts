@@ -58,6 +58,7 @@ export interface IQCImage {
   imageType: string;      // PSD, Half cell, FE-SEM 등
   imageLabel?: string;    // 사용자가 입력한 표시용 레이블
   filePath?: string;
+  fileUrl?: string;
 }
 
 /** IQC 첨부 파일 (PDF 등) */
