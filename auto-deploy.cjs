@@ -2,7 +2,7 @@ const { execSync } = require('child_process');
 const path = require('path');
 
 const PROJECT_DIR = path.resolve(__dirname);
-const INTERVAL = 60 * 1000; // 60초
+const INTERVAL = 10 * 60 * 1000; // 10분
 
 function run(cmd) {
   return execSync(cmd, { cwd: PROJECT_DIR, encoding: 'utf8' }).trim();
