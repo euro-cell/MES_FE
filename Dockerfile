@@ -18,7 +18,7 @@ WORKDIR /app
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 
 EXPOSE 80
 
