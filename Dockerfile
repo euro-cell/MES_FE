@@ -7,6 +7,8 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+ARG VITE_API_BASE_URL=/api
 RUN npm run build
 
 # Stage 2: 서빙
