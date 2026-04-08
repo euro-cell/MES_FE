@@ -79,7 +79,7 @@ jobs:
 
             # 헬스체크 대기 (최대 30초)
             for i in {1..30}; do
-              if docker exec "$NEW" wget -q --spider http://localhost:80 2>/dev/null; then
+              if docker exec "$NEW" wget -q --spider http://localhost 2>/dev/null; then
                 echo "Container is healthy"
                 break
               fi
