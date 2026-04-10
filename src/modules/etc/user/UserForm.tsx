@@ -50,51 +50,75 @@ export default function UserForm({ user, onClose }: Props) {
   return (
     <div className={styles.modalBackdrop}>
       <div className={styles.modal}>
-        <h3>{isEdit ? '인원 수정' : '인원 추가'}</h3>
-        <form onSubmit={handleSubmit}>
-          <input
-            type='text'
-            name='employeeNumber'
-            placeholder='사번'
-            value={form.employeeNumber}
-            onChange={handleChange}
-            required
-          />
-          <input type='text' name='name' placeholder='이름' value={form.name} onChange={handleChange} required />
-          <input
-            type='text'
-            name='department'
-            placeholder='부서'
-            value={form.department}
-            onChange={handleChange}
-            required
-          />
+        <div className={styles.modalHeader}>
+          <h3>{isEdit ? '인원 수정' : '인원 추가'}</h3>
+          <button className={styles.modalCloseBtn} onClick={onClose} type='button'>×</button>
+        </div>
 
-          <div>
-            <select name='position' value={form.position} onChange={handleChange} size={5}>
-              {Object.entries(ROLE_LABELS).map(([key, label]) => (
-                <option key={key} value={key}>
-                  {label}
-                </option>
-              ))}
-            </select>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.modalBody}>
+            <div className={styles.fieldGroup}>
+              <label>사번</label>
+              <input
+                type='text'
+                name='employeeNumber'
+                placeholder='사번 입력'
+                value={form.employeeNumber}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className={styles.fieldGroup}>
+              <label>이름</label>
+              <input
+                type='text'
+                name='name'
+                placeholder='이름 입력'
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className={styles.fieldGroup}>
+              <label>부서</label>
+              <input
+                type='text'
+                name='department'
+                placeholder='부서 입력'
+                value={form.department}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className={styles.fieldGroup}>
+              <label>직급</label>
+              <select name='position' value={form.position} onChange={handleChange}>
+                {Object.entries(ROLE_LABELS).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.fieldGroup}>
+              <label>비밀번호</label>
+              <input
+                type='password'
+                name='password'
+                placeholder={isEdit ? '변경 시에만 입력' : '비밀번호 입력'}
+                value={form.password}
+                onChange={handleChange}
+                required={!isEdit}
+              />
+            </div>
           </div>
 
-          <input
-            type='password'
-            name='password'
-            placeholder={isEdit ? '비밀번호 (변경 시만 입력)' : '비밀번호'}
-            value={form.password}
-            onChange={handleChange}
-            required={!isEdit}
-          />
-
-          <div className={styles.modalButtons}>
+          <div className={styles.modalFooter}>
+            <button type='button' className={styles.btnSecondary} onClick={onClose}>
+              취소
+            </button>
             <button type='submit' className={styles.btnPrimary}>
               저장
-            </button>
-            <button type='button' className={styles.btnSecondary} onClick={onClose}>
-              닫기
             </button>
           </div>
         </form>

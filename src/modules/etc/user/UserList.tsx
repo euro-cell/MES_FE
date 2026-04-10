@@ -75,58 +75,58 @@ export default function UserList() {
         </button>
       </div>
 
-      <table className={styles.userTable}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>사번</th>
-            <th>이름</th>
-            <th>부서</th>
-            <th>직급</th>
-            <th>활성</th>
-            <th>등록일</th>
-            <th>관리</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.length === 0 ? (
+      <div className={styles.tableWrapper}>
+        <table className={styles.userTable}>
+          <thead>
             <tr>
-              <td colSpan={8} className={styles.empty}>
-                데이터가 없습니다.
-              </td>
+              <th>ID</th>
+              <th>사번</th>
+              <th>이름</th>
+              <th>부서</th>
+              <th>직급</th>
+              <th>활성</th>
+              <th>등록일</th>
+              <th>관리</th>
             </tr>
-          ) : (
-            users.map(u => (
-              <tr key={u.id}>
-                <td>{u.id}</td>
-                <td>{u.employeeNumber}</td>
-                <td>{u.name}</td>
-                <td>{u.department}</td>
-                <td>{ROLE_LABELS[u.position] || u.position}</td>
-
-                <td
-                  className={styles.activeStatus}
-                  onClick={() => handleToggleActive(u)}
-                  style={{ cursor: 'pointer' }}
-                  title='클릭하여 상태 변경'
-                >
-                  {u.isActive ? '✅' : '❌'}
-                </td>
-
-                <td>{new Date(u.createdAt).toLocaleDateString()}</td>
-                <td>
-                  <button className={styles.btnSecondary} onClick={() => handleEdit(u)}>
-                    수정
-                  </button>
-                  <button className={styles.btnDanger} onClick={() => handleDelete(u.id)}>
-                    삭제
-                  </button>
+          </thead>
+          <tbody>
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan={8} className={styles.empty}>
+                  데이터가 없습니다.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              users.map(u => (
+                <tr key={u.id}>
+                  <td>{u.id}</td>
+                  <td>{u.employeeNumber}</td>
+                  <td>{u.name}</td>
+                  <td>{u.department}</td>
+                  <td>{ROLE_LABELS[u.position] || u.position}</td>
+                  <td
+                    onClick={() => handleToggleActive(u)}
+                    title='클릭하여 상태 변경'
+                  >
+                    <span className={u.isActive ? styles.badgeActive : styles.badgeInactive}>
+                      {u.isActive ? '● 활성' : '● 비활성'}
+                    </span>
+                  </td>
+                  <td>{new Date(u.createdAt).toLocaleDateString()}</td>
+                  <td>
+                    <button className={styles.btnSecondary} onClick={() => handleEdit(u)}>
+                      수정
+                    </button>
+                    <button className={styles.btnDanger} onClick={() => handleDelete(u.id)}>
+                      삭제
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {showForm && <UserForm onClose={handleFormClose} user={editUser} />}
     </div>
