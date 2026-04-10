@@ -79,7 +79,7 @@ export default function UserList() {
         <table className={styles.userTable}>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>No</th>
               <th>사번</th>
               <th>이름</th>
               <th>부서</th>

@@ -48,12 +48,22 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
+  border-right: 1px solid #e2e8f0;
+}
+
+.userTable th:last-child {
+  border-right: none;
 }
 
 .userTable td {
   padding: 13px 16px;
   color: #1e293b;
   border-bottom: 1px solid #f1f5f9;
+  border-right: 1px solid #f1f5f9;
+}
+
+.userTable td:last-child {
+  border-right: none;
 }
 
 .userTable tbody tr:last-child td {
