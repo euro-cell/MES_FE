@@ -1,12 +1,12 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
 import styles from '../styles/auth/auth.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import axios from '../api/axiosInstance';
+import { login } from '../api/auth/authService';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setAuth } = useAuth();
   const [employeeNumber, setEmployeeNumber] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -16,13 +16,9 @@ export default function Login() {
     setError('');
 
     try {
-      const res = await axios.post(`${API_BASE}/auth/login`, { employeeNumber, password }, { withCredentials: true });
-
-      if (res.status === 200 || res.status === 201) {
-        navigate('/main', { replace: true });
-      } else {
-        console.warn('로그인 응답 상태:', res.status);
-      }
+      const data = await login(employeeNumber, password);
+      setAuth(data.user);
+      navigate('/main', { replace: true });
     } catch (err: any) {
       const status = err.response?.status;
       const message = err.response?.data?.message;

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { WorklogProject } from '../WorklogTypes';
-import { useAuth } from '../../../../hooks/useAuth';
+import { useAuth } from '../../../../contexts/AuthContext';
 
 interface NamedRange {
   value?: any;

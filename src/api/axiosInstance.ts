@@ -8,8 +8,8 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    const url = error.config?.url ?? '';
-    if (error.response?.status === 401 && !url.includes('/auth/status')) {
+    const isLoginPage = window.location.pathname === '/login';
+    if (error.response?.status === 401 && !isLoginPage) {
       localStorage.removeItem('user');
       sessionStorage.removeItem('user');
       window.location.href = '/login';

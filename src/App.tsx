@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import BaseLayout from './layouts/BaseLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import { useAuth } from './hooks/useAuth';
+import { useAuth } from './contexts/AuthContext';
 import { MENU_CONFIG } from './modules/menuConfig'; // ✅ 중앙 메뉴 설정 import
 
 // ✅ 도메인 모듈 lazy load (코드 분할)

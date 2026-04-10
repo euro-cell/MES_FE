@@ -3,7 +3,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 import React from 'react';
 import axios from '../api/axiosInstance';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext';
 import { ROLE_LABELS } from '../modules/etc/user/userRoleMap';
 import { MENU_CONFIG } from '../modules/menuConfig';
 import styles from '../styles/layout/topbar.module.css';
