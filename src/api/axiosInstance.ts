@@ -12,6 +12,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !isLoginPage) {
       localStorage.removeItem('user');
       sessionStorage.removeItem('user');
+      sessionStorage.setItem('session_expired', 'true');
       window.location.href = '/login';
     }
     return Promise.reject(error);

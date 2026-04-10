@@ -1,6 +1,7 @@
 import styles from '../styles/auth/auth.module.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { login } from '../api/auth/authService';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -10,6 +11,17 @@ export default function Login() {
   const [employeeNumber, setEmployeeNumber] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (sessionStorage.getItem('session_expired')) {
+      sessionStorage.removeItem('session_expired');
+      toast.error('세션이 만료되었습니다. 다시 로그인해주세요.', {
+        position: 'top-center',
+        duration: 4000,
+        style: { marginTop: '200px' },
+      });
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
