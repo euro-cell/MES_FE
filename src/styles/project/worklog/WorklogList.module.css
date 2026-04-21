@@ -1,8 +1,23 @@
-.worklogList {
-  background: #fff;
-  border-radius: 8px;
-  padding: 10px 0px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+/* ========================
+   작업일지 리스트 페이지
+======================== */
+.worklogListContainer {
+  padding: 16px;
+}
+
+.worklogListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.worklogListHeader h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0;
 }
 
 .header {
@@ -14,42 +29,68 @@
 
 .header h3 {
   margin: 0;
-  color: #334155;
+  color: #0f172a;
   font-size: 18px;
+  font-weight: 700;
+}
+
+/* 테이블 래퍼 */
+.tableWrapper {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .worklogTable {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
+}
+
+.worklogTable thead tr {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .worklogTable th {
-  background: #f1f5f9;
-  padding: 10px;
-  border-bottom: 2px solid #e2e8f0;
-  text-align: center;
+  padding: 12px 16px;
   font-weight: 600;
-  color: #334155;
+  color: #64748b;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-right: 1px solid #e2e8f0;
+}
+
+.worklogTable th:last-child {
+  border-right: none;
 }
 
 .worklogTable td {
-  padding: 8px 10px;
+  padding: 13px 16px;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+  border-right: 1px solid #f1f5f9;
   text-align: center;
-  border-bottom: 1px solid #e2e8f0;
-  color: #475569;
 }
 
-.worklogTable tr:hover td {
+.worklogTable td:last-child {
+  border-right: none;
+}
+
+.worklogTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.worklogTable tbody tr:hover {
   background: #f8fafc;
 }
 
-/* ======================
-  관리 버튼들
-====================== */
+/* 관리 버튼들 */
 .actionButtons {
   display: flex;
   justify-content: center;
@@ -57,18 +98,16 @@
 }
 
 .actionButtons button {
-  padding: 4px 8px;
+  padding: 5px 12px;
   border: none;
-  border-radius: 4px;
-  color: #fff;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 13px;
-  transition: background 0.2s;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background-color 0.15s;
 }
 
-/* ======================
-  헤더 버튼 그룹
-====================== */
+/* 헤더 버튼 그룹 */
 .headerButtons {
   display: flex;
   gap: 8px;
@@ -78,11 +117,12 @@
   background-color: #16a34a;
   color: white;
   border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 5px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 13px;
-  transition: background 0.2s;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background-color 0.15s;
 }
 .downloadBtn:hover {
   background-color: #15803d;

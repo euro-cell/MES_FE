@@ -358,7 +358,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
   if (fetchError) return <p style={{ textAlign: 'center', padding: '40px', color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
-    <div className={styles.worklogList}>
+    <div className={styles.worklogListContainer}>
       <div className={styles.header}>
         <h3>{processTitle} 작업일지</h3>
         <div className={styles.headerButtons}>
@@ -373,7 +373,8 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
         </div>
       </div>
 
-      <table className={styles.worklogTable}>
+      <div className={styles.tableWrapper}>
+        <table className={styles.worklogTable}>
         <thead>
           <tr>
             <th>작업일</th>
@@ -412,7 +413,8 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
             ))
           )}
         </tbody>
-      </table>
+        </table>
+      </div>
 
       {/* 엑셀 다운로드 모달 */}
       {isModalOpen && (
