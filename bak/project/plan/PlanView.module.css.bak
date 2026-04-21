@@ -1,0 +1,75 @@
+.planView {
+  background: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.excelBtn {
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.excelBtn:hover {
+  background-color: #15803d;
+}
+
+.backBtn {
+  background-color: #475569;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.backBtn:hover {
+  background-color: #334155;
+}
+
+/* 표 */
+.planTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 13px;
+  border: 1px solid #e2e8f0;
+}
+
+.planTable th {
+  background-color: #f1f5f9;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  font-weight: 600;
+}
+
+.planTable td {
+  padding: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.cellActive {
+  background-color: #bfdbfe;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
+.cellEmpty {
+  background: #f9fafb;
+}

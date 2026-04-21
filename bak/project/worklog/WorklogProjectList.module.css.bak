@@ -1,0 +1,47 @@
+.projectList {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.projectTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.projectTable th {
+  background: #f1f5f9;
+  padding: 10px;
+  border-bottom: 2px solid #e2e8f0;
+  text-align: center;
+  font-weight: 600;
+  color: #334155;
+}
+
+.projectTable td {
+  padding: 8px 10px;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.projectTable tr:hover td {
+  background: #f8fafc;
+}
+
+.projectName {
+  cursor: pointer;
+  color: #3b82f6;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.projectName:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
