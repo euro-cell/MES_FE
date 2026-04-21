@@ -22,14 +22,14 @@
 }
 
 .downloadButton {
-  background-color: #10b981;
+  background-color: #16a34a;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
+  font-size: 13px;
+  transition: background 0.2s;
 }
 
 .downloadButton:hover:not(:disabled) {
@@ -75,33 +75,36 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .buttonGroup {
   display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
 .refreshButton {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background-color: #1f2937;
+  gap: 6px;
+  background-color: #334155;
   color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 24px;
+  padding: 8px 14px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 500;
-  transition: background-color 0.2s;
+  transition: background 0.2s;
   white-space: nowrap;
 }
 
 .refreshIcon {
   flex-shrink: 0;
+  width: 14px;
+  height: 14px;
 }
 
 .refreshButton:hover:not(:disabled) {

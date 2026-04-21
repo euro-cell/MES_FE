@@ -117,12 +117,11 @@
   background-color: #16a34a;
   color: white;
   border: none;
-  padding: 5px 12px;
-  border-radius: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  transition: background-color 0.15s;
+  font-size: 13px;
+  transition: background 0.2s;
 }
 .downloadBtn:hover {
   background-color: #15803d;
