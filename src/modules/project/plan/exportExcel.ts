@@ -33,7 +33,7 @@ interface PlanResponse {
   id: number;
   startDate: string;
   endDate: string;
-  production: {
+  project: {
     id: number;
     name: string;
     company: string;

@@ -35,7 +35,7 @@ interface PlanResponse {
   id: number;
   startDate: string;
   endDate: string;
-  production: {
+  project: {
     id: number;
     name: string;
     company: string;
@@ -78,10 +78,10 @@ export default function PlanView() {
   return (
     <div className={styles.planView}>
       <div className={styles.header}>
-        <h3>📊 생산 일정 조회 - {planData.production?.name}</h3>
+        <h3>📊 생산 일정 조회 - {planData.project?.name}</h3>
         <div className={styles.actions}>
           <button
-            onClick={() => exportPlanToStyledExcel(planData!, planData.production?.name || 'Schedule')}
+            onClick={() => exportPlanToStyledExcel(planData!, planData.project?.name || 'Schedule')}
             className={styles.excelBtn}
           >
             📥 엑셀 다운로드
