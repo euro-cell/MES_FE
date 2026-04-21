@@ -2,14 +2,13 @@
    인원 관리 페이지
 ======================== */
 .userListContainer {
-  padding: 16px;
+  padding: 0px 16px;
 }
 
 .userListHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
 }
 
 .userListHeader h2 {
@@ -186,7 +185,9 @@
   border-radius: 14px;
   width: 420px;
   max-width: 92%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0,0,0,0.05);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
 
@@ -194,7 +195,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
+  padding: 16px 20px;
   border-bottom: 1px solid #f1f5f9;
 }
 
@@ -219,10 +220,10 @@
 }
 
 .modalBody {
-  padding: 24px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   max-height: 70vh;
   overflow-y: auto;
 }
@@ -231,7 +232,7 @@
 .fieldGroup {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 
 .fieldGroup label {
@@ -250,7 +251,9 @@
   font-size: 14px;
   color: #1e293b;
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
   box-sizing: border-box;
   background: #fff;
 }
@@ -274,7 +277,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  padding: 16px 24px;
+  padding: 12px 20px;
   border-top: 1px solid #f1f5f9;
   background: #f8fafc;
 }
