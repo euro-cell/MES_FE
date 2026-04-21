@@ -16,29 +16,28 @@ export default function DashboardSchedule({ plans, hasError }: Props) {
     const start = new Date(startDate);
     const end = endDate ? new Date(endDate) : new Date();
 
-    // 월의 일수
-    const getDaysInMonth = (date: Date) => {
-      return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-    };
+    // 현재 연도 기준 범위
+    const yearStart = new Date(currentYear, 0, 1);
+    const yearEnd = new Date(currentYear + 1, 0, 1);
 
-    const startMonth = start.getMonth(); // 0-11
-    const endMonth = end.getMonth(); // 0-11
-    const startDay = start.getDate();
-    const endDay = end.getDate();
+    // 프로젝트가 현재 연도와 겹치지 않으면 null 반환 (표시 안 함)
+    if (end < yearStart || start >= yearEnd) {
+      return null;
+    }
 
-    // 시작 위치: 해당 월의 시작점 + 일수 비율
-    const startMonthDays = getDaysInMonth(start);
-    const leftPercent = (startMonth / 12 + (startDay - 1) / startMonthDays / 12) * 100;
+    const yearDays = (yearEnd.getTime() - yearStart.getTime()) / (1000 * 60 * 60 * 24);
 
-    // 종료 위치: 해당 월의 시작점 + 일수 비율
-    const endMonthDays = getDaysInMonth(end);
-    const rightPercent = (endMonth / 12 + endDay / endMonthDays / 12) * 100;
+    // 시작/종료 날짜를 현재 연도 범위로 클리핑
+    const displayStart = start >= yearStart ? start : yearStart;
+    const displayEnd = end <= yearEnd ? end : yearEnd;
 
-    const widthPercent = rightPercent - leftPercent;
+    // 보이는 시작/종료 위치 계산
+    const leftDays = (displayStart.getTime() - yearStart.getTime()) / (1000 * 60 * 60 * 24);
+    const widthDays = (displayEnd.getTime() - displayStart.getTime()) / (1000 * 60 * 60 * 24);
 
     return {
-      left: `${leftPercent}%`,
-      width: `${widthPercent}%`,
+      left: `${(leftDays / yearDays) * 100}%`,
+      width: `${(widthDays / yearDays) * 100}%`,
     };
   };
 
