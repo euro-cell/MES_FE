@@ -106,7 +106,8 @@ export default function UserPermission() {
       </div>
 
       {selectedUser && (
-        <table className={styles.permissionTable}>
+        <div className={styles.tableWrapper}>
+          <table className={styles.permissionTable}>
           <thead>
             <tr>
               <th>메뉴</th>
@@ -146,7 +147,8 @@ export default function UserPermission() {
               );
             })}
           </tbody>
-        </table>
+          </table>
+        </div>
       )}
     </div>
   );

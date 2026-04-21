@@ -87,7 +87,8 @@ export default function RolePermission() {
         <button className={styles.saveButton} onClick={handleSave}>직급 권한 저장</button>
       </div>
 
-      <table className={styles.permissionTable}>
+      <div className={styles.tableWrapper}>
+        <table className={styles.permissionTable}>
         <thead>
           <tr>
             <th rowSpan={2}>메뉴</th>
@@ -147,6 +148,7 @@ export default function RolePermission() {
           ))}
         </tbody>
       </table>
+      </div>
 
     </div>
   );

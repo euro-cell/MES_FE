@@ -7,6 +7,28 @@
 
 ---
 
+## 백업 파일 관리
+
+디자인 리뉴얼 작업 시 원본 파일은 프로젝트 루트의 `bak/{domain}/` 폴더에 저장합니다.
+
+### 백업 파일 목록
+
+#### etc (기타 - 메뉴 접근 관리)
+작업 일자: 2026-04-21
+
+- `bak/etc/permission.module.css.bak` — 메뉴 접근 관리 페이지 CSS
+- `bak/etc/RolePermission.tsx.bak` — 직급별 권한 관리 컴포넌트
+- `bak/etc/UserPermission.tsx.bak` — 사용자별 권한 관리 컴포넌트
+
+복구 방법:
+```bash
+cp bak/etc/permission.module.css.bak src/styles/etc/permission.module.css
+cp bak/etc/RolePermission.tsx.bak src/modules/etc/perm/RolePermission.tsx
+cp bak/etc/UserPermission.tsx.bak src/modules/etc/perm/UserPermission.tsx
+```
+
+---
+
 ## 디자인 토큰 (기준값 — 변경 금지)
 
 ### 컬러
