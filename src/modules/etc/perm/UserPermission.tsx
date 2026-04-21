@@ -32,9 +32,6 @@ export default function UserPermission() {
       const data = await fetchUserPermissions();
       setUsers(data.users);
       setMenus(data.menus);
-      if (data.users.length > 0) {
-        setSelectedUserId(data.users[0].userId);
-      }
     } catch (err) {
       console.error('사용자별 권한 조회 실패:', err);
       setFetchError(true);
@@ -91,7 +88,8 @@ export default function UserPermission() {
           <h2>사용자별 권한</h2>
           <div className={styles.userSelector}>
             <label>사용자 선택</label>
-            <select value={selectedUserId ?? ''} onChange={e => setSelectedUserId(Number(e.target.value))}>
+            <select value={selectedUserId ?? ''} onChange={e => setSelectedUserId(Number(e.target.value) || null)}>
+              <option value="">사용자를 선택해주세요</option>
               {users.map(u => (
                 <option key={u.userId} value={u.userId}>
                   {u.name}

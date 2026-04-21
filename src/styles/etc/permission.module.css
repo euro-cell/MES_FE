@@ -83,7 +83,7 @@
   padding: 12px 16px;
   font-weight: 600;
   color: #64748b;
-  text-align: left;
+  text-align: center;
   font-size: 12px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -166,7 +166,7 @@
 .menuDepth1 td:first-child {
   font-weight: 700;
   color: #0f172a;
-  text-align: left;
+  text-align: center;
   padding-left: 12px;
   border-left: 3px solid #1d4ed8;
 }
@@ -178,7 +178,7 @@
 .menuDepth2 td:first-child {
   font-weight: 600;
   color: #1e293b;
-  text-align: left;
+  text-align: center;
   padding-left: 28px;
   border-left: 3px solid #cbd5e1;
 }
@@ -190,7 +190,7 @@
 .menuDepth3 td:first-child {
   font-weight: 500;
   color: #475569;
-  text-align: left;
+  text-align: center;
   padding-left: 44px;
   border-left: 3px solid #e2e8f0;
 }
