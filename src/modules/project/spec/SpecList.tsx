@@ -70,8 +70,9 @@ export default function SpecList() {
   if (fetchError) return <p style={{ color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
-    <div className={styles.specList}>
-      <table className={styles.specTable}>
+    <div className={styles.specListContainer}>
+      <div className={styles.tableWrapper}>
+        <table className={styles.specTable}>
         <thead>
           <tr>
             <th>프로젝트명</th>
@@ -166,7 +167,8 @@ export default function SpecList() {
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 }
