@@ -20,8 +20,9 @@ export default function PlanList() {
   if (isError) return <p style={{ color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
 
   return (
-    <div className={styles.planList}>
-      <table className={styles.planTable}>
+    <div className={styles.planListContainer}>
+      <div className={styles.tableWrapper}>
+        <table className={styles.planTable}>
         <thead>
           <tr>
             <th>프로젝트명</th>
@@ -90,7 +91,8 @@ export default function PlanList() {
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 }
