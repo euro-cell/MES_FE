@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import SearchInput from './components/SearchInput';
 import ProcessLotTable from './components/ProcessLotTable';
 import RawMaterialLotTable from './components/RawMaterialLotTable';
@@ -7,12 +8,14 @@ import type { LotSearchResult } from './LotSearchTypes';
 import styles from '../../../../styles/project/lot/LotSearchPage.module.css';
 
 export default function LotSearchPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchResult, setSearchResult] = useState<LotSearchResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
 
   const handleSearch = async (lotNumber: string) => {
+    setSearchParams({ lot: lotNumber });
     setLoading(true);
     setError(null);
     setSearched(true);
@@ -33,9 +36,16 @@ export default function LotSearchPage() {
     }
   };
 
+  useEffect(() => {
+    const lotParam = searchParams.get('lot');
+    if (lotParam) {
+      handleSearch(lotParam);
+    }
+  }, []);
+
   return (
     <div className={styles.pageContainer}>
-      <SearchInput onSearch={handleSearch} loading={loading} />
+      <SearchInput onSearch={handleSearch} loading={loading} initialValue={searchParams.get('lot') ?? ''} />
 
       {error && <div className={styles.errorMessage}>{error}</div>}
 

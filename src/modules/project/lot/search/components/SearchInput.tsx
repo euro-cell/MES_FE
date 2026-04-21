@@ -4,10 +4,11 @@ import styles from '../../../../../styles/project/lot/SearchInput.module.css';
 interface SearchInputProps {
   onSearch: (lotNumber: string) => void;
   loading: boolean;
+  initialValue?: string;
 }
 
-export default function SearchInput({ onSearch, loading }: SearchInputProps) {
-  const [inputValue, setInputValue] = useState('');
+export default function SearchInput({ onSearch, loading, initialValue = '' }: SearchInputProps) {
+  const [inputValue, setInputValue] = useState(initialValue);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
