@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import styles from '../../../styles/project/plan/PlanRegister.module.css';
 import { savePlan, getPlanProjects } from '../../../api/project/plan';
 import type { PlanPayload } from './PlanTypes';
@@ -15,6 +16,7 @@ interface ProcessRow {
 
 export default function PlanRegister() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
   const projectId = id ? Number(id) : null;
   const [projectName, setProjectName] = useState('');
@@ -81,6 +83,7 @@ export default function PlanRegister() {
 
     try {
       await savePlan(projectId!, payload);
+      await queryClient.invalidateQueries({ queryKey: ['projects'] });
       alert('✅ 저장 완료!');
       navigate('/project/plan');
     } catch (err) {
