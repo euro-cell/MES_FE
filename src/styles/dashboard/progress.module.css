@@ -1,11 +1,20 @@
 .dashboardProgress {
-  background: white;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.dashboardProgress h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.01em;
 }
 
 .progressChartWrapper {
@@ -14,8 +23,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
-  margin-top: 5px;
+  gap: 12px;
+  margin-top: 0;
 }
 
 .chartContainer {
@@ -29,54 +38,64 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 35px;
+  font-size: 32px;
   font-weight: 700;
-  color: #1b263b;
+  color: #1d4ed8;
   pointer-events: none;
 }
 
 .chartTitle {
   margin-top: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #555;
+  color: #64748b;
   text-align: center;
+  letter-spacing: 0.03em;
 }
 
 .processList {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
 }
 
 .processItem {
-  background: #f4f6f8;
-  padding: 6px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 10px 12px;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 13px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 140px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.processItem:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
 .processItem .label {
   font-weight: 500;
-  color: #333;
+  color: #64748b;
 }
 
 .label {
   font-weight: 500;
-  color: #333;
+  color: #64748b;
 }
 
 .processItem .value {
-  font-weight: bold;
-  color: #1b263b;
+  font-weight: 700;
+  color: #1d4ed8;
 }
 
 .value {
-  font-weight: bold;
-  color: #1b263b;
+  font-weight: 700;
+  color: #1d4ed8;
 }
