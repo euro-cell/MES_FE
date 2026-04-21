@@ -1,0 +1,153 @@
+import React, { useEffect, useState } from 'react';
+import axios from '../../../api/axiosInstance';
+import styles from '../../../styles/etc/permission.module.css';
+import { ROLE_LABELS } from '../user/userRoleMap';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+type RoleType = keyof typeof ROLE_LABELS;
+
+interface PermissionCell {
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
+}
+
+interface MenuItem {
+  name: string;
+  depth: number;
+}
+
+interface RoleMenuPermission {
+  role: RoleType;
+  menus: Record<string, PermissionCell>;
+}
+
+export default function RolePermission() {
+  const [menus, setMenus] = useState<MenuItem[]>([]);
+  const [permissions, setPermissions] = useState<RoleMenuPermission[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(`${API_BASE}/permission/role`, { withCredentials: true });
+
+      setMenus(res.data.menus);
+      setPermissions(res.data.roles);
+    } catch (err) {
+      console.error('직급별 권한 조회 실패:', err);
+      setFetchError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggle = (role: RoleType, menu: string, field: keyof PermissionCell) => {
+    setPermissions(prev =>
+      prev.map(r =>
+        r.role === role
+          ? {
+              ...r,
+              menus: {
+                ...r.menus,
+                [menu]: {
+                  ...r.menus[menu],
+                  [field]: !r.menus[menu][field],
+                },
+              },
+            }
+          : r
+      )
+    );
+  };
+
+  const handleSave = async () => {
+    try {
+      await axios.put(`${API_BASE}/permission/role`, permissions, { withCredentials: true });
+      alert('직급별 권한이 저장되었습니다.');
+    } catch (err) {
+      console.error('직급별 권한 저장 실패:', err);
+      alert('저장 실패');
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) return <p>로딩 중...</p>;
+  if (fetchError) return <p style={{ textAlign: 'center', padding: '8px 0', color: '#ef4444' }}>서버와 연결할 수 없습니다.</p>;
+
+  return (
+    <div className={styles.permissionSection}>
+      <div className={styles.sectionHeader}>
+        <h2>직급별 권한</h2>
+        <button className={styles.saveButton} onClick={handleSave}>직급 권한 저장</button>
+      </div>
+
+      <table className={styles.permissionTable}>
+        <thead>
+          <tr>
+            <th rowSpan={2}>메뉴</th>
+            {permissions.map(rolePerm => (
+              <th key={rolePerm.role} colSpan={3}>
+                {ROLE_LABELS[rolePerm.role]}
+              </th>
+            ))}
+          </tr>
+          <tr>
+            {permissions.map(rolePerm => (
+              <React.Fragment key={`${rolePerm.role}-sub`}>
+                <th>추가</th>
+                <th>수정</th>
+                <th>삭제</th>
+              </React.Fragment>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {menus.map(m => (
+            <tr key={m.name} className={styles[`menuDepth${m.depth}`]}>
+              <td>{m.name}</td>
+              {permissions.map(rolePerm => {
+                const perm = rolePerm.menus[m.name];
+                const isAdmin = rolePerm.role === 'admin';
+                return (
+                  <React.Fragment key={`${rolePerm.role}-${m.name}`}>
+                    <td>
+                      <input
+                        type='checkbox'
+                        checked={perm?.canCreate ?? false}
+                        disabled={isAdmin}
+                        onChange={() => toggle(rolePerm.role, m.name, 'canCreate')}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type='checkbox'
+                        checked={perm?.canUpdate ?? false}
+                        disabled={isAdmin}
+                        onChange={() => toggle(rolePerm.role, m.name, 'canUpdate')}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type='checkbox'
+                        checked={perm?.canDelete ?? false}
+                        disabled={isAdmin}
+                        onChange={() => toggle(rolePerm.role, m.name, 'canDelete')}
+                      />
+                    </td>
+                  </React.Fragment>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+    </div>
+  );
+}
