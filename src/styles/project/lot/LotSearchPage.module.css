@@ -1,40 +1,26 @@
+/* ========================
+   Lot 검색 페이지
+======================== */
 .pageContainer {
-  padding: 0;
-}
-
-.pageHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #f8fafc;
-  padding: 16px 20px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-}
-
-.pageHeader h2 {
-  margin: 0;
-  color: #334155;
-  font-size: 20px;
-  font-weight: 600;
+  padding: 16px;
 }
 
 .resultsContainer {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .errorMessage {
   margin-top: 20px;
   padding: 16px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
   border-radius: 8px;
-  color: #dc2626;
+  color: #e11d48;
   text-align: center;
+  font-size: 14px;
 }
 
 .guideMessage {
@@ -42,12 +28,12 @@
   text-align: center;
   padding: 60px 20px;
   background: #f8fafc;
-  border-radius: 8px;
-  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  border: 2px dashed #e2e8f0;
 }
 
 .guideMessage p {
-  color: #64748b;
-  font-size: 16px;
+  color: #94a3b8;
+  font-size: 14px;
   margin: 0;
 }

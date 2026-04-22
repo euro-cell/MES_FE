@@ -1,12 +1,8 @@
-/* ========================
-   Lot 검색 입력
-======================== */
 .searchContainer {
   background: #fff;
   padding: 20px;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .searchInputWrapper {
@@ -17,19 +13,17 @@
 
 .searchInput {
   flex: 1;
-  padding: 10px 12px;
+  padding: 12px 16px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  font-size: 14px;
-  color: #1e293b;
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  background: #fff;
+  font-size: 15px;
+  transition: border-color 0.2s;
 }
 
 .searchInput:focus {
+  outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .searchInput::placeholder {
@@ -37,25 +31,25 @@
 }
 
 .searchInput:disabled {
-  background: #f8fafc;
+  background: #f1f5f9;
   cursor: not-allowed;
 }
 
 .searchButton {
-  padding: 10px 20px;
-  background: #1d4ed8;
+  padding: 12px 24px;
+  background: #2563eb;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background-color 0.2s;
   white-space: nowrap;
 }
 
 .searchButton:hover:not(:disabled) {
-  background: #1e40af;
+  background: #1d4ed8;
 }
 
 .searchButton:disabled {
