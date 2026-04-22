@@ -28,6 +28,8 @@ export interface AuthStatusResponse {
     employeeNumber: string;
     department: string;
   };
+  expiresAt?: string;
+  expiresIn?: number;
 }
 
 export async function getAuthStatus(): Promise<AuthStatusResponse> {

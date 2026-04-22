@@ -5,8 +5,23 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+let onSessionRefresh: ((expiresAt: string) => void) | null = null;
+
+export function setSessionRefreshHandler(handler: (expiresAt: string) => void) {
+  onSessionRefresh = handler;
+}
+
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const xSessionExpires = response.headers['x-session-expires'];
+    if (xSessionExpires) {
+      const expiresAt = new Date(xSessionExpires).toISOString();
+      if (!isNaN(new Date(expiresAt).getTime())) {
+        onSessionRefresh?.(expiresAt);
+      }
+    }
+    return response;
+  },
   (error) => {
     const isLoginPage = window.location.pathname === '/login';
     if (error.response?.status === 401 && !isLoginPage) {

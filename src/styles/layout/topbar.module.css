@@ -33,6 +33,11 @@
   color: #333;
 }
 
+.sessionTimer {
+  font-size: 13px;
+  color: #666;
+}
+
 .profileBtn {
   background: #1b263b;
   color: white;
