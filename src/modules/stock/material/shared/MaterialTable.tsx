@@ -331,8 +331,7 @@ export default function MaterialTable({ data, onEdit, onDelete, onCoA }: Materia
   }
 
   return (
-    <div className={styles.tableSection}>
-      <table ref={tableRef} className={styles.dataTable} style={{ width: table.getTotalSize() }}>
+    <table ref={tableRef} className={styles.dataTable} style={{ width: table.getTotalSize() }}>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id}>
@@ -380,6 +379,5 @@ export default function MaterialTable({ data, onEdit, onDelete, onCoA }: Materia
           ))}
         </tbody>
       </table>
-    </div>
   );
 }

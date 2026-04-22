@@ -1,10 +1,13 @@
+/* ========================
+   자재 삭제 모달
+======================== */
 .modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(15, 23, 42, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,10 +16,10 @@
 
 .modal {
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   width: 90%;
-  max-width: 450px;
+  max-width: 440px;
   overflow-y: auto;
 }
 
@@ -24,51 +27,55 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #eee;
+  padding: 18px 22px;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .modalHeader h3 {
   margin: 0;
-  font-size: 18px;
-  color: #333;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
 }
 
 .closeButton {
   background: none;
   border: none;
-  font-size: 28px;
-  color: #999;
+  font-size: 22px;
+  color: #94a3b8;
   cursor: pointer;
   padding: 0;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s, background-color 0.15s;
 }
 
 .closeButton:hover {
-  color: #333;
+  color: #334155;
+  background-color: #f1f5f9;
 }
 
 .modalContent {
-  padding: 20px;
+  padding: 20px 22px;
 }
 
 .warningText {
-  margin: 0 0 20px 0;
-  font-size: 16px;
+  margin: 0 0 18px 0;
+  font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: #1e293b;
 }
 
 .deleteOptions {
-  padding: 15px;
-  background-color: #fef3f2;
-  border: 1px solid #fee4e2;
-  border-radius: 6px;
-  margin-bottom: 15px;
+  padding: 14px 16px;
+  background-color: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 8px;
+  margin-bottom: 14px;
 }
 
 .deleteLabel {
@@ -76,59 +83,63 @@
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .hardDeleteCheckbox {
   cursor: pointer;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   accent-color: #ef4444;
 }
 
 .labelText {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #333;
+  color: #1e293b;
 }
 
 .deleteDescription {
-  margin: 10px 0 0 30px;
-  font-size: 13px;
-  color: #666;
-  line-height: 1.5;
+  margin: 8px 0 0 26px;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.6;
 }
 
 .modalFooter {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: flex-end;
-  padding: 15px 20px;
-  border-top: 1px solid #eee;
-}
-
-.cancelButton,
-.deleteButton {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 14px 22px;
+  border-top: 1px solid #f1f5f9;
 }
 
 .cancelButton {
-  background-color: #f0f0f0;
-  color: #333;
+  padding: 8px 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: #f8fafc;
+  color: #475569;
+  transition: background-color 0.15s;
 }
 
 .cancelButton:hover {
-  background-color: #e0e0e0;
+  background-color: #e2e8f0;
 }
 
 .deleteButton {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
   background-color: #ef4444;
   color: white;
+  transition: background-color 0.15s;
 }
 
 .deleteButton:hover {

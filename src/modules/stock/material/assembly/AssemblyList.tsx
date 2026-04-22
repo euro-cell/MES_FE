@@ -218,7 +218,7 @@ export default function AssemblyList() {
     loadMaterials(includeZeroStock);
   }, []);
 
-  if (loading) return <p>데이터를 불러오는 중...</p>;
+  if (loading) return <p style={{ padding: '20px', color: '#64748b', fontSize: '14px' }}>데이터를 불러오는 중...</p>;
 
   return (
     <div className={styles.assemblyList}>
@@ -265,19 +265,17 @@ export default function AssemblyList() {
 
       {!showHistory ? (
         error ? (
-          <p style={{ color: '#ef4444', padding: '20px' }}>서버와 연결할 수 없습니다.</p>
+          <p className={styles.errorMessage}>서버와 연결할 수 없습니다.</p>
         ) : (
-          <div className={styles.tableWrapper}>
-            <MaterialTable
-              data={materials}
-              onEdit={handleEditMaterial}
-              onDelete={handleDeleteMaterial}
-              onCoA={handleOpenCoAModal}
-            />
-          </div>
+          <MaterialTable
+            data={materials}
+            onEdit={handleEditMaterial}
+            onDelete={handleDeleteMaterial}
+            onCoA={handleOpenCoAModal}
+          />
         )
       ) : (
-        <div className={styles.tableWrapper}>
+        <>
           <table className={styles.historyTable}>
             <thead>
               <tr>
@@ -323,7 +321,7 @@ export default function AssemblyList() {
               </button>
             </div>
           )}
-        </div>
+        </>
       )}
 
       <AddAssemblyModal
