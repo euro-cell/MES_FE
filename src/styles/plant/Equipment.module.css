@@ -2,10 +2,7 @@
   설비 등록 페이지
 ====================== */
 .equipmentPage {
-  background: #fff;
-  border-radius: 8px;
-  padding: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 16px;
 }
 
 .header {
@@ -18,7 +15,9 @@
 .header h3 {
   margin: 0;
   font-size: 18px;
-  color: #1e293b;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
 }
 
 /* ======================
@@ -62,18 +61,26 @@
   border-collapse: collapse;
   font-size: 14px;
   background: #fff;
-  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.equipmentTable thead tr {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .equipmentTable th {
-  background: #f1f5f9;
-  padding: 2px;
-  border-bottom: 2px solid #e2e8f0;
+  padding: 12px 16px;
   border-right: 1px solid #e2e8f0;
   text-align: center;
   font-weight: 600;
-  color: #334155;
+  color: #64748b;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -83,16 +90,20 @@
 
 .equipmentTable td {
   text-align: center;
-  border-bottom: 1px solid #e2e8f0;
-  border-right: 1px solid #e2e8f0;
-  color: #475569;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+  border-right: 1px solid #f1f5f9;
 }
 
 .equipmentTable td:last-child {
   border-right: none;
 }
 
-.equipmentTable tr:hover td {
+.equipmentTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.equipmentTable tbody tr:hover {
   background: #f8fafc;
 }
 
@@ -107,7 +118,7 @@
 .actionButtons {
   display: flex;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .registerBtn {
@@ -116,7 +127,8 @@
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -131,7 +143,8 @@
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -140,31 +153,40 @@
   background: #059669;
 }
 
+.manualBtn,
 .editBtn,
 .deleteBtn {
-  padding: 2px 5px;
+  padding: 4px 8px;
   border: none;
   border-radius: 4px;
-  color: #fff;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   transition: background 0.2s;
+  color: #fff;
+}
+
+.manualBtn {
+  background: #6366f1;
+}
+
+.manualBtn:hover {
+  background: #4f46e5;
 }
 
 .editBtn {
-  background: #f59e0b;
+  background: #f97316;
 }
 
 .editBtn:hover {
-  background: #d97706;
+  background: #ea580c;
 }
 
 .deleteBtn {
-  background: #ef4444;
+  background: #e11d48;
 }
 
 .deleteBtn:hover {
-  background: #dc2626;
+  background: #be123c;
 }
 
 /* ======================
@@ -316,24 +338,6 @@
 
 .saveBtn:hover {
   background: #2563eb;
-}
-
-/* ======================
-  매뉴얼 버튼
-====================== */
-.manualBtn {
-  padding: 2px 8px;
-  background: #6366f1;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.manualBtn:hover {
-  background: #4f46e5;
 }
 
 /* ======================
