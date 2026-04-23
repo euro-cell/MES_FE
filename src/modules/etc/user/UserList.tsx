@@ -3,14 +3,18 @@ import { getUsers, deleteUser, toggleUserActive } from '../../../api/etc/userSer
 import type { User } from '../../../api/etc/userService';
 import { ROLE_LABELS } from './userRoleMap';
 import UserForm from './UserForm';
+import UserAddForm from './UserAddForm';
+import PasswordChangeModal from './PasswordChangeModal';
 import styles from '../../../styles/etc/users.module.css';
 
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   const [editUser, setEditUser] = useState<User | null>(null);
+  const [passwordChangeUser, setPasswordChangeUser] = useState<User | null>(null);
 
   const fetchUsers = async () => {
     try {
@@ -37,13 +41,21 @@ export default function UserList() {
 
   const handleEdit = (user: User) => {
     setEditUser(user);
-    setShowForm(true);
+    setShowEditForm(true);
   };
 
-  const handleFormClose = () => {
-    setShowForm(false);
+  const handleEditClose = () => {
+    setShowEditForm(false);
     setEditUser(null);
     fetchUsers();
+  };
+
+  const handlePasswordChange = (user: User) => {
+    setPasswordChangeUser(user);
+  };
+
+  const handlePasswordChangeClose = () => {
+    setPasswordChangeUser(null);
   };
 
   const handleToggleActive = async (user: User) => {
@@ -64,13 +76,14 @@ export default function UserList() {
   };
 
   if (loading) return <div className='loading'>로딩 중...</div>;
-  if (fetchError) return <div style={{ textAlign: 'center', padding: '40px', color: '#ef4444' }}>서버와 연결할 수 없습니다.</div>;
+  if (fetchError)
+    return <div style={{ textAlign: 'center', padding: '40px', color: '#ef4444' }}>서버와 연결할 수 없습니다.</div>;
 
   return (
     <div className={styles.userListContainer}>
       <div className={styles.userListHeader}>
         <h2>인원 전체 리스트</h2>
-        <button className={styles.btnPrimary} onClick={() => setShowForm(true)}>
+        <button className={styles.btnPrimary} onClick={() => setShowAddForm(true)}>
           + 인원 추가
         </button>
       </div>
@@ -104,10 +117,7 @@ export default function UserList() {
                   <td>{u.name}</td>
                   <td>{u.department}</td>
                   <td>{ROLE_LABELS[u.position] || u.position}</td>
-                  <td
-                    onClick={() => handleToggleActive(u)}
-                    title='클릭하여 상태 변경'
-                  >
+                  <td onClick={() => handleToggleActive(u)} title='클릭하여 상태 변경'>
                     <span className={u.isActive ? styles.badgeActive : styles.badgeInactive}>
                       {u.isActive ? '● 활성' : '● 비활성'}
                     </span>
@@ -116,6 +126,13 @@ export default function UserList() {
                   <td>
                     <button className={styles.btnSecondary} onClick={() => handleEdit(u)}>
                       수정
+                    </button>
+                    <button
+                      className={styles.btnSecondary}
+                      onClick={() => handlePasswordChange(u)}
+                      style={{ backgroundColor: '#3b82f6', borderColor: '#3b82f6' }}
+                    >
+                      비밀번호
                     </button>
                     <button className={styles.btnDanger} onClick={() => handleDelete(u.id)}>
                       삭제
@@ -128,7 +145,11 @@ export default function UserList() {
         </table>
       </div>
 
-      {showForm && <UserForm onClose={handleFormClose} user={editUser} />}
+      {showAddForm && <UserAddForm onClose={() => setShowAddForm(false)} />}
+      {showEditForm && <UserForm onClose={handleEditClose} user={editUser} />}
+      {passwordChangeUser && (
+        <PasswordChangeModal user={passwordChangeUser} onClose={handlePasswordChangeClose} onSuccess={fetchUsers} />
+      )}
     </div>
   );
 }

@@ -1,21 +1,19 @@
 import { useState } from 'react';
-import { updateUser } from '../../../api/etc/userService';
-import type { User } from '../../../api/etc/userService';
+import { createUser } from '../../../api/etc/userService';
 import { ROLE_LABELS } from './userRoleMap';
 import styles from '../../../styles/etc/users.module.css';
 
 interface Props {
-  user: User | null;
   onClose: () => void;
 }
 
-export default function UserForm({ user, onClose }: Props) {
-
+export default function UserAddForm({ onClose }: Props) {
   const [form, setForm] = useState({
-    name: user?.name || '',
-    employeeNumber: user?.employeeNumber || '',
-    department: user?.department || '',
-    position: user?.position || 'staff',
+    name: '',
+    employeeNumber: '',
+    department: '',
+    position: 'staff',
+    password: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -23,12 +21,15 @@ export default function UserForm({ user, onClose }: Props) {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
     try {
-      await updateUser(user.id, form);
-      alert('수정 완료');
+      if (!form.password.trim()) {
+        alert('비밀번호를 입력해주세요.');
+        return;
+      }
+      await createUser(form);
+      alert('인원이 추가되었습니다.');
       onClose();
     } catch (err) {
       console.error(err);
@@ -40,8 +41,10 @@ export default function UserForm({ user, onClose }: Props) {
     <div className={styles.modalBackdrop}>
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
-          <h3>인원 수정</h3>
-          <button className={styles.modalCloseBtn} onClick={onClose} type='button'>×</button>
+          <h3>인원 추가</h3>
+          <button className={styles.modalCloseBtn} onClick={onClose} type='button'>
+            ×
+          </button>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -88,6 +91,17 @@ export default function UserForm({ user, onClose }: Props) {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className={styles.fieldGroup}>
+              <label>초기 비밀번호</label>
+              <input
+                type='password'
+                name='password'
+                placeholder='비밀번호 입력'
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
             </div>
           </div>
 

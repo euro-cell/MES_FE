@@ -55,3 +55,8 @@ export const toggleUserActive = async (id: number, isActive: boolean) => {
   const res = await axios.patch(`${API_BASE}/user/${id}`, { isActive }, { withCredentials: true });
   return res.data;
 };
+
+export const changePassword = async (id: number, password: string) => {
+  const res = await axios.patch(`${API_BASE}/user/${id}`, { password }, { withCredentials: true });
+  return res.data;
+};
