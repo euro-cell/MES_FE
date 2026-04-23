@@ -3,6 +3,7 @@ import type { DashboardFormState, DashboardProject } from './types';
 import DashboardEditModal from './DashboardEditModal';
 import DashboardDeleteModal from './DashboardDeleteModal';
 import styles from '../../styles/dashboard/manager.module.css';
+import { getErrorMessage } from '../../api/errorHandler';
 
 interface Props {
   form: DashboardFormState;
@@ -39,9 +40,9 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
         capacity: '',
         targetQuantity: 0,
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error('등록 실패:', err);
-      alert('등록 중 오류가 발생했습니다.');
+      alert(getErrorMessage(err, '등록 중 오류가 발생했습니다.'));
     }
   };
 

@@ -6,6 +6,7 @@ import UserForm from './UserForm';
 import UserAddForm from './UserAddForm';
 import PasswordChangeModal from './PasswordChangeModal';
 import styles from '../../../styles/etc/users.module.css';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
@@ -34,8 +35,13 @@ export default function UserList() {
 
   const handleDelete = async (id: number) => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
-      await deleteUser(id);
-      fetchUsers();
+      try {
+        await deleteUser(id);
+        fetchUsers();
+      } catch (err: any) {
+        console.error('삭제 실패:', err);
+        alert(getErrorMessage(err, '삭제 중 오류가 발생했습니다.'));
+      }
     }
   };
 
@@ -69,9 +75,9 @@ export default function UserList() {
       } else {
         alert(`${user.name}님의 계정이 비활성화되었습니다.`);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('활성 상태 변경 실패:', err);
-      alert('활성 상태 변경 중 오류가 발생했습니다.');
+      alert(getErrorMessage(err, '활성 상태 변경 중 오류가 발생했습니다.'));
     }
   };
 

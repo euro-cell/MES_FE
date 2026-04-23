@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../../api/axiosInstance';
 import styles from '../../../styles/etc/permission.module.css';
 import { ROLE_LABELS } from '../user/userRoleMap';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -67,9 +68,9 @@ export default function RolePermission() {
     try {
       await axios.put(`${API_BASE}/permission/role`, permissions, { withCredentials: true });
       alert('직급별 권한이 저장되었습니다.');
-    } catch (err) {
+    } catch (err: any) {
       console.error('직급별 권한 저장 실패:', err);
-      alert('저장 실패');
+      alert(getErrorMessage(err, '저장 실패'));
     }
   };
 

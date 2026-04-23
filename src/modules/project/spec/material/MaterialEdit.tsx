@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styles from '../../../../styles/project/spec/materialNew.module.css';
 import { getMaterialCategories, getMaterialsByCategory } from '../../../../api/material';
 import { getMaterialsByProject, updateProjectMaterial, getSpecificationSummary } from '../../../../api/project/spec';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 export interface Row {
   id: number;
@@ -154,9 +155,9 @@ export default function MaterialEdit() {
       await updateProjectMaterial(projectId!, payload.materials);
       alert('✅ 자재 소요량이 수정되었습니다.');
       navigate(-1);
-    } catch (err) {
+    } catch (err: any) {
       console.error('❌ 자재 수정 실패:', err);
-      alert('수정 중 오류가 발생했습니다.');
+      alert(getErrorMessage(err, '수정 중 오류가 발생했습니다.'));
     }
   };
 

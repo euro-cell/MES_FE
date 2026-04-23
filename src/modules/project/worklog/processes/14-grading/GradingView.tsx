@@ -6,6 +6,7 @@ import ExcelRenderer from '../../shared/ExcelRenderer';
 import { getGradingWorklog } from '../../../../../api/project/worklog';
 import type { GradingWorklog } from './GradingTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+import { getErrorMessage } from '../../../../../api/errorHandler';
 
 export default function GradingView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -33,9 +34,9 @@ export default function GradingView() {
           values[rangeName] = (data as any)[rangeName] ?? '';
         });
         setCellValues(values);
-      } catch (err) {
+      } catch (err: any) {
         console.error('작업일지 조회 실패:', err);
-        alert('작업일지를 불러올 수 없습니다.');
+        alert(getErrorMessage(err, '작업일지를 불러올 수 없습니다.'));
       } finally {
         setLoading(false);
       }

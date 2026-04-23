@@ -8,6 +8,7 @@ import SpecSectionAnode from './sections/SpecSectionAnode';
 import SpecSectionAssembly from './sections/SpecSectionAssembly';
 import SpecSectionCell from './sections/SpecSectionCell';
 import styles from '../../../../styles/project/spec/specNew.module.css';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 export default function SpecEdit() {
   const navigate = useNavigate();
@@ -34,9 +35,9 @@ export default function SpecEdit() {
           cell: data.cell ?? initialSpecForm.cell,
         };
         setForm(safeData);
-      } catch (err) {
+      } catch (err: any) {
         console.error('❌ 설계 불러오기 실패:', err);
-        alert('설계 정보를 불러오지 못했습니다.');
+        alert(getErrorMessage(err, '설계 정보를 불러오지 못했습니다.'));
       } finally {
         setLoading(false);
       }

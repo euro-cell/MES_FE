@@ -15,6 +15,7 @@ import SeparatorTable from './tables/SeparatorTable';
 import ElectrolyteTable from './tables/ElectrolyteTable';
 import PouchTable from './tables/PouchTable';
 import LeadTabTable from './tables/LeadTabTable';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 export default function IQCPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -100,9 +101,9 @@ export default function IQCPage() {
           : [...prev, saved]
       );
       alert('저장되었습니다.');
-    } catch (err) {
+    } catch (err: any) {
       console.error('양극재1 저장 실패:', err);
-      alert('저장에 실패했습니다.');
+      alert(getErrorMessage(err, '저장에 실패했습니다.'));
     }
   };
 

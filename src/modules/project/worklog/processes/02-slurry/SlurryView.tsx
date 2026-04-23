@@ -7,6 +7,7 @@ import { getSlurryWorklog } from '../../../../../api/project/worklog';
 import type { SlurryWorklog } from './SlurryTypes';
 import { SLURRY_TIME_FIELDS, SLURRY_MULTILINE_FIELDS } from './slurryConstants';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+import { getErrorMessage } from '../../../../../api/errorHandler';
 
 export default function SlurryView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -34,9 +35,9 @@ export default function SlurryView() {
           values[rangeName] = (data as any)[rangeName] ?? '';
         });
         setCellValues(values);
-      } catch (err) {
+      } catch (err: any) {
         console.error('작업일지 조회 실패:', err);
-        alert('작업일지를 불러올 수 없습니다.');
+        alert(getErrorMessage(err, '작업일지를 불러올 수 없습니다.'));
       } finally {
         setLoading(false);
       }

@@ -5,6 +5,7 @@ import styles from '../../../styles/project/plan/PlanRegister.module.css';
 import { savePlan, getPlanProjects } from '../../../api/project/plan';
 import type { PlanPayload } from './PlanTypes';
 import DateInput from '../../../components/DateInput';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 interface ProcessRow {
   group: string;
@@ -86,9 +87,9 @@ export default function PlanRegister() {
       await queryClient.invalidateQueries({ queryKey: ['projects'] });
       alert('✅ 저장 완료!');
       navigate('/project/plan');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('❌ 저장 실패');
+      alert(getErrorMessage(err, '❌ 저장 실패'));
     }
   };
 

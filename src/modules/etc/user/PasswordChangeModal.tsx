@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { changePassword } from '../../../api/etc/userService';
 import type { User } from '../../../api/etc/userService';
 import styles from '../../../styles/etc/users.module.css';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 interface Props {
   user: User;
@@ -26,9 +27,9 @@ export default function PasswordChangeModal({ user, onClose, onSuccess }: Props)
       alert(`${user.name}님의 비밀번호가 변경되었습니다.`);
       onSuccess();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('비밀번호 변경 중 오류가 발생했습니다.');
+      alert(getErrorMessage(err, '비밀번호 변경 중 오류가 발생했습니다.'));
     } finally {
       setLoading(false);
     }

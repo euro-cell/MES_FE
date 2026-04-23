@@ -4,6 +4,7 @@ import styles from '../../../styles/project/plan/PlanRegister.module.css';
 import { getProjectPlan, updateProjectPlan } from '../../../api/project/plan';
 import type { PlanPayload } from './PlanTypes';
 import DateInput from '../../../components/DateInput';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 interface ProcessRow {
   group: string;
@@ -90,9 +91,9 @@ export default function PlanEdit() {
         const startWeek = getWeekOfMonth(sDate);
         const endWeek = getWeekOfMonth(eDate);
         setWeekInfo(`${startMonth}월 ${startWeek}주차 ~ ${endMonth}월 ${endWeek}주차`);
-      } catch (err) {
+      } catch (err: any) {
         console.error('❌ 계획 데이터 불러오기 실패:', err);
-        alert('계획 데이터를 불러오지 못했습니다.');
+        alert(getErrorMessage(err, '계획 데이터를 불러오지 못했습니다.'));
       } finally {
         setLoading(false);
       }
@@ -142,9 +143,9 @@ export default function PlanEdit() {
       await updateProjectPlan(projectId!, payload); // ✅ 수정용 PATCH
       alert('✅ 수정 완료!');
       navigate('/project/plan');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('❌ 수정 실패');
+      alert(getErrorMessage(err, '❌ 수정 실패'));
     }
   };
 

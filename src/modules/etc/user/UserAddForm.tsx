@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createUser } from '../../../api/etc/userService';
 import { ROLE_LABELS } from './userRoleMap';
 import styles from '../../../styles/etc/users.module.css';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 interface Props {
   onClose: () => void;
@@ -31,9 +32,9 @@ export default function UserAddForm({ onClose }: Props) {
       await createUser(form);
       alert('인원이 추가되었습니다.');
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('저장 중 오류가 발생했습니다.');
+      alert(getErrorMessage(err, '저장 중 오류가 발생했습니다.'));
     }
   };
 

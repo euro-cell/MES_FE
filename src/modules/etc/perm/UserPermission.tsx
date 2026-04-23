@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchUserPermissions, updateUserPermission } from '../../../api/etc/permissionService';
 import styles from '../../../styles/etc/permission.module.css';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 interface PermissionCell {
   canCreate: boolean;
@@ -67,9 +68,9 @@ export default function UserPermission() {
     try {
       await updateUserPermission([selectedUser]);
       alert('사용자별 권한이 저장되었습니다.');
-    } catch (err) {
+    } catch (err: any) {
       console.error('사용자별 권한 저장 실패:', err);
-      alert('저장 실패');
+      alert(getErrorMessage(err, '저장 실패'));
     }
   };
 

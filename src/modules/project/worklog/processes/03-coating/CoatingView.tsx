@@ -7,6 +7,7 @@ import { getCoatingWorklog, getProject } from '../../../../../api/project/worklo
 import type { CoatingWorklog } from './CoatingTypes';
 import type { WorklogProject } from '../../WorklogTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+import { getErrorMessage } from '../../../../../api/errorHandler';
 
 export default function CoatingView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -51,9 +52,9 @@ export default function CoatingView() {
           }
         });
         setCellValues(values);
-      } catch (err) {
+      } catch (err: any) {
         console.error('작업일지 조회 실패:', err);
-        alert('작업일지를 불러오는데 실패했습니다.');
+        alert(getErrorMessage(err, '작업일지를 불러오는데 실패했습니다.'));
       } finally {
         setLoading(false);
       }

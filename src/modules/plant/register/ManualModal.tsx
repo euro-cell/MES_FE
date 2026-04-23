@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getManualList, uploadManual, deleteManual, downloadManual, viewManual } from '../../../api/plant/ManualService';
 import type { EquipmentManual } from '../../../api/plant/ManualService';
 import styles from '../../../styles/plant/Equipment.module.css';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 interface ManualModalProps {
   show: boolean;
@@ -44,9 +45,9 @@ export default function ManualModal({ show, equipmentId, equipmentName, onClose 
     try {
       await uploadManual(equipmentId, file);
       await loadManualList();
-    } catch (err) {
+    } catch (err: any) {
       console.error('매뉴얼 업로드 실패:', err);
-      alert('업로드에 실패했습니다.');
+      alert(getErrorMessage(err, '업로드에 실패했습니다.'));
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -58,27 +59,27 @@ export default function ManualModal({ show, equipmentId, equipmentName, onClose 
     try {
       await deleteManual(id);
       await loadManualList();
-    } catch (err) {
+    } catch (err: any) {
       console.error('매뉴얼 삭제 실패:', err);
-      alert('삭제에 실패했습니다.');
+      alert(getErrorMessage(err, '삭제에 실패했습니다.'));
     }
   };
 
   const handleView = async (id: number, fileName: string) => {
     try {
       await viewManual(id, fileName);
-    } catch (err) {
+    } catch (err: any) {
       console.error('매뉴얼 열기 실패:', err);
-      alert('파일 열기에 실패했습니다.');
+      alert(getErrorMessage(err, '파일 열기에 실패했습니다.'));
     }
   };
 
   const handleDownload = async (id: number, fileName: string) => {
     try {
       await downloadManual(id, fileName);
-    } catch (err) {
+    } catch (err: any) {
       console.error('매뉴얼 다운로드 실패:', err);
-      alert('다운로드에 실패했습니다.');
+      alert(getErrorMessage(err, '다운로드에 실패했습니다.'));
     }
   };
 

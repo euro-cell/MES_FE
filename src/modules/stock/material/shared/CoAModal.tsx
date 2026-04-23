@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getCoAList, uploadCoA, deleteCoA, downloadCoA, viewCoA } from '../../../../api/stock/material/CoAService';
 import type { MaterialCoa } from '../../../../api/stock/material/CoAService';
 import styles from '../../../../styles/stock/material/coaModal.module.css';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 interface CoAModalProps {
   show: boolean;
@@ -43,9 +44,9 @@ export default function CoAModal({ show, materialId, materialName, lotNo, proces
     try {
       await uploadCoA(materialId, process, file);
       await loadCoAList();
-    } catch (err) {
+    } catch (err: any) {
       console.error('CoA 업로드 실패:', err);
-      alert('업로드에 실패했습니다.');
+      alert(getErrorMessage(err, '업로드에 실패했습니다.'));
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -57,27 +58,27 @@ export default function CoAModal({ show, materialId, materialName, lotNo, proces
     try {
       await deleteCoA(id);
       await loadCoAList();
-    } catch (err) {
+    } catch (err: any) {
       console.error('CoA 삭제 실패:', err);
-      alert('삭제에 실패했습니다.');
+      alert(getErrorMessage(err, '삭제에 실패했습니다.'));
     }
   };
 
   const handleView = async (id: number, fileName: string) => {
     try {
       await viewCoA(id, fileName);
-    } catch (err) {
+    } catch (err: any) {
       console.error('CoA 열기 실패:', err);
-      alert('파일 열기에 실패했습니다.');
+      alert(getErrorMessage(err, '파일 열기에 실패했습니다.'));
     }
   };
 
   const handleDownload = async (id: number, fileName: string) => {
     try {
       await downloadCoA(id, fileName);
-    } catch (err) {
+    } catch (err: any) {
       console.error('CoA 다운로드 실패:', err);
-      alert('다운로드에 실패했습니다.');
+      alert(getErrorMessage(err, '다운로드에 실패했습니다.'));
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { DashboardProject, DashboardFormState } from './types';
 import { updateProject } from '../../api/dashboard/dashboardService';
 import styles from '../../styles/dashboard/modal.module.css';
+import { getErrorMessage } from '../../api/errorHandler';
 
 interface Props {
   projects: DashboardProject[];
@@ -53,9 +54,9 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
       alert('✅ 수정 완료');
       await refreshProjects();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('수정 실패');
+      alert(getErrorMessage(err, '수정 실패'));
     } finally {
       setLoading(false);
     }

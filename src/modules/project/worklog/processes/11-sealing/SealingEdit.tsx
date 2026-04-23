@@ -13,6 +13,7 @@ import { SEALING_NUMERIC_FIELDS, SEALING_INTEGER_FIELDS } from '../../shared/num
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+import { getErrorMessage } from '../../../../../api/errorHandler';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 // 자동입력 필드 (파우치 LOT 선택 시 제조사 자동 입력)
@@ -107,9 +108,9 @@ export default function SealingEdit() {
           }
         });
         setFormValues(values);
-      } catch (err) {
+      } catch (err: any) {
         console.error('작업일지 조회 실패:', err);
-        alert('작업일지를 불러오는데 실패했습니다.');
+        alert(getErrorMessage(err, '작업일지를 불러오는데 실패했습니다.'));
       } finally {
         setLoading(false);
       }

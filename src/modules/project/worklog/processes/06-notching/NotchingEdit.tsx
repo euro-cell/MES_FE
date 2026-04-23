@@ -12,6 +12,7 @@ import styles from '../../../../../styles/project/worklog/common.module.css';
 import { NOTCHING_NUMERIC_FIELDS, NOTCHING_INTEGER_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
+import { getErrorMessage } from '../../../../../api/errorHandler';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 // 자동입력 필드 (양품 수량 = 타발 수량 - 불량 수량)
@@ -53,9 +54,9 @@ export default function NotchingEdit() {
         });
 
         setFormValues(values);
-      } catch (err) {
+      } catch (err: any) {
         console.error('작업일지 조회 실패:', err);
-        alert('작업일지를 불러오지 못했습니다.');
+        alert(getErrorMessage(err, '작업일지를 불러오지 못했습니다.'));
       } finally {
         setLoading(false);
       }

@@ -7,6 +7,7 @@ import { getPressWorklog, getProject } from '../../../../../api/project/worklog'
 import type { PressWorklog } from './PressTypes';
 import type { WorklogProject } from '../../WorklogTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
+import { getErrorMessage } from '../../../../../api/errorHandler';
 
 export default function PressView() {
   const { projectId, worklogId } = useParams<{ projectId: string; worklogId: string }>();
@@ -55,9 +56,9 @@ export default function PressView() {
         });
 
         setCellValues(values);
-      } catch (err) {
+      } catch (err: any) {
         console.error('작업일지 조회 실패:', err);
-        alert('작업일지를 불러오지 못했습니다.');
+        alert(getErrorMessage(err, '작업일지를 불러오지 못했습니다.'));
       } finally {
         setLoading(false);
       }

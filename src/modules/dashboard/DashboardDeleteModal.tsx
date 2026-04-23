@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { DashboardProject } from './types';
 import { deleteProject } from '../../api/dashboard/dashboardService';
+import { getErrorMessage } from '../../api/errorHandler';
 import styles from '../../styles/dashboard/modal.module.css';
 
 interface Props {
@@ -22,9 +23,9 @@ export default function DashboardDeleteModal({ projects, onClose, refreshProject
       alert('🗑️ 삭제 완료');
       await refreshProjects();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('삭제 실패');
+      alert(getErrorMessage(err, '삭제 실패'));
     } finally {
       setLoading(false);
     }

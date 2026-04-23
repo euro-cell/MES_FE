@@ -12,6 +12,7 @@ import styles from '../../../../../styles/project/worklog/common.module.css';
 import { VD_NUMERIC_FIELDS, VD_INTEGER_FIELDS, VD_TIME_FIELDS } from '../../shared/numericFields';
 import { COMMON_READONLY_FIELDS } from '../../shared/commonConstants';
 import type { CategoryLabel } from '../../shared/processCategories';
+import { getErrorMessage } from '../../../../../api/errorHandler';
 
 const LINE_OPTIONS: CategoryLabel[] = ['전극', '조립', '화성'];
 
@@ -121,9 +122,9 @@ export default function VdEdit() {
         };
 
         setFormValues(values);
-      } catch (err) {
+      } catch (err: any) {
         console.error('작업일지 조회 실패:', err);
-        alert('작업일지를 불러오지 못했습니다.');
+        alert(getErrorMessage(err, '작업일지를 불러오지 못했습니다.'));
       } finally {
         setLoading(false);
       }

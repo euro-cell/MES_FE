@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from '../../../../api/axiosInstance';
 import styles from '../../../../styles/stock/cell/NCRStatus.module.css';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -134,9 +135,9 @@ export default function NCRDetailSection() {
         setIsEditMode(false);
         setEditedData(null);
         alert('저장되었습니다.');
-      } catch (err) {
+      } catch (err: any) {
         console.error('저장 실패:', err);
-        alert('저장에 실패했습니다.');
+        alert(getErrorMessage(err, '저장에 실패했습니다.'));
       }
     }
   };
@@ -279,10 +280,7 @@ export default function NCRDetailSection() {
                   </td>
                   {isEditMode && (
                     <td style={{ textAlign: 'center' }}>
-                      <button
-                        onClick={() => handleDeleteRow(ncrIdx, itemIdx)}
-                        className={styles.deleteBtn}
-                      >
+                      <button onClick={() => handleDeleteRow(ncrIdx, itemIdx)} className={styles.deleteBtn}>
                         삭제
                       </button>
                     </td>

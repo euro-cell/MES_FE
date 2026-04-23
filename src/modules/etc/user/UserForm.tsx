@@ -3,6 +3,7 @@ import { updateUser } from '../../../api/etc/userService';
 import type { User } from '../../../api/etc/userService';
 import { ROLE_LABELS } from './userRoleMap';
 import styles from '../../../styles/etc/users.module.css';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 interface Props {
   user: User | null;
@@ -30,9 +31,9 @@ export default function UserForm({ user, onClose }: Props) {
       await updateUser(user.id, form);
       alert('수정 완료');
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('저장 중 오류가 발생했습니다.');
+      alert(getErrorMessage(err, '저장 중 오류가 발생했습니다.'));
     }
   };
 
