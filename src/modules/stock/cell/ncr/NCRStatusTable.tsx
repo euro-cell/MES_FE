@@ -57,7 +57,7 @@ export default function NCRStatusTable({ items, projects }: NCRStatusTableProps)
     item: NCRStatusItemAPI,
     index: number,
     category: string,
-    categoryItems: NCRStatusItemAPI[]
+    categoryItems: NCRStatusItemAPI[],
   ) => (
     <tr key={`${category}-${index}`}>
       {index === 0 && (
@@ -78,89 +78,91 @@ export default function NCRStatusTable({ items, projects }: NCRStatusTableProps)
 
   return (
     <div className={styles.tableContainer}>
-      <table className={styles.ncrTable}>
-        <thead>
-          {/* 1행: 분류, NCR 종류, 세부사항, 표기, 프로젝트 이름들 */}
-          <tr>
-            <th className={styles.thCategory} rowSpan={hasOldProject ? 2 : 1}>
-              분류
-            </th>
-            <th className={styles.thNcrType} rowSpan={hasOldProject ? 2 : 1}>
-              NCR 종류
-            </th>
-            <th className={styles.thDetails} rowSpan={hasOldProject ? 2 : 1}>
-              세부사항
-            </th>
-            <th className={styles.thCode} rowSpan={hasOldProject ? 2 : 1}>
-              표기
-            </th>
-
-            {/* 1행: 프로젝트 이름들 (projectName) */}
-            {projects.map((p) => (
-              <th
-                key={`name-${p.projectNo}_${p.projectName}`}
-                className={styles.thProject}
-                rowSpan={p.projectNo ? 1 : 2}
-              >
-                {p.projectName}
-              </th>
-            ))}
-          </tr>
-
-          {/* 2행: 프로젝트 번호들 (projectNo) - 구형 프로젝트만 */}
-          {hasOldProject && (
+      <div className={styles.tableWrapper}>
+        <table className={styles.ncrTable}>
+          <thead>
+            {/* 1행: 분류, NCR 종류, 세부사항, 표기, 프로젝트 이름들 */}
             <tr>
-              {projects.map((p) =>
-                p.projectNo ? (
-                  <th key={`no-${p.projectNo}_${p.projectName}`} className={styles.thProject}>
-                    {p.projectNo}
-                  </th>
-                ) : null
-              )}
+              <th className={styles.thCategory} rowSpan={hasOldProject ? 2 : 1}>
+                분류
+              </th>
+              <th className={styles.thNcrType} rowSpan={hasOldProject ? 2 : 1}>
+                NCR 종류
+              </th>
+              <th className={styles.thDetails} rowSpan={hasOldProject ? 2 : 1}>
+                세부사항
+              </th>
+              <th className={styles.thCode} rowSpan={hasOldProject ? 2 : 1}>
+                표기
+              </th>
+
+              {/* 1행: 프로젝트 이름들 (projectName) */}
+              {projects.map(p => (
+                <th
+                  key={`name-${p.projectNo}_${p.projectName}`}
+                  className={styles.thProject}
+                  rowSpan={p.projectNo ? 1 : 2}
+                >
+                  {p.projectName}
+                </th>
+              ))}
             </tr>
-          )}
-        </thead>
 
-        <tbody>
-          {/* Formation 섹션 */}
-          {formationItems.map((item, idx) => renderItemRow(item, idx, 'Formation', formationItems))}
+            {/* 2행: 프로젝트 번호들 (projectNo) - 구형 프로젝트만 */}
+            {hasOldProject && (
+              <tr>
+                {projects.map(p =>
+                  p.projectNo ? (
+                    <th key={`no-${p.projectNo}_${p.projectName}`} className={styles.thProject}>
+                      {p.projectNo}
+                    </th>
+                  ) : null,
+                )}
+              </tr>
+            )}
+          </thead>
 
-          {/* Inspection 섹션 */}
-          {inspectionItems.map((item, idx) => renderItemRow(item, idx, 'Inspection', inspectionItems))}
+          <tbody>
+            {/* Formation 섹션 */}
+            {formationItems.map((item, idx) => renderItemRow(item, idx, 'Formation', formationItems))}
 
-          {/* Other 섹션 */}
-          {otherItems.map((item, idx) => renderItemRow(item, idx, 'Other', otherItems))}
+            {/* Inspection 섹션 */}
+            {inspectionItems.map((item, idx) => renderItemRow(item, idx, 'Inspection', inspectionItems))}
 
-          {/* 중 합 (소계) */}
-          <tr className={styles.subtotalRow}>
-            <td colSpan={4} className={styles.subtotalLabel}>
-              중 합
-            </td>
-            {projects.map((project, idx) => {
-              const projectKey = `${project.projectNo}_${project.projectName}`;
-              const subtotal =
-                (formationTotal[projectKey] || 0) +
-                (inspectionTotal[projectKey] || 0) +
-                (otherTotal[projectKey] || 0);
-              return (
-                <td key={`subtotal-${idx}`} className={styles.tdValue}>
-                  {formatValue(subtotal)}
-                </td>
-              );
-            })}
-          </tr>
+            {/* Other 섹션 */}
+            {otherItems.map((item, idx) => renderItemRow(item, idx, 'Other', otherItems))}
 
-          {/* NCR 총 합 */}
-          <tr className={styles.grandTotalRow}>
-            <td colSpan={4} className={styles.grandTotalLabel}>
-              NCR 총 합
-            </td>
-            <td colSpan={projects.length} className={styles.tdValue}>
-              {formatValue(grandTotal)}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            {/* 중 합 (소계) */}
+            <tr className={styles.subtotalRow}>
+              <td colSpan={4} className={styles.subtotalLabel}>
+                중 합
+              </td>
+              {projects.map((project, idx) => {
+                const projectKey = `${project.projectNo}_${project.projectName}`;
+                const subtotal =
+                  (formationTotal[projectKey] || 0) +
+                  (inspectionTotal[projectKey] || 0) +
+                  (otherTotal[projectKey] || 0);
+                return (
+                  <td key={`subtotal-${idx}`} className={styles.tdValue}>
+                    {formatValue(subtotal)}
+                  </td>
+                );
+              })}
+            </tr>
+
+            {/* NCR 총 합 */}
+            <tr className={styles.grandTotalRow}>
+              <td colSpan={4} className={styles.grandTotalLabel}>
+                NCR 총 합
+              </td>
+              <td colSpan={projects.length} className={styles.tdValue}>
+                {formatValue(grandTotal)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

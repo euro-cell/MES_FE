@@ -39,7 +39,7 @@ export default function NCRStatus() {
   if (loading) {
     return (
       <div className={styles.ncrContainer}>
-        <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+        <div className={styles.loadingText}>
           <p>데이터를 불러오는 중...</p>
         </div>
       </div>
@@ -49,20 +49,9 @@ export default function NCRStatus() {
   if (error || !statisticsData) {
     return (
       <div className={styles.ncrContainer}>
-        <div style={{ padding: '40px', textAlign: 'center', color: '#dc2626' }}>
-          <p>{error}</p>
-          <button
-            onClick={loadStatistics}
-            style={{
-              marginTop: '20px',
-              padding: '10px 20px',
-              backgroundColor: '#2563eb',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
+        <div style={{ padding: '40px', textAlign: 'center' }}>
+          <p className={styles.errorText}>{error}</p>
+          <button onClick={loadStatistics} className={styles.refreshBtn} style={{ marginTop: '20px' }}>
             다시 시도
           </button>
         </div>

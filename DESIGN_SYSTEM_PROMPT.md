@@ -43,6 +43,22 @@ cp bak/stock/cell/InOutTable.tsx.bak src/modules/stock/cell/inOut/InOutTable.tsx
 cp bak/stock/cell/InOutIndex.tsx.bak src/modules/stock/cell/inOut/index.tsx
 ```
 
+#### stock/cell/ncr (NCR 세부 구분 현황)
+작업 일자: 2026-04-23
+
+- `bak/stock/cell/NCRStatus.module.css.bak` — NCR 현황 CSS
+- `bak/stock/cell/NCRStatus.tsx.bak` — 메인 컴포넌트
+- `bak/stock/cell/NCRStatusTable.tsx.bak` — NCR 현황표 컴포넌트
+- `bak/stock/cell/NCRDetailSection.tsx.bak` — NCR 상세 내역 섹션
+
+복구 방법:
+```bash
+cp bak/stock/cell/NCRStatus.module.css.bak src/styles/stock/cell/NCRStatus.module.css
+cp bak/stock/cell/NCRStatus.tsx.bak src/modules/stock/cell/ncr/NCRStatus.tsx
+cp bak/stock/cell/NCRStatusTable.tsx.bak src/modules/stock/cell/ncr/NCRStatusTable.tsx
+cp bak/stock/cell/NCRDetailSection.tsx.bak src/modules/stock/cell/ncr/NCRDetailSection.tsx
+```
+
 ---
 
 ## 디자인 토큰 (기준값 — 변경 금지)
@@ -218,7 +234,7 @@ input:focus, select:focus {
 - [ ] `src/styles/stock/material/deleteMaterialModal.module.css`
 - [ ] `src/styles/stock/material/uploadModal.module.css`
 - [ ] `src/styles/stock/material/coaModal.module.css`
-- [ ] `src/styles/stock/cell/NCRStatus.module.css`
+- [x] `src/styles/stock/cell/NCRStatus.module.css`
 - [ ] `src/styles/stock/cell/ProjectDetail.module.css`
 - [ ] `src/styles/stock/cell/RackStorage.module.css`
 - [x] `src/styles/stock/cell/InOut.module.css`

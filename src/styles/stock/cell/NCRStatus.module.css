@@ -1,51 +1,54 @@
-/* NCR 컨테이너 */
+/* ========================
+   NCR 세부 구분 현황 페이지
+======================== */
 .ncrContainer {
   display: flex;
   flex-direction: column;
   height: 100vh;
   padding: 0;
-  background-color: #fafafa;
+  background: #f8fafc;
 }
 
+/* ── 헤더 ── */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  margin-bottom: 0;
-  border-bottom: 2px solid #eee;
-  background-color: white;
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
 }
 
 .title {
   margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
 }
 
 .refreshBtn {
   padding: 8px 16px;
-  background-color: #4caf50;
-  color: white;
+  background: #1d4ed8;
+  color: #fff;
   border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background 0.15s;
 }
 
 .refreshBtn:hover:not(:disabled) {
-  background-color: #45a049;
+  background: #1e40af;
 }
 
 .refreshBtn:disabled {
-  background-color: #cccccc;
+  background: #cbd5e1;
   cursor: not-allowed;
 }
 
-/* 스플릿 레이아웃 */
+/* ── 스플릿 레이아웃 ── */
 .splitLayout {
   display: flex;
   flex: 1;
@@ -54,233 +57,275 @@
 }
 
 .leftPanel {
-  flex: 0 0 75%;
+  flex: 0 0 65%;
   overflow-y: auto;
-  border-right: 2px solid #ddd;
-  background-color: white;
-  padding: 20px 0px;
+  overflow-x: auto;
+  border-right: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 16px;
 }
 
 .rightPanel {
   flex: 1;
   overflow: hidden;
-  background-color: white;
-  padding: 15px 10px;
+  background: #fff;
+  padding: 16px;
   min-width: 300px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 테이블 컨테이너 */
+/* ── 테이블 컨테이너 ── */
 .tableContainer {
   width: 100%;
-  overflow-x: auto;
-  margin-top: 0;
+  overflow: visible;
+}
+
+.tableWrapper {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .ncrTable {
+  width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 11px;
+  line-height: 1.4;
 }
 
 .ncrTable thead {
-  background-color: #f0f0f0;
-  border-top: 2px solid #333;
-  border-bottom: 2px solid #333;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
 .ncrTable th {
+  padding: 8px 6px;
   text-align: center;
   font-weight: 600;
-  color: #333;
-  border-right: 1px solid #333;
-  border-bottom: 1px solid #333;
-  white-space: nowrap;
-  padding: 4px;
+  color: #64748b;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-right: 1px solid #e2e8f0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.ncrTable thead tr:first-child th:last-child {
+.ncrTable th:last-child {
   border-right: none;
 }
 
 .thCategory {
-  min-width: 50px;
+  width: 50px;
 }
 
 .thNcrType {
-  min-width: 50px;
+  width: 60px;
 }
 
 .thDetails {
-  min-width: 150px;
+  width: 100px;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .thCode {
-  min-width: 50px;
+  width: 45px;
+}
+
+.thProject {
+  width: 70px;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .ncrTable tbody tr {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.1s;
 }
 
 .ncrTable tbody tr:hover {
-  background-color: #d0f8be;
+  background: #dbeafe;
 }
 
 .ncrTable td {
+  padding: 8px 6px;
   text-align: center;
-  color: #555;
-  border-right: 1px solid #ddd;
+  color: #1e293b;
+  border-right: 1px solid #f1f5f9;
   vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ncrTable td:last-child {
   border-right: none;
 }
 
+.ncrTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 특수 셀 */
 .tdCategory {
   text-align: center;
   font-weight: 600;
-  background-color: #f9f9f9;
-  border-right: 1px solid #ddd;
+  color: #0f172a;
+  background: #f8fafc;
 }
 
 .tdNcrType {
   text-align: center;
   font-weight: 500;
+  color: #1e293b;
 }
 
 .tdDetails {
   text-align: left;
-  padding-left: 6px;
+  color: #1e293b;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .tdCode {
   text-align: center;
-  font-weight: 500;
-  color: #d32f2f;
+  font-weight: 600;
+  color: #e11d48;
 }
 
 .tdValue {
   text-align: center;
   font-weight: 500;
+  color: #1e293b;
 }
 
-/* Subtotal Row */
+/* 소계 행 */
 .subtotalRow {
-  background-color: #ffeb99;
+  background: #eff6ff;
   font-weight: 600;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .subtotalLabel {
   text-align: center;
-  padding: 4px;
-  color: #333;
+  padding: 8px 10px;
+  color: #0f172a;
 }
 
 .subtotalRow td {
-  background-color: #ffeb99;
-  color: #333;
+  background: #eff6ff;
+  color: #0f172a;
+  font-weight: 600;
 }
 
-/* Grand Total Row */
+/* 합계 행 */
 .grandTotalRow {
-  background-color: #ffcccc;
+  background: #fef2f2;
   font-weight: 700;
-  border-top: 2px solid #333;
-  border-bottom: 2px solid #333;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: none;
 }
 
 .grandTotalLabel {
   text-align: center;
-  padding: 4px;
-  color: #333;
+  padding: 8px 10px;
+  color: #0f172a;
 }
 
 .grandTotalRow td {
-  background-color: #ffcccc;
-  color: #333;
-  padding: 4px;
+  background: #fef2f2;
+  color: #0f172a;
+  padding: 8px 10px;
+  font-weight: 700;
 }
 
-/* Detail Section - 우측 패널 */
+/* ── 상세 섹션 (우측 패널) ── */
 .detailSection {
   display: flex;
   flex-direction: column;
   height: 100%;
+  gap: 12px;
 }
 
 .projectSelectContainer {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #ddd;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  flex-wrap: wrap;
 }
 
 .projectSelectLabel {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: #333;
+  color: #64748b;
+  letter-spacing: 0.03em;
   white-space: nowrap;
 }
 
-.projectSelect {
+.projectSelect,
+.editButton {
   padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: white;
-  color: #333;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #1e293b;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 150px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+  outline: none;
 }
 
 .projectSelect:hover {
-  border-color: #999;
-  background-color: #f9f9f9;
+  border-color: #cbd5e1;
 }
 
 .projectSelect:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.projectSelect:disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
 }
 
 .editButton {
-  /* padding: 8px 16px; */
-  border: 1px solid #2563eb;
-  border-radius: 4px;
-  background-color: #2563eb;
-  color: white;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  background: #1d4ed8;
+  color: #fff;
+  border: 1px solid #1d4ed8;
+  padding: 6px 14px;
+  border-radius: 6px;
   white-space: nowrap;
+  font-size: 12px;
 }
 
 .editButton:hover {
-  border-color: #1d4ed8;
-  background-color: #1d4ed8;
+  background: #1e40af;
+  border-color: #1e40af;
 }
 
 .editButton:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .editButton:active {
-  background-color: #1e40af;
+  background: #1e40af;
   border-color: #1e40af;
 }
 
@@ -290,11 +335,11 @@
   overflow-x: hidden;
 }
 
+/* 상세 테이블 */
 .detailTable {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #eee;
-  max-width: 100%;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .detailTable:last-child {
@@ -303,34 +348,36 @@
 }
 
 .detailTableTitle {
-  margin: 0 0 8px 0;
-  font-size: 13px;
+  margin: 0 0 10px 0;
+  font-size: 12px;
   font-weight: 600;
-  color: #333;
+  color: #64748b;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .detailDataTable {
+  width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
-  background-color: white;
-  max-width: 100%;
+  font-size: 12px;
+  background: #fff;
 }
 
 .detailDataTable thead {
-  background-color: #f0f0f0;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .detailDataTable th {
+  padding: 8px 10px;
   text-align: center;
   font-weight: 600;
-  color: #333;
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  padding: 6px 3px;
+  color: #64748b;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-right: 1px solid #e2e8f0;
   white-space: nowrap;
-  font-size: 12px;
 }
 
 .detailDataTable th:last-child {
@@ -338,11 +385,11 @@
 }
 
 .detailDataTable td {
+  padding: 8px 10px;
   text-align: center;
-  color: #555;
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  padding: 6px 3px;
+  color: #1e293b;
+  border-right: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
   font-size: 12px;
 }
 
@@ -355,12 +402,104 @@
   border-right: none;
 }
 
+.detailDataTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 상세 소계 행 */
 .detailSubtotalRow {
-  background-color: #fff9e6;
+  background: #eff6ff;
   font-weight: 600;
+  border-top: 1px solid #e2e8f0;
 }
 
 .detailSubtotalRow td {
-  background-color: #fff9e6;
-  color: #333;
+  background: #eff6ff;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* ── 로딩 / 에러 상태 ── */
+.loadingText {
+  padding: 32px 16px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.emptyText {
+  padding: 32px 16px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.errorText {
+  padding: 32px 16px;
+  text-align: center;
+  color: #e11d48;
+  font-size: 13px;
+}
+
+/* ── 편집 입력 필드 ── */
+.editInput {
+  padding: 6px 8px;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  text-align: center;
+  box-sizing: border-box;
+  font-size: 12px;
+  outline: none;
+  font-family: inherit;
+  color: #1e293b;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.editInput:focus {
+  border-color: #1e40af;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.editInputWide {
+  width: 100%;
+}
+
+.editInputSmall {
+  width: 60px;
+}
+
+.editInputTitle {
+  font-weight: 600;
+}
+
+.deleteBtn {
+  padding: 4px 8px;
+  background: #e11d48;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.deleteBtn:hover {
+  background: #be123c;
+}
+
+.addRowBtn {
+  padding: 6px 12px;
+  background: #1d4ed8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.addRowBtn:hover {
+  background: #1e40af;
 }

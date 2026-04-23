@@ -219,15 +219,7 @@ export default function NCRDetailSection() {
                     type='text'
                     value={rangeValue}
                     onChange={e => handleNcrTypeChange(ncrIdx, e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '4px 6px',
-                      border: '1px solid #2563eb',
-                      borderRadius: '4px',
-                      textAlign: 'center',
-                      boxSizing: 'border-box',
-                      fontWeight: 600,
-                    }}
+                    className={`${styles.editInput} ${styles.editInputWide} ${styles.editInputTitle}`}
                   />
                 ) : (
                   rangeValue
@@ -253,14 +245,7 @@ export default function NCRDetailSection() {
                         type='text'
                         value={item.details}
                         onChange={e => handleRowFieldChange(ncrIdx, itemIdx, 'details', e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '4px 6px',
-                          border: '1px solid #2563eb',
-                          borderRadius: '4px',
-                          textAlign: 'center',
-                          boxSizing: 'border-box',
-                        }}
+                        className={`${styles.editInput} ${styles.editInputWide}`}
                       />
                     ) : (
                       item.details
@@ -272,14 +257,7 @@ export default function NCRDetailSection() {
                         type='text'
                         value={item.type}
                         onChange={e => handleRowFieldChange(ncrIdx, itemIdx, 'type', e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '4px 6px',
-                          border: '1px solid #2563eb',
-                          borderRadius: '4px',
-                          textAlign: 'center',
-                          boxSizing: 'border-box',
-                        }}
+                        className={`${styles.editInput} ${styles.editInputWide}`}
                       />
                     ) : (
                       item.type
@@ -291,13 +269,7 @@ export default function NCRDetailSection() {
                         type='number'
                         value={item.count}
                         onChange={e => handleRowCountChange(ncrIdx, itemIdx, parseInt(e.target.value) || 0)}
-                        style={{
-                          width: '60px',
-                          padding: '4px 6px',
-                          border: '1px solid #2563eb',
-                          borderRadius: '4px',
-                          textAlign: 'center',
-                        }}
+                        className={`${styles.editInput} ${styles.editInputSmall}`}
                       />
                     ) : item.count === 0 ? (
                       '-'
@@ -309,16 +281,7 @@ export default function NCRDetailSection() {
                     <td style={{ textAlign: 'center' }}>
                       <button
                         onClick={() => handleDeleteRow(ncrIdx, itemIdx)}
-                        style={{
-                          padding: '4px 8px',
-                          backgroundColor: '#dc2626',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          fontSize: '12px',
-                          fontWeight: 500,
-                        }}
+                        className={styles.deleteBtn}
                       >
                         삭제
                       </button>
@@ -328,7 +291,7 @@ export default function NCRDetailSection() {
               ))
             )}
             <tr className={styles.detailSubtotalRow}>
-              <td colSpan={isEditMode ? 3 : 2} style={{ textAlign: 'center', paddingRight: '10px' }}>
+              <td colSpan={isEditMode ? 3 : 2} style={{ textAlign: 'center' }}>
                 합계
               </td>
               <td style={{ textAlign: 'center', fontWeight: 600 }}>{getSubtotal(items)}</td>
@@ -337,19 +300,7 @@ export default function NCRDetailSection() {
             {isEditMode && (
               <tr>
                 <td colSpan={isEditMode ? 4 : 3} style={{ textAlign: 'center', padding: '8px' }}>
-                  <button
-                    onClick={() => handleAddRow(ncrIdx)}
-                    style={{
-                      padding: '6px 12px',
-                      backgroundColor: '#3b82f6',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '12px',
-                      fontWeight: 500,
-                    }}
-                  >
+                  <button onClick={() => handleAddRow(ncrIdx)} className={styles.addRowBtn}>
                     + 행 추가
                   </button>
                 </td>
@@ -382,12 +333,14 @@ export default function NCRDetailSection() {
             </option>
           ))}
         </select>
-        {fetchError && <span style={{ color: '#ef4444', fontSize: '13px', marginLeft: '8px' }}>서버와 연결할 수 없습니다.</span>}
+        {fetchError && (
+          <span style={{ color: '#e11d48', fontSize: '12px', marginLeft: '8px' }}>서버와 연결할 수 없습니다.</span>
+        )}
       </div>
 
       {/* 편집/저장 버튼 */}
       {selectedProjectId && (
-        <div style={{ display: 'flex', gap: '8px', padding: '0 10px 12px 10px' }}>
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
           <button className={styles.editButton} onClick={handleEditClick}>
             {isEditMode ? '취소' : '편집'}
           </button>
@@ -406,9 +359,9 @@ export default function NCRDetailSection() {
       {/* 세부 내용 */}
       <div className={styles.detailContent}>
         {!displayData ? (
-          <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>프로젝트를 선택해주세요</div>
+          <div className={styles.emptyText}>프로젝트를 선택해주세요</div>
         ) : loading ? (
-          <div style={{ padding: '20px', textAlign: 'center' }}>로딩 중...</div>
+          <div className={styles.loadingText}>로딩 중...</div>
         ) : (
           displayData.ncrDetails.map((ncrItem, ncrIdx) => renderNCRTable(ncrItem, ncrIdx))
         )}
