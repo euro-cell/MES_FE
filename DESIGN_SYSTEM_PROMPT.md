@@ -27,6 +27,22 @@ cp bak/etc/RolePermission.tsx.bak src/modules/etc/perm/RolePermission.tsx
 cp bak/etc/UserPermission.tsx.bak src/modules/etc/perm/UserPermission.tsx
 ```
 
+#### stock/cell/inOut (셀 입/출고)
+작업 일자: 2026-04-23
+
+- `bak/stock/cell/InOut.module.css.bak` — Cell 입/출고 CSS
+- `bak/stock/cell/InOutForm.tsx.bak` — 입력 폼 컴포넌트
+- `bak/stock/cell/InOutTable.tsx.bak` — 현황 테이블 컴포넌트
+- `bak/stock/cell/InOutIndex.tsx.bak` — index 페이지
+
+복구 방법:
+```bash
+cp bak/stock/cell/InOut.module.css.bak src/styles/stock/cell/InOut.module.css
+cp bak/stock/cell/InOutForm.tsx.bak src/modules/stock/cell/inOut/InOutForm.tsx
+cp bak/stock/cell/InOutTable.tsx.bak src/modules/stock/cell/inOut/InOutTable.tsx
+cp bak/stock/cell/InOutIndex.tsx.bak src/modules/stock/cell/inOut/index.tsx
+```
+
 ---
 
 ## 디자인 토큰 (기준값 — 변경 금지)
@@ -205,7 +221,7 @@ input:focus, select:focus {
 - [ ] `src/styles/stock/cell/NCRStatus.module.css`
 - [ ] `src/styles/stock/cell/ProjectDetail.module.css`
 - [ ] `src/styles/stock/cell/RackStorage.module.css`
-- [ ] `src/styles/stock/cell/InOut.module.css`
+- [x] `src/styles/stock/cell/InOut.module.css`
 
 ### 설비
 - [ ] `src/styles/plant/Equipment.module.css`

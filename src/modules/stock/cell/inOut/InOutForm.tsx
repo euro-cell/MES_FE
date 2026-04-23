@@ -63,12 +63,12 @@ export default function InOutForm({
                   disabled={!isLotInputEnabled}
                 />
                 {!isLotInputEnabled && (
-                  <div style={{ color: '#ff6b6b', fontSize: '12px', marginTop: '4px' }}>
+                  <div className={styles.warningText}>
                     ⚠️ 인수자, 인계자, 프로젝트명을 입력해주세요
                   </div>
                 )}
                 {isLotInputEnabled && showLotWarning && (
-                  <div style={{ color: '#ffa500', fontSize: '12px', marginTop: '4px' }}>
+                  <div className={styles.infoText}>
                     ℹ️ [한/영]키가 한글로 되어있습니다. <br /> 원활한 바코드 스캔을 위해 [한/영]키를 영어로
                     변경해주세요.
                   </div>

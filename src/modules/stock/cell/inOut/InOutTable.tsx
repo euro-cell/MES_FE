@@ -33,68 +33,64 @@ export default function InOutTable({ groupedData, hasError }: InOutTableProps) {
 
   return (
     <div className={styles.tableSection}>
-      <table className={styles.dataTable}>
-        <thead>
-          <tr className={styles.titleRow}>
-            <th colSpan={7}>프로젝트 별 Cell 입/출고 현황</th>
-          </tr>
-          <tr>
-            <th>Project Name</th>
-            <th>등급</th>
-            <th>총 량</th>
-            <th>보유 수량</th>
-            <th>총 입고량</th>
-            <th>총 출고량</th>
-            <th>기타</th>
-          </tr>
-        </thead>
-        <tbody>
-          {hasError ? (
-            <tr>
-              <td colSpan={7} style={{ textAlign: 'center', padding: '20px', color: '#ef4444' }}>
-                서버와 연결할 수 없습니다.
-              </td>
+      <div className={styles.tableWrapper}>
+        <table className={styles.dataTable}>
+          <thead>
+            <tr className={styles.titleRow}>
+              <th colSpan={7}>프로젝트 별 Cell 입/출고 현황</th>
             </tr>
-          ) : !hasData ? (
             <tr>
-              <td colSpan={7} style={{ textAlign: 'center', padding: '20px' }}>
-                데이터가 없습니다.
-              </td>
+              <th>Project Name</th>
+              <th>등급</th>
+              <th>총 량</th>
+              <th>보유 수량</th>
+              <th>총 입고량</th>
+              <th>총 출고량</th>
+              <th>기타</th>
             </tr>
-          ) : (
-            <>
-              {groupedData.map((group, groupIdx) =>
-                group.rows.map((row, rowIdx) => (
-                  <tr key={`${groupIdx}-${rowIdx}`}>
-                    {rowIdx === 0 && (
-                      <td rowSpan={group.rows.length} className={styles.projectNameCell}>
-                        {group.projectName}
-                      </td>
-                    )}
-                    <td>{row.grade}</td>
-                    {rowIdx === 0 && (
-                      <td rowSpan={group.rows.length} className={styles.totalQtyCell}>{formatValue(row.totalQty)}</td>
-                    )}
-                    <td>{formatValue(row.holdingQty)}</td>
-                    <td>{formatValue(row.inboundQty)}</td>
-                    <td>{formatValue(row.outboundQty)}</td>
-                    <td>{row.other || '-'}</td>
-                  </tr>
-                ))
-              )}
-              <tr className={styles.totalRow}>
-                <td colSpan={2} style={{ fontWeight: 'bold' }}>
-                  창고 내 총 셀 수량
-                </td>
-                <td colSpan={2} style={{ fontWeight: 'bold' }}>{totals.totalHolding}</td>
-                <td style={{ fontWeight: 'bold' }}>{totals.totalInbound}</td>
-                <td style={{ fontWeight: 'bold' }}>{totals.totalOutbound}</td>
-                <td>-</td>
+          </thead>
+          <tbody>
+            {hasError ? (
+              <tr>
+                <td colSpan={7} className={styles.errorCell}>서버와 연결할 수 없습니다.</td>
               </tr>
-            </>
-          )}
-        </tbody>
-      </table>
+            ) : !hasData ? (
+              <tr>
+                <td colSpan={7} className={styles.emptyCell}>데이터가 없습니다.</td>
+              </tr>
+            ) : (
+              <>
+                {groupedData.map((group, groupIdx) =>
+                  group.rows.map((row, rowIdx) => (
+                    <tr key={`${groupIdx}-${rowIdx}`}>
+                      {rowIdx === 0 && (
+                        <td rowSpan={group.rows.length} className={styles.projectNameCell}>
+                          {group.projectName}
+                        </td>
+                      )}
+                      <td>{row.grade}</td>
+                      {rowIdx === 0 && (
+                        <td rowSpan={group.rows.length} className={styles.totalQtyCell}>{formatValue(row.totalQty)}</td>
+                      )}
+                      <td>{formatValue(row.holdingQty)}</td>
+                      <td>{formatValue(row.inboundQty)}</td>
+                      <td>{formatValue(row.outboundQty)}</td>
+                      <td>{row.other || '-'}</td>
+                    </tr>
+                  ))
+                )}
+                <tr className={styles.totalRow}>
+                  <td colSpan={2}>창고 내 총 셀 수량</td>
+                  <td colSpan={2}>{totals.totalHolding}</td>
+                  <td>{totals.totalInbound}</td>
+                  <td>{totals.totalOutbound}</td>
+                  <td>-</td>
+                </tr>
+              </>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
