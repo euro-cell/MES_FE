@@ -331,6 +331,7 @@ export default function MaterialTable({ data, onEdit, onDelete, onCoA }: Materia
   }
 
   return (
+    <div className={styles.tableWrapper}>
     <table ref={tableRef} className={styles.dataTable} style={{ width: table.getTotalSize() }}>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
@@ -340,7 +341,6 @@ export default function MaterialTable({ data, onEdit, onDelete, onCoA }: Materia
                   key={header.id}
                   data-col={header.column.id}
                   style={{
-                    position: 'relative',
                     width: header.getSize(),
                   }}
                 >
@@ -379,5 +379,6 @@ export default function MaterialTable({ data, onEdit, onDelete, onCoA }: Materia
           ))}
         </tbody>
       </table>
+    </div>
   );
 }
