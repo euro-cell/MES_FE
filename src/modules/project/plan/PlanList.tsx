@@ -13,7 +13,10 @@ export default function PlanList() {
   const queryClient = useQueryClient();
 
   const loadData = async () => {
-    await queryClient.invalidateQueries({ queryKey: ['projects'] });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['projects'] }),
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'projects'] }),
+    ]);
   };
 
   if (isLoading) return <p>⏳ 데이터를 불러오는 중...</p>;

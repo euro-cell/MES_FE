@@ -84,7 +84,10 @@ export default function PlanRegister() {
 
     try {
       await savePlan(projectId!, payload);
-      await queryClient.invalidateQueries({ queryKey: ['projects'] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['projects'] }),
+        queryClient.invalidateQueries({ queryKey: ['dashboard', 'projects'] }),
+      ]);
       alert('✅ 저장 완료!');
       navigate('/project/plan');
     } catch (err: any) {
