@@ -15,9 +15,12 @@ const Topbar: React.FC = () => {
 
   const formatExpiry = (seconds: number | null) => {
     if (seconds === null || seconds <= 0) return null;
-    const m = Math.floor(seconds / 60);
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
-    return `로그인 유지 시간: ${m}분 ${String(s).padStart(2, '0')}초`;
+    const timeStr =
+      h > 0 ? `${h}시간 ${m}분 ${String(s).padStart(2, '0')}초` : `${m}분 ${String(s).padStart(2, '0')}초`;
+    return `로그인 유지 시간: ${timeStr}`;
   };
 
   // ✅ 로그아웃 처리
@@ -45,9 +48,7 @@ const Topbar: React.FC = () => {
       <h2>{pageTitle}</h2>
 
       <div className={styles.right}>
-        {formatExpiry(expiresIn) && (
-          <span className={styles.sessionTimer}>{formatExpiry(expiresIn)}</span>
-        )}
+        {formatExpiry(expiresIn) && <span className={styles.sessionTimer}>{formatExpiry(expiresIn)}</span>}
         {user ? (
           <>
             <span className={styles.userInfo}>
