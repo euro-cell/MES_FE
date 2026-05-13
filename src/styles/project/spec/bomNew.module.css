@@ -1,0 +1,205 @@
+.container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.backBtn {
+  background: #1a73e8;
+  color: #fff;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+  margin-bottom: 14px;
+  display: inline-block;
+}
+.backBtn:hover { background: #155bc1; }
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* 환율 입력 */
+.ratesRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.rateBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.rateUsd { background: #ffcc99; }
+.rateJpy { background: #ccffff; }
+.rateEur { background: #d9ead3; }
+
+.rateBox label { white-space: nowrap; }
+.rateBox input {
+  width: 90px;
+  padding: 4px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 13px;
+  text-align: right;
+}
+
+/* 테이블 */
+.tableWrapper { overflow-x: visible; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 12px;
+  min-width: 1334px;
+  table-layout: fixed;
+}
+
+.table th {
+  background: #d9d9d9;
+  padding: 4px 5px;
+  border: 1.5px solid #999;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.table td {
+  padding: 1px 3px;
+  border: 1.5px solid #ccc;
+  vertical-align: middle;
+  background: #fff;
+  overflow: hidden;
+}
+
+.table input,
+.table select {
+  width: 100%;
+  padding: 2px 4px;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  font-size: 12px;
+  box-sizing: border-box;
+  text-align: right;
+  background: #fff;
+  min-width: 0;
+}
+
+.table input[type='text'],
+.table select { text-align: left; }
+
+/* 열 너비 지정 */
+.table col.colClass    { width: 52px; }
+.table col.colCat      { width: 90px; }
+.table col.colMat      { width: 90px; }
+.table col.colProduct  { width: 130px; }
+.table col.colMaker    { width: 70px; }
+.table col.colUnit     { width: 44px; }
+.table col.colYield    { width: 52px; }
+.table col.colCurrency { width: 56px; }
+.table col.colPrice    { width: 80px; }
+.table col.colTariff   { width: 44px; }
+.table col.colEtc      { width: 44px; }
+.table col.colUnitKrw  { width: 80px; }
+.table col.colNetQty   { width: 70px; }
+.table col.colTotalQty { width: 70px; }
+.table col.colUnitCost { width: 80px; }
+.table col.colComp     { width: 60px; }
+.table col.colUsdPrice { width: 60px; }
+.table col.colUsdUnit  { width: 60px; }
+.table col.colMatCost  { width: 70px; }
+.table col.colAction   { width: 32px; }
+
+/* 자동계산 셀 (읽기전용) */
+.calcCell {
+  background: #f5f5f5 !important;
+  color: #333;
+  text-align: right;
+  padding-right: 8px;
+  white-space: nowrap;
+}
+
+.calcCellCenter {
+  background: #f5f5f5 !important;
+  color: #333;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* USD 열 */
+.usdHeader { background: #ffc000 !important; }
+.usdCell   { background: #fff3cc !important; }
+
+/* 구분 셀 */
+.classCell {
+  font-weight: 700;
+  background: #f9fafb !important;
+  white-space: nowrap;
+}
+
+/* 소계 */
+.subtotalRow td { background: #ffff00 !important; }
+.subtotalLabel  { font-weight: 700; text-align: center; }
+
+/* TOTAL */
+.totalRow td  { background: #ffc000 !important; font-weight: 700; }
+.totalLabel   { font-weight: 700; text-align: center; }
+.totalUnitCost { color: #e00; font-weight: 700; }
+
+/* 행 추가/삭제 버튼 */
+.actionCell { width: 36px; text-align: center; }
+
+.addBtn {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  padding: 3px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.addBtn:hover { background: #15803d; }
+
+.deleteBtn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 3px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.deleteBtn:hover { background: #b91c1c; }
+
+/* 저장 */
+.saveWrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.saveBtn {
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.saveBtn:hover { background: #155bc1; }
