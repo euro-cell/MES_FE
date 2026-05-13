@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig(() => {
   const env = loadEnv('', process.cwd(), '');
   const apiTarget = env.VITE_API_TARGET;
+  const apiRewrite = env.VITE_API_REWRITE === 'true';
 
   return {
     plugins: [react()],
@@ -25,7 +26,7 @@ export default defineConfig(() => {
             '/api': {
               target: apiTarget,
               changeOrigin: true,
-              rewrite: path => path.replace(/^\/api/, ''),
+              ...(apiRewrite && { rewrite: (path: string) => path.replace(/^\/api/, '') }),
               configure: proxy => {
                 proxy.on('proxyReq', (proxyReq, req) => {
                   const clientIp = req.socket.remoteAddress?.replace('::ffff:', '') ?? '';
