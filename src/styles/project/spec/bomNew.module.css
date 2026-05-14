@@ -25,6 +25,28 @@
   margin-bottom: 16px;
 }
 
+/* BOM 이름 */
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.nameLabel {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nameInput {
+  width: 240px;
+  padding: 5px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
 /* 환율 입력 */
 .ratesRow {
   display: flex;

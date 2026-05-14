@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { getMaterialCategories, getMaterialsByCategory } from '../../../../api/material';
+import { createBomTemplate } from '../../../../api/project/bom';
 import styles from '../../../../styles/project/spec/bomNew.module.css';
 
 interface Material {
@@ -18,6 +20,7 @@ interface BomRow {
   id: number;
   classification: Classification;
   category: string;
+  materialId: number | null;
   material: string;     // materialType (자재 종류)
   product: string;      // model (제품명)
   manufacturer: string; // company
@@ -39,25 +42,25 @@ let nextId = 100;
 const newRow = (cls: Classification): BomRow => ({
   id: nextId++,
   classification: cls,
-  category: '', material: '', product: '', manufacturer: '', unit: '',
+  category: '', materialId: null, material: '', product: '', manufacturer: '', unit: '',
   yieldRate: 90, currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '',
 });
 
 const INITIAL_ROWS: BomRow[] = [
-  { id: 1,  classification: 'Cathode', category: '양극재', material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 2,  classification: 'Cathode', category: '도전재', material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 3,  classification: 'Cathode', category: '바인더', material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 4,  classification: 'Cathode', category: '집전체', material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 5,  classification: 'Cathode', category: '용매',   material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 6,  classification: 'Anode',   category: '음극재', material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 7,  classification: 'Anode',   category: '도전재', material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 8,  classification: 'Anode',   category: '바인더', material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 9,  classification: 'Anode',   category: '집전체', material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 10, classification: 'Anode',   category: '용매',   material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 11, classification: "Ass'y",   category: '분리막', material: '', product: '', manufacturer: '', unit: '', yieldRate: 83.3, currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 12, classification: "Ass'y",   category: '리드탭', material: '', product: '', manufacturer: '', unit: '', yieldRate: 83.3, currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 13, classification: "Ass'y",   category: '파우치', material: '', product: '', manufacturer: '', unit: '', yieldRate: 83.3, currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
-  { id: 14, classification: "Ass'y",   category: '전해액', material: '', product: '', manufacturer: '', unit: '', yieldRate: 83.3, currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 1,  classification: 'Cathode', category: '양극재', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 2,  classification: 'Cathode', category: '도전재', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 3,  classification: 'Cathode', category: '바인더', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 4,  classification: 'Cathode', category: '집전체', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 5,  classification: 'Cathode', category: '용매',   materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 6,  classification: 'Anode',   category: '음극재', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 7,  classification: 'Anode',   category: '도전재', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 8,  classification: 'Anode',   category: '바인더', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 9,  classification: 'Anode',   category: '집전체', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 10, classification: 'Anode',   category: '용매',   materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 90,   currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 11, classification: "Ass'y",   category: '분리막', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 83.3, currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 12, classification: "Ass'y",   category: '리드탭', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 83.3, currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 13, classification: "Ass'y",   category: '파우치', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 83.3, currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
+  { id: 14, classification: "Ass'y",   category: '전해액', materialId: null, material: '', product: '', manufacturer: '', unit: '', yieldRate: 83.3, currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '' },
 ];
 
 const INITIAL_FIRST_IDS = new Set(INITIAL_ROWS.map(r => r.id));
@@ -137,6 +140,7 @@ function getTooltip(row: BomRow, col: 'netQty' | 'totalQty' | 'tariff' | 'etc'):
 export default function BomNew() {
   const navigate = useNavigate();
   const { id: _id } = useParams<{ id: string }>();
+  const [bomName, setBomName] = useState('');
   const [rows, setRows]       = useState<BomRow[]>(INITIAL_ROWS);
   const [usdRate, setUsdRate] = useState<number | ''>(1480.6);
   const [jpyRate, setJpyRate] = useState<number | ''>(9.52);
@@ -192,6 +196,7 @@ export default function BomNew() {
         ? {
             ...r,
             product,
+            materialId: target ? target.id : r.materialId,
             manufacturer: target ? target.company : r.manufacturer,
             unit: target ? target.unit : r.unit,
           }
@@ -239,7 +244,42 @@ export default function BomNew() {
 
   const handleRemoveRow = (id: number) => setRows(prev => prev.filter(r => r.id !== id));
 
-  const handleSubmit = () => alert('준비 중입니다.');
+  const handleSubmit = async () => {
+    if (!bomName.trim()) {
+      toast.error('BOM 이름을 입력해주세요.');
+      return;
+    }
+    const validRows = rows.filter(r => r.materialId);
+    if (validRows.length === 0) {
+      toast.error('자재를 하나 이상 선택해주세요.');
+      return;
+    }
+
+    try {
+      await createBomTemplate({
+        name: bomName.trim(),
+        description: '',
+        usdRate: usd || null,
+        jpyRate: jpy || null,
+        eurRate: eur || null,
+        rows: validRows.map(r => ({
+          classification: r.classification,
+          materialId: r.materialId!,
+          yieldRate: Number(r.yieldRate) || null,
+          currency: r.currency,
+          purchasePrice: Number(r.purchasePrice) || null,
+          tariff: Number(r.tariff) || null,
+          etc: Number(r.etc) || null,
+          netQty: Number(r.netQty) || null,
+        })),
+      });
+      toast.success('BOM이 등록되었습니다.');
+      navigate(-1);
+    } catch (err: any) {
+      const msg = err.response?.data?.message || '등록 중 오류가 발생했습니다.';
+      toast.error(msg);
+    }
+  };
 
   const grouped = CLASSIFICATIONS.map(cls => ({ cls, group: rows.filter(r => r.classification === cls) }));
 
@@ -247,6 +287,17 @@ export default function BomNew() {
     <div className={styles.container}>
       <button className={styles.backBtn} onClick={() => navigate(-1)}>← 목록으로</button>
       <h2 className={styles.title}>셀당 소요량 등록</h2>
+
+      <div className={styles.nameRow}>
+        <label className={styles.nameLabel}>BOM 이름</label>
+        <input
+          className={styles.nameInput}
+          type='text'
+          placeholder='예) A BOM, B BOM'
+          value={bomName}
+          onChange={e => setBomName(e.target.value)}
+        />
+      </div>
 
       <div className={styles.ratesRow}>
         <div className={styles.rateBox + ' ' + styles.rateUsd}>
