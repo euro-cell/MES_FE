@@ -144,6 +144,14 @@ export default function SpecList() {
                 <td>
                   <div className={styles.actionButtons}>
                     <TooltipButton
+                      label='조회'
+                      variant='view'
+                      disabled={!item.bomStatus}
+                      tooltip='등록된 셀당 소요량이 없습니다.'
+                      onClick={() => item.bomStatus && navigate(`bom/view/${item.id}`)}
+                    />
+
+                    <TooltipButton
                       label='등록'
                       variant='register'
                       disabled={item.bomStatus}
