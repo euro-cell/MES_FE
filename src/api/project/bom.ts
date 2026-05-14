@@ -70,3 +70,15 @@ export async function getBomTemplate(id: number): Promise<BomTemplateDetail> {
   const res = await axios.get(`${API_BASE}/project/bom/templates/${id}`, { withCredentials: true });
   return res.data;
 }
+
+/** 프로젝트에 BOM 템플릿 연결 */
+export async function linkBomTemplate(projectId: number, templateId: number): Promise<{ projectId: number; templateId: number }> {
+  const res = await axios.post(`${API_BASE}/project/bom/${projectId}/link`, { templateId }, { withCredentials: true });
+  return res.data;
+}
+
+/** 프로젝트별 연결된 BOM 조회 */
+export async function getProjectBom(projectId: number): Promise<BomTemplateDetail> {
+  const res = await axios.get(`${API_BASE}/project/bom/${projectId}`, { withCredentials: true });
+  return res.data;
+}

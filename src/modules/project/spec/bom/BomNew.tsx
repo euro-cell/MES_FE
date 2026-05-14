@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { getMaterialCategories, getMaterialsByCategory } from '../../../../api/material';
-import { createBomTemplate } from '../../../../api/project/bom';
+import { createBomTemplate, linkBomTemplate } from '../../../../api/project/bom';
 import styles from '../../../../styles/project/spec/bomNew.module.css';
 
 interface Material {
@@ -139,7 +139,7 @@ function getTooltip(row: BomRow, col: 'netQty' | 'totalQty' | 'tariff' | 'etc'):
 
 export default function BomNew() {
   const navigate = useNavigate();
-  const { id: _id } = useParams<{ id: string }>();
+  const { id: projectId } = useParams<{ id: string }>();
   const [bomName, setBomName] = useState('');
   const [rows, setRows]       = useState<BomRow[]>(INITIAL_ROWS);
   const [usdRate, setUsdRate] = useState<number | ''>(1480.6);
@@ -256,7 +256,7 @@ export default function BomNew() {
     }
 
     try {
-      await createBomTemplate({
+      const { id: templateId } = await createBomTemplate({
         name: bomName.trim(),
         description: '',
         usdRate: usd || null,
@@ -273,6 +273,9 @@ export default function BomNew() {
           netQty: Number(r.netQty) || null,
         })),
       });
+      if (projectId) {
+        await linkBomTemplate(Number(projectId), templateId);
+      }
       toast.success('BOM이 등록되었습니다.');
       navigate(-1);
     } catch (err: any) {
