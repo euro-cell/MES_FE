@@ -40,6 +40,7 @@ export interface BomTemplateDetail {
     id: number;
     classification: string;
     materialId: number | null;
+    category: string | null;
     materialType: string | null;
     product: string | null;
     manufacturer: string | null;
@@ -68,6 +69,12 @@ export async function getBomTemplates(): Promise<BomTemplateSummary[]> {
 /** BOM 템플릿 단건 조회 */
 export async function getBomTemplate(id: number): Promise<BomTemplateDetail> {
   const res = await axios.get(`${API_BASE}/project/bom/templates/${id}`, { withCredentials: true });
+  return res.data;
+}
+
+/** BOM 템플릿 수정 (헤더 + rows 전체 교체) */
+export async function updateBomTemplate(id: number, payload: CreateBomTemplatePayload): Promise<BomTemplateDetail> {
+  const res = await axios.patch(`${API_BASE}/project/bom/templates/${id}`, payload, { withCredentials: true });
   return res.data;
 }
 

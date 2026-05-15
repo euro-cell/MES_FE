@@ -1,0 +1,465 @@
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { getMaterialCategories, getMaterialsByCategory } from '../../../../api/material';
+import { getProjectBom, updateBomTemplate } from '../../../../api/project/bom';
+import styles from '../../../../styles/project/spec/bomNew.module.css';
+
+interface Material {
+  id: number;
+  category: string;
+  type: string;
+  name: string;
+  company: string;
+  unit: string;
+}
+
+type Classification = 'Cathode' | 'Anode' | "Ass'y";
+
+interface BomRow {
+  id: number;
+  classification: Classification;
+  category: string;
+  materialId: number | null;
+  material: string;
+  product: string;
+  manufacturer: string;
+  unit: string;
+  yieldRate: number | '';
+  currency: 'KRW' | 'USD' | 'JPY' | 'EUR';
+  purchasePrice: number | '';
+  tariff: number | '';
+  etc: number | '';
+  netQty: number | '';
+  lossRatio?: number[];
+}
+
+const CLASSIFICATIONS: Classification[] = ['Cathode', 'Anode', "Ass'y"];
+const CURRENCIES: BomRow['currency'][] = ['KRW', 'USD', 'JPY', 'EUR'];
+
+let nextId = 1000;
+const newRow = (cls: Classification): BomRow => ({
+  id: nextId++,
+  classification: cls,
+  category: '', materialId: null, material: '', product: '', manufacturer: '', unit: '',
+  yieldRate: 90, currency: 'KRW', purchasePrice: '', tariff: 0, etc: 10, netQty: '',
+});
+
+function calcUnitPriceKrw(row: BomRow, usdRate: number, jpyRate: number, eurRate: number): number {
+  const p = Number(row.purchasePrice) || 0;
+  const t = (Number(row.tariff) || 0) / 100;
+  const e = (Number(row.etc) || 0) / 100;
+  let base = p;
+  if (row.currency === 'USD') base = p * usdRate;
+  if (row.currency === 'JPY') base = p * jpyRate;
+  if (row.currency === 'EUR') base = p * eurRate;
+  return base * (1 + t) * (1 + e);
+}
+
+function calcTotalYield(rows: BomRow[]): number {
+  const anodeRows = rows.filter(r => r.classification === 'Anode');
+  const assyRows  = rows.filter(r => r.classification === "Ass'y");
+  const anodeAvg  = anodeRows.length ? anodeRows.reduce((s, r) => s + (Number(r.yieldRate) || 0), 0) / anodeRows.length / 100 : 1;
+  const assyAvg   = assyRows.length  ? assyRows.reduce((s, r)  => s + (Number(r.yieldRate) || 0), 0) / assyRows.length  / 100 : 1;
+  return anodeAvg * assyAvg;
+}
+
+function calcTotalQty(row: BomRow, totalYield: number, assyAvgYield: number): number {
+  const net = Number(row.netQty) || 0;
+  if (!net) return 0;
+  const lr = row.lossRatio ?? [];
+  const isAssy = row.classification === "Ass'y";
+  if (isAssy && row.material === 'Pouch') return assyAvgYield ? net / assyAvgYield * (lr[0] ?? 1) : 0;
+  if (isAssy) return assyAvgYield ? net / assyAvgYield : 0;
+  if (row.material === 'Collector' && lr.length >= 2) return totalYield ? net / totalYield * lr[0] * lr[1] : 0;
+  return totalYield ? net / totalYield : 0;
+}
+
+function calcUnitCost(row: BomRow, usdRate: number, jpyRate: number, eurRate: number, totalYield: number, assyAvgYield: number): number {
+  return calcUnitPriceKrw(row, usdRate, jpyRate, eurRate) * calcTotalQty(row, totalYield, assyAvgYield);
+}
+
+function fmt(n: number, decimals = 2): string {
+  return n.toLocaleString('ko-KR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+export default function BomEdit() {
+  const navigate = useNavigate();
+  const { id: projectId } = useParams<{ id: string }>();
+  const [templateId, setTemplateId] = useState<number | null>(null);
+  const [bomName, setBomName]       = useState('');
+  const [rows, setRows]             = useState<BomRow[]>([]);
+  const [usdRate, setUsdRate]       = useState<number | ''>('');
+  const [jpyRate, setJpyRate]       = useState<number | ''>('');
+  const [eurRate, setEurRate]       = useState<number | ''>('');
+  const [categories, setCategories] = useState<string[]>([]);
+  const [materialsMap, setMaterialsMap] = useState<Record<number, Material[]>>({});
+  const [loading, setLoading]       = useState(true);
+
+  const usd = Number(usdRate) || 0;
+  const jpy = Number(jpyRate) || 0;
+  const eur = Number(eurRate) || 0;
+
+  useEffect(() => {
+    if (!projectId) return;
+    getMaterialCategories().then(setCategories).catch(console.error);
+
+    getProjectBom(Number(projectId))
+      .then(async bom => {
+        setTemplateId(bom.id);
+        setBomName(bom.name);
+        setUsdRate(bom.usdRate ?? '');
+        setJpyRate(bom.jpyRate ?? '');
+        setEurRate(bom.eurRate ?? '');
+
+        const converted: BomRow[] = bom.rows.map(r => ({
+          id: r.id,
+          classification: r.classification as Classification,
+          category: r.category ?? '',
+          materialId: r.materialId,
+          material: r.materialType ?? '',
+          product: r.product ?? '',
+          manufacturer: r.manufacturer ?? '',
+          unit: r.unit ?? '',
+          yieldRate: r.yieldRate ?? '',
+          currency: r.currency as BomRow['currency'],
+          purchasePrice: r.purchasePrice ?? '',
+          tariff: r.tariff ?? '',
+          etc: r.etc ?? '',
+          netQty: r.netQty ?? '',
+        }));
+        setRows(converted);
+
+        await Promise.all(
+          converted.map(async r => {
+            if (!r.category) return;
+            try {
+              const data = await getMaterialsByCategory(r.category);
+              setMaterialsMap(prev => ({ ...prev, [r.id]: data }));
+            } catch (e) {
+              console.error(e);
+            }
+          })
+        );
+        setLoading(false);
+      })
+      .catch(() => {
+        toast.error('BOM 데이터를 불러올 수 없습니다.');
+        navigate(-1);
+      });
+  }, [projectId]);
+
+  const loadMaterials = async (rowId: number, category: string) => {
+    try {
+      const data = await getMaterialsByCategory(category);
+      setMaterialsMap(prev => ({ ...prev, [rowId]: data }));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleCategoryChange = (rowId: number, category: string) => {
+    setRows(prev => prev.map(r =>
+      r.id === rowId ? { ...r, category, material: '', product: '', manufacturer: '', unit: '', materialId: null } : r
+    ));
+    if (category) loadMaterials(rowId, category);
+  };
+
+  const handleMaterialTypeChange = (rowId: number, material: string) => {
+    setRows(prev => prev.map(r =>
+      r.id === rowId ? { ...r, material, product: '', manufacturer: r.manufacturer, unit: r.unit } : r
+    ));
+  };
+
+  const handleModelChange = (rowId: number, product: string) => {
+    const mats = materialsMap[rowId] || [];
+    const target = mats.find(m => m.name === product);
+    setRows(prev => prev.map(r =>
+      r.id === rowId
+        ? { ...r, product, materialId: target ? target.id : r.materialId, manufacturer: target ? target.company : r.manufacturer, unit: target ? target.unit : r.unit }
+        : r
+    ));
+  };
+
+  const groupAvgYield = (cls: Classification) => {
+    const g = rows.filter(r => r.classification === cls);
+    return g.length ? g.reduce((s, r) => s + (Number(r.yieldRate) || 0), 0) / g.length / 100 : 0;
+  };
+
+  const totalYield   = calcTotalYield(rows);
+  const assyAvgYield = groupAvgYield("Ass'y");
+
+  const groupUnitCostSum = (cls: Classification) =>
+    rows.filter(r => r.classification === cls)
+        .reduce((s, r) => s + calcUnitCost(r, usd, jpy, eur, totalYield, assyAvgYield), 0);
+
+  const totalUnitCost = CLASSIFICATIONS.reduce((s, c) => s + groupUnitCostSum(c), 0);
+
+  const handleChange = (id: number, field: keyof BomRow, value: string) => {
+    setRows(prev => prev.map(r => {
+      if (r.id !== id) return r;
+      const numFields: (keyof BomRow)[] = ['yieldRate', 'purchasePrice', 'tariff', 'etc', 'netQty'];
+      if (numFields.includes(field)) return { ...r, [field]: value === '' ? '' : Number(value) };
+      return { ...r, [field]: value };
+    }));
+  };
+
+  const handleAddRow = (cls: Classification) => {
+    const r = newRow(cls);
+    setRows(prev => {
+      const indices = prev.map((row, i) => (row.classification === cls ? i : -1));
+      const last = Math.max(...indices);
+      const copy = [...prev];
+      copy.splice(last + 1, 0, r);
+      return copy;
+    });
+  };
+
+  const handleRemoveRow = (id: number) => setRows(prev => prev.filter(r => r.id !== id));
+
+  const handleSubmit = async () => {
+    if (!bomName.trim()) { toast.error('BOM 이름을 입력해주세요.'); return; }
+    if (!templateId) return;
+    const validRows = rows.filter(r => r.materialId);
+    if (validRows.length === 0) { toast.error('자재를 하나 이상 선택해주세요.'); return; }
+
+    try {
+      await updateBomTemplate(templateId, {
+        name: bomName.trim(),
+        description: '',
+        usdRate: usd || null,
+        jpyRate: jpy || null,
+        eurRate: eur || null,
+        rows: validRows.map(r => ({
+          classification: r.classification,
+          materialId: r.materialId!,
+          yieldRate: Number(r.yieldRate) || null,
+          currency: r.currency,
+          purchasePrice: Number(r.purchasePrice) || null,
+          tariff: Number(r.tariff) || null,
+          etc: Number(r.etc) || null,
+          netQty: Number(r.netQty) || null,
+        })),
+      });
+      toast.success('BOM이 수정되었습니다.');
+      navigate(-1);
+    } catch (err: any) {
+      const msg = err.response?.data?.message || '수정 중 오류가 발생했습니다.';
+      toast.error(msg);
+    }
+  };
+
+  const grouped = CLASSIFICATIONS.map(cls => ({ cls, group: rows.filter(r => r.classification === cls) }));
+
+  if (loading) return (
+    <div className={styles.container}>
+      <button className={styles.backBtn} onClick={() => navigate(-1)}>← 목록으로</button>
+      <p style={{ marginTop: 16 }}>불러오는 중...</p>
+    </div>
+  );
+
+  return (
+    <div className={styles.container}>
+      <button className={styles.backBtn} onClick={() => navigate(-1)}>← 목록으로</button>
+      <h2 className={styles.title}>셀당 소요량 수정</h2>
+
+      <div className={styles.nameRow}>
+        <label className={styles.nameLabel}>BOM 이름</label>
+        <input
+          className={styles.nameInput}
+          type='text'
+          placeholder='예) A BOM, B BOM'
+          value={bomName}
+          onChange={e => setBomName(e.target.value)}
+        />
+      </div>
+
+      <div className={styles.ratesRow}>
+        <div className={`${styles.rateBox} ${styles.rateUsd}`}>
+          <label>USD</label>
+          <input type='number' value={usdRate} onChange={e => setUsdRate(e.target.value === '' ? '' : Number(e.target.value))} />
+        </div>
+        <div className={`${styles.rateBox} ${styles.rateJpy}`}>
+          <label>JPY</label>
+          <input type='number' value={jpyRate} onChange={e => setJpyRate(e.target.value === '' ? '' : Number(e.target.value))} />
+        </div>
+        <div className={`${styles.rateBox} ${styles.rateEur}`}>
+          <label>EUR</label>
+          <input type='number' value={eurRate} onChange={e => setEurRate(e.target.value === '' ? '' : Number(e.target.value))} />
+        </div>
+      </div>
+
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <colgroup>
+            <col className={styles.colClass} />
+            <col className={styles.colCat} />
+            <col className={styles.colMat} />
+            <col className={styles.colProduct} />
+            <col className={styles.colMaker} />
+            <col className={styles.colUnit} />
+            <col className={styles.colYield} />
+            <col className={styles.colCurrency} />
+            <col className={styles.colPrice} />
+            <col className={styles.colTariff} />
+            <col className={styles.colEtc} />
+            <col className={styles.colUnitKrw} />
+            <col className={styles.colNetQty} />
+            <col className={styles.colTotalQty} />
+            <col className={styles.colUnitCost} />
+            <col className={styles.colComp} />
+            <col className={styles.colUsdPrice} />
+            <col className={styles.colUsdUnit} />
+            <col className={styles.colMatCost} />
+            <col className={styles.colAction} />
+          </colgroup>
+          <thead>
+            <tr>
+              <th colSpan={6}>원재료</th>
+              <th rowSpan={2}>수율(%)</th>
+              <th colSpan={5}>단가 산출</th>
+              <th colSpan={2}>소요량 산출</th>
+              <th colSpan={2}>가격(₩)</th>
+              <th colSpan={2} className={styles.usdHeader}>USD</th>
+              <th rowSpan={2}>정미재료비(₩)</th>
+              <th rowSpan={2}></th>
+            </tr>
+            <tr>
+              <th>구분</th>
+              <th>분류</th>
+              <th>Material</th>
+              <th>Product</th>
+              <th>제조사</th>
+              <th>단위</th>
+              <th>Current</th>
+              <th>구매가격</th>
+              <th>관세</th>
+              <th title='기타 부대비용 / VAT 별도 시 기입'>기타</th>
+              <th>단가(₩)</th>
+              <th>순소요량</th>
+              <th>총소요량</th>
+              <th>단위가격</th>
+              <th>구성비(%)</th>
+              <th className={styles.usdHeader}>price</th>
+              <th className={styles.usdHeader}>Unit Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {grouped.map(({ cls, group }) => (
+              <>
+                {group.map((row, idx) => {
+                  const unitPriceKrw = calcUnitPriceKrw(row, usd, jpy, eur);
+                  const totalQty     = calcTotalQty(row, totalYield, assyAvgYield);
+                  const unitCost     = unitPriceKrw * totalQty;
+                  const composition  = totalUnitCost ? unitCost / totalUnitCost : 0;
+                  const usdPrice     = usd ? unitPriceKrw / usd : 0;
+                  const usdUnitPrice = usd ? unitCost / usd : 0;
+                  const materialCost = unitPriceKrw * (Number(row.netQty) || 0);
+
+                  return (
+                    <tr key={row.id}>
+                      {idx === 0 && (
+                        <td rowSpan={group.length} className={styles.classCell}>{cls}</td>
+                      )}
+                      <td>
+                        <select value={row.category} onChange={e => handleCategoryChange(row.id, e.target.value)}>
+                          <option value=''>선택</option>
+                          {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </td>
+                      <td>
+                        <select value={row.material} onChange={e => handleMaterialTypeChange(row.id, e.target.value)}>
+                          <option value=''>선택</option>
+                          {[...new Set((materialsMap[row.id] || []).map(m => m.type))].map(t => (
+                            <option key={t} value={t}>{t}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <select value={row.product} onChange={e => handleModelChange(row.id, e.target.value)}>
+                          <option value=''>선택</option>
+                          {[...new Map((materialsMap[row.id] || []).filter(m => m.type === row.material).map(m => [m.name, m])).values()].map(m => (
+                            <option key={m.id} value={m.name}>{m.name}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className={styles.calcCellCenter}>{row.manufacturer}</td>
+                      <td className={styles.calcCellCenter}>{row.unit}</td>
+                      <td>
+                        <input type='number' step='0.001' value={row.yieldRate === '' ? '' : row.yieldRate} onChange={e => handleChange(row.id, 'yieldRate', e.target.value)} />
+                      </td>
+                      <td>
+                        <select value={row.currency} onChange={e => handleChange(row.id, 'currency', e.target.value as BomRow['currency'])}>
+                          {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </td>
+                      <td>
+                        <input type='number' value={row.purchasePrice === '' ? '' : row.purchasePrice} onChange={e => handleChange(row.id, 'purchasePrice', e.target.value)} />
+                      </td>
+                      <td>
+                        <input type='number' step='0.01' value={row.tariff === '' ? '' : row.tariff} onChange={e => handleChange(row.id, 'tariff', e.target.value)} />
+                      </td>
+                      <td>
+                        <input type='number' step='0.01' value={row.etc === '' ? '' : row.etc} onChange={e => handleChange(row.id, 'etc', e.target.value)} />
+                      </td>
+                      <td className={styles.calcCell}>₩{fmt(unitPriceKrw)}</td>
+                      <td>
+                        <input type='number' step='0.0001' value={row.netQty === '' ? '' : row.netQty} onChange={e => handleChange(row.id, 'netQty', e.target.value)} />
+                      </td>
+                      <td className={styles.calcCell}>{totalQty.toFixed(4)}</td>
+                      <td className={styles.calcCell}>₩{fmt(unitCost)}</td>
+                      <td className={styles.calcCell}>{(composition * 100).toFixed(2)}%</td>
+                      <td className={`${styles.calcCell} ${styles.usdCell}`}>${fmt(usdPrice)}</td>
+                      <td className={`${styles.calcCell} ${styles.usdCell}`}>${fmt(usdUnitPrice)}</td>
+                      <td className={styles.calcCell}>₩{fmt(materialCost, 0)}</td>
+                      <td className={styles.actionCell}>
+                        <button className={styles.deleteBtn} onClick={() => handleRemoveRow(row.id)}>－</button>
+                      </td>
+                    </tr>
+                  );
+                })}
+                <tr className={styles.subtotalRow}>
+                  <td colSpan={6} className={styles.subtotalLabel}>소 계</td>
+                  <td>{(groupAvgYield(cls) * 100).toFixed(1)}%</td>
+                  <td colSpan={7}></td>
+                  <td>₩{fmt(groupUnitCostSum(cls))}</td>
+                  <td>{totalUnitCost ? ((groupUnitCostSum(cls) / totalUnitCost) * 100).toFixed(2) : '0.00'}%</td>
+                  <td colSpan={2}>${fmt(usd ? groupUnitCostSum(cls) / usd : 0)}</td>
+                  <td>
+                    ₩{fmt(
+                      rows.filter(r => r.classification === cls)
+                          .reduce((s, r) => s + calcUnitPriceKrw(r, usd, jpy, eur) * (Number(r.netQty) || 0), 0),
+                      0
+                    )}
+                  </td>
+                  <td>
+                    <button className={styles.addBtn} onClick={() => handleAddRow(cls)}>＋</button>
+                  </td>
+                </tr>
+              </>
+            ))}
+            <tr className={styles.totalRow}>
+              <td colSpan={6} className={styles.totalLabel}>TOTAL</td>
+              <td>{(totalYield * 100).toFixed(1)}%</td>
+              <td colSpan={7}></td>
+              <td className={styles.totalUnitCost}>₩{fmt(totalUnitCost)}</td>
+              <td>100.00%</td>
+              <td colSpan={2}>${fmt(usd ? totalUnitCost / usd : 0)}</td>
+              <td>
+                ₩{fmt(
+                  rows.reduce((s, r) => s + calcUnitPriceKrw(r, usd, jpy, eur) * (Number(r.netQty) || 0), 0),
+                  0
+                )}
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div className={styles.saveWrap}>
+        <button className={styles.saveBtn} onClick={handleSubmit}>저장</button>
+      </div>
+    </div>
+  );
+}

@@ -7,6 +7,7 @@ import MaterialNew from './material/MaterialNew';
 import MaterialEdit from './material/MaterialEdit';
 import BomNew from './bom/BomNew';
 import BomView from './bom/BomView';
+import BomEdit from './bom/BomEdit';
 
 export default function SpecPage() {
   return (
@@ -20,6 +21,7 @@ export default function SpecPage() {
         <Route path='material/edit/:id' element={<MaterialEdit />} />
         <Route path='bom/new/:id' element={<BomNew />} />
         <Route path='bom/view/:id' element={<BomView />} />
+        <Route path='bom/edit/:id' element={<BomEdit />} />
       </Routes>
     </div>
   );
