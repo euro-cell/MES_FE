@@ -349,7 +349,7 @@ export default function BomNew() {
               <th colSpan={2}>소요량 산출</th>
               <th colSpan={2}>가격(₩)</th>
               <th colSpan={2} className={styles.usdHeader}>USD</th>
-              <th rowSpan={2}>정미재료비</th>
+              <th rowSpan={2}>정미재료비(₩)</th>
               <th rowSpan={2}></th>
             </tr>
             <tr>
@@ -447,7 +447,7 @@ export default function BomNew() {
                       <td className={styles.calcCell}>{(composition * 100).toFixed(2)}%</td>
                       <td className={styles.calcCell + ' ' + styles.usdCell}>${fmt(usdPrice)}</td>
                       <td className={styles.calcCell + ' ' + styles.usdCell}>${fmt(usdUnitPrice)}</td>
-                      <td className={styles.calcCell}>{fmt(materialCost, 0)}</td>
+                      <td className={styles.calcCell}>₩{fmt(materialCost, 0)}</td>
                       <td className={styles.actionCell}>
                         {INITIAL_FIRST_IDS.has(row.id) ? (
                           <button className={styles.addBtn} onClick={() => handleAddRow(cls)}>＋</button>
@@ -466,7 +466,7 @@ export default function BomNew() {
                   <td>{totalUnitCost ? ((groupUnitCostSum(cls) / totalUnitCost) * 100).toFixed(2) : '0.00'}%</td>
                   <td colSpan={2}>${fmt(usd ? groupUnitCostSum(cls) / usd : 0)}</td>
                   <td>
-                    {fmt(
+                    ₩{fmt(
                       rows.filter(r => r.classification === cls)
                           .reduce((s, r) => s + calcUnitPriceKrw(r, usd, jpy, eur) * (Number(r.netQty) || 0), 0),
                       0
@@ -484,7 +484,7 @@ export default function BomNew() {
               <td>100.00%</td>
               <td colSpan={2}>${fmt(usd ? totalUnitCost / usd : 0)}</td>
               <td>
-                {fmt(
+                ₩{fmt(
                   rows.reduce((s, r) => s + calcUnitPriceKrw(r, usd, jpy, eur) * (Number(r.netQty) || 0), 0),
                   0
                 )}
