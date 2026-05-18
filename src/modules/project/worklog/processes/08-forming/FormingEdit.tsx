@@ -94,59 +94,16 @@ export default function FormingEdit() {
 
   useEffect(() => {
     const loadWorklog = async () => {
-      if (!projectId || !worklogId) return;
+      if (!projectId || !worklogId || Object.keys(namedRanges).length === 0) return;
 
       try {
         const data = await getFormingWorklog(Number(projectId), Number(worklogId));
         setWorklog(data);
 
-        const values: Record<string, any> = {
-          workDate: data.workDate,
-          round: data.round,
-
-          // A. 자재 투입 정보
-          pouchLot: data.pouchLot ?? '',
-          pouchManufacturer: data.pouchManufacturer ?? '',
-          pouchSpec: data.pouchSpec ?? '',
-          pouchUsage: data.pouchUsage ?? '',
-
-          // B. 생산 정보 - 컷팅
-          cuttingWorkQuantity: data.cuttingWorkQuantity ?? '',
-          cuttingGoodQuantity: data.cuttingGoodQuantity ?? '',
-          cuttingDefectQuantity: data.cuttingDefectQuantity ?? '',
-          cuttingDiscardQuantity: data.cuttingDiscardQuantity ?? '',
-          cuttingDefectRate: data.cuttingDefectRate ?? '',
-
-          // B. 생산 정보 - 포밍
-          formingWorkQuantity: data.formingWorkQuantity ?? '',
-          formingGoodQuantity: data.formingGoodQuantity ?? '',
-          formingDefectQuantity: data.formingDefectQuantity ?? '',
-          formingDiscardQuantity: data.formingDiscardQuantity ?? '',
-          formingDefectRate: data.formingDefectRate ?? '',
-
-          // B. 생산 정보 - 폴딩
-          foldingWorkQuantity: data.foldingWorkQuantity ?? '',
-          foldingGoodQuantity: data.foldingGoodQuantity ?? '',
-          foldingDefectQuantity: data.foldingDefectQuantity ?? '',
-          foldingDiscardQuantity: data.foldingDiscardQuantity ?? '',
-          foldingDefectRate: data.foldingDefectRate ?? '',
-
-          // B. 생산 정보 - 탑컷팅
-          topCuttingWorkQuantity: data.topCuttingWorkQuantity ?? '',
-          topCuttingGoodQuantity: data.topCuttingGoodQuantity ?? '',
-          topCuttingDefectQuantity: data.topCuttingDefectQuantity ?? '',
-          topCuttingDiscardQuantity: data.topCuttingDiscardQuantity ?? '',
-          topCuttingDefectRate: data.topCuttingDefectRate ?? '',
-
-          // C. 공정 조건
-          cuttingLength: data.cuttingLength ?? '',
-          cuttingChecklist: data.cuttingChecklist ?? '',
-          formingDepth: data.formingDepth ?? '',
-          formingStopperHeight: data.formingStopperHeight ?? '',
-          formingChecklist: data.formingChecklist ?? '',
-          topCuttingLength: data.topCuttingLength ?? '',
-          topCuttingChecklist: data.topCuttingChecklist ?? '',
-        };
+        const values: Record<string, any> = {};
+        Object.keys(namedRanges).forEach(rangeName => {
+          values[rangeName] = (data as any)[rangeName] ?? '';
+        });
 
         setFormValues(values);
       } catch (err: any) {
@@ -158,7 +115,7 @@ export default function FormingEdit() {
     };
 
     loadWorklog();
-  }, [projectId, worklogId]);
+  }, [projectId, worklogId, namedRanges]);
 
   // 양품 수량 및 불량률 자동계산 헬퍼 함수
   const calculateAutoFields = (

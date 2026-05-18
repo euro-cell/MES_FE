@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { useExcelTemplate } from '../../shared/useExcelTemplate';
-import { extractNamedRanges } from '../../shared/excelUtils';
+import { useNamedRanges } from '../../shared/useNamedRanges';
 import { getFormingWorklog } from '../../../../../api/project/worklog';
 import type { FormingWorklog } from './FormingTypes';
 import styles from '../../../../../styles/project/worklog/common.module.css';
@@ -13,73 +13,23 @@ export default function FormingView() {
   const navigate = useNavigate();
 
   const { workbook, loading: templateLoading, error: templateError } = useExcelTemplate('Forming');
+  const { namedRanges } = useNamedRanges(workbook);
   const [worklog, setWorklog] = useState<FormingWorklog | null>(null);
   const [cellValues, setCellValues] = useState<Record<string, any>>({});
-  const [namedRanges, setNamedRanges] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (workbook) {
-      const ranges = extractNamedRanges(workbook);
-      setNamedRanges(ranges);
-    }
-  }, [workbook]);
-
-  useEffect(() => {
     const loadWorklog = async () => {
-      if (!projectId || !worklogId) return;
+      if (!projectId || !worklogId || Object.keys(namedRanges).length === 0) return;
 
       try {
         const data = await getFormingWorklog(Number(projectId), Number(worklogId));
         setWorklog(data);
 
-        const values: Record<string, any> = {
-          workDate: data.workDate,
-          round: data.round,
-
-          // A. 자재 투입 정보
-          pouchLot: data.pouchLot,
-          pouchManufacturer: data.pouchManufacturer,
-          pouchSpec: data.pouchSpec,
-          pouchUsage: data.pouchUsage,
-
-          // B. 생산 정보 - 컷팅
-          cuttingWorkQuantity: data.cuttingWorkQuantity,
-          cuttingGoodQuantity: data.cuttingGoodQuantity,
-          cuttingDefectQuantity: data.cuttingDefectQuantity,
-          cuttingDiscardQuantity: data.cuttingDiscardQuantity,
-          cuttingDefectRate: data.cuttingDefectRate,
-
-          // B. 생산 정보 - 포밍
-          formingWorkQuantity: data.formingWorkQuantity,
-          formingGoodQuantity: data.formingGoodQuantity,
-          formingDefectQuantity: data.formingDefectQuantity,
-          formingDiscardQuantity: data.formingDiscardQuantity,
-          formingDefectRate: data.formingDefectRate,
-
-          // B. 생산 정보 - 폴딩
-          foldingWorkQuantity: data.foldingWorkQuantity,
-          foldingGoodQuantity: data.foldingGoodQuantity,
-          foldingDefectQuantity: data.foldingDefectQuantity,
-          foldingDiscardQuantity: data.foldingDiscardQuantity,
-          foldingDefectRate: data.foldingDefectRate,
-
-          // B. 생산 정보 - 탑컷팅
-          topCuttingWorkQuantity: data.topCuttingWorkQuantity,
-          topCuttingGoodQuantity: data.topCuttingGoodQuantity,
-          topCuttingDefectQuantity: data.topCuttingDefectQuantity,
-          topCuttingDiscardQuantity: data.topCuttingDiscardQuantity,
-          topCuttingDefectRate: data.topCuttingDefectRate,
-
-          // C. 공정 조건
-          cuttingLength: data.cuttingLength,
-          cuttingChecklist: data.cuttingChecklist,
-          formingDepth: data.formingDepth,
-          formingStopperHeight: data.formingStopperHeight,
-          formingChecklist: data.formingChecklist,
-          topCuttingLength: data.topCuttingLength,
-          topCuttingChecklist: data.topCuttingChecklist,
-        };
+        const values: Record<string, any> = {};
+        Object.keys(namedRanges).forEach(rangeName => {
+          values[rangeName] = (data as any)[rangeName] ?? '';
+        });
 
         setCellValues(values);
       } catch (err: any) {
@@ -91,7 +41,7 @@ export default function FormingView() {
     };
 
     loadWorklog();
-  }, [projectId, worklogId]);
+  }, [projectId, worklogId, namedRanges]);
 
   const handleBack = () => {
     navigate(`/project/log/${projectId}?category=Assembly&process=Forming`);
