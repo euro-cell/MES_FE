@@ -9,6 +9,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import Annotation from 'chartjs-plugin-annotation';
 import styles from '../../../../../styles/quality/lqc/LQCTable.module.css';
 import SpecEditModal from '../common/SpecEditModal';
 import {
@@ -20,7 +21,7 @@ import {
 } from '../../../../../api/quality/LQCService';
 
 // Chart.js 등록
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, Annotation);
 
 interface CoatingAnodeTableProps {
   projectId: number;
@@ -266,6 +267,50 @@ export default function CoatingAnodeTable({ projectId }: CoatingAnodeTableProps)
     ],
   };
 
+  const doubleSideSpec = coatingSpecs.doubleSideDensity;
+  const singleSideSpec = coatingSpecs.singleSideDensity;
+
+  const calcTickStep = (tolerance: number | undefined) => {
+    if (!tolerance) return undefined;
+    if (tolerance <= 0.1) return 0.02;
+    if (tolerance <= 0.3) return 0.05;
+    if (tolerance <= 1) return 0.1;
+    if (tolerance <= 3) return 0.5;
+    return 1;
+  };
+
+  const makeSpecAnnotations = (spec: { target?: number; tolerance?: number } | undefined) => {
+    if (spec?.target === undefined || spec?.tolerance === undefined) return {};
+    const usl = spec.target + spec.tolerance;
+    const lsl = spec.target - spec.tolerance;
+    return {
+      annotations: {
+        uslLine: {
+          type: 'line' as const,
+          xMin: usl,
+          xMax: usl,
+          borderColor: '#dc2626',
+          borderWidth: 2,
+        },
+        lslLine: {
+          type: 'line' as const,
+          xMin: lsl,
+          xMax: lsl,
+          borderColor: '#dc2626',
+          borderWidth: 2,
+        },
+        targetLine: {
+          type: 'line' as const,
+          xMin: spec.target,
+          xMax: spec.target,
+          borderColor: '#16a34a',
+          borderWidth: 2,
+          borderDash: [4, 4],
+        },
+      },
+    };
+  };
+
   // 양면 차트 옵션
   const doubleSideChartOptions = {
     indexAxis: 'y' as const,
@@ -277,6 +322,7 @@ export default function CoatingAnodeTable({ projectId }: CoatingAnodeTableProps)
         display: true,
         text: '음극 코팅 결과 (양면)',
       },
+      annotation: makeSpecAnnotations(doubleSideSpec),
     },
     scales: {
       x: {
@@ -285,6 +331,10 @@ export default function CoatingAnodeTable({ projectId }: CoatingAnodeTableProps)
         title: {
           display: true,
           text: 'Loading(mg/cm²)',
+        },
+        ticks: {
+          stepSize: calcTickStep(doubleSideSpec?.tolerance),
+          callback: (value: number | string) => Number(value).toFixed(2),
         },
       },
     },
@@ -301,6 +351,7 @@ export default function CoatingAnodeTable({ projectId }: CoatingAnodeTableProps)
         display: true,
         text: '음극 코팅 결과 (단면)',
       },
+      annotation: makeSpecAnnotations(singleSideSpec),
     },
     scales: {
       x: {
@@ -309,6 +360,10 @@ export default function CoatingAnodeTable({ projectId }: CoatingAnodeTableProps)
         title: {
           display: true,
           text: 'Loading(mg/cm²)',
+        },
+        ticks: {
+          stepSize: calcTickStep(singleSideSpec?.tolerance),
+          callback: (value: number | string) => Number(value).toFixed(2),
         },
       },
     },
