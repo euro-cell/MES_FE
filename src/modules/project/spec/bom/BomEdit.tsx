@@ -458,6 +458,7 @@ export default function BomEdit() {
       </div>
 
       <div className={styles.saveWrap}>
+        <button className={styles.cancelBtn} onClick={() => navigate(-1)}>돌아가기</button>
         <button className={styles.saveBtn} onClick={handleSubmit}>저장</button>
       </div>
     </div>

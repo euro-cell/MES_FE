@@ -212,8 +212,20 @@
 .saveWrap {
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
   margin-top: 20px;
 }
+
+.cancelBtn {
+  background: #fff;
+  color: #555;
+  border: 1px solid #ccc;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.cancelBtn:hover { background: #f0f0f0; }
 
 .saveBtn {
   background: #1a73e8;
