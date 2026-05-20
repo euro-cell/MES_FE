@@ -107,12 +107,12 @@ export default function SlurryEdit() {
       solidContent2Percentage: '= (고형분2 Dry중량 - 고형분2 Dish중량) / (고형분2 Slurry중량 - 고형분2 Dish중량) × 100',
       solidContent3Percentage: '= (고형분3 Dry중량 - 고형분3 Dish중량) / (고형분3 Slurry중량 - 고형분3 Dish중량) × 100',
       // PD Mixer 1 자동계산
-      pdMixer1Input1: '= 바인더 투입량설계 × 투입율1',
-      pdMixer1Input2: '= 도전재1 투입량설계 × 투입율2',
-      pdMixer1Input3: '= 도전재2 투입량설계 × 투입율3',
-      pdMixer1Input4: '= 활물질1 투입량설계 × 투입율4',
-      pdMixer1Input5: '= 활물질2 투입량설계 × 투입율5',
-      pdMixer1Input6: '= 용매 추가량설계 × 투입율6',
+      pdMixer1Input1: '= 바인더 투입량설계 × 투입율1(%) / 100',
+      pdMixer1Input2: '= 도전재1 투입량설계 × 투입율2(%) / 100',
+      pdMixer1Input3: '= 도전재2 투입량설계 × 투입율3(%) / 100',
+      pdMixer1Input4: '= 활물질1 투입량설계 × 투입율4(%) / 100',
+      pdMixer1Input5: '= 활물질2 투입량설계 × 투입율5(%) / 100',
+      pdMixer1Input6: '= 용매 추가량설계 × 투입율6(%) / 100',
       pdMixer1SolidContent1: '= SUM(투입량1 × Binder Solution) / SUM(투입량1)',
       pdMixer1SolidContent2: '= (투입량1 × Binder Solution + 투입량2) / (투입량1 + 투입량2)',
       pdMixer1SolidContent3: '= (투입량1 × Binder Solution + 투입량2 + 투입량3) / (투입량1~3)',
@@ -120,7 +120,7 @@ export default function SlurryEdit() {
       pdMixer1SolidContent5: '= (투입량1 × Binder Solution + 투입량2~5) / (투입량1~5)',
       pdMixer1SolidContent6: '= (투입량1 × Binder Solution + 투입량2~5) / (투입량1~6)',
       // PD Mixer 2 자동계산
-      pdMixer2Input1: '= 용매 추가량설계 × PD Mixer 2 투입율1',
+      pdMixer2Input1: '= 용매 추가량설계 × PD Mixer 2 투입율1(%) / 100',
       pdMixer2SolidContent1: '= (PD1투입량1 × Binder Solution + PD1투입량2~5) / (PD1투입량1~6 + PD2투입량1)',
       // 용매 자동계산
       solventTotalPlannedInput: '= 원료1 투입량설계 / 원료1 조성(%) / Solid Content - 원료1 투입량설계 / 원료1 조성(%)',
@@ -599,7 +599,7 @@ export default function SlurryEdit() {
         const binderPlannedInput = parseFloat(newValues[`material${binderRow}PlannedInput`]);
         const inputRate1 = parseFloat(newValues.pdMixer1InputRate1);
         if (!isNaN(binderPlannedInput) && !isNaN(inputRate1)) {
-          newValues.pdMixer1Input1 = Number((binderPlannedInput * inputRate1).toFixed(3));
+          newValues.pdMixer1Input1 = Number((binderPlannedInput * inputRate1 / 100).toFixed(3));
         }
       }
 
@@ -614,7 +614,7 @@ export default function SlurryEdit() {
         const conductor1PlannedInput = parseFloat(newValues[`material${conductor1Row}PlannedInput`]);
         const inputRate2 = parseFloat(newValues.pdMixer1InputRate2);
         if (!isNaN(conductor1PlannedInput) && !isNaN(inputRate2)) {
-          newValues.pdMixer1Input2 = Number((conductor1PlannedInput * inputRate2).toFixed(3));
+          newValues.pdMixer1Input2 = Number((conductor1PlannedInput * inputRate2 / 100).toFixed(3));
         }
       }
 
@@ -629,7 +629,7 @@ export default function SlurryEdit() {
         const conductor2PlannedInput = parseFloat(newValues[`material${conductor2Row}PlannedInput`]);
         const inputRate3 = parseFloat(newValues.pdMixer1InputRate3);
         if (!isNaN(conductor2PlannedInput) && !isNaN(inputRate3)) {
-          newValues.pdMixer1Input3 = Number((conductor2PlannedInput * inputRate3).toFixed(3));
+          newValues.pdMixer1Input3 = Number((conductor2PlannedInput * inputRate3 / 100).toFixed(3));
         }
       }
 
@@ -642,7 +642,7 @@ export default function SlurryEdit() {
         const electrode1PlannedInput = parseFloat(newValues[`material${electrode1Row}PlannedInput`]);
         const inputRate4 = parseFloat(newValues.pdMixer1InputRate4);
         if (!isNaN(electrode1PlannedInput) && !isNaN(inputRate4)) {
-          newValues.pdMixer1Input4 = Number((electrode1PlannedInput * inputRate4).toFixed(3));
+          newValues.pdMixer1Input4 = Number((electrode1PlannedInput * inputRate4 / 100).toFixed(3));
         }
       }
 
@@ -655,7 +655,7 @@ export default function SlurryEdit() {
         const electrode2PlannedInput = parseFloat(newValues[`material${electrode2Row}PlannedInput`]);
         const inputRate5 = parseFloat(newValues.pdMixer1InputRate5);
         if (!isNaN(electrode2PlannedInput) && !isNaN(inputRate5)) {
-          newValues.pdMixer1Input5 = Number((electrode2PlannedInput * inputRate5).toFixed(3));
+          newValues.pdMixer1Input5 = Number((electrode2PlannedInput * inputRate5 / 100).toFixed(3));
         }
       }
 
@@ -673,7 +673,7 @@ export default function SlurryEdit() {
         const solventAddPlanned = parseFloat(newValues.solventAddPlannedInput);
         const inputRate6 = parseFloat(newValues.pdMixer1InputRate6);
         if (!isNaN(solventAddPlanned) && !isNaN(inputRate6)) {
-          newValues.pdMixer1Input6 = Number((solventAddPlanned * inputRate6).toFixed(3));
+          newValues.pdMixer1Input6 = Number((solventAddPlanned * inputRate6 / 100).toFixed(3));
         }
       }
 
@@ -747,7 +747,7 @@ export default function SlurryEdit() {
         const solventAddPlanned = parseFloat(newValues.solventAddPlannedInput);
         const pdMixer2InputRate1 = parseFloat(newValues.pdMixer2InputRate1);
         if (!isNaN(solventAddPlanned) && !isNaN(pdMixer2InputRate1)) {
-          newValues.pdMixer2Input1 = Number((solventAddPlanned * pdMixer2InputRate1).toFixed(3));
+          newValues.pdMixer2Input1 = Number((solventAddPlanned * pdMixer2InputRate1 / 100).toFixed(3));
         }
 
         // pdMixer2SolidContent1: = (input1 * binderSolution + input2~5) / (pdMixer1Input1~6 + pdMixer2Input1)
