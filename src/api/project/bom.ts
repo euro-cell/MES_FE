@@ -89,3 +89,13 @@ export async function getProjectBom(projectId: number): Promise<BomTemplateDetai
   const res = await axios.get(`${API_BASE}/project/bom/${projectId}`, { withCredentials: true });
   return res.data;
 }
+
+/** 프로젝트-BOM 연결 해제 */
+export async function unlinkBomTemplate(projectId: number): Promise<void> {
+  await axios.delete(`${API_BASE}/project/bom/${projectId}/link`, { withCredentials: true });
+}
+
+/** BOM 템플릿 완전 삭제 */
+export async function deleteBomTemplate(templateId: number): Promise<void> {
+  await axios.delete(`${API_BASE}/project/bom/templates/${templateId}`, { withCredentials: true });
+}

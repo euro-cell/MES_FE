@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { deleteSpecification, getSpecificationSummary, deleteProjectMaterial } from '../../../api/project/spec';
+import { unlinkBomTemplate, deleteBomTemplate, getProjectBom } from '../../../api/project/bom';
 import TooltipButton from '../../../components/TooltipButton';
+import DeleteBomModal from './bom/DeleteBomModal';
 import styles from '../../../styles/project/spec/specList.module.css';
 
 interface SpecItem {
@@ -15,6 +17,7 @@ interface SpecItem {
 export default function SpecList() {
   const [list, setList] = useState<SpecItem[]>([]);
   const [fetchError, setFetchError] = useState(false);
+  const [bomDeleteTarget, setBomDeleteTarget] = useState<{ id: number; name: string } | null>(null);
   const navigate = useNavigate();
 
   const loadData = async () => {
@@ -46,14 +49,23 @@ export default function SpecList() {
     }
   };
 
-  const handleBomDelete = async (_projectId: number, projectName: string) => {
-    if (!confirm(`🗑 ${projectName} 셀당 소요량 정보를 삭제하시겠습니까?`)) return;
+  const handleBomDelete = (projectId: number, projectName: string) => {
+    setBomDeleteTarget({ id: projectId, name: projectName });
+  };
 
+  const handleBomDeleteConfirm = async (deleteTemplate: boolean) => {
+    if (!bomDeleteTarget) return;
     try {
-      // TODO: deleteBom API 연동 필요
-      alert('준비 중입니다.');
+      if (deleteTemplate) {
+        const bom = await getProjectBom(bomDeleteTarget.id);
+        await deleteBomTemplate(bom.id);
+      } else {
+        await unlinkBomTemplate(bomDeleteTarget.id);
+      }
+      setBomDeleteTarget(null);
+      loadData();
     } catch (err: any) {
-      console.error('❌ 셀당 소요량 삭제 실패:', err);
+      console.error('셀당 소요량 삭제 실패:', err);
       alert('삭제 중 오류가 발생했습니다.');
     }
   };
@@ -84,6 +96,12 @@ export default function SpecList() {
 
   return (
     <div className={styles.specListContainer}>
+      <DeleteBomModal
+        show={!!bomDeleteTarget}
+        projectName={bomDeleteTarget?.name ?? ''}
+        onConfirm={handleBomDeleteConfirm}
+        onClose={() => setBomDeleteTarget(null)}
+      />
       <div className={styles.tableWrapper}>
         <table className={styles.specTable}>
           <thead>
