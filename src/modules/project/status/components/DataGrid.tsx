@@ -373,11 +373,88 @@ export default function DataGrid({ data, year, month, onTargetChange }: DataGrid
     }, 0);
   };
 
+  // target이 있는 공정만 output/target 합산하여 진행률 계산
+  const calculateProgressOnlyOutput = (): number => {
+    return processesToRender.reduce((sum, [key, processData]) => {
+      if (!processData) return sum;
+      if (isVDProcess(key) && isVDProcessData(processData)) {
+        const vd = processData as VDProcessData;
+        let s = sum;
+        if (vd.total.cathode.targetQuantity) s += vd.total.cathode.totalOutput;
+        if (vd.total.anode.targetQuantity) s += vd.total.anode.totalOutput;
+        return s;
+      }
+      if (isFormingProcess(key) && isFormingProcessData(processData)) {
+        const forming = processData as FormingProcessData;
+        return (processData as FormingProcessData).targetQuantity
+          ? sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0)
+          : sum;
+      }
+      if (isStackingProcess(key) && isStackingProcessData(processData)) {
+        const pd = processData as StackingProcessData;
+        return pd.total.targetQuantity ? sum + pd.total.totalOutput : sum;
+      }
+      if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
+        const pd = processData as WeldingProcessData;
+        return pd.total.targetQuantity ? sum + pd.total.totalOutput : sum;
+      }
+      if (isSealingProcess(key) && isSealingProcessData(processData)) {
+        const pd = processData as SealingProcessData;
+        return pd.total.targetQuantity ? sum + pd.total.totalOutput : sum;
+      }
+      if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
+        const pd = processData as VisualInspectionProcessData;
+        return pd.total.targetQuantity ? sum + pd.total.totalOutput : sum;
+      }
+      const pd = processData as ProcessData;
+      return pd.total.targetQuantity ? sum + (pd.total.totalOutput || 0) : sum;
+    }, 0);
+  };
+
+  // NG 데이터가 있는 공정만 output/ng 합산하여 수율 계산
+  const calculateYieldOnlyOutput = (): number => {
+    return processesToRender.reduce((sum, [key, processData]) => {
+      if (!processData) return sum;
+      if (isVDProcess(key) && isVDProcessData(processData)) {
+        const vd = processData as VDProcessData;
+        let s = sum;
+        if (vd.total.cathode.totalNg) s += vd.total.cathode.totalOutput;
+        if (vd.total.anode.totalNg) s += vd.total.anode.totalOutput;
+        return s;
+      }
+      if (isFormingProcess(key) && isFormingProcessData(processData)) {
+        const forming = processData as FormingProcessData;
+        const hasNg = FORMING_SUBTYPES.some(subType => forming[subType].total.totalNg);
+        return hasNg ? sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0) : sum;
+      }
+      if (isStackingProcess(key) && isStackingProcessData(processData)) {
+        const pd = processData as StackingProcessData;
+        return pd.total.totalNg ? sum + pd.total.totalOutput : sum;
+      }
+      if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
+        const pd = processData as WeldingProcessData;
+        return pd.total.totalNg ? sum + pd.total.totalOutput : sum;
+      }
+      if (isSealingProcess(key) && isSealingProcessData(processData)) {
+        const pd = processData as SealingProcessData;
+        return pd.total.totalNg ? sum + pd.total.totalOutput : sum;
+      }
+      if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
+        const pd = processData as VisualInspectionProcessData;
+        return pd.total.totalNg ? sum + pd.total.totalOutput : sum;
+      }
+      const pd = processData as ProcessData;
+      return pd.total.totalNg ? sum + (pd.total.totalOutput || 0) : sum;
+    }, 0);
+  };
+
   const totalOutput = calculateTotalOutput();
   const totalNG = calculateTotalNG();
   const totalTarget = calculateTotalTarget();
-  const overallYield = totalOutput > 0 ? ((totalOutput - totalNG) / totalOutput) * 100 : 0;
-  const overallProgress = totalTarget > 0 ? (totalOutput / totalTarget) * 100 : 0;
+  const progressOnlyOutput = calculateProgressOnlyOutput();
+  const yieldOnlyOutput = calculateYieldOnlyOutput();
+  const overallYield = yieldOnlyOutput > 0 ? ((yieldOnlyOutput - totalNG) / yieldOnlyOutput) * 100 : 0;
+  const overallProgress = totalTarget > 0 ? (progressOnlyOutput / totalTarget) * 100 : 0;
 
   return (
     <div className={styles.gridContainer}>
