@@ -448,7 +448,6 @@ export default function DataGrid({ data, year, month, onTargetChange }: DataGrid
     }, 0);
   };
 
-  const totalOutput = calculateTotalOutput();
   const totalNG = calculateTotalNG();
   const totalTarget = calculateTotalTarget();
   const progressOnlyOutput = calculateProgressOnlyOutput();
