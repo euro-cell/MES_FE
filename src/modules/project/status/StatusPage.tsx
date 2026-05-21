@@ -12,6 +12,7 @@ import {
 import { exportStatusToExcel } from './exportStatusExcel';
 import { parseMonthParam } from './utils/dateUtils';
 import type { MonthlyStatusData, ProductionStatusInfo } from './StatusTypes';
+import { getErrorMessage } from '../../../api/errorHandler';
 import styles from '../../../styles/project/status/StatusPage.module.css';
 
 // 공정 이름 매핑
@@ -202,7 +203,7 @@ export default function StatusPage() {
       // 데이터 새로고침
       await refreshRealData();
     } catch (error) {
-      alert('목표수량 변경에 실패했습니다.');
+      alert(getErrorMessage(error, '목표수량 변경에 실패했습니다.'));
     }
   };
 
@@ -225,7 +226,7 @@ export default function StatusPage() {
       });
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);
-      alert('엑셀 다운로드에 실패했습니다.');
+      alert(getErrorMessage(error, '엑셀 다운로드에 실패했습니다.'));
     } finally {
       setExcelDownloading(false);
     }

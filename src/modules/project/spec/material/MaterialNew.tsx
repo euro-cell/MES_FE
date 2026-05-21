@@ -4,6 +4,7 @@ import styles from '../../../../styles/project/spec/materialNew.module.css';
 import { initialIds, initialRows } from './MaterialInitialRows';
 import { getMaterialCategories, getMaterialsByCategory } from '../../../../api/material';
 import { postMaterialRequirements, getSpecificationSummary } from '../../../../api/project/spec';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 export interface Row {
   id: number;
@@ -165,9 +166,9 @@ export default function MaterialNew() {
       await postMaterialRequirements(projectId!, payload);
       alert('✅ 자재 소요량이 등록되었습니다.');
       navigate(-1);
-    } catch (err: any) {
+    } catch (err) {
       console.error('❌ 자재 등록 실패:', err);
-      alert('등록 중 오류가 발생했습니다.');
+      alert(getErrorMessage(err, '등록 중 오류가 발생했습니다.'));
     }
   };
 

@@ -3,6 +3,7 @@ import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import type { IQCItem, IQCResult, IQCCoaRef } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
 import { uploadIQCImages, deleteIQCImage } from '../../../../api/quality/IQCService';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 interface CathodeMaterial2TableProps {
   data?: IQCItem;
@@ -233,8 +234,8 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
         ...prev,
         images: [...(prev.images ?? []).filter((im) => im.imageType !== imageType), ...uploaded],
       }));
-    } catch {
-      alert('이미지 업로드에 실패했습니다.');
+    } catch (err) {
+      alert(getErrorMessage(err, '이미지 업로드에 실패했습니다.'));
     } finally {
       setUploadingType(null);
     }
@@ -248,8 +249,8 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
         ...prev,
         images: (prev.images ?? []).filter((im) => im.id !== imageId),
       }));
-    } catch {
-      alert('이미지 삭제에 실패했습니다.');
+    } catch (err) {
+      alert(getErrorMessage(err, '이미지 삭제에 실패했습니다.'));
     }
   };
 

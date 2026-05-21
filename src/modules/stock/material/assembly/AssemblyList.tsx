@@ -13,6 +13,7 @@ import DeleteAssemblyModal from './DeleteAssemblyModal';
 import UploadMaterialModal, { type MaterialUploadData } from '../shared/UploadMaterialModal';
 import CoAModal from '../shared/CoAModal';
 import MaterialTable from '../shared/MaterialTable';
+import { getErrorMessage } from '../../../../api/errorHandler';
 import styles from '../../../../styles/stock/material/assembly.module.css';
 
 const INITIAL_FORM_DATA: Omit<AssemblyMaterial, 'id'> = {
@@ -187,7 +188,7 @@ export default function AssemblyList() {
       await downloadAssemblyExcel();
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);
-      alert('엑셀 다운로드에 실패했습니다.');
+      alert(getErrorMessage(error, '엑셀 다운로드에 실패했습니다.'));
     }
   };
 

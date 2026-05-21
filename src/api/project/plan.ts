@@ -1,4 +1,5 @@
 import axios from '../axiosInstance';
+import { getErrorMessage } from '../errorHandler';
 import type { PlanProject, PlanPayload } from '../../modules/project/plan/PlanTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -53,8 +54,8 @@ export const deleteProjectPlan = async (projectId: number): Promise<void> => {
       withCredentials: true,
     });
     alert('✅ 생산 계획이 삭제되었습니다.');
-  } catch (err: any) {
+  } catch (err) {
     console.error('❌ 생산계획 삭제 실패:', err);
-    alert('❌ 생산 계획 삭제 중 오류가 발생했습니다.');
+    alert(getErrorMessage(err, '❌ 생산 계획 삭제 중 오류가 발생했습니다.'));
   }
 };

@@ -3,6 +3,7 @@ import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import type { IQCItem, IQCResult, IQCCoaRef } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
 import { uploadIQCImages, deleteIQCImage } from '../../../../api/quality/IQCService';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 const IMAGE_TYPES = ['모식도면'];
 
@@ -196,8 +197,8 @@ const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
           ...uploaded,
         ],
       }));
-    } catch {
-      alert('이미지 업로드에 실패했습니다.');
+    } catch (err) {
+      alert(getErrorMessage(err, '이미지 업로드에 실패했습니다.'));
     } finally {
       setUploadingType(null);
     }
@@ -207,8 +208,8 @@ const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
     try {
       await deleteIQCImage(imageId);
       setEditData((prev) => ({ ...prev, images: (prev.images ?? []).filter((im) => im.id !== imageId) }));
-    } catch {
-      alert('이미지 삭제에 실패했습니다.');
+    } catch (err) {
+      alert(getErrorMessage(err, '이미지 삭제에 실패했습니다.'));
     }
   };
 

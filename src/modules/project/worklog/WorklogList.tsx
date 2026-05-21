@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getErrorMessage } from '../../../api/errorHandler';
 import styles from '../../../styles/project/worklog/WorklogList.module.css';
 import TooltipButton from '../../../components/TooltipButton';
 import type { WorklogEntry } from './WorklogTypes';
@@ -286,7 +287,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
       loadWorklogs(); // 목록 새로고침
     } catch (err) {
       console.error('삭제 실패:', err);
-      alert('삭제 실패: ' + err);
+      alert(getErrorMessage(err, '삭제에 실패했습니다.'));
     }
   };
 
@@ -348,7 +349,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
       setIsModalOpen(false);
     } catch (err) {
       console.error('다운로드 실패:', err);
-      alert('다운로드 실패: ' + err);
+      alert(getErrorMessage(err, '다운로드에 실패했습니다.'));
     } finally {
       setDownloading(false);
     }

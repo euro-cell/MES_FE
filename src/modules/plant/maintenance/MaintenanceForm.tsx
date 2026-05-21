@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from '../../../styles/plant/Equipment.module.css';
 import { createMaintenanceRecord, updateMaintenanceRecord } from '../../../api/plant/MaintenanceService';
+import { getErrorMessage } from '../../../api/errorHandler';
 import { getEquipments } from '../../../api/plant/EquipmentService';
 import type { MaintenanceRecord, MaintenancePayload } from './MaintenanceTypes';
 import type { Equipment } from '../register/EquipmentTypes';
@@ -66,7 +67,7 @@ export default function MaintenanceForm() {
       navigate(-1);
     } catch (error) {
       console.error('저장 실패:', error);
-      alert('저장에 실패했습니다.');
+      alert(getErrorMessage(error, '저장에 실패했습니다.'));
     }
   };
 

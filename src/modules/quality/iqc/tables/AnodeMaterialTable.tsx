@@ -3,6 +3,7 @@ import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import type { IQCItem, IQCResult, IQCCoaRef, IQCPsdData } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
 import { uploadIQCImages, deleteIQCImage, updateIQCImageLabel, uploadIQCFile, deleteIQCFile } from '../../../../api/quality/IQCService';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 /** 붙여넣기 텍스트 → IQCPsdData[] 파싱 */
 function parsePsdText(text: string): IQCPsdData[] {
@@ -253,7 +254,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
     try {
       const uploaded = await uploadIQCImages(data.id, imageType, Array.from(files), imageLabel);
       setEditData((prev) => ({ ...prev, images: [...(prev.images ?? []).filter((im) => im.imageType !== imageType), ...uploaded] }));
-    } catch { alert('이미지 업로드에 실패했습니다.'); }
+    } catch (err) { alert(getErrorMessage(err, '이미지 업로드에 실패했습니다.')); }
     finally { setUploadingType(null); }
   };
 
@@ -280,7 +281,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
     try {
       await deleteIQCImage(imageId);
       setEditData((prev) => ({ ...prev, images: (prev.images ?? []).filter((im) => im.id !== imageId) }));
-    } catch { alert('이미지 삭제에 실패했습니다.'); }
+    } catch (err) { alert(getErrorMessage(err, '이미지 삭제에 실패했습니다.')); }
   };
 
   const handlePsdFileUpload = async (files: FileList | null) => {
@@ -292,7 +293,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
         const uploaded = await uploadIQCFile(data.id, 'PSD_DOC', file);
         setPsdFiles((prev) => [...prev, uploaded]);
       }
-    } catch { alert('파일 업로드에 실패했습니다.'); }
+    } catch (err) { alert(getErrorMessage(err, '파일 업로드에 실패했습니다.')); }
     finally { setUploadingPsdFile(false); }
   };
 
@@ -301,7 +302,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
     try {
       await deleteIQCFile(fileId);
       setPsdFiles((prev) => prev.filter((f) => f.id !== fileId));
-    } catch { alert('파일 삭제에 실패했습니다.'); }
+    } catch (err) { alert(getErrorMessage(err, '파일 삭제에 실패했습니다.')); }
   };
 
   const handleAddRefSlot = (type: 'PSD' | 'SEM') => {

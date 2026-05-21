@@ -185,7 +185,7 @@ export default function SealingEdit() {
       alert('작업일지가 수정되었습니다.');
       navigate(`/project/log/${projectId}?category=Assembly&process=Sealing`);
     } catch (err) {
-      alert('수정 실패: ' + err);
+      alert(getErrorMessage(err, '수정에 실패했습니다.'));
       console.error('Update error:', err);
     } finally {
       setSaving(false);

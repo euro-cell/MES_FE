@@ -38,6 +38,7 @@ import WeldingGrid from './components/07-WeldingGrid';
 import SealingGrid from './components/08-SealingGrid';
 import FormationGrid from './components/09-FormationGrid';
 import RawDataGrid from './components/10-RawDataGrid';
+import { getErrorMessage } from '../../../../api/errorHandler';
 import styles from '../../../../styles/project/lot/LotPage.module.css';
 
 // 상대 시간 포맷 함수
@@ -161,7 +162,7 @@ export default function LotPage() {
       await downloadLotExcel(Number(projectId), projectInfo?.name || '');
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);
-      alert('엑셀 다운로드에 실패했습니다.');
+      alert(getErrorMessage(error, '엑셀 다운로드에 실패했습니다.'));
     } finally {
       setIsDownloading(false);
     }

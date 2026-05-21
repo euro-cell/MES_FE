@@ -17,6 +17,7 @@ import {
   fetchCellInventoryStatistics,
   fetchStorageUsage,
 } from '../../../../api/stock/InOutService';
+import { getErrorMessage } from '../../../../api/errorHandler';
 import styles from '../../../../styles/stock/cell/InOut.module.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -129,7 +130,7 @@ export default function InOutIndex() {
 
       toast.success('등록되었습니다.');
     } catch (error) {
-      alert('❌ ' + (error as any)?.message || '알 수 없는 오류');
+      alert(getErrorMessage(error, '알 수 없는 오류'));
     } finally {
       setFormData(prev => ({ ...prev, cellLot: '' }));
     }

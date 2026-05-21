@@ -231,7 +231,7 @@ export default function FormingEdit() {
       navigate(`/project/log/${projectId}?category=Assembly&process=Forming`);
     } catch (err) {
       console.error('수정 실패:', err);
-      alert('수정 실패: ' + err);
+      alert(getErrorMessage(err, '수정에 실패했습니다.'));
     } finally {
       setSubmitting(false);
     }

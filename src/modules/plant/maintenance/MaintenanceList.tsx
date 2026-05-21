@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/plant/Equipment.module.css';
 import { getMaintenanceRecords, deleteMaintenanceRecord } from '../../../api/plant/MaintenanceService';
+import { getErrorMessage } from '../../../api/errorHandler';
 import type { MaintenanceRecord } from './MaintenanceTypes';
 
 export default function MaintenanceList() {
@@ -37,7 +38,7 @@ export default function MaintenanceList() {
       loadData();
     } catch (error) {
       console.error('삭제 실패:', error);
-      alert('삭제에 실패했습니다.');
+      alert(getErrorMessage(error, '삭제에 실패했습니다.'));
     }
   };
 
@@ -51,7 +52,7 @@ export default function MaintenanceList() {
       await downloadMaintenanceExcel();
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);
-      alert('엑셀 다운로드에 실패했습니다.');
+      alert(getErrorMessage(error, '엑셀 다운로드에 실패했습니다.'));
     }
   };
 

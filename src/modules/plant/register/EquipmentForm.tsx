@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from '../../../styles/plant/Equipment.module.css';
 import { createEquipment, updateEquipment } from '../../../api/plant/EquipmentService';
+import { getErrorMessage } from '../../../api/errorHandler';
 import type { Equipment, EquipmentCategory, EquipmentPayload, EquipmentProcess } from './EquipmentTypes';
 
 const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
@@ -60,7 +61,7 @@ export default function EquipmentForm() {
       navigate(-1);
     } catch (error) {
       console.error('저장 실패:', error);
-      alert('저장에 실패했습니다.');
+      alert(getErrorMessage(error, '저장에 실패했습니다.'));
     }
   };
 

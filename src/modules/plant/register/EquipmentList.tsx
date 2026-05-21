@@ -4,6 +4,7 @@ import styles from '../../../styles/plant/Equipment.module.css';
 import { getEquipments, deleteEquipment } from '../../../api/plant/EquipmentService';
 import type { Equipment, EquipmentCategory } from './EquipmentTypes';
 import ManualModal from './ManualModal';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 interface Props {
   category: EquipmentCategory;
@@ -49,7 +50,7 @@ export default function EquipmentList({ category }: Props) {
       loadData();
     } catch (error) {
       console.error('삭제 실패:', error);
-      alert('삭제에 실패했습니다.');
+      alert(getErrorMessage(error, '삭제에 실패했습니다.'));
     }
   };
 
@@ -67,7 +68,7 @@ export default function EquipmentList({ category }: Props) {
       await downloadEquipmentExcel(category);
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);
-      alert('엑셀 다운로드에 실패했습니다.');
+      alert(getErrorMessage(error, '엑셀 다운로드에 실패했습니다.'));
     }
   };
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { getErrorMessage } from '../../../api/errorHandler';
 import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/components/moduleIndex.module.css';
 import InOutIndex from './inOut';
@@ -25,7 +26,7 @@ export default function CellIndex() {
       await downloadCellExcel();
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);
-      alert('엑셀 다운로드에 실패했습니다.');
+      alert(getErrorMessage(error, '엑셀 다운로드에 실패했습니다.'));
     } finally {
       setIsDownloading(false);
     }

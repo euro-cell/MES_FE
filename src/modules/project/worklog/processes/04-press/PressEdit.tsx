@@ -86,7 +86,7 @@ export default function PressEdit() {
       navigate(`/project/log/${projectId}?category=Electrode&process=Press`);
     } catch (err) {
       console.error('수정 실패:', err);
-      alert('수정 실패: ' + err);
+      alert(getErrorMessage(err, '수정에 실패했습니다.'));
     } finally {
       setSubmitting(false);
     }
