@@ -70,6 +70,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdBy: worklog.writer,
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
+          electrodeType: worklog.electrodeType,
         }));
       } else if (processId === 'Slurry') {
         const slurryData = await getSlurryWorklogs(projectId);
@@ -82,6 +83,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdBy: worklog.writer,
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
+          electrodeType: worklog.electrodeType,
         }));
       } else if (processId === 'Coating') {
         const coatingData = await getCoatingWorklogs(projectId);
@@ -94,6 +96,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdBy: worklog.writer,
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
+          electrodeType: worklog.electrodeType,
         }));
       } else if (processId === 'Press') {
         const pressData = await getPressWorklogs(projectId);
@@ -106,6 +109,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdBy: worklog.writer,
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
+          electrodeType: worklog.electrodeType,
         }));
       } else if (processId === 'Notching') {
         const notchingData = await getNotchingWorklogs(projectId);
@@ -118,6 +122,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdBy: worklog.writer,
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
+          electrodeType: worklog.electrodeType,
         }));
       } else if (processId === 'VD') {
         const vdData = await getVdWorklogs(projectId);
@@ -130,6 +135,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           createdBy: worklog.writer,
           createdAt: worklog.createdAt,
           updatedAt: worklog.updatedAt,
+          electrodeType: worklog.electrodeType,
         }));
       } else if (processId === 'Forming') {
         const formingData = await getFormingWorklogs(projectId);
@@ -378,6 +384,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
         <table className={styles.worklogTable}>
         <thead>
           <tr>
+            {['Binder', 'Slurry', 'Coating', 'Press', 'Notching', 'VD'].includes(processId) && <th>음/양극</th>}
             <th>작업일</th>
             <th>회차</th>
             <th>작성자</th>
@@ -387,11 +394,12 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
         <tbody>
           {worklogs.length === 0 ? (
             <tr>
-              <td colSpan={7}>등록된 작업일지가 없습니다.</td>
+              <td colSpan={['Binder', 'Slurry', 'Coating', 'Press', 'Notching', 'VD'].includes(processId) ? 5 : 4}>등록된 작업일지가 없습니다.</td>
             </tr>
           ) : (
             worklogs.map(log => (
               <tr key={log.id}>
+                {['Binder', 'Slurry', 'Coating', 'Press', 'Notching', 'VD'].includes(processId) && <td>{log.electrodeType ?? '-'}</td>}
                 <td>{log.workDate}</td>
                 <td>{log.round}</td>
                 <td>{log.createdBy}</td>

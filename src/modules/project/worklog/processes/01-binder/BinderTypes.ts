@@ -7,6 +7,7 @@ export interface BinderWorklog {
   writer: string;
   createdAt: string;
   updatedAt: string;
+  electrodeType?: string | null;
 
   pdMixerName?: string;
   line?: string;

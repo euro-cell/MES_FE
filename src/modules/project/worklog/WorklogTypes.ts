@@ -26,6 +26,7 @@ export interface WorklogEntry {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
+  electrodeType?: string | null;
 }
 
 export interface WorklogPayload {

@@ -7,6 +7,7 @@ export interface CoatingWorklog {
   writer: string;
   createdAt: string;
   updatedAt: string;
+  electrodeType?: string | null;
 
   line?: string;
   plant?: string;

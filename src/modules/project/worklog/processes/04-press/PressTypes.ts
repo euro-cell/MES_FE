@@ -13,6 +13,7 @@ export interface PressWorklog {
   writer: string;
   createdAt: string;
   updatedAt: string;
+  electrodeType?: string | null;
 
   // ===== A. 자재 투입 정보 (Material Input) =====
   coatingRollLot1?: string;

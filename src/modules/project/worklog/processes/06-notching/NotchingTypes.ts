@@ -8,6 +8,7 @@ export interface NotchingWorklog {
   round: number;
   writer: string;
   createdAt: string;
+  electrodeType?: string | null;
   updatedAt: string;
 
   line?: string;

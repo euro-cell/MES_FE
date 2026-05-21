@@ -8,6 +8,7 @@ export interface VdWorklog {
   round: number;
   writer: string;
   createdAt: string;
+  electrodeType?: string | null;
   updatedAt: string;
   manufactureDate: string;
   worker: string;
