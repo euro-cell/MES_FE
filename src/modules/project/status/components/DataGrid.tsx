@@ -286,34 +286,6 @@ export default function DataGrid({ data, year, month, onTargetChange }: DataGrid
   };
 
   // 합계 계산 함수
-  const calculateTotalOutput = (): number => {
-    return processesToRender.reduce((sum, [key, processData]) => {
-      if (!processData) return sum;
-      if (isVDProcess(key) && isVDProcessData(processData)) {
-        const vd = processData as VDProcessData;
-        return sum + vd.total.cathode.totalOutput + vd.total.anode.totalOutput;
-      }
-      if (isFormingProcess(key) && isFormingProcessData(processData)) {
-        const forming = processData as FormingProcessData;
-        return (
-          sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0)
-        );
-      }
-      if (isStackingProcess(key) && isStackingProcessData(processData)) {
-        return sum + (processData as StackingProcessData).total.totalOutput;
-      }
-      if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
-        return sum + (processData as WeldingProcessData).total.totalOutput;
-      }
-      if (isSealingProcess(key) && isSealingProcessData(processData)) {
-        return sum + (processData as SealingProcessData).total.totalOutput;
-      }
-      if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
-        return sum + (processData as VisualInspectionProcessData).total.totalOutput;
-      }
-      return sum + ((processData as ProcessData).total.totalOutput || 0);
-    }, 0);
-  };
 
   const calculateTotalNG = (): number => {
     return processesToRender.reduce((sum, [key, processData]) => {
