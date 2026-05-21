@@ -27,10 +27,8 @@ export default function ElectrodeProcessGrid({
 
   // NG와 수율 합계 계산
   const totalNG = processData.data.reduce((sum, item) => sum + (item.ng || 0), 0);
-  const averageYield =
-    processData.total.totalOutput > 0
-      ? ((processData.total.totalOutput - totalNG) / processData.total.totalOutput) * 100
-      : 0;
+  const totalInput = processData.total.totalOutput + totalNG;
+  const averageYield = totalInput > 0 ? (processData.total.totalOutput / totalInput) * 100 : 0;
 
   // Mixing과 Coating Single만 회색 배경 적용
   const shouldApplyGrayBg = processKey === 'mixing' || processKey === 'coatingSingle';
