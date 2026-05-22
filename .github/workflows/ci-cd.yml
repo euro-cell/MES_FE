@@ -78,11 +78,17 @@ jobs:
             docker network connect --alias "$ACTIVE_ALIAS" "$NET_NAME" "$NEW"
             docker compose -f docker-compose.fe.yml start "$NEW"
 
-            # 헬스체크 대기 (최대 30초)
-            for i in {1..30}; do
+            # 헬스체크 대기 (최대 20초, 실패 시 롤백)
+            for i in {1..20}; do
               if docker exec "$NEW" wget -q --spider http://localhost 2>/dev/null; then
-                echo "Container is healthy"
+                echo "Container is healthy after ${i}s"
                 break
+              fi
+              if [ "$i" -eq 20 ]; then
+                echo "Health check failed, aborting deploy"
+                docker compose -f docker-compose.fe.yml stop "$NEW" || true
+                docker compose -f docker-compose.fe.yml rm -f "$NEW" || true
+                exit 1
               fi
               sleep 1
             done
@@ -94,8 +100,8 @@ jobs:
             # Nginx 리로드
             docker exec "$NGINX_CONTAINER" nginx -s reload
 
-            # 이전 버전 정리 (30초 후)
-            sleep 30
+            # 이전 버전 정리 (10초 후)
+            sleep 10
             docker compose -f docker-compose.fe.yml stop "$OLD" || true
             docker compose -f docker-compose.fe.yml rm -f "$OLD" || true
 
