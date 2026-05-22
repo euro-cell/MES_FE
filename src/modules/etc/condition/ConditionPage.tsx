@@ -6,7 +6,8 @@ const CONDITION_MENUS = [{ title: '공정 온/습도', path: '/etc/condition/hum
 
 // 공정 온/습도 페이지
 const HumidityPage = () => (
-  <div>
+  <div className={styles.humidityWrapper}>
+    <p className={styles.comingSoon}>준비 중입니다.</p>
     <img src='/1.svg' />
   </div>
 );

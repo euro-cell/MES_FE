@@ -9,3 +9,22 @@
   padding: 40px;
   color: #64748b;
 }
+
+.humidityWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.comingSoon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 8px;
+  pointer-events: none;
+}
