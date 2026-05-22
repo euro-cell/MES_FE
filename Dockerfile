@@ -14,6 +14,8 @@ RUN npm run build
 # Stage 2: 서빙
 FROM node:24-alpine
 
+RUN apk add --no-cache wget
+
 WORKDIR /app
 
 COPY --from=builder /app/dist ./dist
