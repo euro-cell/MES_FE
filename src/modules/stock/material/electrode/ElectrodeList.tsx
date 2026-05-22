@@ -157,6 +157,7 @@ export default function ElectrodeList() {
       handleCloseModal();
     } catch (err) {
       console.error('자재 처리 실패:', err);
+      alert(getErrorMessage(err, '자재 처리에 실패했습니다.'));
     }
   };
 
@@ -174,6 +175,7 @@ export default function ElectrodeList() {
       setDeletingId(null);
     } catch (err) {
       console.error('자재 삭제 실패:', err);
+      alert(getErrorMessage(err, '자재 삭제에 실패했습니다.'));
     }
   };
 
