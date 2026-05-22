@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -30,27 +30,52 @@ export default function PressAnodeXbarChart({ data }: PressAnodeXbarChartProps) 
   const labels = ['', ...dataLabels, ''];
 
   const byIndex = Object.fromEntries(valid.map(d => [d.rowIndex, d]));
-  const fillRef = (key: keyof typeof valid[0]): (number | null)[] =>
+  const fillRef = (key: keyof (typeof valid)[0]): (number | null)[] =>
     labels.map(() => {
       const v = valid[0][key];
       return typeof v === 'number' ? v : null;
     });
-  const xbarData: (number | null)[] = [null, ...dataLabels.map((_, i) => { const r = byIndex[i + 1]; return r ? r.xbar : null; }), null];
+  const xbarData: (number | null)[] = [
+    null,
+    ...dataLabels.map((_, i) => {
+      const r = byIndex[i + 1];
+      return r ? r.xbar : null;
+    }),
+    null,
+  ];
 
-  const allValues = valid.flatMap(d => [d.xbar, d.xbar_cl, d.xbar_ucl, d.xbar_lcl, d.usl, d.lsl]).filter((v): v is number => v !== null && !isNaN(v));
-  const dataMin = Math.min(...allValues);
-  const dataMax = Math.max(...allValues);
   const lsl = valid[0]?.lsl ?? 88;
   const usl = valid[0]?.usl ?? 94;
-  const range = Math.max(usl - lsl, dataMax - dataMin, 1);
-  const margin = range * 0.1;
-  const yMin = parseFloat((Math.min(lsl, dataMin) - margin).toFixed(1));
-  const yMax = parseFloat((Math.max(usl, dataMax) + margin).toFixed(1));
-  const step = 1.5;
-  const tickCount = Math.round((yMax - yMin) / step) + 1;
-  const yTicks = Array.from({ length: tickCount }, (_, i) =>
-    parseFloat((yMin + i * step).toFixed(1))
-  );
+  const target = (usl + lsl) / 2;
+  const tolerance = (usl - lsl) / 2;
+  const dataValues = valid
+    .flatMap(d => [d.xbar, d.xbar_cl, d.xbar_ucl, d.xbar_lcl])
+    .filter((v): v is number => v !== null && !isNaN(v));
+  const dataMin = Math.min(...dataValues);
+  const dataMax = Math.max(...dataValues);
+  let step =
+    tolerance <= 0.1
+      ? 0.02
+      : tolerance <= 0.3
+        ? 0.05
+        : tolerance <= 1
+          ? 0.1
+          : tolerance <= 3
+            ? 0.5
+            : tolerance <= 10
+              ? 1
+              : tolerance <= 30
+                ? 5
+                : 10;
+  let halfSteps = Math.ceil(Math.max(tolerance, target - dataMin, dataMax - target) / step) + 1;
+  while (halfSteps * 2 + 1 > 7) {
+    step *= 2;
+    halfSteps = Math.ceil(Math.max(tolerance, target - dataMin, dataMax - target) / step) + 1;
+  }
+  const yMin = parseFloat((target - halfSteps * step).toFixed(2));
+  const yMax = parseFloat((target + halfSteps * step).toFixed(2));
+  const tickCount = halfSteps * 2 + 1;
+  const yTicks = Array.from({ length: tickCount }, (_, i) => parseFloat((yMin + i * step).toFixed(2)));
 
   const chartData = {
     labels,
@@ -147,12 +172,12 @@ export default function PressAnodeXbarChart({ data }: PressAnodeXbarChartProps) 
         min: yMin,
         max: yMax,
         ticks: {
-          callback: (value: number | string) => Number(value).toFixed(1),
+          callback: (value: number | string) => Number(value).toFixed(2),
         },
         afterBuildTicks: (axis: { ticks: { value: number }[] }) => {
           axis.ticks = yTicks.map(v => ({ value: v }));
         },
-        title: { display: true, text: '두께 (㎛)' },
+        title: { display: true, text: '두께 (μm)' },
       },
     },
   });

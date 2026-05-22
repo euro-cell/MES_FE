@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,9 +27,20 @@ export default function PressRChart({ data }: PressRChartProps) {
 
   const labels = valid.map(row => String(row.rowIndex));
 
+  const rValues = valid
+    .flatMap(d => [d.r, d.r_cl, d.r_ucl, d.r_lcl])
+    .filter((v): v is number => v !== null && !isNaN(v));
+  const rMax = Math.max(...rValues, 0);
+  let step = rMax <= 0.1 ? 0.02 : rMax <= 0.3 ? 0.05 : rMax <= 1 ? 0.1 : rMax <= 3 ? 0.5 : 1;
+  let tickCount = Math.ceil(rMax / step) + 2;
+  while (tickCount > 7) {
+    step *= 2;
+    tickCount = Math.ceil(rMax / step) + 2;
+  }
+  if (tickCount % 2 === 0) tickCount += 1;
   const yMin = 0;
-  const yMax = 1.4;
-  const yTicks = [0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4];
+  const yMax = parseFloat(((tickCount - 1) * step).toFixed(2));
+  const yTicks = Array.from({ length: tickCount }, (_, i) => parseFloat((i * step).toFixed(2)));
 
   const chartData = {
     labels,

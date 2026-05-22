@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,9 +28,15 @@ export default function RChart({ data }: RChartProps) {
 
   const labels = valid.map(row => String(row.rowIndex));
 
+  const rValues = valid.flatMap(d => [d.r, d.r_cl, d.r_ucl, d.r_lcl]).filter((v): v is number => v !== null && !isNaN(v));
+  const rMax = Math.max(...rValues, 0);
+  let step = rMax <= 0.1 ? 0.02 : rMax <= 0.3 ? 0.05 : rMax <= 1 ? 0.1 : rMax <= 3 ? 0.5 : 1;
+  let tickCount = Math.ceil(rMax / step) + 2;
+  while (tickCount > 7) { step *= 2; tickCount = Math.ceil(rMax / step) + 2; }
+  if (tickCount % 2 === 0) tickCount += 1;
   const yMin = 0;
-  const yMax = 0.7;
-  const yTicks = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7];
+  const yMax = parseFloat(((tickCount - 1) * step).toFixed(2));
+  const yTicks = Array.from({ length: tickCount }, (_, i) => parseFloat((i * step).toFixed(2)));
 
   const chartData = {
     labels,
@@ -113,7 +119,7 @@ export default function RChart({ data }: RChartProps) {
           axis.ticks = yTicks.map(v => ({ value: v }));
         },
         ticks: {
-          callback: (value: number | string) => Number(value).toFixed(1),
+          callback: (value: number | string) => Number(value).toFixed(2),
         },
         title: { display: true, text: 'R' },
       },
@@ -194,3 +200,4 @@ export default function RChart({ data }: RChartProps) {
     </>
   );
 }
+
