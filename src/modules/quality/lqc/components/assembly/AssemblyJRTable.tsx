@@ -39,6 +39,22 @@ const formatSpec = (spec: SpecValue | undefined, type: string): string => {
   }
 };
 
+// 규격 비교 셀 클래스
+const getSpecClass = (
+  value: number | string | null,
+  spec: SpecValue | undefined,
+  extraStyles?: string
+): string => {
+  if (value === null || value === undefined || value === '' || !spec) return extraStyles ?? '';
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  if (isNaN(num) || spec.target === undefined || spec.tolerance === undefined) return extraStyles ?? '';
+
+  const base = extraStyles ?? '';
+  if (num > spec.target + spec.tolerance) return `${base} ${styles.cellOver}`.trim();
+  if (num < spec.target - spec.tolerance) return `${base} ${styles.cellUnder}`.trim();
+  return base;
+};
+
 // 숫자 포맷팅 헬퍼
 const formatNumber = (value: number | string | null, decimals: number = 2): string => {
   if (value === null || value === undefined || value === '') return '-';
@@ -285,6 +301,10 @@ export default function AssemblyJRTable({ projectId }: AssemblyJRTableProps) {
           <button className={styles.specButton} onClick={openSpecModal}>
             규격 설정
           </button>
+          <div className={styles.specLegend}>
+            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxOver}`} />초과</span>
+            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxUnder}`} />미달</span>
+          </div>
         </div>
         <div style={{ overflow: 'auto' }}>
           <table className={styles.lqcTable}>
@@ -300,7 +320,7 @@ export default function AssemblyJRTable({ projectId }: AssemblyJRTableProps) {
               </tr>
               {/* 2행: 소분류 헤더 */}
               <tr>
-                <th>평균</th>
+                <th className={styles.avgCol}>평균</th>
                 <th>1</th>
                 <th>2</th>
                 <th>3</th>
@@ -311,7 +331,7 @@ export default function AssemblyJRTable({ projectId }: AssemblyJRTableProps) {
                 <th>8</th>
                 <th>9</th>
                 <th>10</th>
-                <th>평균</th>
+                <th className={styles.avgCol}>평균</th>
                 <th>1</th>
                 <th>2</th>
                 <th>3</th>
@@ -334,85 +354,85 @@ export default function AssemblyJRTable({ projectId }: AssemblyJRTableProps) {
               {/* 평균 행 */}
               <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
                 <td colSpan={4}>Ave.</td>
-                <td>{formatNumber(weightStats.avg.avg)}</td>
-                <td>{formatNumber(weightStats.avg.w1)}</td>
-                <td>{formatNumber(weightStats.avg.w2)}</td>
-                <td>{formatNumber(weightStats.avg.w3)}</td>
-                <td>{formatNumber(weightStats.avg.w4)}</td>
-                <td>{formatNumber(weightStats.avg.w5)}</td>
-                <td>{formatNumber(weightStats.avg.w6)}</td>
-                <td>{formatNumber(weightStats.avg.w7)}</td>
-                <td>{formatNumber(weightStats.avg.w8)}</td>
-                <td>{formatNumber(weightStats.avg.w9)}</td>
-                <td>{formatNumber(weightStats.avg.w10)}</td>
-                <td>{formatNumber(diameterStats.avg.avg)}</td>
-                <td>{formatNumber(diameterStats.avg.d1)}</td>
-                <td>{formatNumber(diameterStats.avg.d2)}</td>
-                <td>{formatNumber(diameterStats.avg.d3)}</td>
-                <td>{formatNumber(diameterStats.avg.d4)}</td>
-                <td>{formatNumber(diameterStats.avg.d5)}</td>
-                <td>{formatNumber(diameterStats.avg.d6)}</td>
-                <td>{formatNumber(diameterStats.avg.d7)}</td>
-                <td>{formatNumber(diameterStats.avg.d8)}</td>
-                <td>{formatNumber(diameterStats.avg.d9)}</td>
-                <td>{formatNumber(diameterStats.avg.d10)}</td>
+                <td className={getSpecClass(weightStats.avg.avg, specs.weight, styles.avgCol)}>{formatNumber(weightStats.avg.avg)}</td>
+                <td className={getSpecClass(weightStats.avg.w1, specs.weight)}>{formatNumber(weightStats.avg.w1)}</td>
+                <td className={getSpecClass(weightStats.avg.w2, specs.weight)}>{formatNumber(weightStats.avg.w2)}</td>
+                <td className={getSpecClass(weightStats.avg.w3, specs.weight)}>{formatNumber(weightStats.avg.w3)}</td>
+                <td className={getSpecClass(weightStats.avg.w4, specs.weight)}>{formatNumber(weightStats.avg.w4)}</td>
+                <td className={getSpecClass(weightStats.avg.w5, specs.weight)}>{formatNumber(weightStats.avg.w5)}</td>
+                <td className={getSpecClass(weightStats.avg.w6, specs.weight)}>{formatNumber(weightStats.avg.w6)}</td>
+                <td className={getSpecClass(weightStats.avg.w7, specs.weight)}>{formatNumber(weightStats.avg.w7)}</td>
+                <td className={getSpecClass(weightStats.avg.w8, specs.weight)}>{formatNumber(weightStats.avg.w8)}</td>
+                <td className={getSpecClass(weightStats.avg.w9, specs.weight)}>{formatNumber(weightStats.avg.w9)}</td>
+                <td className={getSpecClass(weightStats.avg.w10, specs.weight)}>{formatNumber(weightStats.avg.w10)}</td>
+                <td className={getSpecClass(diameterStats.avg.avg, specs.diameter, styles.avgCol)}>{formatNumber(diameterStats.avg.avg)}</td>
+                <td className={getSpecClass(diameterStats.avg.d1, specs.diameter)}>{formatNumber(diameterStats.avg.d1)}</td>
+                <td className={getSpecClass(diameterStats.avg.d2, specs.diameter)}>{formatNumber(diameterStats.avg.d2)}</td>
+                <td className={getSpecClass(diameterStats.avg.d3, specs.diameter)}>{formatNumber(diameterStats.avg.d3)}</td>
+                <td className={getSpecClass(diameterStats.avg.d4, specs.diameter)}>{formatNumber(diameterStats.avg.d4)}</td>
+                <td className={getSpecClass(diameterStats.avg.d5, specs.diameter)}>{formatNumber(diameterStats.avg.d5)}</td>
+                <td className={getSpecClass(diameterStats.avg.d6, specs.diameter)}>{formatNumber(diameterStats.avg.d6)}</td>
+                <td className={getSpecClass(diameterStats.avg.d7, specs.diameter)}>{formatNumber(diameterStats.avg.d7)}</td>
+                <td className={getSpecClass(diameterStats.avg.d8, specs.diameter)}>{formatNumber(diameterStats.avg.d8)}</td>
+                <td className={getSpecClass(diameterStats.avg.d9, specs.diameter)}>{formatNumber(diameterStats.avg.d9)}</td>
+                <td className={getSpecClass(diameterStats.avg.d10, specs.diameter)}>{formatNumber(diameterStats.avg.d10)}</td>
               </tr>
               {/* 최대값 행 */}
               <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
                 <td colSpan={4}>Max.</td>
-                <td>{formatNumber(weightStats.max.avg)}</td>
-                <td>{formatNumber(weightStats.max.w1)}</td>
-                <td>{formatNumber(weightStats.max.w2)}</td>
-                <td>{formatNumber(weightStats.max.w3)}</td>
-                <td>{formatNumber(weightStats.max.w4)}</td>
-                <td>{formatNumber(weightStats.max.w5)}</td>
-                <td>{formatNumber(weightStats.max.w6)}</td>
-                <td>{formatNumber(weightStats.max.w7)}</td>
-                <td>{formatNumber(weightStats.max.w8)}</td>
-                <td>{formatNumber(weightStats.max.w9)}</td>
-                <td>{formatNumber(weightStats.max.w10)}</td>
-                <td>{formatNumber(diameterStats.max.avg)}</td>
-                <td>{formatNumber(diameterStats.max.d1)}</td>
-                <td>{formatNumber(diameterStats.max.d2)}</td>
-                <td>{formatNumber(diameterStats.max.d3)}</td>
-                <td>{formatNumber(diameterStats.max.d4)}</td>
-                <td>{formatNumber(diameterStats.max.d5)}</td>
-                <td>{formatNumber(diameterStats.max.d6)}</td>
-                <td>{formatNumber(diameterStats.max.d7)}</td>
-                <td>{formatNumber(diameterStats.max.d8)}</td>
-                <td>{formatNumber(diameterStats.max.d9)}</td>
-                <td>{formatNumber(diameterStats.max.d10)}</td>
+                <td className={getSpecClass(weightStats.max.avg, specs.weight, styles.avgCol)}>{formatNumber(weightStats.max.avg)}</td>
+                <td className={getSpecClass(weightStats.max.w1, specs.weight)}>{formatNumber(weightStats.max.w1)}</td>
+                <td className={getSpecClass(weightStats.max.w2, specs.weight)}>{formatNumber(weightStats.max.w2)}</td>
+                <td className={getSpecClass(weightStats.max.w3, specs.weight)}>{formatNumber(weightStats.max.w3)}</td>
+                <td className={getSpecClass(weightStats.max.w4, specs.weight)}>{formatNumber(weightStats.max.w4)}</td>
+                <td className={getSpecClass(weightStats.max.w5, specs.weight)}>{formatNumber(weightStats.max.w5)}</td>
+                <td className={getSpecClass(weightStats.max.w6, specs.weight)}>{formatNumber(weightStats.max.w6)}</td>
+                <td className={getSpecClass(weightStats.max.w7, specs.weight)}>{formatNumber(weightStats.max.w7)}</td>
+                <td className={getSpecClass(weightStats.max.w8, specs.weight)}>{formatNumber(weightStats.max.w8)}</td>
+                <td className={getSpecClass(weightStats.max.w9, specs.weight)}>{formatNumber(weightStats.max.w9)}</td>
+                <td className={getSpecClass(weightStats.max.w10, specs.weight)}>{formatNumber(weightStats.max.w10)}</td>
+                <td className={getSpecClass(diameterStats.max.avg, specs.diameter, styles.avgCol)}>{formatNumber(diameterStats.max.avg)}</td>
+                <td className={getSpecClass(diameterStats.max.d1, specs.diameter)}>{formatNumber(diameterStats.max.d1)}</td>
+                <td className={getSpecClass(diameterStats.max.d2, specs.diameter)}>{formatNumber(diameterStats.max.d2)}</td>
+                <td className={getSpecClass(diameterStats.max.d3, specs.diameter)}>{formatNumber(diameterStats.max.d3)}</td>
+                <td className={getSpecClass(diameterStats.max.d4, specs.diameter)}>{formatNumber(diameterStats.max.d4)}</td>
+                <td className={getSpecClass(diameterStats.max.d5, specs.diameter)}>{formatNumber(diameterStats.max.d5)}</td>
+                <td className={getSpecClass(diameterStats.max.d6, specs.diameter)}>{formatNumber(diameterStats.max.d6)}</td>
+                <td className={getSpecClass(diameterStats.max.d7, specs.diameter)}>{formatNumber(diameterStats.max.d7)}</td>
+                <td className={getSpecClass(diameterStats.max.d8, specs.diameter)}>{formatNumber(diameterStats.max.d8)}</td>
+                <td className={getSpecClass(diameterStats.max.d9, specs.diameter)}>{formatNumber(diameterStats.max.d9)}</td>
+                <td className={getSpecClass(diameterStats.max.d10, specs.diameter)}>{formatNumber(diameterStats.max.d10)}</td>
               </tr>
               {/* 최소값 행 */}
               <tr className={`${styles.summaryRow} ${styles.minRow}`}>
                 <td colSpan={4}>Min.</td>
-                <td>{formatNumber(weightStats.min.avg)}</td>
-                <td>{formatNumber(weightStats.min.w1)}</td>
-                <td>{formatNumber(weightStats.min.w2)}</td>
-                <td>{formatNumber(weightStats.min.w3)}</td>
-                <td>{formatNumber(weightStats.min.w4)}</td>
-                <td>{formatNumber(weightStats.min.w5)}</td>
-                <td>{formatNumber(weightStats.min.w6)}</td>
-                <td>{formatNumber(weightStats.min.w7)}</td>
-                <td>{formatNumber(weightStats.min.w8)}</td>
-                <td>{formatNumber(weightStats.min.w9)}</td>
-                <td>{formatNumber(weightStats.min.w10)}</td>
-                <td>{formatNumber(diameterStats.min.avg)}</td>
-                <td>{formatNumber(diameterStats.min.d1)}</td>
-                <td>{formatNumber(diameterStats.min.d2)}</td>
-                <td>{formatNumber(diameterStats.min.d3)}</td>
-                <td>{formatNumber(diameterStats.min.d4)}</td>
-                <td>{formatNumber(diameterStats.min.d5)}</td>
-                <td>{formatNumber(diameterStats.min.d6)}</td>
-                <td>{formatNumber(diameterStats.min.d7)}</td>
-                <td>{formatNumber(diameterStats.min.d8)}</td>
-                <td>{formatNumber(diameterStats.min.d9)}</td>
-                <td>{formatNumber(diameterStats.min.d10)}</td>
+                <td className={getSpecClass(weightStats.min.avg, specs.weight, styles.avgCol)}>{formatNumber(weightStats.min.avg)}</td>
+                <td className={getSpecClass(weightStats.min.w1, specs.weight)}>{formatNumber(weightStats.min.w1)}</td>
+                <td className={getSpecClass(weightStats.min.w2, specs.weight)}>{formatNumber(weightStats.min.w2)}</td>
+                <td className={getSpecClass(weightStats.min.w3, specs.weight)}>{formatNumber(weightStats.min.w3)}</td>
+                <td className={getSpecClass(weightStats.min.w4, specs.weight)}>{formatNumber(weightStats.min.w4)}</td>
+                <td className={getSpecClass(weightStats.min.w5, specs.weight)}>{formatNumber(weightStats.min.w5)}</td>
+                <td className={getSpecClass(weightStats.min.w6, specs.weight)}>{formatNumber(weightStats.min.w6)}</td>
+                <td className={getSpecClass(weightStats.min.w7, specs.weight)}>{formatNumber(weightStats.min.w7)}</td>
+                <td className={getSpecClass(weightStats.min.w8, specs.weight)}>{formatNumber(weightStats.min.w8)}</td>
+                <td className={getSpecClass(weightStats.min.w9, specs.weight)}>{formatNumber(weightStats.min.w9)}</td>
+                <td className={getSpecClass(weightStats.min.w10, specs.weight)}>{formatNumber(weightStats.min.w10)}</td>
+                <td className={getSpecClass(diameterStats.min.avg, specs.diameter, styles.avgCol)}>{formatNumber(diameterStats.min.avg)}</td>
+                <td className={getSpecClass(diameterStats.min.d1, specs.diameter)}>{formatNumber(diameterStats.min.d1)}</td>
+                <td className={getSpecClass(diameterStats.min.d2, specs.diameter)}>{formatNumber(diameterStats.min.d2)}</td>
+                <td className={getSpecClass(diameterStats.min.d3, specs.diameter)}>{formatNumber(diameterStats.min.d3)}</td>
+                <td className={getSpecClass(diameterStats.min.d4, specs.diameter)}>{formatNumber(diameterStats.min.d4)}</td>
+                <td className={getSpecClass(diameterStats.min.d5, specs.diameter)}>{formatNumber(diameterStats.min.d5)}</td>
+                <td className={getSpecClass(diameterStats.min.d6, specs.diameter)}>{formatNumber(diameterStats.min.d6)}</td>
+                <td className={getSpecClass(diameterStats.min.d7, specs.diameter)}>{formatNumber(diameterStats.min.d7)}</td>
+                <td className={getSpecClass(diameterStats.min.d8, specs.diameter)}>{formatNumber(diameterStats.min.d8)}</td>
+                <td className={getSpecClass(diameterStats.min.d9, specs.diameter)}>{formatNumber(diameterStats.min.d9)}</td>
+                <td className={getSpecClass(diameterStats.min.d10, specs.diameter)}>{formatNumber(diameterStats.min.d10)}</td>
               </tr>
               {/* 표준편차 행 */}
               <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
                 <td colSpan={4}>Stdev.</td>
-                <td>{formatNumber(weightStats.stdev.avg, 3)}</td>
+                <td className={styles.avgCol}>{formatNumber(weightStats.stdev.avg, 3)}</td>
                 <td>{formatNumber(weightStats.stdev.w1, 3)}</td>
                 <td>{formatNumber(weightStats.stdev.w2, 3)}</td>
                 <td>{formatNumber(weightStats.stdev.w3, 3)}</td>
@@ -423,7 +443,7 @@ export default function AssemblyJRTable({ projectId }: AssemblyJRTableProps) {
                 <td>{formatNumber(weightStats.stdev.w8, 3)}</td>
                 <td>{formatNumber(weightStats.stdev.w9, 3)}</td>
                 <td>{formatNumber(weightStats.stdev.w10, 3)}</td>
-                <td>{formatNumber(diameterStats.stdev.avg, 3)}</td>
+                <td className={styles.avgCol}>{formatNumber(diameterStats.stdev.avg, 3)}</td>
                 <td>{formatNumber(diameterStats.stdev.d1, 3)}</td>
                 <td>{formatNumber(diameterStats.stdev.d2, 3)}</td>
                 <td>{formatNumber(diameterStats.stdev.d3, 3)}</td>
@@ -443,28 +463,28 @@ export default function AssemblyJRTable({ projectId }: AssemblyJRTableProps) {
                     <td>{row.workDate}</td>
                     <td>{row.lot}</td>
                     <td>{row.shift}</td>
-                    <td>{formatNumber(rowAvgValues[index].weightAvg)}</td>
-                    <td>{formatNumber(row.weight1)}</td>
-                    <td>{formatNumber(row.weight2)}</td>
-                    <td>{formatNumber(row.weight3)}</td>
-                    <td>{formatNumber(row.weight4)}</td>
-                    <td>{formatNumber(row.weight5)}</td>
-                    <td>{formatNumber(row.weight6)}</td>
-                    <td>{formatNumber(row.weight7)}</td>
-                    <td>{formatNumber(row.weight8)}</td>
-                    <td>{formatNumber(row.weight9)}</td>
-                    <td>{formatNumber(row.weight10)}</td>
-                    <td>{formatNumber(rowAvgValues[index].diameterAvg)}</td>
-                    <td>{formatNumber(row.diameter1)}</td>
-                    <td>{formatNumber(row.diameter2)}</td>
-                    <td>{formatNumber(row.diameter3)}</td>
-                    <td>{formatNumber(row.diameter4)}</td>
-                    <td>{formatNumber(row.diameter5)}</td>
-                    <td>{formatNumber(row.diameter6)}</td>
-                    <td>{formatNumber(row.diameter7)}</td>
-                    <td>{formatNumber(row.diameter8)}</td>
-                    <td>{formatNumber(row.diameter9)}</td>
-                    <td>{formatNumber(row.diameter10)}</td>
+                    <td className={getSpecClass(rowAvgValues[index].weightAvg, specs.weight, styles.avgCol)}>{formatNumber(rowAvgValues[index].weightAvg)}</td>
+                    <td className={getSpecClass(row.weight1, specs.weight)}>{formatNumber(row.weight1)}</td>
+                    <td className={getSpecClass(row.weight2, specs.weight)}>{formatNumber(row.weight2)}</td>
+                    <td className={getSpecClass(row.weight3, specs.weight)}>{formatNumber(row.weight3)}</td>
+                    <td className={getSpecClass(row.weight4, specs.weight)}>{formatNumber(row.weight4)}</td>
+                    <td className={getSpecClass(row.weight5, specs.weight)}>{formatNumber(row.weight5)}</td>
+                    <td className={getSpecClass(row.weight6, specs.weight)}>{formatNumber(row.weight6)}</td>
+                    <td className={getSpecClass(row.weight7, specs.weight)}>{formatNumber(row.weight7)}</td>
+                    <td className={getSpecClass(row.weight8, specs.weight)}>{formatNumber(row.weight8)}</td>
+                    <td className={getSpecClass(row.weight9, specs.weight)}>{formatNumber(row.weight9)}</td>
+                    <td className={getSpecClass(row.weight10, specs.weight)}>{formatNumber(row.weight10)}</td>
+                    <td className={getSpecClass(rowAvgValues[index].diameterAvg, specs.diameter, styles.avgCol)}>{formatNumber(rowAvgValues[index].diameterAvg)}</td>
+                    <td className={getSpecClass(row.diameter1, specs.diameter)}>{formatNumber(row.diameter1)}</td>
+                    <td className={getSpecClass(row.diameter2, specs.diameter)}>{formatNumber(row.diameter2)}</td>
+                    <td className={getSpecClass(row.diameter3, specs.diameter)}>{formatNumber(row.diameter3)}</td>
+                    <td className={getSpecClass(row.diameter4, specs.diameter)}>{formatNumber(row.diameter4)}</td>
+                    <td className={getSpecClass(row.diameter5, specs.diameter)}>{formatNumber(row.diameter5)}</td>
+                    <td className={getSpecClass(row.diameter6, specs.diameter)}>{formatNumber(row.diameter6)}</td>
+                    <td className={getSpecClass(row.diameter7, specs.diameter)}>{formatNumber(row.diameter7)}</td>
+                    <td className={getSpecClass(row.diameter8, specs.diameter)}>{formatNumber(row.diameter8)}</td>
+                    <td className={getSpecClass(row.diameter9, specs.diameter)}>{formatNumber(row.diameter9)}</td>
+                    <td className={getSpecClass(row.diameter10, specs.diameter)}>{formatNumber(row.diameter10)}</td>
                   </tr>
                 ))
               ) : (

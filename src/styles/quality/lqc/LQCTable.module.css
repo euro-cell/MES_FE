@@ -118,7 +118,6 @@
 
 /* 요약 행 스타일 */
 .summaryRow {
-  background: #f8fafc !important;
   font-weight: 500;
 }
 
@@ -126,32 +125,16 @@
   color: #334155 !important;
 }
 
-.avgRow {
-  background: #eff6ff !important;
-}
-
 .avgRow td {
   color: #1d4ed8 !important;
-}
-
-.maxRow {
-  background: #fef2f2 !important;
 }
 
 .maxRow td {
   color: #dc2626 !important;
 }
 
-.minRow {
-  background: #f0fdf4 !important;
-}
-
 .minRow td {
   color: #16a34a !important;
-}
-
-.stdevRow {
-  background: #faf5ff !important;
 }
 
 .stdevRow td {
@@ -160,4 +143,64 @@
 
 .groupBorder {
   border-left: 2px solid #94a3b8 !important;
+}
+
+.cellOver {
+  background-color: #fca5a5 !important;
+}
+
+.cellUnder {
+  background-color: #fdba74 !important;
+}
+
+.avgCol {
+  background-color: #f1f5f9;
+}
+
+.divisionBefore {
+  color: #dc2626 !important;
+  font-weight: 600;
+}
+
+.divisionAfter {
+  color: #2563eb !important;
+  font-weight: 600;
+}
+
+.specLegend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.legendDivider {
+  width: 1px;
+  height: 16px;
+  background: #cbd5e1;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #475569;
+}
+
+.legendBox {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legendBoxOver {
+  background-color: #fca5a5;
+  border: 1px solid #f87171;
+}
+
+.legendBoxUnder {
+  background-color: #fdba74;
+  border: 1px solid #fb923c;
 }

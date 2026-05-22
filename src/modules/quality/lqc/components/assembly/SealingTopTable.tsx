@@ -57,6 +57,30 @@ const formatSpec = (spec: SpecValue | undefined, type: string): string => {
   return '미설정';
 };
 
+const getSpecClass = (
+  value: number | null,
+  spec: SpecValue | undefined,
+  type: 'target-tolerance' | 'max-only',
+  extraStyles?: string
+): string => {
+  if (value === null || value === undefined || isNaN(value) || !spec) return extraStyles ?? '';
+
+  let over = false;
+  let under = false;
+
+  if (type === 'target-tolerance' && spec.target !== undefined && spec.tolerance !== undefined) {
+    over = value > spec.target + spec.tolerance;
+    under = value < spec.target - spec.tolerance;
+  } else if (type === 'max-only' && spec.max !== undefined) {
+    over = value > spec.max;
+  }
+
+  const base = extraStyles ?? '';
+  if (over) return `${base} ${styles.cellOver}`.trim();
+  if (under) return `${base} ${styles.cellUnder}`.trim();
+  return base;
+};
+
 const formatNumber = (value: number | null, decimals: number = 0): string => {
   if (value === null || value === undefined) return '-';
   if (isNaN(value)) return '-';
@@ -276,6 +300,10 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
           <button className={styles.specButton} onClick={() => setIsSpecModalOpen(true)}>
             규격 설정
           </button>
+          <div className={styles.specLegend}>
+            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxOver}`} />초과</span>
+            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxUnder}`} />미달</span>
+          </div>
         </div>
         <div style={{ overflow: 'auto' }}>
           <table className={styles.lqcTable}>
@@ -288,8 +316,8 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
                 <th colSpan={7}>Top(Tab) Sealing 두께 (㎛)</th>
               </tr>
               <tr>
-                <th>평균</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
-                <th>평균</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+                <th className={styles.avgCol}>평균</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+                <th className={styles.avgCol}>평균</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
               </tr>
             </thead>
             <tbody>
@@ -302,68 +330,68 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
               {/* Ave. 행 */}
               <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
                 <td colSpan={3}>Ave.</td>
-                <td>{formatNumber(sideStats.avg.avg, 0)}</td>
-                <td>{formatNumber(sideStats.avg.c1, 0)}</td>
-                <td>{formatNumber(sideStats.avg.c2, 0)}</td>
-                <td>{formatNumber(sideStats.avg.c3, 0)}</td>
-                <td>{formatNumber(sideStats.avg.c4, 0)}</td>
-                <td>{formatNumber(sideStats.avg.c5, 0)}</td>
-                <td>{formatNumber(sideStats.avg.c6, 0)}</td>
-                <td>{formatNumber(topStats.avg.avg, 0)}</td>
-                <td>{formatNumber(topStats.avg.c1, 0)}</td>
-                <td>{formatNumber(topStats.avg.c2, 0)}</td>
-                <td>{formatNumber(topStats.avg.c3, 0)}</td>
-                <td>{formatNumber(topStats.avg.c4, 0)}</td>
-                <td>{formatNumber(topStats.avg.c5, 0)}</td>
-                <td>{formatNumber(topStats.avg.c6, 0)}</td>
+                <td className={getSpecClass(sideStats.avg.avg, specs.sideSealing, 'target-tolerance', styles.avgCol)}>{formatNumber(sideStats.avg.avg, 0)}</td>
+                <td className={getSpecClass(sideStats.avg.c1, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.avg.c1, 0)}</td>
+                <td className={getSpecClass(sideStats.avg.c2, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.avg.c2, 0)}</td>
+                <td className={getSpecClass(sideStats.avg.c3, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.avg.c3, 0)}</td>
+                <td className={getSpecClass(sideStats.avg.c4, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.avg.c4, 0)}</td>
+                <td className={getSpecClass(sideStats.avg.c5, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.avg.c5, 0)}</td>
+                <td className={getSpecClass(sideStats.avg.c6, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.avg.c6, 0)}</td>
+                <td className={getSpecClass(topStats.avg.avg, specs.topSealing, 'target-tolerance', styles.avgCol)}>{formatNumber(topStats.avg.avg, 0)}</td>
+                <td className={getSpecClass(topStats.avg.c1, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.avg.c1, 0)}</td>
+                <td className={getSpecClass(topStats.avg.c2, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.avg.c2, 0)}</td>
+                <td className={getSpecClass(topStats.avg.c3, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.avg.c3, 0)}</td>
+                <td className={getSpecClass(topStats.avg.c4, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.avg.c4, 0)}</td>
+                <td className={getSpecClass(topStats.avg.c5, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.avg.c5, 0)}</td>
+                <td className={getSpecClass(topStats.avg.c6, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.avg.c6, 0)}</td>
               </tr>
               {/* Max. 행 */}
               <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
                 <td colSpan={3}>Max.</td>
-                <td>{formatNumber(sideStats.max.avg, 0)}</td>
-                <td>{formatNumber(sideStats.max.c1, 0)}</td>
-                <td>{formatNumber(sideStats.max.c2, 0)}</td>
-                <td>{formatNumber(sideStats.max.c3, 0)}</td>
-                <td>{formatNumber(sideStats.max.c4, 0)}</td>
-                <td>{formatNumber(sideStats.max.c5, 0)}</td>
-                <td>{formatNumber(sideStats.max.c6, 0)}</td>
-                <td>{formatNumber(topStats.max.avg, 0)}</td>
-                <td>{formatNumber(topStats.max.c1, 0)}</td>
-                <td>{formatNumber(topStats.max.c2, 0)}</td>
-                <td>{formatNumber(topStats.max.c3, 0)}</td>
-                <td>{formatNumber(topStats.max.c4, 0)}</td>
-                <td>{formatNumber(topStats.max.c5, 0)}</td>
-                <td>{formatNumber(topStats.max.c6, 0)}</td>
+                <td className={getSpecClass(sideStats.max.avg, specs.sideSealing, 'target-tolerance', styles.avgCol)}>{formatNumber(sideStats.max.avg, 0)}</td>
+                <td className={getSpecClass(sideStats.max.c1, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.max.c1, 0)}</td>
+                <td className={getSpecClass(sideStats.max.c2, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.max.c2, 0)}</td>
+                <td className={getSpecClass(sideStats.max.c3, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.max.c3, 0)}</td>
+                <td className={getSpecClass(sideStats.max.c4, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.max.c4, 0)}</td>
+                <td className={getSpecClass(sideStats.max.c5, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.max.c5, 0)}</td>
+                <td className={getSpecClass(sideStats.max.c6, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.max.c6, 0)}</td>
+                <td className={getSpecClass(topStats.max.avg, specs.topSealing, 'target-tolerance', styles.avgCol)}>{formatNumber(topStats.max.avg, 0)}</td>
+                <td className={getSpecClass(topStats.max.c1, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.max.c1, 0)}</td>
+                <td className={getSpecClass(topStats.max.c2, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.max.c2, 0)}</td>
+                <td className={getSpecClass(topStats.max.c3, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.max.c3, 0)}</td>
+                <td className={getSpecClass(topStats.max.c4, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.max.c4, 0)}</td>
+                <td className={getSpecClass(topStats.max.c5, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.max.c5, 0)}</td>
+                <td className={getSpecClass(topStats.max.c6, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.max.c6, 0)}</td>
               </tr>
               {/* Min. 행 */}
               <tr className={`${styles.summaryRow} ${styles.minRow}`}>
                 <td colSpan={3}>Min.</td>
-                <td>{formatNumber(sideStats.min.avg, 0)}</td>
-                <td>{formatNumber(sideStats.min.c1, 0)}</td>
-                <td>{formatNumber(sideStats.min.c2, 0)}</td>
-                <td>{formatNumber(sideStats.min.c3, 0)}</td>
-                <td>{formatNumber(sideStats.min.c4, 0)}</td>
-                <td>{formatNumber(sideStats.min.c5, 0)}</td>
-                <td>{formatNumber(sideStats.min.c6, 0)}</td>
-                <td>{formatNumber(topStats.min.avg, 0)}</td>
-                <td>{formatNumber(topStats.min.c1, 0)}</td>
-                <td>{formatNumber(topStats.min.c2, 0)}</td>
-                <td>{formatNumber(topStats.min.c3, 0)}</td>
-                <td>{formatNumber(topStats.min.c4, 0)}</td>
-                <td>{formatNumber(topStats.min.c5, 0)}</td>
-                <td>{formatNumber(topStats.min.c6, 0)}</td>
+                <td className={getSpecClass(sideStats.min.avg, specs.sideSealing, 'target-tolerance', styles.avgCol)}>{formatNumber(sideStats.min.avg, 0)}</td>
+                <td className={getSpecClass(sideStats.min.c1, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.min.c1, 0)}</td>
+                <td className={getSpecClass(sideStats.min.c2, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.min.c2, 0)}</td>
+                <td className={getSpecClass(sideStats.min.c3, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.min.c3, 0)}</td>
+                <td className={getSpecClass(sideStats.min.c4, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.min.c4, 0)}</td>
+                <td className={getSpecClass(sideStats.min.c5, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.min.c5, 0)}</td>
+                <td className={getSpecClass(sideStats.min.c6, specs.sideSealing, 'target-tolerance')}>{formatNumber(sideStats.min.c6, 0)}</td>
+                <td className={getSpecClass(topStats.min.avg, specs.topSealing, 'target-tolerance', styles.avgCol)}>{formatNumber(topStats.min.avg, 0)}</td>
+                <td className={getSpecClass(topStats.min.c1, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.min.c1, 0)}</td>
+                <td className={getSpecClass(topStats.min.c2, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.min.c2, 0)}</td>
+                <td className={getSpecClass(topStats.min.c3, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.min.c3, 0)}</td>
+                <td className={getSpecClass(topStats.min.c4, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.min.c4, 0)}</td>
+                <td className={getSpecClass(topStats.min.c5, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.min.c5, 0)}</td>
+                <td className={getSpecClass(topStats.min.c6, specs.topSealing, 'target-tolerance')}>{formatNumber(topStats.min.c6, 0)}</td>
               </tr>
               {/* Stdev. 행 */}
               <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
                 <td colSpan={3}>Stdev.</td>
-                <td>{formatNumber(sideStats.stdev.avg, 3)}</td>
+                <td className={styles.avgCol}>{formatNumber(sideStats.stdev.avg, 3)}</td>
                 <td>{formatNumber(sideStats.stdev.c1, 3)}</td>
                 <td>{formatNumber(sideStats.stdev.c2, 3)}</td>
                 <td>{formatNumber(sideStats.stdev.c3, 3)}</td>
                 <td>{formatNumber(sideStats.stdev.c4, 3)}</td>
                 <td>{formatNumber(sideStats.stdev.c5, 3)}</td>
                 <td>{formatNumber(sideStats.stdev.c6, 3)}</td>
-                <td>{formatNumber(topStats.stdev.avg, 3)}</td>
+                <td className={styles.avgCol}>{formatNumber(topStats.stdev.avg, 3)}</td>
                 <td>{formatNumber(topStats.stdev.c1, 3)}</td>
                 <td>{formatNumber(topStats.stdev.c2, 3)}</td>
                 <td>{formatNumber(topStats.stdev.c3, 3)}</td>
@@ -378,20 +406,20 @@ export default function SealingTopTable({ projectId }: SealingTopTableProps) {
                     <td>{index + 1}</td>
                     <td>{row.workDate}</td>
                     <td>{row.lot}</td>
-                    <td>{formatNumber(rowAvgValues[index].sideAvg, 0)}</td>
-                    <td>{formatNumber(row.sideSealing1, 0)}</td>
-                    <td>{formatNumber(row.sideSealing2, 0)}</td>
-                    <td>{formatNumber(row.sideSealing3, 0)}</td>
-                    <td>{formatNumber(row.sideSealing4, 0)}</td>
-                    <td>{formatNumber(row.sideSealing5, 0)}</td>
-                    <td>{formatNumber(row.sideSealing6, 0)}</td>
-                    <td>{formatNumber(rowAvgValues[index].topAvg, 0)}</td>
-                    <td>{formatNumber(row.topSealing1, 0)}</td>
-                    <td>{formatNumber(row.topSealing2, 0)}</td>
-                    <td>{formatNumber(row.topSealing3, 0)}</td>
-                    <td>{formatNumber(row.topSealing4, 0)}</td>
-                    <td>{formatNumber(row.topSealing5, 0)}</td>
-                    <td>{formatNumber(row.topSealing6, 0)}</td>
+                    <td className={getSpecClass(rowAvgValues[index].sideAvg, specs.sideSealing, 'target-tolerance', styles.avgCol)}>{formatNumber(rowAvgValues[index].sideAvg, 0)}</td>
+                    <td className={getSpecClass(row.sideSealing1, specs.sideSealing, 'target-tolerance')}>{formatNumber(row.sideSealing1, 0)}</td>
+                    <td className={getSpecClass(row.sideSealing2, specs.sideSealing, 'target-tolerance')}>{formatNumber(row.sideSealing2, 0)}</td>
+                    <td className={getSpecClass(row.sideSealing3, specs.sideSealing, 'target-tolerance')}>{formatNumber(row.sideSealing3, 0)}</td>
+                    <td className={getSpecClass(row.sideSealing4, specs.sideSealing, 'target-tolerance')}>{formatNumber(row.sideSealing4, 0)}</td>
+                    <td className={getSpecClass(row.sideSealing5, specs.sideSealing, 'target-tolerance')}>{formatNumber(row.sideSealing5, 0)}</td>
+                    <td className={getSpecClass(row.sideSealing6, specs.sideSealing, 'target-tolerance')}>{formatNumber(row.sideSealing6, 0)}</td>
+                    <td className={getSpecClass(rowAvgValues[index].topAvg, specs.topSealing, 'target-tolerance', styles.avgCol)}>{formatNumber(rowAvgValues[index].topAvg, 0)}</td>
+                    <td className={getSpecClass(row.topSealing1, specs.topSealing, 'target-tolerance')}>{formatNumber(row.topSealing1, 0)}</td>
+                    <td className={getSpecClass(row.topSealing2, specs.topSealing, 'target-tolerance')}>{formatNumber(row.topSealing2, 0)}</td>
+                    <td className={getSpecClass(row.topSealing3, specs.topSealing, 'target-tolerance')}>{formatNumber(row.topSealing3, 0)}</td>
+                    <td className={getSpecClass(row.topSealing4, specs.topSealing, 'target-tolerance')}>{formatNumber(row.topSealing4, 0)}</td>
+                    <td className={getSpecClass(row.topSealing5, specs.topSealing, 'target-tolerance')}>{formatNumber(row.topSealing5, 0)}</td>
+                    <td className={getSpecClass(row.topSealing6, specs.topSealing, 'target-tolerance')}>{formatNumber(row.topSealing6, 0)}</td>
                   </tr>
                 ))
               ) : (

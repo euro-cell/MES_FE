@@ -52,6 +52,34 @@ const formatSpec = (spec: SpecValue | undefined, type: string): string => {
 };
 
 // 숫자 포맷팅 헬퍼
+const getSpecClass = (
+  value: number | string | null,
+  spec: SpecValue | undefined,
+  type: 'target-tolerance' | 'max-only' | 'min-only',
+  extraStyles?: string
+): string => {
+  if (value === null || value === undefined || value === '' || !spec) return extraStyles ?? '';
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  if (isNaN(num)) return extraStyles ?? '';
+
+  let over = false;
+  let under = false;
+
+  if (type === 'target-tolerance' && spec.target !== undefined && spec.tolerance !== undefined) {
+    over = num > spec.target + spec.tolerance;
+    under = num < spec.target - spec.tolerance;
+  } else if (type === 'max-only' && spec.max !== undefined) {
+    over = num > spec.max;
+  } else if (type === 'min-only' && spec.min !== undefined) {
+    under = num < spec.min;
+  }
+
+  const base = extraStyles ?? '';
+  if (over) return `${base} ${styles.cellOver}`.trim();
+  if (under) return `${base} ${styles.cellUnder}`.trim();
+  return base;
+};
+
 const formatNumber = (value: number | string | null, decimals: number = 2): string => {
   if (value === null || value === undefined || value === '') return '-';
   const num = typeof value === 'string' ? parseFloat(value) : value;
@@ -238,6 +266,10 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
           <button className={styles.specButton} onClick={openSpecModal}>
             규격 설정
           </button>
+          <div className={styles.specLegend}>
+            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxOver}`} />초과</span>
+            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxUnder}`} />미달</span>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
           {/* 테이블 */}
@@ -254,7 +286,7 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
               </tr>
               {/* 2행: 소분류 헤더 */}
               <tr>
-                <th>평균</th>
+                <th className={styles.avgCol}>평균</th>
                 <th>1</th>
                 <th>2</th>
                 <th>3</th>
@@ -275,34 +307,34 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
               {/* 평균 행 */}
               <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
                 <td colSpan={3}>Ave.</td>
-                <td>{formatNumber(stats.moistureAvg.avg)}</td>
-                <td>{formatNumber(stats.moisture1.avg)}</td>
-                <td>{formatNumber(stats.moisture2.avg)}</td>
-                <td>{formatNumber(stats.moisture3.avg)}</td>
+                <td className={getSpecClass(stats.moistureAvg.avg, vdSpecs.moisture, 'max-only', styles.avgCol)}>{formatNumber(stats.moistureAvg.avg)}</td>
+                <td className={getSpecClass(stats.moisture1.avg, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture1.avg)}</td>
+                <td className={getSpecClass(stats.moisture2.avg, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture2.avg)}</td>
+                <td className={getSpecClass(stats.moisture3.avg, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture3.avg)}</td>
                 <td colSpan={5}></td>
               </tr>
               {/* 최대값 행 */}
               <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
                 <td colSpan={3}>Max.</td>
-                <td>{formatNumber(stats.moistureAvg.max)}</td>
-                <td>{formatNumber(stats.moisture1.max)}</td>
-                <td>{formatNumber(stats.moisture2.max)}</td>
-                <td>{formatNumber(stats.moisture3.max)}</td>
+                <td className={getSpecClass(stats.moistureAvg.max, vdSpecs.moisture, 'max-only', styles.avgCol)}>{formatNumber(stats.moistureAvg.max)}</td>
+                <td className={getSpecClass(stats.moisture1.max, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture1.max)}</td>
+                <td className={getSpecClass(stats.moisture2.max, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture2.max)}</td>
+                <td className={getSpecClass(stats.moisture3.max, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture3.max)}</td>
                 <td colSpan={5}></td>
               </tr>
               {/* 최소값 행 */}
               <tr className={`${styles.summaryRow} ${styles.minRow}`}>
                 <td colSpan={3}>Min.</td>
-                <td>{formatNumber(stats.moistureAvg.min)}</td>
-                <td>{formatNumber(stats.moisture1.min)}</td>
-                <td>{formatNumber(stats.moisture2.min)}</td>
-                <td>{formatNumber(stats.moisture3.min)}</td>
+                <td className={getSpecClass(stats.moistureAvg.min, vdSpecs.moisture, 'max-only', styles.avgCol)}>{formatNumber(stats.moistureAvg.min)}</td>
+                <td className={getSpecClass(stats.moisture1.min, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture1.min)}</td>
+                <td className={getSpecClass(stats.moisture2.min, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture2.min)}</td>
+                <td className={getSpecClass(stats.moisture3.min, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture3.min)}</td>
                 <td colSpan={5}></td>
               </tr>
               {/* 표준편차 행 */}
               <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
                 <td colSpan={3}>Stdev.</td>
-                <td>{formatNumber(stats.moistureAvg.stdev, 3)}</td>
+                <td className={styles.avgCol}>{formatNumber(stats.moistureAvg.stdev, 3)}</td>
                 <td>{formatNumber(stats.moisture1.stdev, 3)}</td>
                 <td>{formatNumber(stats.moisture2.stdev, 3)}</td>
                 <td>{formatNumber(stats.moisture3.stdev, 3)}</td>
@@ -314,11 +346,11 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
                   <tr key={`${row.id}-${index}`}>
                     <td>{index + 1}</td>
                     <td>{row.workDate}</td>
-                    <td>{row.division}</td>
-                    <td>{formatNumber(calcRowAvg(row.moisture1, row.moisture2, row.moisture3))}</td>
-                    <td>{formatNumber(row.moisture1)}</td>
-                    <td>{formatNumber(row.moisture2)}</td>
-                    <td>{formatNumber(row.moisture3)}</td>
+                    <td className={row.division === '전' ? styles.divisionBefore : row.division === '후' ? styles.divisionAfter : ''}>{row.division}</td>
+                    <td className={getSpecClass(calcRowAvg(row.moisture1, row.moisture2, row.moisture3), vdSpecs.moisture, 'max-only', styles.avgCol)}>{formatNumber(calcRowAvg(row.moisture1, row.moisture2, row.moisture3))}</td>
+                    <td className={getSpecClass(row.moisture1, vdSpecs.moisture, 'max-only')}>{formatNumber(row.moisture1)}</td>
+                    <td className={getSpecClass(row.moisture2, vdSpecs.moisture, 'max-only')}>{formatNumber(row.moisture2)}</td>
+                    <td className={getSpecClass(row.moisture3, vdSpecs.moisture, 'max-only')}>{formatNumber(row.moisture3)}</td>
                     <td>{row.lot1 || '-'}</td>
                     <td>{row.lot2 || '-'}</td>
                     <td>{row.lot3 || '-'}</td>

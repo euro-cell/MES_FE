@@ -52,6 +52,35 @@ const formatSpec = (spec: SpecValue | undefined, type: string): string => {
   }
 };
 
+// 규격 비교 셀 클래스
+const getSpecClass = (
+  value: number | string | null,
+  spec: SpecValue | undefined,
+  type: 'target-tolerance' | 'max-only' | 'min-only',
+  extraStyles?: string
+): string => {
+  if (value === null || value === undefined || value === '' || !spec) return extraStyles ?? '';
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  if (isNaN(num)) return extraStyles ?? '';
+
+  let over = false;
+  let under = false;
+
+  if (type === 'target-tolerance' && spec.target !== undefined && spec.tolerance !== undefined) {
+    over = num > spec.target + spec.tolerance;
+    under = num < spec.target - spec.tolerance;
+  } else if (type === 'max-only' && spec.max !== undefined) {
+    over = num > spec.max;
+  } else if (type === 'min-only' && spec.min !== undefined) {
+    under = num < spec.min;
+  }
+
+  const base = extraStyles ?? '';
+  if (over) return `${base} ${styles.cellOver}`.trim();
+  if (under) return `${base} ${styles.cellUnder}`.trim();
+  return base;
+};
+
 // 숫자 포맷팅 헬퍼
 const formatNumber = (value: number | string | null, decimals: number = 2): string => {
   if (value === null || value === undefined || value === '') return '-';
@@ -310,6 +339,10 @@ export default function PressAnodeTable({ projectId }: PressAnodeTableProps) {
           <button className={styles.specButton} onClick={openSpecModal}>
             규격 설정
           </button>
+          <div className={styles.specLegend}>
+            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxOver}`} />초과</span>
+            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxUnder}`} />미달</span>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
           {/* 테이블 */}
@@ -326,11 +359,11 @@ export default function PressAnodeTable({ projectId }: PressAnodeTableProps) {
                 </tr>
                 {/* 2행: 소분류 헤더 */}
                 <tr>
-                  <th>평균</th>
+                  <th className={styles.avgCol}>평균</th>
                   <th>상단</th>
                   <th>중단</th>
                   <th>하단</th>
-                  <th>평균</th>
+                  <th className={styles.avgCol}>평균</th>
                   <th>상단</th>
                   <th>중단</th>
                   <th>하단</th>
@@ -346,47 +379,47 @@ export default function PressAnodeTable({ projectId }: PressAnodeTableProps) {
                 {/* 평균 행 */}
                 <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
                   <td colSpan={3}>Ave.</td>
-                  <td>{formatNumber(stats.doubleSideAvg.avg)}</td>
-                  <td>{formatNumber(stats.doubleSideTop.avg)}</td>
-                  <td>{formatNumber(stats.doubleSideMiddle.avg)}</td>
-                  <td>{formatNumber(stats.doubleSideBottom.avg)}</td>
-                  <td>{formatNumber(stats.thicknessAvg.avg, 0)}</td>
-                  <td>{formatNumber(stats.thicknessTop.avg, 0)}</td>
-                  <td>{formatNumber(stats.thicknessMiddle.avg, 0)}</td>
-                  <td>{formatNumber(stats.thicknessBottom.avg, 0)}</td>
+                  <td className={getSpecClass(stats.doubleSideAvg.avg, pressSpecs.doubleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.doubleSideAvg.avg)}</td>
+                  <td className={getSpecClass(stats.doubleSideTop.avg, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideTop.avg)}</td>
+                  <td className={getSpecClass(stats.doubleSideMiddle.avg, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideMiddle.avg)}</td>
+                  <td className={getSpecClass(stats.doubleSideBottom.avg, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideBottom.avg)}</td>
+                  <td className={getSpecClass(stats.thicknessAvg.avg, pressSpecs.thickness, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.thicknessAvg.avg, 0)}</td>
+                  <td className={getSpecClass(stats.thicknessTop.avg, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(stats.thicknessTop.avg, 0)}</td>
+                  <td className={getSpecClass(stats.thicknessMiddle.avg, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(stats.thicknessMiddle.avg, 0)}</td>
+                  <td className={getSpecClass(stats.thicknessBottom.avg, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(stats.thicknessBottom.avg, 0)}</td>
                 </tr>
                 {/* 최대값 행 */}
                 <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
                   <td colSpan={3}>Max.</td>
-                  <td>{formatNumber(stats.doubleSideAvg.max)}</td>
-                  <td>{formatNumber(stats.doubleSideTop.max)}</td>
-                  <td>{formatNumber(stats.doubleSideMiddle.max)}</td>
-                  <td>{formatNumber(stats.doubleSideBottom.max)}</td>
-                  <td>{formatNumber(stats.thicknessAvg.max, 0)}</td>
-                  <td>{formatNumber(stats.thicknessTop.max, 0)}</td>
-                  <td>{formatNumber(stats.thicknessMiddle.max, 0)}</td>
-                  <td>{formatNumber(stats.thicknessBottom.max, 0)}</td>
+                  <td className={getSpecClass(stats.doubleSideAvg.max, pressSpecs.doubleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.doubleSideAvg.max)}</td>
+                  <td className={getSpecClass(stats.doubleSideTop.max, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideTop.max)}</td>
+                  <td className={getSpecClass(stats.doubleSideMiddle.max, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideMiddle.max)}</td>
+                  <td className={getSpecClass(stats.doubleSideBottom.max, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideBottom.max)}</td>
+                  <td className={getSpecClass(stats.thicknessAvg.max, pressSpecs.thickness, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.thicknessAvg.max, 0)}</td>
+                  <td className={getSpecClass(stats.thicknessTop.max, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(stats.thicknessTop.max, 0)}</td>
+                  <td className={getSpecClass(stats.thicknessMiddle.max, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(stats.thicknessMiddle.max, 0)}</td>
+                  <td className={getSpecClass(stats.thicknessBottom.max, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(stats.thicknessBottom.max, 0)}</td>
                 </tr>
                 {/* 최소값 행 */}
                 <tr className={`${styles.summaryRow} ${styles.minRow}`}>
                   <td colSpan={3}>Min.</td>
-                  <td>{formatNumber(stats.doubleSideAvg.min)}</td>
-                  <td>{formatNumber(stats.doubleSideTop.min)}</td>
-                  <td>{formatNumber(stats.doubleSideMiddle.min)}</td>
-                  <td>{formatNumber(stats.doubleSideBottom.min)}</td>
-                  <td>{formatNumber(stats.thicknessAvg.min, 0)}</td>
-                  <td>{formatNumber(stats.thicknessTop.min, 0)}</td>
-                  <td>{formatNumber(stats.thicknessMiddle.min, 0)}</td>
-                  <td>{formatNumber(stats.thicknessBottom.min, 0)}</td>
+                  <td className={getSpecClass(stats.doubleSideAvg.min, pressSpecs.doubleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.doubleSideAvg.min)}</td>
+                  <td className={getSpecClass(stats.doubleSideTop.min, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideTop.min)}</td>
+                  <td className={getSpecClass(stats.doubleSideMiddle.min, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideMiddle.min)}</td>
+                  <td className={getSpecClass(stats.doubleSideBottom.min, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideBottom.min)}</td>
+                  <td className={getSpecClass(stats.thicknessAvg.min, pressSpecs.thickness, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.thicknessAvg.min, 0)}</td>
+                  <td className={getSpecClass(stats.thicknessTop.min, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(stats.thicknessTop.min, 0)}</td>
+                  <td className={getSpecClass(stats.thicknessMiddle.min, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(stats.thicknessMiddle.min, 0)}</td>
+                  <td className={getSpecClass(stats.thicknessBottom.min, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(stats.thicknessBottom.min, 0)}</td>
                 </tr>
                 {/* 표준편차 행 */}
                 <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
                   <td colSpan={3}>Stdev.</td>
-                  <td>{formatNumber(stats.doubleSideAvg.stdev, 3)}</td>
+                  <td className={styles.avgCol}>{formatNumber(stats.doubleSideAvg.stdev, 3)}</td>
                   <td>{formatNumber(stats.doubleSideTop.stdev, 3)}</td>
                   <td>{formatNumber(stats.doubleSideMiddle.stdev, 3)}</td>
                   <td>{formatNumber(stats.doubleSideBottom.stdev, 3)}</td>
-                  <td>{formatNumber(stats.thicknessAvg.stdev, 3)}</td>
+                  <td className={styles.avgCol}>{formatNumber(stats.thicknessAvg.stdev, 3)}</td>
                   <td>{formatNumber(stats.thicknessTop.stdev, 3)}</td>
                   <td>{formatNumber(stats.thicknessMiddle.stdev, 3)}</td>
                   <td>{formatNumber(stats.thicknessBottom.stdev, 3)}</td>
@@ -397,15 +430,15 @@ export default function PressAnodeTable({ projectId }: PressAnodeTableProps) {
                     <tr key={`${row.id}-${index}`}>
                       <td>{index + 1}</td>
                       <td>{row.lot}</td>
-                      <td>{row.division}</td>
-                      <td>{formatNumber(calcRowAvg(row.doubleSideTop, row.doubleSideMiddle, row.doubleSideBottom))}</td>
-                      <td>{formatNumber(row.doubleSideTop)}</td>
-                      <td>{formatNumber(row.doubleSideMiddle)}</td>
-                      <td>{formatNumber(row.doubleSideBottom)}</td>
-                      <td>{formatNumber(calcRowAvg(row.thicknessTop, row.thicknessMiddle, row.thicknessBottom), 0)}</td>
-                      <td>{formatNumber(row.thicknessTop, 0)}</td>
-                      <td>{formatNumber(row.thicknessMiddle, 0)}</td>
-                      <td>{formatNumber(row.thicknessBottom, 0)}</td>
+                      <td className={row.division === '전' ? styles.divisionBefore : row.division === '후' ? styles.divisionAfter : ''}>{row.division}</td>
+                      <td className={getSpecClass(calcRowAvg(row.doubleSideTop, row.doubleSideMiddle, row.doubleSideBottom), pressSpecs.doubleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(calcRowAvg(row.doubleSideTop, row.doubleSideMiddle, row.doubleSideBottom))}</td>
+                      <td className={getSpecClass(row.doubleSideTop, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(row.doubleSideTop)}</td>
+                      <td className={getSpecClass(row.doubleSideMiddle, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(row.doubleSideMiddle)}</td>
+                      <td className={getSpecClass(row.doubleSideBottom, pressSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(row.doubleSideBottom)}</td>
+                      <td className={getSpecClass(calcRowAvg(row.thicknessTop, row.thicknessMiddle, row.thicknessBottom), pressSpecs.thickness, 'target-tolerance', styles.avgCol)}>{formatNumber(calcRowAvg(row.thicknessTop, row.thicknessMiddle, row.thicknessBottom), 0)}</td>
+                      <td className={getSpecClass(row.thicknessTop, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(row.thicknessTop, 0)}</td>
+                      <td className={getSpecClass(row.thicknessMiddle, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(row.thicknessMiddle, 0)}</td>
+                      <td className={getSpecClass(row.thicknessBottom, pressSpecs.thickness, 'target-tolerance')}>{formatNumber(row.thicknessBottom, 0)}</td>
                     </tr>
                   ))
                 ) : (

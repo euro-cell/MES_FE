@@ -47,6 +47,18 @@ const formatSpec = (spec: SpecValue | undefined, type: string): string => {
   return '미설정';
 };
 
+const getSpecClass = (
+  value: number | null,
+  spec: SpecValue | undefined,
+): string => {
+  if (value === null || value === undefined || isNaN(value) || !spec) return '';
+  if (spec.target !== undefined && spec.tolerance !== undefined) {
+    if (value > spec.target + spec.tolerance) return styles.cellOver;
+    if (value < spec.target - spec.tolerance) return styles.cellUnder;
+  }
+  return '';
+};
+
 const formatNumber = (value: number | null, decimals: number = 0): string => {
   if (value === null || value === undefined || isNaN(value)) return '-';
   return value.toFixed(decimals);
@@ -198,6 +210,10 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
           <button className={styles.specButton} onClick={() => setIsSpecModalOpen(true)}>
             규격 설정
           </button>
+          <div className={styles.specLegend}>
+            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxOver}`} />초과</span>
+            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxUnder}`} />미달</span>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
         <div style={{ overflow: 'auto', flex: 1 }}>
@@ -210,7 +226,7 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
                 <th colSpan={MAX_COLS + 1}>Final Sealing 두께 (㎛)</th>
               </tr>
               <tr>
-                <th>평균</th>
+                <th className={styles.avgCol}>평균</th>
                 {Array.from({ length: MAX_COLS }, (_, i) => <th key={i}>{i + 1}</th>)}
               </tr>
             </thead>
@@ -221,22 +237,22 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
               </tr>
               <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
                 <td colSpan={3}>Ave.</td>
-                <td>{formatNumber(calcAvg(rowAvgs), 0)}</td>
-                {colStats.map((s, i) => <td key={i}>{formatNumber(s.avg, 0)}</td>)}
+                <td className={`${getSpecClass(calcAvg(rowAvgs), specs.thickness)} ${styles.avgCol}`.trim()}>{formatNumber(calcAvg(rowAvgs), 0)}</td>
+                {colStats.map((s, i) => <td key={i} className={getSpecClass(s.avg, specs.thickness)}>{formatNumber(s.avg, 0)}</td>)}
               </tr>
               <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
                 <td colSpan={3}>Max.</td>
-                <td>{formatNumber(calcMax(rowAvgs), 0)}</td>
-                {colStats.map((s, i) => <td key={i}>{formatNumber(s.max, 0)}</td>)}
+                <td className={`${getSpecClass(calcMax(rowAvgs), specs.thickness)} ${styles.avgCol}`.trim()}>{formatNumber(calcMax(rowAvgs), 0)}</td>
+                {colStats.map((s, i) => <td key={i} className={getSpecClass(s.max, specs.thickness)}>{formatNumber(s.max, 0)}</td>)}
               </tr>
               <tr className={`${styles.summaryRow} ${styles.minRow}`}>
                 <td colSpan={3}>Min.</td>
-                <td>{formatNumber(calcMin(rowAvgs), 0)}</td>
-                {colStats.map((s, i) => <td key={i}>{formatNumber(s.min, 0)}</td>)}
+                <td className={`${getSpecClass(calcMin(rowAvgs), specs.thickness)} ${styles.avgCol}`.trim()}>{formatNumber(calcMin(rowAvgs), 0)}</td>
+                {colStats.map((s, i) => <td key={i} className={getSpecClass(s.min, specs.thickness)}>{formatNumber(s.min, 0)}</td>)}
               </tr>
               <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
                 <td colSpan={3}>Stdev.</td>
-                <td>{formatNumber(calcStdev(rowAvgs), 3)}</td>
+                <td className={styles.avgCol}>{formatNumber(calcStdev(rowAvgs), 3)}</td>
                 {colStats.map((s, i) => <td key={i}>{formatNumber(s.stdev, 3)}</td>)}
               </tr>
               {hasData ? (
@@ -245,9 +261,9 @@ export default function FinalSealingTable({ projectId }: FinalSealingTableProps)
                     <td>{index + 1}</td>
                     <td>{row.workDate}</td>
                     <td>{row.lot}</td>
-                    <td>{formatNumber(rowAvgs[index], 0)}</td>
+                    <td className={`${getSpecClass(rowAvgs[index], specs.thickness)} ${styles.avgCol}`.trim()}>{formatNumber(rowAvgs[index], 0)}</td>
                     {row.thicknesses.map((v, i) => (
-                      <td key={i}>{formatNumber(v, 0)}</td>
+                      <td key={i} className={getSpecClass(v, specs.thickness)}>{formatNumber(v, 0)}</td>
                     ))}
                   </tr>
                 ))
