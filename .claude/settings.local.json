@@ -24,7 +24,8 @@
       "Bash(dir:*)",
       "Bash(cd:*)",
       "Bash(npm audit:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "WebFetch(domain:www.npmjs.com)"
     ],
     "deny": [],
     "ask": []
