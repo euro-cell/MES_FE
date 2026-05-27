@@ -1,4 +1,5 @@
 import { getDaysInMonth } from '../utils/dateUtils';
+import * as holidaysKr from '@hyunbinseo/holidays-kr';
 import styles from '../../../../styles/project/status/ProductionStatusGrid.module.css';
 import {
   FORMING_SUBTYPES,
@@ -43,29 +44,11 @@ const ELECTRODE_PROCESS_KEYS = [
 export default function DataGrid({ data, year, month, onTargetChange }: DataGridProps) {
   const daysInMonth = getDaysInMonth(year, month);
 
-  // 한국 공휴일 체크 함수
   const isHoliday = (year: number, month: number, day: number): boolean => {
-    const holidays: Record<string, string> = {
-      '1-1': '신정',
-      '3-1': '삼일절',
-      '5-5': '어린이날',
-      '6-6': '현충일',
-      '8-15': '광복절',
-      '10-3': '개천절',
-      '10-9': '한글날',
-      '12-25': '크리스마스',
-    };
-
-    const lunarHolidays: Record<number, string[]> = {
-      2024: ['2-9', '2-10', '2-11', '2-12', '9-16', '9-17', '9-18', '5-6', '5-15'],
-      2025: ['1-28', '1-29', '1-30', '1-31', '10-5', '10-6', '10-7', '10-8', '5-5', '8-6'],
-      2026: ['2-16', '2-17', '2-18', '2-19', '9-24', '9-25', '9-26', '9-27', '5-19', '8-25'],
-    };
-
-    const dateKey = `${month}-${day}`;
-    if (holidays[dateKey]) return true;
-    if (lunarHolidays[year]?.includes(dateKey)) return true;
-    return false;
+    const yearData = (holidaysKr as unknown as Record<string, Record<string, readonly string[]>>)[`y${year}`];
+    if (!yearData) return false;
+    const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    return dateKey in yearData;
   };
 
   const getDayOfWeek = (day: number): number => {
