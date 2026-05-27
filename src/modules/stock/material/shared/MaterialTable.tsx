@@ -247,7 +247,10 @@ export default function MaterialTable({ data, onEdit, onDelete, onCoA }: Materia
       {
         accessorKey: 'stock',
         header: '재고',
-        cell: ({ getValue }) => getValue<number>() ?? 0,
+        cell: ({ getValue }) => {
+          const v = getValue<number>() ?? 0;
+          return v % 1 === 0 ? Math.trunc(v) : v;
+        },
         filterFn: multiSelectFilter,
         size: 70,
       },
