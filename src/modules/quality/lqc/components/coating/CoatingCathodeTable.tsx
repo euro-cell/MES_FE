@@ -420,25 +420,25 @@ export default function CoatingCathodeTable({ projectId }: CoatingCathodeTablePr
                 <th rowSpan={2}>No.</th>
                 <th rowSpan={2}>Lot no.</th>
                 <th rowSpan={2}>구분</th>
-                <th colSpan={4} className={styles.groupBorder}>단면(A) 면적밀도(mg/cm²)</th>
-                <th colSpan={4} className={styles.groupBorder}>양면(A+B) 면적밀도(mg/cm²)</th>
-                <th colSpan={3} className={styles.groupBorder}>전극 치수 검사 (mm)</th>
-                <th colSpan={4} className={styles.groupBorder}>전극 두께 검사 (㎛)</th>
+                <th colSpan={4}>단면(A) 면적밀도(mg/cm²)</th>
+                <th colSpan={4}>양면(A+B) 면적밀도(mg/cm²)</th>
+                <th colSpan={3}>전극 치수 검사 (mm)</th>
+                <th colSpan={4}>전극 두께 검사 (㎛)</th>
               </tr>
               {/* 2행: 소분류 헤더 */}
               <tr>
-                <th className={`${styles.groupBorder} ${styles.avgCol}`}>평균</th>
+                <th className={styles.avgCol}>평균</th>
                 <th>상단</th>
                 <th>중단</th>
                 <th>하단</th>
-                <th className={`${styles.groupBorder} ${styles.avgCol}`}>평균</th>
+                <th className={styles.avgCol}>평균</th>
                 <th>상단</th>
                 <th>중단</th>
                 <th>하단</th>
-                <th className={styles.groupBorder}>코팅폭</th>
+                <th>코팅폭</th>
                 <th>무지부</th>
                 <th>Miss match</th>
-                <th className={`${styles.groupBorder} ${styles.avgCol}`}>평균</th>
+                <th className={styles.avgCol}>평균</th>
                 <th>상단</th>
                 <th>중단</th>
                 <th>하단</th>
@@ -448,28 +448,28 @@ export default function CoatingCathodeTable({ projectId }: CoatingCathodeTablePr
               {/* 규격 행 */}
               <tr className={styles.specRow}>
                 <td colSpan={3}>규격</td>
-                <td colSpan={4} className={styles.groupBorder}>{formatSpec(coatingSpecs.singleSideDensity, 'target-tolerance')}</td>
-                <td colSpan={4} className={styles.groupBorder}>{formatSpec(coatingSpecs.doubleSideDensity, 'target-tolerance')}</td>
-                <td className={styles.groupBorder}>{formatSpec(coatingSpecs.coatingWidth, 'target-tolerance')}</td>
+                <td colSpan={4}>{formatSpec(coatingSpecs.singleSideDensity, 'target-tolerance')}</td>
+                <td colSpan={4}>{formatSpec(coatingSpecs.doubleSideDensity, 'target-tolerance')}</td>
+                <td>{formatSpec(coatingSpecs.coatingWidth, 'target-tolerance')}</td>
                 <td>{formatSpec(coatingSpecs.uncoatedArea, 'target-tolerance')}</td>
                 <td>{formatSpec(coatingSpecs.mismatch, 'max-only')}</td>
-                <td colSpan={4} className={styles.groupBorder}>TBD</td>
+                <td colSpan={4}>TBD</td>
               </tr>
               {/* 평균 행 */}
               <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
                 <td colSpan={3}>Ave.</td>
-                <td className={getSpecClass(stats.singleSideAvg.avg, coatingSpecs.singleSideDensity, 'target-tolerance', `${styles.groupBorder} ${styles.avgCol}`)}>{formatNumber(stats.singleSideAvg.avg)}</td>
+                <td className={getSpecClass(stats.singleSideAvg.avg, coatingSpecs.singleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.singleSideAvg.avg)}</td>
                 <td className={getSpecClass(stats.singleSideTop.avg, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(stats.singleSideTop.avg)}</td>
                 <td className={getSpecClass(stats.singleSideMiddle.avg, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(stats.singleSideMiddle.avg)}</td>
                 <td className={getSpecClass(stats.singleSideBottom.avg, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(stats.singleSideBottom.avg)}</td>
-                <td className={getSpecClass(stats.doubleSideAvg.avg, coatingSpecs.doubleSideDensity, 'target-tolerance', `${styles.groupBorder} ${styles.avgCol}`)}>{formatNumber(stats.doubleSideAvg.avg)}</td>
+                <td className={getSpecClass(stats.doubleSideAvg.avg, coatingSpecs.doubleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.doubleSideAvg.avg)}</td>
                 <td className={getSpecClass(stats.doubleSideTop.avg, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideTop.avg)}</td>
                 <td className={getSpecClass(stats.doubleSideMiddle.avg, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideMiddle.avg)}</td>
                 <td className={getSpecClass(stats.doubleSideBottom.avg, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideBottom.avg)}</td>
-                <td className={getSpecClass(stats.coatingWidth.avg, coatingSpecs.coatingWidth, 'target-tolerance', styles.groupBorder)}>{formatNumber(stats.coatingWidth.avg, 1)}</td>
+                <td className={getSpecClass(stats.coatingWidth.avg, coatingSpecs.coatingWidth, 'target-tolerance')}>{formatNumber(stats.coatingWidth.avg, 1)}</td>
                 <td className={getSpecClass(stats.uncoatedArea.avg, coatingSpecs.uncoatedArea, 'target-tolerance')}>{formatNumber(stats.uncoatedArea.avg, 1)}</td>
                 <td className={getSpecClass(stats.mismatch.avg, coatingSpecs.mismatch, 'max-only')}>{formatNumber(stats.mismatch.avg, 1)}</td>
-                <td className={`${styles.groupBorder} ${styles.avgCol}`}>{formatNumber(stats.thicknessAvg.avg, 0)}</td>
+                <td className={styles.avgCol}>{formatNumber(stats.thicknessAvg.avg, 0)}</td>
                 <td>{formatNumber(stats.thicknessTop.avg, 0)}</td>
                 <td>{formatNumber(stats.thicknessMiddle.avg, 0)}</td>
                 <td>{formatNumber(stats.thicknessBottom.avg, 0)}</td>
@@ -477,18 +477,18 @@ export default function CoatingCathodeTable({ projectId }: CoatingCathodeTablePr
               {/* 최대값 행 */}
               <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
                 <td colSpan={3}>Max.</td>
-                <td className={getSpecClass(stats.singleSideAvg.max, coatingSpecs.singleSideDensity, 'target-tolerance', `${styles.groupBorder} ${styles.avgCol}`)}>{formatNumber(stats.singleSideAvg.max)}</td>
+                <td className={getSpecClass(stats.singleSideAvg.max, coatingSpecs.singleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.singleSideAvg.max)}</td>
                 <td className={getSpecClass(stats.singleSideTop.max, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(stats.singleSideTop.max)}</td>
                 <td className={getSpecClass(stats.singleSideMiddle.max, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(stats.singleSideMiddle.max)}</td>
                 <td className={getSpecClass(stats.singleSideBottom.max, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(stats.singleSideBottom.max)}</td>
-                <td className={getSpecClass(stats.doubleSideAvg.max, coatingSpecs.doubleSideDensity, 'target-tolerance', `${styles.groupBorder} ${styles.avgCol}`)}>{formatNumber(stats.doubleSideAvg.max)}</td>
+                <td className={getSpecClass(stats.doubleSideAvg.max, coatingSpecs.doubleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.doubleSideAvg.max)}</td>
                 <td className={getSpecClass(stats.doubleSideTop.max, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideTop.max)}</td>
                 <td className={getSpecClass(stats.doubleSideMiddle.max, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideMiddle.max)}</td>
                 <td className={getSpecClass(stats.doubleSideBottom.max, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideBottom.max)}</td>
-                <td className={getSpecClass(stats.coatingWidth.max, coatingSpecs.coatingWidth, 'target-tolerance', styles.groupBorder)}>{formatNumber(stats.coatingWidth.max, 1)}</td>
+                <td className={getSpecClass(stats.coatingWidth.max, coatingSpecs.coatingWidth, 'target-tolerance')}>{formatNumber(stats.coatingWidth.max, 1)}</td>
                 <td className={getSpecClass(stats.uncoatedArea.max, coatingSpecs.uncoatedArea, 'target-tolerance')}>{formatNumber(stats.uncoatedArea.max, 1)}</td>
                 <td className={getSpecClass(stats.mismatch.max, coatingSpecs.mismatch, 'max-only')}>{formatNumber(stats.mismatch.max, 1)}</td>
-                <td className={`${styles.groupBorder} ${styles.avgCol}`}>{formatNumber(stats.thicknessAvg.max, 0)}</td>
+                <td className={styles.avgCol}>{formatNumber(stats.thicknessAvg.max, 0)}</td>
                 <td>{formatNumber(stats.thicknessTop.max, 0)}</td>
                 <td>{formatNumber(stats.thicknessMiddle.max, 0)}</td>
                 <td>{formatNumber(stats.thicknessBottom.max, 0)}</td>
@@ -496,18 +496,18 @@ export default function CoatingCathodeTable({ projectId }: CoatingCathodeTablePr
               {/* 최소값 행 */}
               <tr className={`${styles.summaryRow} ${styles.minRow}`}>
                 <td colSpan={3}>Min.</td>
-                <td className={getSpecClass(stats.singleSideAvg.min, coatingSpecs.singleSideDensity, 'target-tolerance', `${styles.groupBorder} ${styles.avgCol}`)}>{formatNumber(stats.singleSideAvg.min)}</td>
+                <td className={getSpecClass(stats.singleSideAvg.min, coatingSpecs.singleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.singleSideAvg.min)}</td>
                 <td className={getSpecClass(stats.singleSideTop.min, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(stats.singleSideTop.min)}</td>
                 <td className={getSpecClass(stats.singleSideMiddle.min, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(stats.singleSideMiddle.min)}</td>
                 <td className={getSpecClass(stats.singleSideBottom.min, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(stats.singleSideBottom.min)}</td>
-                <td className={getSpecClass(stats.doubleSideAvg.min, coatingSpecs.doubleSideDensity, 'target-tolerance', `${styles.groupBorder} ${styles.avgCol}`)}>{formatNumber(stats.doubleSideAvg.min)}</td>
+                <td className={getSpecClass(stats.doubleSideAvg.min, coatingSpecs.doubleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(stats.doubleSideAvg.min)}</td>
                 <td className={getSpecClass(stats.doubleSideTop.min, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideTop.min)}</td>
                 <td className={getSpecClass(stats.doubleSideMiddle.min, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideMiddle.min)}</td>
                 <td className={getSpecClass(stats.doubleSideBottom.min, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(stats.doubleSideBottom.min)}</td>
-                <td className={getSpecClass(stats.coatingWidth.min, coatingSpecs.coatingWidth, 'target-tolerance', styles.groupBorder)}>{formatNumber(stats.coatingWidth.min, 1)}</td>
+                <td className={getSpecClass(stats.coatingWidth.min, coatingSpecs.coatingWidth, 'target-tolerance')}>{formatNumber(stats.coatingWidth.min, 1)}</td>
                 <td className={getSpecClass(stats.uncoatedArea.min, coatingSpecs.uncoatedArea, 'target-tolerance')}>{formatNumber(stats.uncoatedArea.min, 1)}</td>
                 <td className={getSpecClass(stats.mismatch.min, coatingSpecs.mismatch, 'max-only')}>{formatNumber(stats.mismatch.min, 1)}</td>
-                <td className={`${styles.groupBorder} ${styles.avgCol}`}>{formatNumber(stats.thicknessAvg.min, 0)}</td>
+                <td className={styles.avgCol}>{formatNumber(stats.thicknessAvg.min, 0)}</td>
                 <td>{formatNumber(stats.thicknessTop.min, 0)}</td>
                 <td>{formatNumber(stats.thicknessMiddle.min, 0)}</td>
                 <td>{formatNumber(stats.thicknessBottom.min, 0)}</td>
@@ -515,18 +515,18 @@ export default function CoatingCathodeTable({ projectId }: CoatingCathodeTablePr
               {/* 표준편차 행 */}
               <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
                 <td colSpan={3}>Stdev.</td>
-                <td className={`${styles.groupBorder} ${styles.avgCol}`}>{formatNumber(stats.singleSideAvg.stdev, 3)}</td>
+                <td className={styles.avgCol}>{formatNumber(stats.singleSideAvg.stdev, 3)}</td>
                 <td>{formatNumber(stats.singleSideTop.stdev, 3)}</td>
                 <td>{formatNumber(stats.singleSideMiddle.stdev, 3)}</td>
                 <td>{formatNumber(stats.singleSideBottom.stdev, 3)}</td>
-                <td className={`${styles.groupBorder} ${styles.avgCol}`}>{formatNumber(stats.doubleSideAvg.stdev, 3)}</td>
+                <td className={styles.avgCol}>{formatNumber(stats.doubleSideAvg.stdev, 3)}</td>
                 <td>{formatNumber(stats.doubleSideTop.stdev, 3)}</td>
                 <td>{formatNumber(stats.doubleSideMiddle.stdev, 3)}</td>
                 <td>{formatNumber(stats.doubleSideBottom.stdev, 3)}</td>
-                <td className={styles.groupBorder}>{formatNumber(stats.coatingWidth.stdev, 3)}</td>
+                <td>{formatNumber(stats.coatingWidth.stdev, 3)}</td>
                 <td>{formatNumber(stats.uncoatedArea.stdev, 3)}</td>
                 <td>{formatNumber(stats.mismatch.stdev, 3)}</td>
-                <td className={`${styles.groupBorder} ${styles.avgCol}`}>{formatNumber(stats.thicknessAvg.stdev, 3)}</td>
+                <td className={styles.avgCol}>{formatNumber(stats.thicknessAvg.stdev, 3)}</td>
                 <td>{formatNumber(stats.thicknessTop.stdev, 3)}</td>
                 <td>{formatNumber(stats.thicknessMiddle.stdev, 3)}</td>
                 <td>{formatNumber(stats.thicknessBottom.stdev, 3)}</td>
@@ -538,18 +538,18 @@ export default function CoatingCathodeTable({ projectId }: CoatingCathodeTablePr
                     <td>{index + 1}</td>
                     <td>{row.lot}</td>
                     <td className={row.division === '전' ? styles.divisionBefore : row.division === '후' ? styles.divisionAfter : ''}>{row.division}</td>
-                    <td className={getSpecClass(calcRowAvg(row.singleSideTop, row.singleSideMiddle, row.singleSideBottom), coatingSpecs.singleSideDensity, 'target-tolerance', `${styles.groupBorder} ${styles.avgCol}`)}>{formatNumber(calcRowAvg(row.singleSideTop, row.singleSideMiddle, row.singleSideBottom))}</td>
+                    <td className={getSpecClass(calcRowAvg(row.singleSideTop, row.singleSideMiddle, row.singleSideBottom), coatingSpecs.singleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(calcRowAvg(row.singleSideTop, row.singleSideMiddle, row.singleSideBottom))}</td>
                     <td className={getSpecClass(row.singleSideTop, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(row.singleSideTop)}</td>
                     <td className={getSpecClass(row.singleSideMiddle, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(row.singleSideMiddle)}</td>
                     <td className={getSpecClass(row.singleSideBottom, coatingSpecs.singleSideDensity, 'target-tolerance')}>{formatNumber(row.singleSideBottom)}</td>
-                    <td className={getSpecClass(calcRowAvg(row.doubleSideTop, row.doubleSideMiddle, row.doubleSideBottom), coatingSpecs.doubleSideDensity, 'target-tolerance', `${styles.groupBorder} ${styles.avgCol}`)}>{formatNumber(calcRowAvg(row.doubleSideTop, row.doubleSideMiddle, row.doubleSideBottom))}</td>
+                    <td className={getSpecClass(calcRowAvg(row.doubleSideTop, row.doubleSideMiddle, row.doubleSideBottom), coatingSpecs.doubleSideDensity, 'target-tolerance', styles.avgCol)}>{formatNumber(calcRowAvg(row.doubleSideTop, row.doubleSideMiddle, row.doubleSideBottom))}</td>
                     <td className={getSpecClass(row.doubleSideTop, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(row.doubleSideTop)}</td>
                     <td className={getSpecClass(row.doubleSideMiddle, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(row.doubleSideMiddle)}</td>
                     <td className={getSpecClass(row.doubleSideBottom, coatingSpecs.doubleSideDensity, 'target-tolerance')}>{formatNumber(row.doubleSideBottom)}</td>
-                    <td className={getSpecClass(row.coatingWidth, coatingSpecs.coatingWidth, 'target-tolerance', styles.groupBorder)}>{formatNumber(row.coatingWidth, 1)}</td>
+                    <td className={getSpecClass(row.coatingWidth, coatingSpecs.coatingWidth, 'target-tolerance')}>{formatNumber(row.coatingWidth, 1)}</td>
                     <td className={getSpecClass(row.uncoatedArea, coatingSpecs.uncoatedArea, 'target-tolerance')}>{formatNumber(row.uncoatedArea, 1)}</td>
                     <td className={getSpecClass(row.mismatch, coatingSpecs.mismatch, 'max-only')}>{formatNumber(row.mismatch, 1)}</td>
-                    <td className={`${styles.groupBorder} ${styles.avgCol}`}>{formatNumber(calcRowAvg(row.thicknessTop, row.thicknessMiddle, row.thicknessBottom), 0)}</td>
+                    <td className={styles.avgCol}>{formatNumber(calcRowAvg(row.thicknessTop, row.thicknessMiddle, row.thicknessBottom), 0)}</td>
                     <td>{formatNumber(row.thicknessTop, 0)}</td>
                     <td>{formatNumber(row.thicknessMiddle, 0)}</td>
                     <td>{formatNumber(row.thicknessBottom, 0)}</td>
