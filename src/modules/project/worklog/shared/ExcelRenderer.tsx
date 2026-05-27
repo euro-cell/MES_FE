@@ -508,6 +508,11 @@ export default function ExcelRenderer({
     if (!value) return '';
     const timeStr = String(value);
 
+    // HH:mm~HH:mm 범위 형식이면 그대로 반환
+    if (/^\d{2}:\d{2}~\d{2}:\d{2}$/.test(timeStr)) {
+      return timeStr;
+    }
+
     // 이미 HH:mm 형식이면 그대로 반환
     if (/^\d{2}:\d{2}$/.test(timeStr)) {
       return timeStr;
@@ -519,6 +524,16 @@ export default function ExcelRenderer({
     }
 
     return timeStr;
+  };
+
+  // HH:mm~HH:mm 문자열에서 시작/종료 시간 분리
+  const parseTimeRange = (value: string): { start: string; end: string } => {
+    if (!value) return { start: '', end: '' };
+    const parts = value.split('~');
+    return {
+      start: parts[0]?.trim() ?? '',
+      end: parts[1]?.trim() ?? '',
+    };
   };
 
   // 셀 값 가져오기 (cellValues에 있으면 사용, 없으면 원본 사용)
@@ -766,32 +781,29 @@ export default function ExcelRenderer({
                           onKeyDown={e => handleKeyDown(e, rangeName)}
                         />
                       ) : timeFields.includes(rangeName) ? (
-                        <input
-                          type='text'
-                          className={styles.cellInput}
-                          data-range-name={rangeName}
-                          value={cellValues[rangeName] ?? ''}
-                          onChange={e => {
-                            const value = e.target.value;
-                            // 숫자와 콜론만 허용, 최대 5자 (HH:mm)
-                            const filtered = value.replace(/[^0-9:]/g, '').slice(0, 5);
-                            // 자동으로 콜론 추가 (2자리 입력 후)
-                            if (filtered.length === 2 && !filtered.includes(':') && value.length > (cellValues[rangeName]?.length || 0)) {
-                              handleInputChange(rangeName, filtered + ':');
-                            } else {
-                              handleInputChange(rangeName, filtered);
-                            }
-                          }}
-                          onBlur={e => {
-                            // 입력 완료 시 형식 검증 (HH:mm)
-                            const value = e.target.value;
-                            if (value && !/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value)) {
-                              toast.error('시간 형식이 올바르지 않습니다. (00:00 ~ 23:59)');
-                            }
-                          }}
-                          onKeyDown={e => handleKeyDown(e, rangeName)}
-                          placeholder='HH:mm (예: 09:30)'
-                        />
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <input
+                            type='time'
+                            className={styles.cellInput}
+                            data-range-name={rangeName}
+                            value={parseTimeRange(cellValues[rangeName] ?? '').start}
+                            onChange={e => {
+                              const { end } = parseTimeRange(cellValues[rangeName] ?? '');
+                              handleInputChange(rangeName, e.target.value && end ? `${e.target.value}~${end}` : e.target.value);
+                            }}
+                            onKeyDown={e => handleKeyDown(e, rangeName)}
+                          />
+                          <span style={{ color: '#666', fontSize: 13 }}>~</span>
+                          <input
+                            type='time'
+                            className={styles.cellInput}
+                            value={parseTimeRange(cellValues[rangeName] ?? '').end}
+                            onChange={e => {
+                              const { start } = parseTimeRange(cellValues[rangeName] ?? '');
+                              handleInputChange(rangeName, start && e.target.value ? `${start}~${e.target.value}` : e.target.value);
+                            }}
+                          />
+                        </span>
                       ) : integerFields.includes(rangeName) ? (
                         <input
                           type='number'

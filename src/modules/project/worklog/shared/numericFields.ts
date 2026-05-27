@@ -351,7 +351,7 @@ export const STACKING_INTEGER_FIELDS = [
   'hipot1DefectQuantity',
   'hipot1DiscardQuantity',
   // JR 번호 1~4 전극파손
-  ...['1', '2', '3', '4'].map(n => `jr${n}ElectrodeDefect`),
+  ...['1', '2', '3', '4', '5', '6', '7', '8'].map(n => `jr${n}ElectrodeDefect`),
   // 공정 조건
   'stackCount',
 ];

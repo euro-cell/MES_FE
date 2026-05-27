@@ -98,7 +98,7 @@ export default function StackingView() {
           cellValues={cellValues}
           namedRanges={namedRanges}
           multilineFields={['remark']}
-          timeFields={['jr1WorkTime', 'jr2WorkTime', 'jr3WorkTime', 'jr4WorkTime']}
+          timeFields={['jr1WorkTime', 'jr2WorkTime', 'jr3WorkTime', 'jr4WorkTime', 'jr5WorkTime', 'jr6WorkTime', 'jr7WorkTime', 'jr8WorkTime']}
         />
       </div>
     </div>

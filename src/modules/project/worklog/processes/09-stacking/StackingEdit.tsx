@@ -254,7 +254,7 @@ export default function StackingEdit() {
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
           multilineFields={['remark']}
-          timeFields={['jr1WorkTime', 'jr2WorkTime', 'jr3WorkTime', 'jr4WorkTime']}
+          timeFields={['jr1WorkTime', 'jr2WorkTime', 'jr3WorkTime', 'jr4WorkTime', 'jr5WorkTime', 'jr6WorkTime', 'jr7WorkTime', 'jr8WorkTime']}
           numericFields={STACKING_NUMERIC_FIELDS}
           integerFields={STACKING_INTEGER_FIELDS}
           readOnlyFields={[...COMMON_READONLY_FIELDS, ...SEPARATOR_AUTO_FILL_FIELDS, ...AUTO_CALC_FIELDS]}

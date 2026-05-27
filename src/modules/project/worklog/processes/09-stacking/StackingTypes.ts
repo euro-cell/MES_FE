@@ -78,6 +78,38 @@ export interface StackingWorklog {
   jr4WorkTime?: string;
   jr4ElectrodeDefect?: number;
 
+  // JR 번호 5
+  jr5Range?: string;
+  jr5CathodeLot?: string;
+  jr5AnodeLot?: string;
+  jr5SeparatorLot?: string;
+  jr5WorkTime?: string;
+  jr5ElectrodeDefect?: number;
+
+  // JR 번호 6
+  jr6Range?: string;
+  jr6CathodeLot?: string;
+  jr6AnodeLot?: string;
+  jr6SeparatorLot?: string;
+  jr6WorkTime?: string;
+  jr6ElectrodeDefect?: number;
+
+  // JR 번호 7
+  jr7Range?: string;
+  jr7CathodeLot?: string;
+  jr7AnodeLot?: string;
+  jr7SeparatorLot?: string;
+  jr7WorkTime?: string;
+  jr7ElectrodeDefect?: number;
+
+  // JR 번호 8
+  jr8Range?: string;
+  jr8CathodeLot?: string;
+  jr8AnodeLot?: string;
+  jr8SeparatorLot?: string;
+  jr8WorkTime?: string;
+  jr8ElectrodeDefect?: number;
+
   // ===== C. 공정 조건 (Process Conditions) =====
   jellyRollWeight?: number;
   jellyRollThickness?: number;
@@ -140,6 +172,30 @@ export interface StackingWorklogPayload {
   jr4SeparatorLot?: string;
   jr4WorkTime?: string;
   jr4ElectrodeDefect?: number;
+  jr5Range?: string;
+  jr5CathodeLot?: string;
+  jr5AnodeLot?: string;
+  jr5SeparatorLot?: string;
+  jr5WorkTime?: string;
+  jr5ElectrodeDefect?: number;
+  jr6Range?: string;
+  jr6CathodeLot?: string;
+  jr6AnodeLot?: string;
+  jr6SeparatorLot?: string;
+  jr6WorkTime?: string;
+  jr6ElectrodeDefect?: number;
+  jr7Range?: string;
+  jr7CathodeLot?: string;
+  jr7AnodeLot?: string;
+  jr7SeparatorLot?: string;
+  jr7WorkTime?: string;
+  jr7ElectrodeDefect?: number;
+  jr8Range?: string;
+  jr8CathodeLot?: string;
+  jr8AnodeLot?: string;
+  jr8SeparatorLot?: string;
+  jr8WorkTime?: string;
+  jr8ElectrodeDefect?: number;
 
   // ===== C. 공정 조건 =====
   jellyRollWeight?: number;
