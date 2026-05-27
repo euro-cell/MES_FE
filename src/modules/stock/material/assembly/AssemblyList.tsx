@@ -297,7 +297,7 @@ export default function AssemblyList() {
                     <td>{history.material?.name || '-'}</td>
                     <td>{history.material?.lotNo || '-'}</td>
                     <td>
-                      {history.previousStock} → {history.currentStock}
+                      {history.previousStock % 1 === 0 ? Math.trunc(history.previousStock) : history.previousStock} → {history.currentStock % 1 === 0 ? Math.trunc(history.currentStock) : history.currentStock}
                     </td>
                     <td>{history.type || '-'}</td>
                   </tr>
