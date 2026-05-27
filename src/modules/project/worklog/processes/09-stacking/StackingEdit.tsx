@@ -220,12 +220,19 @@ export default function StackingEdit() {
   // 드롭다운 옵션 생성
   const plantOptions = plantEquipments.map(eq => eq.name);
   const separatorLotOptions = separatorLots.map(s => s.lot);
+  const selectedSeparatorLots = formValues.separatorLot
+    ? (formValues.separatorLot as string).split(',').map(l => l.trim()).filter(Boolean)
+    : [];
+  const jrSeparatorMultiSelectFields = selectedSeparatorLots.length > 0
+    ? Object.fromEntries(['1','2','3','4','5','6','7','8'].map(n => [`jr${n}SeparatorLot`, selectedSeparatorLots]))
+    : {};
   const stackingSelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
   };
   const stackingMultiSelectFields: Record<string, string[]> = {
     ...(separatorLotOptions.length > 0 && { separatorLot: separatorLotOptions }),
+    ...jrSeparatorMultiSelectFields,
   };
 
   return (
