@@ -59,9 +59,6 @@ export interface GradingWorklog {
   ocv3DiscardQuantity?: number;
   ocv3DefectRate?: number;
 
-  // B. 생산 정보 - Lot 범위
-  lotRange?: string;
-
   // C. 공정 조건 - Grading
   gradingVoltageCondition?: string;
   gradingLowerVoltage?: number;
@@ -137,9 +134,6 @@ export interface GradingWorklogPayload {
   ocv3DefectQuantity?: number;
   ocv3DiscardQuantity?: number;
   ocv3DefectRate?: number;
-
-  // B. 생산 정보 - Lot 범위
-  lotRange?: string;
 
   // C. 공정 조건 - Grading
   gradingVoltageCondition?: string;

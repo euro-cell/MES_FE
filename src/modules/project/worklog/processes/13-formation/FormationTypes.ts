@@ -111,9 +111,6 @@ export interface FormationWorklog {
   ocv1DiscardQuantity?: number;
   ocv1DefectRate?: number;
 
-  // B. 생산 정보 - Lot 범위
-  lotRange?: string;
-
   // C. 공정 조건 - 프리포메이션
   preFormationVoltageCondition?: string;
   preFormationLowerVoltage?: number;
@@ -243,9 +240,6 @@ export interface FormationWorklogPayload {
   ocv1DefectQuantity?: number;
   ocv1DiscardQuantity?: number;
   ocv1DefectRate?: number;
-
-  // B. 생산 정보 - Lot 범위
-  lotRange?: string;
 
   // C. 공정 조건 - 프리포메이션
   preFormationVoltageCondition?: string;
