@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { getErrorMessage } from '../../../api/errorHandler';
+import { downloadCellExcel } from '../../../api/stock/InOutService';
 import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/components/moduleIndex.module.css';
 import InOutIndex from './inOut';
@@ -22,7 +23,6 @@ export default function CellIndex() {
     if (isDownloading) return;
     setIsDownloading(true);
     try {
-      const { downloadCellExcel } = await import('../../../api/stock/InOutService');
       await downloadCellExcel();
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);

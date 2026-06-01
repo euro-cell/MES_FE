@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/plant/Equipment.module.css';
-import { getMaintenanceRecords, deleteMaintenanceRecord } from '../../../api/plant/MaintenanceService';
+import { getMaintenanceRecords, deleteMaintenanceRecord, downloadMaintenanceExcel } from '../../../api/plant/MaintenanceService';
 import { getErrorMessage } from '../../../api/errorHandler';
 import type { MaintenanceRecord } from './MaintenanceTypes';
 
@@ -48,7 +48,6 @@ export default function MaintenanceList() {
 
   const handleDownload = async () => {
     try {
-      const { downloadMaintenanceExcel } = await import('../../../api/plant/MaintenanceService');
       await downloadMaintenanceExcel();
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);

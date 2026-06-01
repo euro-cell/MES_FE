@@ -6,6 +6,7 @@ import {
   deleteElectrodeMaterial,
   getElectrodeHistory,
   importElectrodeMaterials,
+  downloadElectrodeExcel,
 } from '../../../../api/stock/material/ElectrodeMaterialService';
 import type { ElectrodeMaterial, MaterialHistory } from './types';
 import AddMaterialModal from './AddMaterialModal';
@@ -186,7 +187,6 @@ export default function ElectrodeList() {
 
   const handleDownload = async () => {
     try {
-      const { downloadElectrodeExcel } = await import('../../../../api/stock/material/ElectrodeMaterialService');
       await downloadElectrodeExcel();
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);

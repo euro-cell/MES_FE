@@ -6,6 +6,7 @@ import {
   deleteAssemblyMaterial,
   getAssemblyHistory,
   importAssemblyMaterials,
+  downloadAssemblyExcel,
 } from '../../../../api/stock/material/AssemblyMaterialService';
 import type { AssemblyMaterial, MaterialHistory } from './types';
 import AddAssemblyModal from './AddAssemblyModal';
@@ -186,7 +187,6 @@ export default function AssemblyList() {
 
   const handleDownload = async () => {
     try {
-      const { downloadAssemblyExcel } = await import('../../../../api/stock/material/AssemblyMaterialService');
       await downloadAssemblyExcel();
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);
