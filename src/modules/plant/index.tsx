@@ -1,10 +1,12 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MENU_CONFIG } from '../menuConfig';
 import SubmenuBar from '../../components/SubmenuBar';
 import styles from '../../styles/components/moduleIndex.module.css';
-import PlantProductionPage from './production/PlantProductionPage';
-import EquipmentList from './register/EquipmentList';
-import EquipmentForm from './register/EquipmentForm';
+
+const PlantProductionPage = lazy(() => import('./production/PlantProductionPage'));
+const EquipmentList = lazy(() => import('./register/EquipmentList'));
+const EquipmentForm = lazy(() => import('./register/EquipmentForm'));
 
 export default function PlantIndex() {
   const { sub } = MENU_CONFIG.plant;
@@ -14,18 +16,20 @@ export default function PlantIndex() {
       <SubmenuBar menus={sub} />
 
       <div className='module-content'>
-        <Routes>
-          {/* 생산 설비 - 하위 메뉴 있음 */}
-          <Route path='production/*' element={<PlantProductionPage />} />
+        <Suspense fallback={<div>로딩 중...</div>}>
+          <Routes>
+            {/* 생산 설비 - 하위 메뉴 있음 */}
+            <Route path='production/*' element={<PlantProductionPage />} />
 
-          {/* 개발 설비 */}
-          <Route path='development' element={<EquipmentList category='개발' />} />
-          <Route path='development/form' element={<EquipmentForm />} />
+            {/* 개발 설비 */}
+            <Route path='development' element={<EquipmentList category='개발' />} />
+            <Route path='development/form' element={<EquipmentForm />} />
 
-          {/* 측정 설비 */}
-          <Route path='measurement' element={<EquipmentList category='측정' />} />
-          <Route path='measurement/form' element={<EquipmentForm />} />
-        </Routes>
+            {/* 측정 설비 */}
+            <Route path='measurement' element={<EquipmentList category='측정' />} />
+            <Route path='measurement/form' element={<EquipmentForm />} />
+          </Routes>
+        </Suspense>
       </div>
     </div>
   );

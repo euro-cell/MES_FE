@@ -1,9 +1,11 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { MENU_CONFIG } from '../menuConfig';
 import SubmenuBar from '../../components/SubmenuBar';
 import styles from '../../styles/components/moduleIndex.module.css';
-import MaterialIndex from './material';
-import CellIndex from './cell';
+
+const MaterialIndex = lazy(() => import('./material'));
+const CellIndex = lazy(() => import('./cell'));
 
 export default function StockIndex() {
   const { sub } = MENU_CONFIG.stock;
@@ -13,10 +15,12 @@ export default function StockIndex() {
       <SubmenuBar menus={sub} />
 
       <div className='module-content'>
-        <Routes>
-          <Route path='material/*' element={<MaterialIndex />} />
-          <Route path='cell/*' element={<CellIndex />} />
-        </Routes>
+        <Suspense fallback={<div>로딩 중...</div>}>
+          <Routes>
+            <Route path='material/*' element={<MaterialIndex />} />
+            <Route path='cell/*' element={<CellIndex />} />
+          </Routes>
+        </Suspense>
       </div>
     </div>
   );
