@@ -1,4 +1,4 @@
-import ExcelJS from 'exceljs';
+import type ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
 // 타입 정의
@@ -72,6 +72,7 @@ const HEADER_BORDERS = {
  * 스타일이 적용된 생산 일정 엑셀 내보내기 (ExcelJS 사용)
  */
 export const exportPlanToStyledExcel = async (planData: PlanResponse, fileName: string) => {
+  const { default: ExcelJS } = await import('exceljs');
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Schedule');
 
@@ -268,6 +269,7 @@ export const exportPlanToStyledExcel = async (planData: PlanResponse, fileName: 
  * @param fileName - 저장할 파일 이름
  */
 export const exportHtmlTableToExcel = async (html: string, fileName: string) => {
+  const { default: ExcelJS } = await import('exceljs');
   // DOMParser로 HTML 파싱
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');

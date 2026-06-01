@@ -1,4 +1,4 @@
-import ExcelJS from 'exceljs';
+import type ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import type { SpecForm, Field } from './SpecTypes';
 
@@ -84,6 +84,7 @@ export const exportSpecToExcel = async (
   materials: Record<string, MaterialItem[]>,
   projectName: string
 ) => {
+  const { default: ExcelJS } = await import('exceljs');
   const workbook = new ExcelJS.Workbook();
 
   // ========== 시트 1: 전지설계 ==========

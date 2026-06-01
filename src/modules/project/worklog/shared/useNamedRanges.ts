@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import ExcelJS from 'exceljs';
+import type ExcelJS from 'exceljs';
 import { extractNamedRanges, type NamedRangeInfo } from './excelUtils';
 
 interface UseNamedRangesReturn {

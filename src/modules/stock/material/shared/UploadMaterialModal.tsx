@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import ExcelJS from 'exceljs';
 import styles from '../../../../styles/stock/material/uploadModal.module.css';
 
 // 셀 값 포맷 함수
@@ -139,6 +138,7 @@ export default function UploadMaterialModal({
 
     try {
       const arrayBuffer = await file.arrayBuffer();
+      const { default: ExcelJS } = await import('exceljs');
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.load(arrayBuffer);
 

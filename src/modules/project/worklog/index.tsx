@@ -1,51 +1,54 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import WorklogProjectList from './WorklogProjectList';
-import WorklogPage from './WorklogPage';
-import BinderRegister from './processes/01-binder/BinderRegister';
-import BinderView from './processes/01-binder/BinderView';
-import BinderEdit from './processes/01-binder/BinderEdit';
-import SlurryRegister from './processes/02-slurry/SlurryRegister';
-import SlurryView from './processes/02-slurry/SlurryView';
-import SlurryEdit from './processes/02-slurry/SlurryEdit';
-import CoatingRegister from './processes/03-coating/CoatingRegister';
-import CoatingView from './processes/03-coating/CoatingView';
-import CoatingEdit from './processes/03-coating/CoatingEdit';
-import PressRegister from './processes/04-press/PressRegister';
-import PressView from './processes/04-press/PressView';
-import PressEdit from './processes/04-press/PressEdit';
-import NotchingRegister from './processes/06-notching/NotchingRegister';
-import NotchingView from './processes/06-notching/NotchingView';
-import NotchingEdit from './processes/06-notching/NotchingEdit';
-import VDRegister from './processes/07-vd/VDRegister';
-import VDView from './processes/07-vd/VDView';
-import VDEdit from './processes/07-vd/VDEdit';
-import FormingRegister from './processes/08-forming/FormingRegister';
-import FormingView from './processes/08-forming/FormingView';
-import FormingEdit from './processes/08-forming/FormingEdit';
-import StackRegister from './processes/09-stacking/StackingRegister';
-import StackView from './processes/09-stacking/StackingView';
-import StackEdit from './processes/09-stacking/StackingEdit';
-import WeldingRegister from './processes/10-welding/WeldingRegister';
-import WeldingView from './processes/10-welding/WeldingView';
-import WeldingEdit from './processes/10-welding/WeldingEdit';
-import SealingRegister from './processes/11-sealing/SealingRegister';
-import SealingView from './processes/11-sealing/SealingView';
-import SealingEdit from './processes/11-sealing/SealingEdit';
-import FillingRegister from './processes/12-filling/FillingRegister';
-import FillingView from './processes/12-filling/FillingView';
-import FillingEdit from './processes/12-filling/FillingEdit';
-import FormationRegister from './processes/13-formation/FormationRegister';
-import FormationView from './processes/13-formation/FormationView';
-import FormationEdit from './processes/13-formation/FormationEdit';
-import GradingRegister from './processes/14-grading/GradingRegister';
-import GradingView from './processes/14-grading/GradingView';
-import GradingEdit from './processes/14-grading/GradingEdit';
-import InspectionRegister from './processes/15-inspection/InspectionRegister';
-import InspectionView from './processes/15-inspection/InspectionView';
-import InspectionEdit from './processes/15-inspection/InspectionEdit';
+
+const WorklogProjectList = lazy(() => import('./WorklogProjectList'));
+const WorklogPage = lazy(() => import('./WorklogPage'));
+const BinderRegister = lazy(() => import('./processes/01-binder/BinderRegister'));
+const BinderView = lazy(() => import('./processes/01-binder/BinderView'));
+const BinderEdit = lazy(() => import('./processes/01-binder/BinderEdit'));
+const SlurryRegister = lazy(() => import('./processes/02-slurry/SlurryRegister'));
+const SlurryView = lazy(() => import('./processes/02-slurry/SlurryView'));
+const SlurryEdit = lazy(() => import('./processes/02-slurry/SlurryEdit'));
+const CoatingRegister = lazy(() => import('./processes/03-coating/CoatingRegister'));
+const CoatingView = lazy(() => import('./processes/03-coating/CoatingView'));
+const CoatingEdit = lazy(() => import('./processes/03-coating/CoatingEdit'));
+const PressRegister = lazy(() => import('./processes/04-press/PressRegister'));
+const PressView = lazy(() => import('./processes/04-press/PressView'));
+const PressEdit = lazy(() => import('./processes/04-press/PressEdit'));
+const NotchingRegister = lazy(() => import('./processes/06-notching/NotchingRegister'));
+const NotchingView = lazy(() => import('./processes/06-notching/NotchingView'));
+const NotchingEdit = lazy(() => import('./processes/06-notching/NotchingEdit'));
+const VDRegister = lazy(() => import('./processes/07-vd/VDRegister'));
+const VDView = lazy(() => import('./processes/07-vd/VDView'));
+const VDEdit = lazy(() => import('./processes/07-vd/VDEdit'));
+const FormingRegister = lazy(() => import('./processes/08-forming/FormingRegister'));
+const FormingView = lazy(() => import('./processes/08-forming/FormingView'));
+const FormingEdit = lazy(() => import('./processes/08-forming/FormingEdit'));
+const StackRegister = lazy(() => import('./processes/09-stacking/StackingRegister'));
+const StackView = lazy(() => import('./processes/09-stacking/StackingView'));
+const StackEdit = lazy(() => import('./processes/09-stacking/StackingEdit'));
+const WeldingRegister = lazy(() => import('./processes/10-welding/WeldingRegister'));
+const WeldingView = lazy(() => import('./processes/10-welding/WeldingView'));
+const WeldingEdit = lazy(() => import('./processes/10-welding/WeldingEdit'));
+const SealingRegister = lazy(() => import('./processes/11-sealing/SealingRegister'));
+const SealingView = lazy(() => import('./processes/11-sealing/SealingView'));
+const SealingEdit = lazy(() => import('./processes/11-sealing/SealingEdit'));
+const FillingRegister = lazy(() => import('./processes/12-filling/FillingRegister'));
+const FillingView = lazy(() => import('./processes/12-filling/FillingView'));
+const FillingEdit = lazy(() => import('./processes/12-filling/FillingEdit'));
+const FormationRegister = lazy(() => import('./processes/13-formation/FormationRegister'));
+const FormationView = lazy(() => import('./processes/13-formation/FormationView'));
+const FormationEdit = lazy(() => import('./processes/13-formation/FormationEdit'));
+const GradingRegister = lazy(() => import('./processes/14-grading/GradingRegister'));
+const GradingView = lazy(() => import('./processes/14-grading/GradingView'));
+const GradingEdit = lazy(() => import('./processes/14-grading/GradingEdit'));
+const InspectionRegister = lazy(() => import('./processes/15-inspection/InspectionRegister'));
+const InspectionView = lazy(() => import('./processes/15-inspection/InspectionView'));
+const InspectionEdit = lazy(() => import('./processes/15-inspection/InspectionEdit'));
 
 export default function WorklogIndex() {
   return (
+    <Suspense fallback={<div>로딩 중...</div>}>
     <Routes>
       <Route path='' element={<WorklogProjectList />} />
       <Route path=':projectId' element={<WorklogPage />} />
@@ -120,5 +123,6 @@ export default function WorklogIndex() {
       <Route path=':projectId/inspection/view/:worklogId' element={<InspectionView />} />
       <Route path=':projectId/inspection/edit/:worklogId' element={<InspectionEdit />} />
     </Routes>
+    </Suspense>
   );
 }

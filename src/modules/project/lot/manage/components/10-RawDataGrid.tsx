@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import ExcelJS from 'exceljs';
 import styles from '../../../../../styles/project/lot/10-RawDataGrid.module.css';
 import { registerRawData } from '../../../../../api/project/lot';
 
@@ -157,6 +156,7 @@ export default function RawDataGrid({ projectId }: RawDataGridProps) {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
+      const { default: ExcelJS } = await import('exceljs');
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.load(arrayBuffer);
 

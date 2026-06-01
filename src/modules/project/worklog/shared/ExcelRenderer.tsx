@@ -1,5 +1,5 @@
 import { useMemo, useRef, useEffect, useCallback, useState, useId } from 'react';
-import ExcelJS from 'exceljs';
+import type ExcelJS from 'exceljs';
 import toast from 'react-hot-toast';
 import { formatCellValue, isCellInMerge, type MergeRange, type NamedRangeInfo } from './excelUtils';
 import styles from '../../../../styles/project/worklog/ExcelRenderer.module.css';

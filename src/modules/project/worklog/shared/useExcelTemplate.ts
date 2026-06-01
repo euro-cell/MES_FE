@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from '../../../../api/axiosInstance';
-import ExcelJS from 'exceljs';
+import type ExcelJS from 'exceljs';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -26,6 +26,7 @@ export function useExcelTemplate(processId: string): UseExcelTemplateReturn {
         withCredentials: true,
       });
 
+      const { default: ExcelJS } = await import('exceljs');
       const wb = new ExcelJS.Workbook();
       await wb.xlsx.load(response.data);
       setWorkbook(wb);
