@@ -584,6 +584,10 @@ export const GRADING_NUMERIC_FIELDS = [
   'grading3Quantity',
   'grading4Quantity',
   'grading5Quantity',
+  // 공정 조건 - Grading
+  'gradingLowerVoltage',
+  'gradingUpperVoltage',
+  'gradingTemperature',
   // 공정 조건 - OCV2
   'ocv2MeasurementTemp',
   'ocv2SettlingTime',
