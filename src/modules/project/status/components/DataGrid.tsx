@@ -131,7 +131,9 @@ export default function DataGrid({ data, year, month, onTargetChange }: DataGrid
       (total.ncr === null ||
         'gas' in total.ncr ||
         'foreignMatter' in total.ncr ||
-        'cellSize' in total.ncr)
+        'cellSizeWidth' in total.ncr ||
+        'cellSizeLength' in total.ncr ||
+        'cellSizeThickness' in total.ncr)
     );
   };
 

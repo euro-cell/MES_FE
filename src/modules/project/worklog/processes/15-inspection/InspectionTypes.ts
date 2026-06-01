@@ -49,12 +49,17 @@ export interface InspectionWorklog {
   leakCorrosionDiscardQuantity?: number;
   leakCorrosionDefectRate?: number;
 
-  // B. 생산 정보 - 전지 크기
-  cellSizeInputQuantity?: number;
-  cellSizeGoodQuantity?: number;
-  cellSizeDefectQuantity?: number;
-  cellSizeDiscardQuantity?: number;
-  cellSizeDefectRate?: number;
+  // B. 생산 정보 - 전지 크기 > 폭
+  cellSizeWidthDiscardQuantity?: number;
+  cellSizeWidthDefectRemark?: string;
+
+  // B. 생산 정보 - 전지 크기 > 길이
+  cellSizeLengthDiscardQuantity?: number;
+  cellSizeLengthDefectRemark?: string;
+
+  // B. 생산 정보 - 전지 크기 > 두께
+  cellSizeThicknessDiscardQuantity?: number;
+  cellSizeThicknessDefectRemark?: string;
 
   // D. 비고
   remark?: string;
@@ -107,12 +112,17 @@ export interface InspectionWorklogPayload {
   leakCorrosionDiscardQuantity?: number;
   leakCorrosionDefectRate?: number;
 
-  // B. 생산 정보 - 전지 크기
-  cellSizeInputQuantity?: number;
-  cellSizeGoodQuantity?: number;
-  cellSizeDefectQuantity?: number;
-  cellSizeDiscardQuantity?: number;
-  cellSizeDefectRate?: number;
+  // B. 생산 정보 - 전지 크기 > 폭
+  cellSizeWidthDiscardQuantity?: number;
+  cellSizeWidthDefectRemark?: string;
+
+  // B. 생산 정보 - 전지 크기 > 길이
+  cellSizeLengthDiscardQuantity?: number;
+  cellSizeLengthDefectRemark?: string;
+
+  // B. 생산 정보 - 전지 크기 > 두께
+  cellSizeThicknessDiscardQuantity?: number;
+  cellSizeThicknessDefectRemark?: string;
 
   // D. 비고
   remark?: string;

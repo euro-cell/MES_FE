@@ -633,10 +633,10 @@ export const INSPECTION_NUMERIC_FIELDS = [
   'leakCorrosionDefectQuantity',
   'leakCorrosionDiscardQuantity',
   'leakCorrosionDefectRate',
-  // 전지 크기
-  'cellSizeInputQuantity',
-  'cellSizeGoodQuantity',
-  'cellSizeDefectQuantity',
-  'cellSizeDiscardQuantity',
-  'cellSizeDefectRate',
+  // 전지 크기 > 폭
+  'cellSizeWidthDiscardQuantity',
+  // 전지 크기 > 길이
+  'cellSizeLengthDiscardQuantity',
+  // 전지 크기 > 두께
+  'cellSizeThicknessDiscardQuantity',
 ];
