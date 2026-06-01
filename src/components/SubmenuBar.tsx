@@ -26,6 +26,12 @@ export default function SubmenuBar({ menus }: SubmenuBarProps) {
       {menus.map(menu => (
         <button
           key={menu.path}
+          onMouseDown={(e) => {
+            if (e.button === 1) {
+              e.preventDefault();
+              window.open(menu.path, '_blank');
+            }
+          }}
           onClick={() => handleNavigate(menu.path)}
           className={getButtonClass(menu)}
         >

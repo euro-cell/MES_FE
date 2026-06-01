@@ -29,6 +29,12 @@ const Sidebar: React.FC = () => {
           <li
             key={menu.title}
             className={`${styles.menuTitle} ${activeMenuPath === menu.path ? styles.activeTop : ''}`}
+            onMouseDown={(e) => {
+              if (e.button === 1) {
+                e.preventDefault();
+                window.open(menu.path, '_blank');
+              }
+            }}
             onClick={() => navigate(menu.path)}
           >
             {menu.title}
