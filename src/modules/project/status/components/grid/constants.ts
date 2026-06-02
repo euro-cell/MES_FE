@@ -57,7 +57,7 @@ export const VISUAL_INSPECTION_NCR_SUBTYPES = [
 ] as const;
 export const VISUAL_INSPECTION_NCR_SUBTYPE_LABELS: Record<string, string> = {
   gas: '가스',
-  foreignMatter: '외관',
+  foreignMatter: '돌출',
   scratch: '긁힘',
   dent: '찍힘',
   leakCorrosion: '누액, 부식',
