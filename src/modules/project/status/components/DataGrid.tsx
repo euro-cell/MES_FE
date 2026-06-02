@@ -133,7 +133,8 @@ export default function DataGrid({ data, year, month, onTargetChange }: DataGrid
         'foreignMatter' in total.ncr ||
         'cellSizeWidth' in total.ncr ||
         'cellSizeLength' in total.ncr ||
-        'cellSizeThickness' in total.ncr)
+        'cellSizeThickness' in total.ncr ||
+        'cellWeight' in total.ncr)
     );
   };
 

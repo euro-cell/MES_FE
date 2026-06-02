@@ -639,4 +639,6 @@ export const INSPECTION_NUMERIC_FIELDS = [
   'cellSizeLengthDiscardQuantity',
   // 전지 크기 > 두께
   'cellSizeThicknessDiscardQuantity',
+  // 무게
+  'cellWeightDiscardQuantity',
 ];

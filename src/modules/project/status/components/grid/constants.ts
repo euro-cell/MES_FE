@@ -53,6 +53,7 @@ export const VISUAL_INSPECTION_NCR_SUBTYPES = [
   'cellSizeWidth',
   'cellSizeLength',
   'cellSizeThickness',
+  'cellWeight',
 ] as const;
 export const VISUAL_INSPECTION_NCR_SUBTYPE_LABELS: Record<string, string> = {
   gas: '가스',
@@ -63,6 +64,7 @@ export const VISUAL_INSPECTION_NCR_SUBTYPE_LABELS: Record<string, string> = {
   cellSizeWidth: '크기(폭)',
   cellSizeLength: '크기(길이)',
   cellSizeThickness: '크기(두께)',
+  cellWeight: '무게',
 };
 
 // 공정 이름 매핑

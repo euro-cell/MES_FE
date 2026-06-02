@@ -61,6 +61,10 @@ export interface InspectionWorklog {
   cellSizeThicknessDiscardQuantity?: number;
   cellSizeThicknessDefectRemark?: string;
 
+  // B. 생산 정보 - 무게
+  cellWeightDiscardQuantity?: number;
+  cellWeightDefectRemark?: string;
+
   // D. 비고
   remark?: string;
 }
@@ -123,6 +127,10 @@ export interface InspectionWorklogPayload {
   // B. 생산 정보 - 전지 크기 > 두께
   cellSizeThicknessDiscardQuantity?: number;
   cellSizeThicknessDefectRemark?: string;
+
+  // B. 생산 정보 - 무게
+  cellWeightDiscardQuantity?: number;
+  cellWeightDefectRemark?: string;
 
   // D. 비고
   remark?: string;
