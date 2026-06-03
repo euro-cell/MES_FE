@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# Eurocell MES Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Eurocell 배터리 셀 제조 실행 시스템(MES)의 프론트엔드입니다.
 
-Currently, two official plugins are available:
+## 기술 스택
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework**: React 19 (TypeScript)
+- **Build**: Vite 8
+- **Routing**: React Router v7
+- **서버 상태**: TanStack React Query v5
+- **HTTP**: axios (쿠키 기반 세션 인증)
+- **테이블**: TanStack React Table v8 + Virtual
+- **차트**: Chart.js v4, react-chartjs-2
+- **엑셀 내보내기**: ExcelJS + file-saver
+- **스타일**: CSS Modules
 
-## React Compiler
+## 환경 설정
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+`.env.local` 파일을 생성하고 아래 항목을 채웁니다.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_API_BASE_URL=/api
+VITE_API_TARGET=http://localhost:8000
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 실행
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+# 패키지 설치
+npm install
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 개발 서버 (http://0.0.0.0:80)
+npm run dev
+
+# 프로덕션 빌드
+npm run build
+
+# 빌드 결과물 미리보기
+npm run preview
 ```
+
+## 모듈 구조
+
+| 모듈        | 설명                                     |
+| ----------- | ---------------------------------------- |
+| `dashboard` | 분석 대시보드                            |
+| `project`   | 생산계획, 자재, 규격, 작업일지, LOT 관리 |
+| `quality`   | IQC / LQC / OQC 품질 관리                |
+| `plant`     | 설비 및 유지보수 관리                    |
+| `stock`     | 배터리 셀 재고 관리                      |
+| `draw`      | 도면 및 버전 관리                        |
+| `etc`       | 메뉴 접근 권한 관리                      |
+
+## 인증
+
+쿠키 기반 세션 인증을 사용합니다. 앱 로드 시 `/api/auth/status`로 인증 상태를 확인하며, 미인증 접근 시 `/login`으로
+리다이렉트됩니다. 개발 환경에서는 Vite 프록시가 `/api` 요청을 `VITE_API_TARGET`으로 전달합니다.
