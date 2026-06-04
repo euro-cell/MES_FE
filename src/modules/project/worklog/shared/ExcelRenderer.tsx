@@ -224,6 +224,7 @@ interface ExcelRendererProps {
   className?: string;
   multilineFields?: string[];
   timeFields?: string[];
+  timeRangeFields?: string[];
   dateFields?: string[];
   numericFields?: string[];
   integerFields?: string[];
@@ -405,6 +406,7 @@ export default function ExcelRenderer({
   className = '',
   multilineFields = [],
   timeFields = [],
+  timeRangeFields = [],
   dateFields = [],
   numericFields = [],
   integerFields = [],
@@ -780,7 +782,7 @@ export default function ExcelRenderer({
                           onChange={e => handleInputChange(rangeName, e.target.value)}
                           onKeyDown={e => handleKeyDown(e, rangeName)}
                         />
-                      ) : timeFields.includes(rangeName) ? (
+                      ) : timeRangeFields.includes(rangeName) ? (
                         <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                           <input
                             type='time'
@@ -804,6 +806,15 @@ export default function ExcelRenderer({
                             }}
                           />
                         </span>
+                      ) : timeFields.includes(rangeName) ? (
+                        <input
+                          type='time'
+                          className={styles.cellInput}
+                          data-range-name={rangeName}
+                          value={cellValues[rangeName] ?? ''}
+                          onChange={e => handleInputChange(rangeName, e.target.value)}
+                          onKeyDown={e => handleKeyDown(e, rangeName)}
+                        />
                       ) : integerFields.includes(rangeName) ? (
                         <input
                           type='number'
