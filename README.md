@@ -10,8 +10,12 @@ Eurocell 배터리 셀 제조 실행 시스템(MES)의 프론트엔드입니다.
 - **서버 상태**: TanStack React Query v5
 - **HTTP**: axios (쿠키 기반 세션 인증)
 - **테이블**: TanStack React Table v8 + Virtual
-- **차트**: Chart.js v4, react-chartjs-2
+- **차트**: Chart.js v4, react-chartjs-2, chartjs-plugin-annotation, chartjs-plugin-datalabels
 - **엑셀 내보내기**: ExcelJS + file-saver
+- **PDF 뷰어**: react-pdf
+- **날짜**: react-datepicker, date-fns
+- **알림**: react-hot-toast
+- **한국 공휴일**: @hyunbinseo/holidays-kr
 - **스타일**: CSS Modules
 
 ## 환경 설정
