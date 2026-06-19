@@ -269,6 +269,7 @@ export default function StackingRegister() {
           dateFields={['manufactureDate']}
           tooltips={fieldTooltips}
           formulaRefs={formulaRefs}
+          placeholders={{ cathodeThickness: '양극 두께 입력', anodeThickness: '음극 두께 입력' }}
         />
       </div>
     </div>

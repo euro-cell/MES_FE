@@ -337,6 +337,8 @@ export const STACKING_NUMERIC_FIELDS = [
   'jellyRollThickness',
   'separatorTopBottomDimension',
   'hipotVoltage',
+  'cathodeThickness',
+  'anodeThickness',
 ];
 
 // Stacking 정수 필드 (투입량, 수량, 전극파손) - 양품 수량은 자동계산이므로 제외
@@ -350,9 +352,9 @@ export const STACKING_INTEGER_FIELDS = [
   'hipot1ActualInput',
   'hipot1DefectQuantity',
   'hipot1DiscardQuantity',
-  // JR 번호 1~8 전극파손 (양극/음극 분리)
-  ...['1', '2', '3', '4', '5', '6', '7', '8'].map(n => `jr${n}CathodeDefect`),
-  ...['1', '2', '3', '4', '5', '6', '7', '8'].map(n => `jr${n}AnodeDefect`),
+  // 전극 파손 (통합)
+  'cathodeDefect',
+  'anodeDefect',
   // 공정 조건
   'stackCount',
 ];

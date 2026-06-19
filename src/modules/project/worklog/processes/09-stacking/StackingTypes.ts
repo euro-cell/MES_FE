@@ -52,8 +52,6 @@ export interface StackingWorklog {
   jr1AnodeLot?: string;
   jr1SeparatorLot?: string;
   jr1WorkTime?: string;
-  jr1CathodeDefect?: number;
-  jr1AnodeDefect?: number;
 
   // JR 번호 2
   jr2Range?: string;
@@ -61,8 +59,6 @@ export interface StackingWorklog {
   jr2AnodeLot?: string;
   jr2SeparatorLot?: string;
   jr2WorkTime?: string;
-  jr2CathodeDefect?: number;
-  jr2AnodeDefect?: number;
 
   // JR 번호 3
   jr3Range?: string;
@@ -70,8 +66,6 @@ export interface StackingWorklog {
   jr3AnodeLot?: string;
   jr3SeparatorLot?: string;
   jr3WorkTime?: string;
-  jr3CathodeDefect?: number;
-  jr3AnodeDefect?: number;
 
   // JR 번호 4
   jr4Range?: string;
@@ -79,8 +73,6 @@ export interface StackingWorklog {
   jr4AnodeLot?: string;
   jr4SeparatorLot?: string;
   jr4WorkTime?: string;
-  jr4CathodeDefect?: number;
-  jr4AnodeDefect?: number;
 
   // JR 번호 5
   jr5Range?: string;
@@ -88,8 +80,6 @@ export interface StackingWorklog {
   jr5AnodeLot?: string;
   jr5SeparatorLot?: string;
   jr5WorkTime?: string;
-  jr5CathodeDefect?: number;
-  jr5AnodeDefect?: number;
 
   // JR 번호 6
   jr6Range?: string;
@@ -97,8 +87,6 @@ export interface StackingWorklog {
   jr6AnodeLot?: string;
   jr6SeparatorLot?: string;
   jr6WorkTime?: string;
-  jr6CathodeDefect?: number;
-  jr6AnodeDefect?: number;
 
   // JR 번호 7
   jr7Range?: string;
@@ -106,8 +94,6 @@ export interface StackingWorklog {
   jr7AnodeLot?: string;
   jr7SeparatorLot?: string;
   jr7WorkTime?: string;
-  jr7CathodeDefect?: number;
-  jr7AnodeDefect?: number;
 
   // JR 번호 8
   jr8Range?: string;
@@ -115,8 +101,9 @@ export interface StackingWorklog {
   jr8AnodeLot?: string;
   jr8SeparatorLot?: string;
   jr8WorkTime?: string;
-  jr8CathodeDefect?: number;
-  jr8AnodeDefect?: number;
+
+  cathodeDefect?: number;
+  anodeDefect?: number;
 
   // ===== C. 공정 조건 (Process Conditions) =====
   jellyRollWeight?: number;
@@ -124,6 +111,8 @@ export interface StackingWorklog {
   separatorTopBottomDimension?: number;
   stackCount?: number;
   hipotVoltage?: number;
+  cathodeThickness?: number;
+  anodeThickness?: number;
 }
 
 export interface StackingWorklogPayload {
@@ -161,57 +150,43 @@ export interface StackingWorklogPayload {
   jr1AnodeLot?: string;
   jr1SeparatorLot?: string;
   jr1WorkTime?: string;
-  jr1CathodeDefect?: number;
-  jr1AnodeDefect?: number;
   jr2Range?: string;
   jr2CathodeLot?: string;
   jr2AnodeLot?: string;
   jr2SeparatorLot?: string;
   jr2WorkTime?: string;
-  jr2CathodeDefect?: number;
-  jr2AnodeDefect?: number;
   jr3Range?: string;
   jr3CathodeLot?: string;
   jr3AnodeLot?: string;
   jr3SeparatorLot?: string;
   jr3WorkTime?: string;
-  jr3CathodeDefect?: number;
-  jr3AnodeDefect?: number;
   jr4Range?: string;
   jr4CathodeLot?: string;
   jr4AnodeLot?: string;
   jr4SeparatorLot?: string;
   jr4WorkTime?: string;
-  jr4CathodeDefect?: number;
-  jr4AnodeDefect?: number;
   jr5Range?: string;
   jr5CathodeLot?: string;
   jr5AnodeLot?: string;
   jr5SeparatorLot?: string;
   jr5WorkTime?: string;
-  jr5CathodeDefect?: number;
-  jr5AnodeDefect?: number;
   jr6Range?: string;
   jr6CathodeLot?: string;
   jr6AnodeLot?: string;
   jr6SeparatorLot?: string;
   jr6WorkTime?: string;
-  jr6CathodeDefect?: number;
-  jr6AnodeDefect?: number;
   jr7Range?: string;
   jr7CathodeLot?: string;
   jr7AnodeLot?: string;
   jr7SeparatorLot?: string;
   jr7WorkTime?: string;
-  jr7CathodeDefect?: number;
-  jr7AnodeDefect?: number;
   jr8Range?: string;
   jr8CathodeLot?: string;
   jr8AnodeLot?: string;
   jr8SeparatorLot?: string;
   jr8WorkTime?: string;
-  jr8CathodeDefect?: number;
-  jr8AnodeDefect?: number;
+  cathodeDefect?: number;
+  anodeDefect?: number;
 
   // ===== C. 공정 조건 =====
   jellyRollWeight?: number;
@@ -219,4 +194,6 @@ export interface StackingWorklogPayload {
   separatorTopBottomDimension?: number;
   stackCount?: number;
   hipotVoltage?: number;
+  cathodeThickness?: number;
+  anodeThickness?: number;
 }
