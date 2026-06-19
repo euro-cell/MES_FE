@@ -47,26 +47,6 @@ export default function VdRegister() {
     }
   }, [Object.keys(formValues).length > 0]);
 
-  // 선택된 양극/음극 매거진 LOT 수집 (상부/하부 LOT 선택박스용)
-  const selectedCathodeLots = [
-    formValues.cathodeMagazineLot1,
-    formValues.cathodeMagazineLot2,
-    formValues.cathodeMagazineLot3,
-    formValues.cathodeMagazineLot4,
-    formValues.cathodeMagazineLot5,
-  ].filter(Boolean);
-
-  const selectedAnodeLots = [
-    formValues.anodeMagazineLot1,
-    formValues.anodeMagazineLot2,
-    formValues.anodeMagazineLot3,
-    formValues.anodeMagazineLot4,
-    formValues.anodeMagazineLot5,
-  ].filter(Boolean);
-
-  // 상부/하부 LOT 옵션 (선택된 양극 + 음극 LOT 합침)
-  const selectedMagazineLots = [...new Set([...selectedCathodeLots, ...selectedAnodeLots])];
-
   const handleCellChange = (rangeName: string, value: any) => {
     setFormValues(prev => ({ ...prev, [rangeName]: value }));
   };
@@ -113,38 +93,21 @@ export default function VdRegister() {
   const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
   const plantOptions = plantEquipments.map(eq => eq.name);
 
+  const allLots = [...new Set([...cathodeLots, ...anodeLots])];
+
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
-    // 양극 매거진 LOT (cathodeMagazineLot1~5)
-    ...(cathodeLots.length > 0 && {
-      cathodeMagazineLot1: cathodeLots,
-      cathodeMagazineLot2: cathodeLots,
-      cathodeMagazineLot3: cathodeLots,
-      cathodeMagazineLot4: cathodeLots,
-      cathodeMagazineLot5: cathodeLots,
-    }),
-    // 음극 매거진 LOT (anodeMagazineLot1~5)
-    ...(anodeLots.length > 0 && {
-      anodeMagazineLot1: anodeLots,
-      anodeMagazineLot2: anodeLots,
-      anodeMagazineLot3: anodeLots,
-      anodeMagazineLot4: anodeLots,
-      anodeMagazineLot5: anodeLots,
-    }),
-    // 생산 정보 - 상부/하부 LOT (선택된 매거진 LOT에서 선택)
-    ...(selectedMagazineLots.length > 0 && {
-      upperLot1: selectedMagazineLots,
-      upperLot2: selectedMagazineLots,
-      upperLot3: selectedMagazineLots,
-      upperLot4: selectedMagazineLots,
-      upperLot5: selectedMagazineLots,
-      lowerLot1: selectedMagazineLots,
-      lowerLot2: selectedMagazineLots,
-      lowerLot3: selectedMagazineLots,
-      lowerLot4: selectedMagazineLots,
-      lowerLot5: selectedMagazineLots,
-    }),
+    // 섹션2 - LOT (오븐번호×층번호, 양극+음극 통합)
+    ...(allLots.length > 0 &&
+      Object.fromEntries(
+        ['1', '2', '3'].flatMap(oven =>
+          ['1', '2', '3'].flatMap(floor => [
+            [`upperLot${oven}${floor}`, allLots],
+            [`lowerLot${oven}${floor}`, allLots],
+          ]),
+        ),
+      )),
   };
 
   return (

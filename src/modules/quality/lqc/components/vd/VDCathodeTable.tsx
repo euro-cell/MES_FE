@@ -1,13 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import styles from '../../../../../styles/quality/lqc/LQCTable.module.css';
 import SpecEditModal from '../common/SpecEditModal';
@@ -27,9 +19,7 @@ interface VDCathodeTableProps {
 }
 
 // 규격 필드 정의
-const VD_SPEC_FIELDS = [
-  { key: 'moisture', label: '전극 수분함량', type: 'max-only' as const, unit: 'ppm' },
-];
+const VD_SPEC_FIELDS = [{ key: 'moisture', label: '전극 수분함량', type: 'max-only' as const, unit: 'ppm' }];
 
 // 규격 표시 헬퍼 함수
 const formatSpec = (spec: SpecValue | undefined, type: string): string => {
@@ -56,7 +46,7 @@ const getSpecClass = (
   value: number | string | null,
   spec: SpecValue | undefined,
   type: 'target-tolerance' | 'max-only' | 'min-only',
-  extraStyles?: string
+  extraStyles?: string,
 ): string => {
   if (value === null || value === undefined || value === '' || !spec) return extraStyles ?? '';
   const num = typeof value === 'string' ? parseFloat(value) : value;
@@ -88,7 +78,11 @@ const formatNumber = (value: number | string | null, decimals: number = 2): stri
 };
 
 // 수분함량 평균 계산 (행 단위)
-const calcRowAvg = (v1: number | string | null, v2: number | string | null, v3: number | string | null): number | null => {
+const calcRowAvg = (
+  v1: number | string | null,
+  v2: number | string | null,
+  v3: number | string | null,
+): number | null => {
   const toNum = (v: number | string | null): number | null => {
     if (v === null || v === undefined || v === '') return null;
     const num = typeof v === 'string' ? parseFloat(v) : v;
@@ -199,10 +193,30 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
 
   // 통계 계산
   const stats = {
-    moistureAvg: { avg: calcAvg(rowAvgValues.map(d => d.moistureAvg)), max: calcMax(rowAvgValues.map(d => d.moistureAvg)), min: calcMin(rowAvgValues.map(d => d.moistureAvg)), stdev: calcStdev(rowAvgValues.map(d => d.moistureAvg)) },
-    moisture1: { avg: calcAvg(vdData.map(d => d.moisture1)), max: calcMax(vdData.map(d => d.moisture1)), min: calcMin(vdData.map(d => d.moisture1)), stdev: calcStdev(vdData.map(d => d.moisture1)) },
-    moisture2: { avg: calcAvg(vdData.map(d => d.moisture2)), max: calcMax(vdData.map(d => d.moisture2)), min: calcMin(vdData.map(d => d.moisture2)), stdev: calcStdev(vdData.map(d => d.moisture2)) },
-    moisture3: { avg: calcAvg(vdData.map(d => d.moisture3)), max: calcMax(vdData.map(d => d.moisture3)), min: calcMin(vdData.map(d => d.moisture3)), stdev: calcStdev(vdData.map(d => d.moisture3)) },
+    moistureAvg: {
+      avg: calcAvg(rowAvgValues.map(d => d.moistureAvg)),
+      max: calcMax(rowAvgValues.map(d => d.moistureAvg)),
+      min: calcMin(rowAvgValues.map(d => d.moistureAvg)),
+      stdev: calcStdev(rowAvgValues.map(d => d.moistureAvg)),
+    },
+    moisture1: {
+      avg: calcAvg(vdData.map(d => d.moisture1)),
+      max: calcMax(vdData.map(d => d.moisture1)),
+      min: calcMin(vdData.map(d => d.moisture1)),
+      stdev: calcStdev(vdData.map(d => d.moisture1)),
+    },
+    moisture2: {
+      avg: calcAvg(vdData.map(d => d.moisture2)),
+      max: calcMax(vdData.map(d => d.moisture2)),
+      min: calcMin(vdData.map(d => d.moisture2)),
+      stdev: calcStdev(vdData.map(d => d.moisture2)),
+    },
+    moisture3: {
+      avg: calcAvg(vdData.map(d => d.moisture3)),
+      max: calcMax(vdData.map(d => d.moisture3)),
+      min: calcMin(vdData.map(d => d.moisture3)),
+      stdev: calcStdev(vdData.map(d => d.moisture3)),
+    },
   };
 
   // 차트용 라벨 (작업일자)
@@ -267,105 +281,176 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
             규격 설정
           </button>
           <div className={styles.specLegend}>
-            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxOver}`} />초과</span>
-            <span className={styles.legendItem}><span className={`${styles.legendBox} ${styles.legendBoxUnder}`} />미달</span>
+            <span className={styles.legendItem}>
+              <span className={`${styles.legendBox} ${styles.legendBoxOver}`} />
+              초과
+            </span>
+            <span className={styles.legendItem}>
+              <span className={`${styles.legendBox} ${styles.legendBoxUnder}`} />
+              미달
+            </span>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
           {/* 테이블 */}
           <div style={{ flex: 1, overflow: 'auto' }}>
             <table className={styles.lqcTable}>
-            <thead>
-              {/* 1행: 대분류 헤더 */}
-              <tr>
-                <th rowSpan={2}>No.</th>
-                <th rowSpan={2}>작업일자</th>
-                <th rowSpan={2}>구분</th>
-                <th colSpan={4}>전극 수분함량 검사 (ppm)</th>
-                <th colSpan={5}>전극 Lot no.</th>
-              </tr>
-              {/* 2행: 소분류 헤더 */}
-              <tr>
-                <th className={styles.avgCol}>평균</th>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* 규격 행 */}
-              <tr className={styles.specRow}>
-                <td colSpan={3}>규격</td>
-                <td colSpan={4}>{formatSpec(vdSpecs.moisture, 'max-only')}</td>
-                <td colSpan={5}></td>
-              </tr>
-              {/* 평균 행 */}
-              <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
-                <td colSpan={3}>Ave.</td>
-                <td className={getSpecClass(stats.moistureAvg.avg, vdSpecs.moisture, 'max-only', styles.avgCol)}>{formatNumber(stats.moistureAvg.avg)}</td>
-                <td className={getSpecClass(stats.moisture1.avg, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture1.avg)}</td>
-                <td className={getSpecClass(stats.moisture2.avg, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture2.avg)}</td>
-                <td className={getSpecClass(stats.moisture3.avg, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture3.avg)}</td>
-                <td colSpan={5}></td>
-              </tr>
-              {/* 최대값 행 */}
-              <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
-                <td colSpan={3}>Max.</td>
-                <td className={getSpecClass(stats.moistureAvg.max, vdSpecs.moisture, 'max-only', styles.avgCol)}>{formatNumber(stats.moistureAvg.max)}</td>
-                <td className={getSpecClass(stats.moisture1.max, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture1.max)}</td>
-                <td className={getSpecClass(stats.moisture2.max, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture2.max)}</td>
-                <td className={getSpecClass(stats.moisture3.max, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture3.max)}</td>
-                <td colSpan={5}></td>
-              </tr>
-              {/* 최소값 행 */}
-              <tr className={`${styles.summaryRow} ${styles.minRow}`}>
-                <td colSpan={3}>Min.</td>
-                <td className={getSpecClass(stats.moistureAvg.min, vdSpecs.moisture, 'max-only', styles.avgCol)}>{formatNumber(stats.moistureAvg.min)}</td>
-                <td className={getSpecClass(stats.moisture1.min, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture1.min)}</td>
-                <td className={getSpecClass(stats.moisture2.min, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture2.min)}</td>
-                <td className={getSpecClass(stats.moisture3.min, vdSpecs.moisture, 'max-only')}>{formatNumber(stats.moisture3.min)}</td>
-                <td colSpan={5}></td>
-              </tr>
-              {/* 표준편차 행 */}
-              <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
-                <td colSpan={3}>Stdev.</td>
-                <td className={styles.avgCol}>{formatNumber(stats.moistureAvg.stdev, 3)}</td>
-                <td>{formatNumber(stats.moisture1.stdev, 3)}</td>
-                <td>{formatNumber(stats.moisture2.stdev, 3)}</td>
-                <td>{formatNumber(stats.moisture3.stdev, 3)}</td>
-                <td colSpan={5}></td>
-              </tr>
-              {/* 데이터 행 */}
-              {hasData ? (
-                vdData.map((row, index) => (
-                  <tr key={`${row.id}-${index}`}>
-                    <td>{index + 1}</td>
-                    <td>{row.workDate}</td>
-                    <td className={row.division === '전' ? styles.divisionBefore : row.division === '후' ? styles.divisionAfter : ''}>{row.division}</td>
-                    <td className={getSpecClass(calcRowAvg(row.moisture1, row.moisture2, row.moisture3), vdSpecs.moisture, 'max-only', styles.avgCol)}>{formatNumber(calcRowAvg(row.moisture1, row.moisture2, row.moisture3))}</td>
-                    <td className={getSpecClass(row.moisture1, vdSpecs.moisture, 'max-only')}>{formatNumber(row.moisture1)}</td>
-                    <td className={getSpecClass(row.moisture2, vdSpecs.moisture, 'max-only')}>{formatNumber(row.moisture2)}</td>
-                    <td className={getSpecClass(row.moisture3, vdSpecs.moisture, 'max-only')}>{formatNumber(row.moisture3)}</td>
-                    <td>{row.lot1 || '-'}</td>
-                    <td>{row.lot2 || '-'}</td>
-                    <td>{row.lot3 || '-'}</td>
-                    <td>{row.lot4 || '-'}</td>
-                    <td>{row.lot5 || '-'}</td>
-                  </tr>
-                ))
-              ) : (
+              <thead>
+                {/* 1행: 대분류 헤더 */}
                 <tr>
-                  <td colSpan={12} className={styles.noDataRow}>
-                    데이터 없음
-                  </td>
+                  <th rowSpan={3}>No.</th>
+                  <th rowSpan={3}>작업일자</th>
+                  <th rowSpan={3}>구분</th>
+                  <th colSpan={4}>전극 수분함량 검사 (ppm)</th>
+                  <th colSpan={9}>전극 Lot no.</th>
                 </tr>
-              )}
-            </tbody>
+                {/* 2행: 오븐 구분 */}
+                <tr>
+                  <th rowSpan={2} className={styles.avgCol}>
+                    평균
+                  </th>
+                  <th rowSpan={2}>1층</th>
+                  <th rowSpan={2}>2층</th>
+                  <th rowSpan={2}>3층</th>
+                  <th colSpan={3}>오븐1</th>
+                  <th colSpan={3}>오븐2</th>
+                  <th colSpan={3}>오븐3</th>
+                </tr>
+                {/* 3행: 층 구분 */}
+                <tr>
+                  <th>1층</th>
+                  <th>2층</th>
+                  <th>3층</th>
+                  <th>1층</th>
+                  <th>2층</th>
+                  <th>3층</th>
+                  <th>1층</th>
+                  <th>2층</th>
+                  <th>3층</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* 규격 행 */}
+                <tr className={styles.specRow}>
+                  <td colSpan={3}>규격</td>
+                  <td colSpan={4}>{formatSpec(vdSpecs.moisture, 'max-only')}</td>
+                  <td colSpan={9}></td>
+                </tr>
+                {/* 평균 행 */}
+                <tr className={`${styles.summaryRow} ${styles.avgRow}`}>
+                  <td colSpan={3}>Ave.</td>
+                  <td className={getSpecClass(stats.moistureAvg.avg, vdSpecs.moisture, 'max-only', styles.avgCol)}>
+                    {formatNumber(stats.moistureAvg.avg)}
+                  </td>
+                  <td className={getSpecClass(stats.moisture1.avg, vdSpecs.moisture, 'max-only')}>
+                    {formatNumber(stats.moisture1.avg)}
+                  </td>
+                  <td className={getSpecClass(stats.moisture2.avg, vdSpecs.moisture, 'max-only')}>
+                    {formatNumber(stats.moisture2.avg)}
+                  </td>
+                  <td className={getSpecClass(stats.moisture3.avg, vdSpecs.moisture, 'max-only')}>
+                    {formatNumber(stats.moisture3.avg)}
+                  </td>
+                  <td colSpan={9}></td>
+                </tr>
+                {/* 최대값 행 */}
+                <tr className={`${styles.summaryRow} ${styles.maxRow}`}>
+                  <td colSpan={3}>Max.</td>
+                  <td className={getSpecClass(stats.moistureAvg.max, vdSpecs.moisture, 'max-only', styles.avgCol)}>
+                    {formatNumber(stats.moistureAvg.max)}
+                  </td>
+                  <td className={getSpecClass(stats.moisture1.max, vdSpecs.moisture, 'max-only')}>
+                    {formatNumber(stats.moisture1.max)}
+                  </td>
+                  <td className={getSpecClass(stats.moisture2.max, vdSpecs.moisture, 'max-only')}>
+                    {formatNumber(stats.moisture2.max)}
+                  </td>
+                  <td className={getSpecClass(stats.moisture3.max, vdSpecs.moisture, 'max-only')}>
+                    {formatNumber(stats.moisture3.max)}
+                  </td>
+                  <td colSpan={9}></td>
+                </tr>
+                {/* 최소값 행 */}
+                <tr className={`${styles.summaryRow} ${styles.minRow}`}>
+                  <td colSpan={3}>Min.</td>
+                  <td className={getSpecClass(stats.moistureAvg.min, vdSpecs.moisture, 'max-only', styles.avgCol)}>
+                    {formatNumber(stats.moistureAvg.min)}
+                  </td>
+                  <td className={getSpecClass(stats.moisture1.min, vdSpecs.moisture, 'max-only')}>
+                    {formatNumber(stats.moisture1.min)}
+                  </td>
+                  <td className={getSpecClass(stats.moisture2.min, vdSpecs.moisture, 'max-only')}>
+                    {formatNumber(stats.moisture2.min)}
+                  </td>
+                  <td className={getSpecClass(stats.moisture3.min, vdSpecs.moisture, 'max-only')}>
+                    {formatNumber(stats.moisture3.min)}
+                  </td>
+                  <td colSpan={9}></td>
+                </tr>
+                {/* 표준편차 행 */}
+                <tr className={`${styles.summaryRow} ${styles.stdevRow}`}>
+                  <td colSpan={3}>Stdev.</td>
+                  <td className={styles.avgCol}>{formatNumber(stats.moistureAvg.stdev, 3)}</td>
+                  <td>{formatNumber(stats.moisture1.stdev, 3)}</td>
+                  <td>{formatNumber(stats.moisture2.stdev, 3)}</td>
+                  <td>{formatNumber(stats.moisture3.stdev, 3)}</td>
+                  <td colSpan={9}></td>
+                </tr>
+                {/* 데이터 행 */}
+                {hasData ? (
+                  vdData.map((row, index) => (
+                    <tr key={`${row.id}-${index}`}>
+                      <td>{index + 1}</td>
+                      <td>{row.workDate}</td>
+                      <td
+                        className={
+                          row.division === '전'
+                            ? styles.divisionBefore
+                            : row.division === '후'
+                              ? styles.divisionAfter
+                              : ''
+                        }
+                      >
+                        {row.division}
+                      </td>
+                      <td
+                        className={getSpecClass(
+                          calcRowAvg(row.moisture1, row.moisture2, row.moisture3),
+                          vdSpecs.moisture,
+                          'max-only',
+                          styles.avgCol,
+                        )}
+                      >
+                        {formatNumber(calcRowAvg(row.moisture1, row.moisture2, row.moisture3))}
+                      </td>
+                      <td className={getSpecClass(row.moisture1, vdSpecs.moisture, 'max-only')}>
+                        {formatNumber(row.moisture1)}
+                      </td>
+                      <td className={getSpecClass(row.moisture2, vdSpecs.moisture, 'max-only')}>
+                        {formatNumber(row.moisture2)}
+                      </td>
+                      <td className={getSpecClass(row.moisture3, vdSpecs.moisture, 'max-only')}>
+                        {formatNumber(row.moisture3)}
+                      </td>
+                      <td>{row.lot11 || '-'}</td>
+                      <td>{row.lot12 || '-'}</td>
+                      <td>{row.lot13 || '-'}</td>
+                      <td>{row.lot21 || '-'}</td>
+                      <td>{row.lot22 || '-'}</td>
+                      <td>{row.lot23 || '-'}</td>
+                      <td>{row.lot31 || '-'}</td>
+                      <td>{row.lot32 || '-'}</td>
+                      <td>{row.lot33 || '-'}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={16} className={styles.noDataRow}>
+                      데이터 없음
+                    </td>
+                  </tr>
+                )}
+              </tbody>
             </table>
           </div>
           {/* 차트 */}
@@ -384,7 +469,7 @@ export default function VDCathodeTable({ projectId }: VDCathodeTableProps) {
         isOpen={isSpecModalOpen}
         onClose={() => setIsSpecModalOpen(false)}
         onSave={handleSaveSpec}
-        title="VD"
+        title='VD'
         specFields={VD_SPEC_FIELDS}
         specs={vdSpecs}
       />

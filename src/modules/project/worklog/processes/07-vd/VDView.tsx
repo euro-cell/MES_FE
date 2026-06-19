@@ -45,69 +45,103 @@ export default function VdView() {
           plant: data.plant,
           shift: data.shift,
 
-          // A. 자재 투입 정보 (변경 없음)
-          cathodeMagazineLot1: data.cathodeMagazineLot1,
-          cathodeMagazineLot2: data.cathodeMagazineLot2,
-          cathodeMagazineLot3: data.cathodeMagazineLot3,
-          cathodeMagazineLot4: data.cathodeMagazineLot4,
-          cathodeMagazineLot5: data.cathodeMagazineLot5,
-          anodeMagazineLot1: data.anodeMagazineLot1,
-          anodeMagazineLot2: data.anodeMagazineLot2,
-          anodeMagazineLot3: data.anodeMagazineLot3,
-          anodeMagazineLot4: data.anodeMagazineLot4,
-          anodeMagazineLot5: data.anodeMagazineLot5,
+          // 섹션2 - LOT (오븐번호×층번호)
+          upperLot11: data.upperLot11,
+          upperLot12: data.upperLot12,
+          upperLot13: data.upperLot13,
+          upperLot21: data.upperLot21,
+          upperLot22: data.upperLot22,
+          upperLot23: data.upperLot23,
+          upperLot31: data.upperLot31,
+          upperLot32: data.upperLot32,
+          upperLot33: data.upperLot33,
+          lowerLot11: data.lowerLot11,
+          lowerLot12: data.lowerLot12,
+          lowerLot13: data.lowerLot13,
+          lowerLot21: data.lowerLot21,
+          lowerLot22: data.lowerLot22,
+          lowerLot23: data.lowerLot23,
+          lowerLot31: data.lowerLot31,
+          lowerLot32: data.lowerLot32,
+          lowerLot33: data.lowerLot33,
 
-          // B. 생산 정보 - 1차
-          upperLot1: data.upperLot1,
+          // 섹션2 - 투입량
+          upperLotQty11: data.upperLotQty11,
+          upperLotQty12: data.upperLotQty12,
+          upperLotQty13: data.upperLotQty13,
+          upperLotQty21: data.upperLotQty21,
+          upperLotQty22: data.upperLotQty22,
+          upperLotQty23: data.upperLotQty23,
+          upperLotQty31: data.upperLotQty31,
+          upperLotQty32: data.upperLotQty32,
+          upperLotQty33: data.upperLotQty33,
+          lowerLotQty11: data.lowerLotQty11,
+          lowerLotQty12: data.lowerLotQty12,
+          lowerLotQty13: data.lowerLotQty13,
+          lowerLotQty21: data.lowerLotQty21,
+          lowerLotQty22: data.lowerLotQty22,
+          lowerLotQty23: data.lowerLotQty23,
+          lowerLotQty31: data.lowerLotQty31,
+          lowerLotQty32: data.lowerLotQty32,
+          lowerLotQty33: data.lowerLotQty33,
+
+          // 섹션3 - 투입량/수분측정/시간
           upperInputQuantity1: data.upperInputQuantity1,
-          upperInputOutputTime1: data.upperInputOutputTime1,
-          upperMoistureMeasurement1: data.upperMoistureMeasurement1,
-          lowerLot1: data.lowerLot1,
-          lowerInputQuantity1: data.lowerInputQuantity1,
-          lowerInputOutputTime1: data.lowerInputOutputTime1,
-          lowerMoistureMeasurement1: data.lowerMoistureMeasurement1,
-
-          // B. 생산 정보 - 2차
-          upperLot2: data.upperLot2,
           upperInputQuantity2: data.upperInputQuantity2,
-          upperInputOutputTime2: data.upperInputOutputTime2,
-          upperMoistureMeasurement2: data.upperMoistureMeasurement2,
-          lowerLot2: data.lowerLot2,
-          lowerInputQuantity2: data.lowerInputQuantity2,
-          lowerInputOutputTime2: data.lowerInputOutputTime2,
-          lowerMoistureMeasurement2: data.lowerMoistureMeasurement2,
-
-          // B. 생산 정보 - 3차
-          upperLot3: data.upperLot3,
           upperInputQuantity3: data.upperInputQuantity3,
-          upperInputOutputTime3: data.upperInputOutputTime3,
+          upperMoistureMeasurement1: data.upperMoistureMeasurement1,
+          upperMoistureMeasurement2: data.upperMoistureMeasurement2,
           upperMoistureMeasurement3: data.upperMoistureMeasurement3,
-          lowerLot3: data.lowerLot3,
+          upperInputOutputTime: data.upperInputOutputTime,
+          lowerInputQuantity1: data.lowerInputQuantity1,
+          lowerInputQuantity2: data.lowerInputQuantity2,
           lowerInputQuantity3: data.lowerInputQuantity3,
-          lowerInputOutputTime3: data.lowerInputOutputTime3,
+          lowerMoistureMeasurement1: data.lowerMoistureMeasurement1,
+          lowerMoistureMeasurement2: data.lowerMoistureMeasurement2,
           lowerMoistureMeasurement3: data.lowerMoistureMeasurement3,
+          lowerInputOutputTime: data.lowerInputOutputTime,
 
-          // B. 생산 정보 - 4차
-          upperLot4: data.upperLot4,
-          upperInputQuantity4: data.upperInputQuantity4,
-          upperInputOutputTime4: data.upperInputOutputTime4,
-          upperMoistureMeasurement4: data.upperMoistureMeasurement4,
-          lowerLot4: data.lowerLot4,
-          lowerInputQuantity4: data.lowerInputQuantity4,
-          lowerInputOutputTime4: data.lowerInputOutputTime4,
-          lowerMoistureMeasurement4: data.lowerMoistureMeasurement4,
+          // 섹션3 - 두께 (상부)
+          upperThicknessBefore1F1: data.upperThicknessBefore1F1,
+          upperThicknessBefore1F2: data.upperThicknessBefore1F2,
+          upperThicknessBefore1F3: data.upperThicknessBefore1F3,
+          upperThicknessBefore2F1: data.upperThicknessBefore2F1,
+          upperThicknessBefore2F2: data.upperThicknessBefore2F2,
+          upperThicknessBefore2F3: data.upperThicknessBefore2F3,
+          upperThicknessBefore3F1: data.upperThicknessBefore3F1,
+          upperThicknessBefore3F2: data.upperThicknessBefore3F2,
+          upperThicknessBefore3F3: data.upperThicknessBefore3F3,
+          upperThicknessAfter1F1: data.upperThicknessAfter1F1,
+          upperThicknessAfter1F2: data.upperThicknessAfter1F2,
+          upperThicknessAfter1F3: data.upperThicknessAfter1F3,
+          upperThicknessAfter2F1: data.upperThicknessAfter2F1,
+          upperThicknessAfter2F2: data.upperThicknessAfter2F2,
+          upperThicknessAfter2F3: data.upperThicknessAfter2F3,
+          upperThicknessAfter3F1: data.upperThicknessAfter3F1,
+          upperThicknessAfter3F2: data.upperThicknessAfter3F2,
+          upperThicknessAfter3F3: data.upperThicknessAfter3F3,
 
-          // B. 생산 정보 - 5차
-          upperLot5: data.upperLot5,
-          upperInputQuantity5: data.upperInputQuantity5,
-          upperInputOutputTime5: data.upperInputOutputTime5,
-          upperMoistureMeasurement5: data.upperMoistureMeasurement5,
-          lowerLot5: data.lowerLot5,
-          lowerInputQuantity5: data.lowerInputQuantity5,
-          lowerInputOutputTime5: data.lowerInputOutputTime5,
-          lowerMoistureMeasurement5: data.lowerMoistureMeasurement5,
+          // 섹션3 - 두께 (하부)
+          lowerThicknessBefore1F1: data.lowerThicknessBefore1F1,
+          lowerThicknessBefore1F2: data.lowerThicknessBefore1F2,
+          lowerThicknessBefore1F3: data.lowerThicknessBefore1F3,
+          lowerThicknessBefore2F1: data.lowerThicknessBefore2F1,
+          lowerThicknessBefore2F2: data.lowerThicknessBefore2F2,
+          lowerThicknessBefore2F3: data.lowerThicknessBefore2F3,
+          lowerThicknessBefore3F1: data.lowerThicknessBefore3F1,
+          lowerThicknessBefore3F2: data.lowerThicknessBefore3F2,
+          lowerThicknessBefore3F3: data.lowerThicknessBefore3F3,
+          lowerThicknessAfter1F1: data.lowerThicknessAfter1F1,
+          lowerThicknessAfter1F2: data.lowerThicknessAfter1F2,
+          lowerThicknessAfter1F3: data.lowerThicknessAfter1F3,
+          lowerThicknessAfter2F1: data.lowerThicknessAfter2F1,
+          lowerThicknessAfter2F2: data.lowerThicknessAfter2F2,
+          lowerThicknessAfter2F3: data.lowerThicknessAfter2F3,
+          lowerThicknessAfter3F1: data.lowerThicknessAfter3F1,
+          lowerThicknessAfter3F2: data.lowerThicknessAfter3F2,
+          lowerThicknessAfter3F3: data.lowerThicknessAfter3F3,
 
-          // C. 공정 조건
+          // 섹션4 - 공정 조건
           vacuumDegreeSetting: data.vacuumDegreeSetting,
           upperSetTemperature: data.upperSetTemperature,
           lowerSetTemperature: data.lowerSetTemperature,
@@ -154,12 +188,7 @@ export default function VdView() {
       </div>
 
       <div className={styles.excelWrapper}>
-        <ExcelRenderer
-          workbook={workbook}
-          editableRanges={[]}
-          cellValues={cellValues}
-          namedRanges={namedRanges}
-        />
+        <ExcelRenderer workbook={workbook} editableRanges={[]} cellValues={cellValues} namedRanges={namedRanges} />
       </div>
     </div>
   );

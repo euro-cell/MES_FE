@@ -245,12 +245,7 @@ export const PRESS_INTEGER_FIELDS = [
 // Notching 소수점 필드 (소수점 1자리 - 치수 정보)
 export const NOTCHING_NUMERIC_FIELDS = [
   // 생산 정보 1~5차 - 치수 정보 4가지
-  ...['1', '2', '3', '4', '5'].flatMap(n => [
-    `dimension${n}`,
-    `wide${n}`,
-    `length${n}`,
-    `missMatch${n}`,
-  ]),
+  ...['1', '2', '3', '4', '5'].flatMap(n => [`dimension${n}`, `wide${n}`, `length${n}`, `missMatch${n}`]),
 ];
 
 // Notching 정수 필드 (수량, 불량 수량, 불량 상세, 공정 조건)
@@ -272,32 +267,48 @@ export const NOTCHING_INTEGER_FIELDS = [
   'punchingSpeed',
 ];
 
-// VD 숫자 필드 (수분측정, 공정 조건)
+// VD 숫자 필드 (수분측정, 공정 조건, 두께)
 export const VD_NUMERIC_FIELDS = [
-  // 생산 정보 1~5차 - 수분측정
-  ...['1', '2', '3', '4', '5'].flatMap(n => [
-    `upperMoistureMeasurement${n}`,
-    `lowerMoistureMeasurement${n}`,
-  ]),
+  // 섹션3 - 수분측정 (1~3층)
+  'upperMoistureMeasurement1',
+  'upperMoistureMeasurement2',
+  'upperMoistureMeasurement3',
+  'lowerMoistureMeasurement1',
+  'lowerMoistureMeasurement2',
+  'lowerMoistureMeasurement3',
   // 공정 조건
   'vacuumDegreeSetting',
   'upperSetTemperature',
   'lowerSetTemperature',
+  // 섹션3 - 두께 before/after (층번호F오븐번호, 상부)
+  ...['1', '2', '3'].flatMap(floor =>
+    ['1', '2', '3'].flatMap(oven => [`upperThicknessBefore${floor}F${oven}`, `upperThicknessAfter${floor}F${oven}`]),
+  ),
+  // 섹션3 - 두께 before/after (층번호F오븐번호, 하부)
+  ...['1', '2', '3'].flatMap(floor =>
+    ['1', '2', '3'].flatMap(oven => [`lowerThicknessBefore${floor}F${oven}`, `lowerThicknessAfter${floor}F${oven}`]),
+  ),
 ];
 
-// VD 시간 필드 (타이머 시간 - HH:mm)
-export const VD_TIME_FIELDS = [
+// VD 시간 필드 — upperInputOutputTime/lowerInputOutputTime은 자유 문자열("17:07 / 11:00")이므로 제외
+export const VD_TIME_FIELDS: string[] = [];
+
+// VD 정수 필드 (투입량, 타이머 시간)
+export const VD_INTEGER_FIELDS = [
+  // 섹션3 - 투입량 (1~3층)
+  'upperInputQuantity1',
+  'upperInputQuantity2',
+  'upperInputQuantity3',
+  'lowerInputQuantity1',
+  'lowerInputQuantity2',
+  'lowerInputQuantity3',
+  // 섹션4 - 타이머 시간 (숫자, 시간 단위)
   'upperTimerTime',
   'lowerTimerTime',
-];
-
-// VD 정수 필드 (투입량)
-export const VD_INTEGER_FIELDS = [
-  // 생산 정보 1~5차 - 투입량
-  ...['1', '2', '3', '4', '5'].flatMap(n => [
-    `upperInputQuantity${n}`,
-    `lowerInputQuantity${n}`,
-  ]),
+  // 섹션2 - 오븐별 LOT 투입량 (오븐번호×층번호)
+  ...['1', '2', '3'].flatMap(oven =>
+    ['1', '2', '3'].flatMap(floor => [`upperLotQty${oven}${floor}`, `lowerLotQty${oven}${floor}`]),
+  ),
 ];
 
 // Forming 숫자 필드 (공정 조건)

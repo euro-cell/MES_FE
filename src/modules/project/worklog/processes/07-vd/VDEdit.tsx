@@ -51,69 +51,103 @@ export default function VdEdit() {
           plant: data.plant ?? '',
           shift: data.shift ?? '',
 
-          // A. 자재 투입 정보
-          cathodeMagazineLot1: data.cathodeMagazineLot1 ?? '',
-          cathodeMagazineLot2: data.cathodeMagazineLot2 ?? '',
-          cathodeMagazineLot3: data.cathodeMagazineLot3 ?? '',
-          cathodeMagazineLot4: data.cathodeMagazineLot4 ?? '',
-          cathodeMagazineLot5: data.cathodeMagazineLot5 ?? '',
-          anodeMagazineLot1: data.anodeMagazineLot1 ?? '',
-          anodeMagazineLot2: data.anodeMagazineLot2 ?? '',
-          anodeMagazineLot3: data.anodeMagazineLot3 ?? '',
-          anodeMagazineLot4: data.anodeMagazineLot4 ?? '',
-          anodeMagazineLot5: data.anodeMagazineLot5 ?? '',
+          // 섹션2 - LOT (오븐번호×층번호)
+          upperLot11: data.upperLot11 ?? '',
+          upperLot12: data.upperLot12 ?? '',
+          upperLot13: data.upperLot13 ?? '',
+          upperLot21: data.upperLot21 ?? '',
+          upperLot22: data.upperLot22 ?? '',
+          upperLot23: data.upperLot23 ?? '',
+          upperLot31: data.upperLot31 ?? '',
+          upperLot32: data.upperLot32 ?? '',
+          upperLot33: data.upperLot33 ?? '',
+          lowerLot11: data.lowerLot11 ?? '',
+          lowerLot12: data.lowerLot12 ?? '',
+          lowerLot13: data.lowerLot13 ?? '',
+          lowerLot21: data.lowerLot21 ?? '',
+          lowerLot22: data.lowerLot22 ?? '',
+          lowerLot23: data.lowerLot23 ?? '',
+          lowerLot31: data.lowerLot31 ?? '',
+          lowerLot32: data.lowerLot32 ?? '',
+          lowerLot33: data.lowerLot33 ?? '',
 
-          // B. 생산 정보 - 1차
-          upperLot1: data.upperLot1 ?? '',
+          // 섹션2 - 투입량 (오븐번호×층번호)
+          upperLotQty11: data.upperLotQty11 ?? '',
+          upperLotQty12: data.upperLotQty12 ?? '',
+          upperLotQty13: data.upperLotQty13 ?? '',
+          upperLotQty21: data.upperLotQty21 ?? '',
+          upperLotQty22: data.upperLotQty22 ?? '',
+          upperLotQty23: data.upperLotQty23 ?? '',
+          upperLotQty31: data.upperLotQty31 ?? '',
+          upperLotQty32: data.upperLotQty32 ?? '',
+          upperLotQty33: data.upperLotQty33 ?? '',
+          lowerLotQty11: data.lowerLotQty11 ?? '',
+          lowerLotQty12: data.lowerLotQty12 ?? '',
+          lowerLotQty13: data.lowerLotQty13 ?? '',
+          lowerLotQty21: data.lowerLotQty21 ?? '',
+          lowerLotQty22: data.lowerLotQty22 ?? '',
+          lowerLotQty23: data.lowerLotQty23 ?? '',
+          lowerLotQty31: data.lowerLotQty31 ?? '',
+          lowerLotQty32: data.lowerLotQty32 ?? '',
+          lowerLotQty33: data.lowerLotQty33 ?? '',
+
+          // 섹션3 - 투입량/수분측정/시간
           upperInputQuantity1: data.upperInputQuantity1 ?? '',
-          upperInputOutputTime1: data.upperInputOutputTime1 ?? '',
-          upperMoistureMeasurement1: data.upperMoistureMeasurement1 ?? '',
-          lowerLot1: data.lowerLot1 ?? '',
-          lowerInputQuantity1: data.lowerInputQuantity1 ?? '',
-          lowerInputOutputTime1: data.lowerInputOutputTime1 ?? '',
-          lowerMoistureMeasurement1: data.lowerMoistureMeasurement1 ?? '',
-
-          // B. 생산 정보 - 2차
-          upperLot2: data.upperLot2 ?? '',
           upperInputQuantity2: data.upperInputQuantity2 ?? '',
-          upperInputOutputTime2: data.upperInputOutputTime2 ?? '',
-          upperMoistureMeasurement2: data.upperMoistureMeasurement2 ?? '',
-          lowerLot2: data.lowerLot2 ?? '',
-          lowerInputQuantity2: data.lowerInputQuantity2 ?? '',
-          lowerInputOutputTime2: data.lowerInputOutputTime2 ?? '',
-          lowerMoistureMeasurement2: data.lowerMoistureMeasurement2 ?? '',
-
-          // B. 생산 정보 - 3차
-          upperLot3: data.upperLot3 ?? '',
           upperInputQuantity3: data.upperInputQuantity3 ?? '',
-          upperInputOutputTime3: data.upperInputOutputTime3 ?? '',
+          upperMoistureMeasurement1: data.upperMoistureMeasurement1 ?? '',
+          upperMoistureMeasurement2: data.upperMoistureMeasurement2 ?? '',
           upperMoistureMeasurement3: data.upperMoistureMeasurement3 ?? '',
-          lowerLot3: data.lowerLot3 ?? '',
+          upperInputOutputTime: data.upperInputOutputTime ?? '',
+          lowerInputQuantity1: data.lowerInputQuantity1 ?? '',
+          lowerInputQuantity2: data.lowerInputQuantity2 ?? '',
           lowerInputQuantity3: data.lowerInputQuantity3 ?? '',
-          lowerInputOutputTime3: data.lowerInputOutputTime3 ?? '',
+          lowerMoistureMeasurement1: data.lowerMoistureMeasurement1 ?? '',
+          lowerMoistureMeasurement2: data.lowerMoistureMeasurement2 ?? '',
           lowerMoistureMeasurement3: data.lowerMoistureMeasurement3 ?? '',
+          lowerInputOutputTime: data.lowerInputOutputTime ?? '',
 
-          // B. 생산 정보 - 4차
-          upperLot4: data.upperLot4 ?? '',
-          upperInputQuantity4: data.upperInputQuantity4 ?? '',
-          upperInputOutputTime4: data.upperInputOutputTime4 ?? '',
-          upperMoistureMeasurement4: data.upperMoistureMeasurement4 ?? '',
-          lowerLot4: data.lowerLot4 ?? '',
-          lowerInputQuantity4: data.lowerInputQuantity4 ?? '',
-          lowerInputOutputTime4: data.lowerInputOutputTime4 ?? '',
-          lowerMoistureMeasurement4: data.lowerMoistureMeasurement4 ?? '',
+          // 섹션3 - 두께 (상부 before/after)
+          upperThicknessBefore1F1: data.upperThicknessBefore1F1 ?? '',
+          upperThicknessBefore1F2: data.upperThicknessBefore1F2 ?? '',
+          upperThicknessBefore1F3: data.upperThicknessBefore1F3 ?? '',
+          upperThicknessBefore2F1: data.upperThicknessBefore2F1 ?? '',
+          upperThicknessBefore2F2: data.upperThicknessBefore2F2 ?? '',
+          upperThicknessBefore2F3: data.upperThicknessBefore2F3 ?? '',
+          upperThicknessBefore3F1: data.upperThicknessBefore3F1 ?? '',
+          upperThicknessBefore3F2: data.upperThicknessBefore3F2 ?? '',
+          upperThicknessBefore3F3: data.upperThicknessBefore3F3 ?? '',
+          upperThicknessAfter1F1: data.upperThicknessAfter1F1 ?? '',
+          upperThicknessAfter1F2: data.upperThicknessAfter1F2 ?? '',
+          upperThicknessAfter1F3: data.upperThicknessAfter1F3 ?? '',
+          upperThicknessAfter2F1: data.upperThicknessAfter2F1 ?? '',
+          upperThicknessAfter2F2: data.upperThicknessAfter2F2 ?? '',
+          upperThicknessAfter2F3: data.upperThicknessAfter2F3 ?? '',
+          upperThicknessAfter3F1: data.upperThicknessAfter3F1 ?? '',
+          upperThicknessAfter3F2: data.upperThicknessAfter3F2 ?? '',
+          upperThicknessAfter3F3: data.upperThicknessAfter3F3 ?? '',
 
-          // B. 생산 정보 - 5차
-          upperLot5: data.upperLot5 ?? '',
-          upperInputQuantity5: data.upperInputQuantity5 ?? '',
-          upperInputOutputTime5: data.upperInputOutputTime5 ?? '',
-          upperMoistureMeasurement5: data.upperMoistureMeasurement5 ?? '',
-          lowerLot5: data.lowerLot5 ?? '',
-          lowerInputQuantity5: data.lowerInputQuantity5 ?? '',
-          lowerInputOutputTime5: data.lowerInputOutputTime5 ?? '',
-          lowerMoistureMeasurement5: data.lowerMoistureMeasurement5 ?? '',
+          // 섹션3 - 두께 (하부 before/after)
+          lowerThicknessBefore1F1: data.lowerThicknessBefore1F1 ?? '',
+          lowerThicknessBefore1F2: data.lowerThicknessBefore1F2 ?? '',
+          lowerThicknessBefore1F3: data.lowerThicknessBefore1F3 ?? '',
+          lowerThicknessBefore2F1: data.lowerThicknessBefore2F1 ?? '',
+          lowerThicknessBefore2F2: data.lowerThicknessBefore2F2 ?? '',
+          lowerThicknessBefore2F3: data.lowerThicknessBefore2F3 ?? '',
+          lowerThicknessBefore3F1: data.lowerThicknessBefore3F1 ?? '',
+          lowerThicknessBefore3F2: data.lowerThicknessBefore3F2 ?? '',
+          lowerThicknessBefore3F3: data.lowerThicknessBefore3F3 ?? '',
+          lowerThicknessAfter1F1: data.lowerThicknessAfter1F1 ?? '',
+          lowerThicknessAfter1F2: data.lowerThicknessAfter1F2 ?? '',
+          lowerThicknessAfter1F3: data.lowerThicknessAfter1F3 ?? '',
+          lowerThicknessAfter2F1: data.lowerThicknessAfter2F1 ?? '',
+          lowerThicknessAfter2F2: data.lowerThicknessAfter2F2 ?? '',
+          lowerThicknessAfter2F3: data.lowerThicknessAfter2F3 ?? '',
+          lowerThicknessAfter3F1: data.lowerThicknessAfter3F1 ?? '',
+          lowerThicknessAfter3F2: data.lowerThicknessAfter3F2 ?? '',
+          lowerThicknessAfter3F3: data.lowerThicknessAfter3F3 ?? '',
 
-          // C. 공정 조건
+          // 섹션4 - 공정 조건
           vacuumDegreeSetting: data.vacuumDegreeSetting ?? '',
           upperSetTemperature: data.upperSetTemperature ?? '',
           lowerSetTemperature: data.lowerSetTemperature ?? '',
@@ -152,74 +186,156 @@ export default function VdEdit() {
       plant: formValues.plant ? (plantEquipments.find(eq => eq.name === formValues.plant)?.id ?? null) : null,
       shift: formValues.shift || '',
 
-      // A. 자재 투입 정보
-      cathodeMagazineLot1: formValues.cathodeMagazineLot1,
-      cathodeMagazineLot2: formValues.cathodeMagazineLot2,
-      cathodeMagazineLot3: formValues.cathodeMagazineLot3,
-      cathodeMagazineLot4: formValues.cathodeMagazineLot4,
-      cathodeMagazineLot5: formValues.cathodeMagazineLot5,
-      anodeMagazineLot1: formValues.anodeMagazineLot1,
-      anodeMagazineLot2: formValues.anodeMagazineLot2,
-      anodeMagazineLot3: formValues.anodeMagazineLot3,
-      anodeMagazineLot4: formValues.anodeMagazineLot4,
-      anodeMagazineLot5: formValues.anodeMagazineLot5,
+      // 섹션2 - LOT (오븐번호×층번호)
+      upperLot11: formValues.upperLot11,
+      upperLot12: formValues.upperLot12,
+      upperLot13: formValues.upperLot13,
+      upperLot21: formValues.upperLot21,
+      upperLot22: formValues.upperLot22,
+      upperLot23: formValues.upperLot23,
+      upperLot31: formValues.upperLot31,
+      upperLot32: formValues.upperLot32,
+      upperLot33: formValues.upperLot33,
+      lowerLot11: formValues.lowerLot11,
+      lowerLot12: formValues.lowerLot12,
+      lowerLot13: formValues.lowerLot13,
+      lowerLot21: formValues.lowerLot21,
+      lowerLot22: formValues.lowerLot22,
+      lowerLot23: formValues.lowerLot23,
+      lowerLot31: formValues.lowerLot31,
+      lowerLot32: formValues.lowerLot32,
+      lowerLot33: formValues.lowerLot33,
 
-      // B. 생산 정보 - 1차
-      upperLot1: formValues.upperLot1,
+      // 섹션2 - 투입량 (오븐번호×층번호)
+      upperLotQty11: formValues.upperLotQty11 ? Number(formValues.upperLotQty11) : undefined,
+      upperLotQty12: formValues.upperLotQty12 ? Number(formValues.upperLotQty12) : undefined,
+      upperLotQty13: formValues.upperLotQty13 ? Number(formValues.upperLotQty13) : undefined,
+      upperLotQty21: formValues.upperLotQty21 ? Number(formValues.upperLotQty21) : undefined,
+      upperLotQty22: formValues.upperLotQty22 ? Number(formValues.upperLotQty22) : undefined,
+      upperLotQty23: formValues.upperLotQty23 ? Number(formValues.upperLotQty23) : undefined,
+      upperLotQty31: formValues.upperLotQty31 ? Number(formValues.upperLotQty31) : undefined,
+      upperLotQty32: formValues.upperLotQty32 ? Number(formValues.upperLotQty32) : undefined,
+      upperLotQty33: formValues.upperLotQty33 ? Number(formValues.upperLotQty33) : undefined,
+      lowerLotQty11: formValues.lowerLotQty11 ? Number(formValues.lowerLotQty11) : undefined,
+      lowerLotQty12: formValues.lowerLotQty12 ? Number(formValues.lowerLotQty12) : undefined,
+      lowerLotQty13: formValues.lowerLotQty13 ? Number(formValues.lowerLotQty13) : undefined,
+      lowerLotQty21: formValues.lowerLotQty21 ? Number(formValues.lowerLotQty21) : undefined,
+      lowerLotQty22: formValues.lowerLotQty22 ? Number(formValues.lowerLotQty22) : undefined,
+      lowerLotQty23: formValues.lowerLotQty23 ? Number(formValues.lowerLotQty23) : undefined,
+      lowerLotQty31: formValues.lowerLotQty31 ? Number(formValues.lowerLotQty31) : undefined,
+      lowerLotQty32: formValues.lowerLotQty32 ? Number(formValues.lowerLotQty32) : undefined,
+      lowerLotQty33: formValues.lowerLotQty33 ? Number(formValues.lowerLotQty33) : undefined,
+
+      // 섹션3 - 투입량/수분측정/시간
       upperInputQuantity1: formValues.upperInputQuantity1 ? Number(formValues.upperInputQuantity1) : undefined,
-      upperInputOutputTime1: formValues.upperInputOutputTime1,
-      upperMoistureMeasurement1: formValues.upperMoistureMeasurement1 ? Number(formValues.upperMoistureMeasurement1) : undefined,
-      lowerLot1: formValues.lowerLot1,
-      lowerInputQuantity1: formValues.lowerInputQuantity1 ? Number(formValues.lowerInputQuantity1) : undefined,
-      lowerInputOutputTime1: formValues.lowerInputOutputTime1,
-      lowerMoistureMeasurement1: formValues.lowerMoistureMeasurement1 ? Number(formValues.lowerMoistureMeasurement1) : undefined,
-
-      // B. 생산 정보 - 2차
-      upperLot2: formValues.upperLot2,
       upperInputQuantity2: formValues.upperInputQuantity2 ? Number(formValues.upperInputQuantity2) : undefined,
-      upperInputOutputTime2: formValues.upperInputOutputTime2,
-      upperMoistureMeasurement2: formValues.upperMoistureMeasurement2 ? Number(formValues.upperMoistureMeasurement2) : undefined,
-      lowerLot2: formValues.lowerLot2,
-      lowerInputQuantity2: formValues.lowerInputQuantity2 ? Number(formValues.lowerInputQuantity2) : undefined,
-      lowerInputOutputTime2: formValues.lowerInputOutputTime2,
-      lowerMoistureMeasurement2: formValues.lowerMoistureMeasurement2 ? Number(formValues.lowerMoistureMeasurement2) : undefined,
-
-      // B. 생산 정보 - 3차
-      upperLot3: formValues.upperLot3,
       upperInputQuantity3: formValues.upperInputQuantity3 ? Number(formValues.upperInputQuantity3) : undefined,
-      upperInputOutputTime3: formValues.upperInputOutputTime3,
-      upperMoistureMeasurement3: formValues.upperMoistureMeasurement3 ? Number(formValues.upperMoistureMeasurement3) : undefined,
-      lowerLot3: formValues.lowerLot3,
+      upperMoistureMeasurement1: formValues.upperMoistureMeasurement1
+        ? Number(formValues.upperMoistureMeasurement1)
+        : undefined,
+      upperMoistureMeasurement2: formValues.upperMoistureMeasurement2
+        ? Number(formValues.upperMoistureMeasurement2)
+        : undefined,
+      upperMoistureMeasurement3: formValues.upperMoistureMeasurement3
+        ? Number(formValues.upperMoistureMeasurement3)
+        : undefined,
+      upperInputOutputTime: formValues.upperInputOutputTime || undefined,
+      lowerInputQuantity1: formValues.lowerInputQuantity1 ? Number(formValues.lowerInputQuantity1) : undefined,
+      lowerInputQuantity2: formValues.lowerInputQuantity2 ? Number(formValues.lowerInputQuantity2) : undefined,
       lowerInputQuantity3: formValues.lowerInputQuantity3 ? Number(formValues.lowerInputQuantity3) : undefined,
-      lowerInputOutputTime3: formValues.lowerInputOutputTime3,
-      lowerMoistureMeasurement3: formValues.lowerMoistureMeasurement3 ? Number(formValues.lowerMoistureMeasurement3) : undefined,
+      lowerMoistureMeasurement1: formValues.lowerMoistureMeasurement1
+        ? Number(formValues.lowerMoistureMeasurement1)
+        : undefined,
+      lowerMoistureMeasurement2: formValues.lowerMoistureMeasurement2
+        ? Number(formValues.lowerMoistureMeasurement2)
+        : undefined,
+      lowerMoistureMeasurement3: formValues.lowerMoistureMeasurement3
+        ? Number(formValues.lowerMoistureMeasurement3)
+        : undefined,
+      lowerInputOutputTime: formValues.lowerInputOutputTime || undefined,
 
-      // B. 생산 정보 - 4차
-      upperLot4: formValues.upperLot4,
-      upperInputQuantity4: formValues.upperInputQuantity4 ? Number(formValues.upperInputQuantity4) : undefined,
-      upperInputOutputTime4: formValues.upperInputOutputTime4,
-      upperMoistureMeasurement4: formValues.upperMoistureMeasurement4 ? Number(formValues.upperMoistureMeasurement4) : undefined,
-      lowerLot4: formValues.lowerLot4,
-      lowerInputQuantity4: formValues.lowerInputQuantity4 ? Number(formValues.lowerInputQuantity4) : undefined,
-      lowerInputOutputTime4: formValues.lowerInputOutputTime4,
-      lowerMoistureMeasurement4: formValues.lowerMoistureMeasurement4 ? Number(formValues.lowerMoistureMeasurement4) : undefined,
+      // 섹션3 - 두께 (상부)
+      upperThicknessBefore1F1: formValues.upperThicknessBefore1F1
+        ? Number(formValues.upperThicknessBefore1F1)
+        : undefined,
+      upperThicknessBefore1F2: formValues.upperThicknessBefore1F2
+        ? Number(formValues.upperThicknessBefore1F2)
+        : undefined,
+      upperThicknessBefore1F3: formValues.upperThicknessBefore1F3
+        ? Number(formValues.upperThicknessBefore1F3)
+        : undefined,
+      upperThicknessBefore2F1: formValues.upperThicknessBefore2F1
+        ? Number(formValues.upperThicknessBefore2F1)
+        : undefined,
+      upperThicknessBefore2F2: formValues.upperThicknessBefore2F2
+        ? Number(formValues.upperThicknessBefore2F2)
+        : undefined,
+      upperThicknessBefore2F3: formValues.upperThicknessBefore2F3
+        ? Number(formValues.upperThicknessBefore2F3)
+        : undefined,
+      upperThicknessBefore3F1: formValues.upperThicknessBefore3F1
+        ? Number(formValues.upperThicknessBefore3F1)
+        : undefined,
+      upperThicknessBefore3F2: formValues.upperThicknessBefore3F2
+        ? Number(formValues.upperThicknessBefore3F2)
+        : undefined,
+      upperThicknessBefore3F3: formValues.upperThicknessBefore3F3
+        ? Number(formValues.upperThicknessBefore3F3)
+        : undefined,
+      upperThicknessAfter1F1: formValues.upperThicknessAfter1F1 ? Number(formValues.upperThicknessAfter1F1) : undefined,
+      upperThicknessAfter1F2: formValues.upperThicknessAfter1F2 ? Number(formValues.upperThicknessAfter1F2) : undefined,
+      upperThicknessAfter1F3: formValues.upperThicknessAfter1F3 ? Number(formValues.upperThicknessAfter1F3) : undefined,
+      upperThicknessAfter2F1: formValues.upperThicknessAfter2F1 ? Number(formValues.upperThicknessAfter2F1) : undefined,
+      upperThicknessAfter2F2: formValues.upperThicknessAfter2F2 ? Number(formValues.upperThicknessAfter2F2) : undefined,
+      upperThicknessAfter2F3: formValues.upperThicknessAfter2F3 ? Number(formValues.upperThicknessAfter2F3) : undefined,
+      upperThicknessAfter3F1: formValues.upperThicknessAfter3F1 ? Number(formValues.upperThicknessAfter3F1) : undefined,
+      upperThicknessAfter3F2: formValues.upperThicknessAfter3F2 ? Number(formValues.upperThicknessAfter3F2) : undefined,
+      upperThicknessAfter3F3: formValues.upperThicknessAfter3F3 ? Number(formValues.upperThicknessAfter3F3) : undefined,
 
-      // B. 생산 정보 - 5차
-      upperLot5: formValues.upperLot5,
-      upperInputQuantity5: formValues.upperInputQuantity5 ? Number(formValues.upperInputQuantity5) : undefined,
-      upperInputOutputTime5: formValues.upperInputOutputTime5,
-      upperMoistureMeasurement5: formValues.upperMoistureMeasurement5 ? Number(formValues.upperMoistureMeasurement5) : undefined,
-      lowerLot5: formValues.lowerLot5,
-      lowerInputQuantity5: formValues.lowerInputQuantity5 ? Number(formValues.lowerInputQuantity5) : undefined,
-      lowerInputOutputTime5: formValues.lowerInputOutputTime5,
-      lowerMoistureMeasurement5: formValues.lowerMoistureMeasurement5 ? Number(formValues.lowerMoistureMeasurement5) : undefined,
+      // 섹션3 - 두께 (하부)
+      lowerThicknessBefore1F1: formValues.lowerThicknessBefore1F1
+        ? Number(formValues.lowerThicknessBefore1F1)
+        : undefined,
+      lowerThicknessBefore1F2: formValues.lowerThicknessBefore1F2
+        ? Number(formValues.lowerThicknessBefore1F2)
+        : undefined,
+      lowerThicknessBefore1F3: formValues.lowerThicknessBefore1F3
+        ? Number(formValues.lowerThicknessBefore1F3)
+        : undefined,
+      lowerThicknessBefore2F1: formValues.lowerThicknessBefore2F1
+        ? Number(formValues.lowerThicknessBefore2F1)
+        : undefined,
+      lowerThicknessBefore2F2: formValues.lowerThicknessBefore2F2
+        ? Number(formValues.lowerThicknessBefore2F2)
+        : undefined,
+      lowerThicknessBefore2F3: formValues.lowerThicknessBefore2F3
+        ? Number(formValues.lowerThicknessBefore2F3)
+        : undefined,
+      lowerThicknessBefore3F1: formValues.lowerThicknessBefore3F1
+        ? Number(formValues.lowerThicknessBefore3F1)
+        : undefined,
+      lowerThicknessBefore3F2: formValues.lowerThicknessBefore3F2
+        ? Number(formValues.lowerThicknessBefore3F2)
+        : undefined,
+      lowerThicknessBefore3F3: formValues.lowerThicknessBefore3F3
+        ? Number(formValues.lowerThicknessBefore3F3)
+        : undefined,
+      lowerThicknessAfter1F1: formValues.lowerThicknessAfter1F1 ? Number(formValues.lowerThicknessAfter1F1) : undefined,
+      lowerThicknessAfter1F2: formValues.lowerThicknessAfter1F2 ? Number(formValues.lowerThicknessAfter1F2) : undefined,
+      lowerThicknessAfter1F3: formValues.lowerThicknessAfter1F3 ? Number(formValues.lowerThicknessAfter1F3) : undefined,
+      lowerThicknessAfter2F1: formValues.lowerThicknessAfter2F1 ? Number(formValues.lowerThicknessAfter2F1) : undefined,
+      lowerThicknessAfter2F2: formValues.lowerThicknessAfter2F2 ? Number(formValues.lowerThicknessAfter2F2) : undefined,
+      lowerThicknessAfter2F3: formValues.lowerThicknessAfter2F3 ? Number(formValues.lowerThicknessAfter2F3) : undefined,
+      lowerThicknessAfter3F1: formValues.lowerThicknessAfter3F1 ? Number(formValues.lowerThicknessAfter3F1) : undefined,
+      lowerThicknessAfter3F2: formValues.lowerThicknessAfter3F2 ? Number(formValues.lowerThicknessAfter3F2) : undefined,
+      lowerThicknessAfter3F3: formValues.lowerThicknessAfter3F3 ? Number(formValues.lowerThicknessAfter3F3) : undefined,
 
-      // C. 공정 조건
+      // 섹션4 - 공정 조건
       vacuumDegreeSetting: formValues.vacuumDegreeSetting ? Number(formValues.vacuumDegreeSetting) : undefined,
       upperSetTemperature: formValues.upperSetTemperature ? Number(formValues.upperSetTemperature) : undefined,
       lowerSetTemperature: formValues.lowerSetTemperature ? Number(formValues.lowerSetTemperature) : undefined,
-      upperTimerTime: formValues.upperTimerTime || undefined,
-      lowerTimerTime: formValues.lowerTimerTime || undefined,
+      upperTimerTime: formValues.upperTimerTime ? Number(formValues.upperTimerTime) : undefined,
+      lowerTimerTime: formValues.lowerTimerTime ? Number(formValues.lowerTimerTime) : undefined,
     };
 
     setSubmitting(true);
@@ -241,60 +357,22 @@ export default function VdEdit() {
 
   const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
 
-  // 선택된 양극/음극 매거진 LOT 수집 (상부/하부 LOT 선택박스용)
-  const selectedCathodeLots = [
-    formValues.cathodeMagazineLot1,
-    formValues.cathodeMagazineLot2,
-    formValues.cathodeMagazineLot3,
-    formValues.cathodeMagazineLot4,
-    formValues.cathodeMagazineLot5,
-  ].filter(Boolean);
-
-  const selectedAnodeLots = [
-    formValues.anodeMagazineLot1,
-    formValues.anodeMagazineLot2,
-    formValues.anodeMagazineLot3,
-    formValues.anodeMagazineLot4,
-    formValues.anodeMagazineLot5,
-  ].filter(Boolean);
-
-  // 상부/하부 LOT 옵션 (선택된 양극 + 음극 LOT 합침)
-  const selectedMagazineLots = [...new Set([...selectedCathodeLots, ...selectedAnodeLots])];
-
   // 드롭다운 옵션 생성
   const plantOptions = plantEquipments.map(eq => eq.name);
+  const allLots = [...new Set([...cathodeLots, ...anodeLots])];
   const vdSelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
-    // 양극 매거진 LOT (cathodeMagazineLot1~5)
-    ...(cathodeLots.length > 0 && {
-      cathodeMagazineLot1: cathodeLots,
-      cathodeMagazineLot2: cathodeLots,
-      cathodeMagazineLot3: cathodeLots,
-      cathodeMagazineLot4: cathodeLots,
-      cathodeMagazineLot5: cathodeLots,
-    }),
-    // 음극 매거진 LOT (anodeMagazineLot1~5)
-    ...(anodeLots.length > 0 && {
-      anodeMagazineLot1: anodeLots,
-      anodeMagazineLot2: anodeLots,
-      anodeMagazineLot3: anodeLots,
-      anodeMagazineLot4: anodeLots,
-      anodeMagazineLot5: anodeLots,
-    }),
-    // 생산 정보 - 상부/하부 LOT (선택된 매거진 LOT에서 선택)
-    ...(selectedMagazineLots.length > 0 && {
-      upperLot1: selectedMagazineLots,
-      upperLot2: selectedMagazineLots,
-      upperLot3: selectedMagazineLots,
-      upperLot4: selectedMagazineLots,
-      upperLot5: selectedMagazineLots,
-      lowerLot1: selectedMagazineLots,
-      lowerLot2: selectedMagazineLots,
-      lowerLot3: selectedMagazineLots,
-      lowerLot4: selectedMagazineLots,
-      lowerLot5: selectedMagazineLots,
-    }),
+    // 섹션2 - LOT (오븐번호×층번호, 양극+음극 통합)
+    ...(allLots.length > 0 &&
+      Object.fromEntries(
+        ['1', '2', '3'].flatMap(oven =>
+          ['1', '2', '3'].flatMap(floor => [
+            [`upperLot${oven}${floor}`, allLots],
+            [`lowerLot${oven}${floor}`, allLots],
+          ]),
+        ),
+      )),
   };
 
   return (
@@ -306,7 +384,10 @@ export default function VdEdit() {
           <p className={styles.hint}>파란색: 입력 / 연두색: 선택 / 노란색: 자동입력</p>
         </div>
         <div className={styles.actions}>
-          <button className={styles.btnCancel} onClick={() => navigate(`/project/log/${projectId}?category=Assembly&process=VD`)}>
+          <button
+            className={styles.btnCancel}
+            onClick={() => navigate(`/project/log/${projectId}?category=Assembly&process=VD`)}
+          >
             취소
           </button>
           <button className={styles.btnSubmit} onClick={handleSubmit} disabled={submitting}>

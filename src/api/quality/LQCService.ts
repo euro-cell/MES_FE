@@ -57,10 +57,7 @@ export interface BinderData {
 }
 
 /** Binder 데이터 조회 */
-export const getLQCBinderData = async (
-  projectId: number,
-  electrode: 'A' | 'C'
-): Promise<BinderData[]> => {
+export const getLQCBinderData = async (projectId: number, electrode: 'A' | 'C'): Promise<BinderData[]> => {
   const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/binder?electrode=${electrode}`, {
     withCredentials: true,
   });
@@ -80,10 +77,7 @@ export interface SlurryData {
 }
 
 /** Slurry 데이터 조회 */
-export const getLQCSlurryData = async (
-  projectId: number,
-  electrode: 'A' | 'C'
-): Promise<SlurryData[]> => {
+export const getLQCSlurryData = async (projectId: number, electrode: 'A' | 'C'): Promise<SlurryData[]> => {
   const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/slurry?electrode=${electrode}`, {
     withCredentials: true,
   });
@@ -95,12 +89,12 @@ export const saveLQCSpec = async (
   projectId: number,
   processType: string,
   itemType: string,
-  specs: Record<string, SpecValue>
+  specs: Record<string, SpecValue>,
 ): Promise<LQCSpec> => {
   const res = await axios.post(
     `${API_BASE}/quality/lqc/${projectId}/spec`,
     { processType, itemType, specs },
-    { withCredentials: true }
+    { withCredentials: true },
   );
   return res.data;
 };
@@ -129,10 +123,7 @@ export interface CoatingData {
 }
 
 /** Coating 데이터 조회 */
-export const getLQCCoatingData = async (
-  projectId: number,
-  electrode: 'A' | 'C'
-): Promise<CoatingData[]> => {
+export const getLQCCoatingData = async (projectId: number, electrode: 'A' | 'C'): Promise<CoatingData[]> => {
   const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/coating?electrode=${electrode}`, {
     withCredentials: true,
   });
@@ -159,10 +150,7 @@ export interface PressData {
 }
 
 /** Press 데이터 조회 */
-export const getLQCPressData = async (
-  projectId: number,
-  electrode: 'A' | 'C'
-): Promise<PressData[]> => {
+export const getLQCPressData = async (projectId: number, electrode: 'A' | 'C'): Promise<PressData[]> => {
   const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/press?electrode=${electrode}`, {
     withCredentials: true,
   });
@@ -178,21 +166,20 @@ export interface VDData {
   moisture1: number | null;
   moisture2: number | null;
   moisture3: number | null;
-  // 전극 Lot no. (최대 7개)
-  lot1: string | null;
-  lot2: string | null;
-  lot3: string | null;
-  lot4: string | null;
-  lot5: string | null;
-  lot6: string | null;
-  lot7: string | null;
+  // 전극 Lot no. (오븐번호×층번호)
+  lot11: string | null;
+  lot12: string | null;
+  lot13: string | null;
+  lot21: string | null;
+  lot22: string | null;
+  lot23: string | null;
+  lot31: string | null;
+  lot32: string | null;
+  lot33: string | null;
 }
 
 /** VD 데이터 조회 */
-export const getLQCVDData = async (
-  projectId: number,
-  electrode: 'A' | 'C'
-): Promise<VDData[]> => {
+export const getLQCVDData = async (projectId: number, electrode: 'A' | 'C'): Promise<VDData[]> => {
   const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/vd?electrode=${electrode}`, {
     withCredentials: true,
   });
@@ -230,9 +217,7 @@ export interface AssemblyJRData {
 }
 
 /** Assembly J/R 데이터 조회 */
-export const getLQCAssemblyJRData = async (
-  projectId: number
-): Promise<AssemblyJRData[]> => {
+export const getLQCAssemblyJRData = async (projectId: number): Promise<AssemblyJRData[]> => {
   const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/assembly/jr`, {
     withCredentials: true,
   });
@@ -248,9 +233,7 @@ export interface FinalSealingData {
 }
 
 /** Final Sealing 데이터 조회 */
-export const getLQCFinalSealingData = async (
-  projectId: number
-): Promise<FinalSealingData[]> => {
+export const getLQCFinalSealingData = async (projectId: number): Promise<FinalSealingData[]> => {
   const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/final-sealing`, {
     withCredentials: true,
   });
@@ -265,9 +248,7 @@ export interface PreFormationItem {
 }
 
 /** Pre-Formation 데이터 조회 */
-export const getLQCPreFormationData = async (
-  projectId: number
-): Promise<PreFormationItem[]> => {
+export const getLQCPreFormationData = async (projectId: number): Promise<PreFormationItem[]> => {
   const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/pre-formation`, {
     withCredentials: true,
   });
@@ -276,16 +257,14 @@ export const getLQCPreFormationData = async (
 
 export interface MainFormationItem {
   lot: string;
-  mfc: string;  // 충전 용량 (Ah)
-  mfd: string;  // 방전 용량 (Ah)
+  mfc: string; // 충전 용량 (Ah)
+  mfd: string; // 방전 용량 (Ah)
   ocv1: string; // OCV1 (V)
   ocv2: string; // OCV2 (V)
 }
 
 /** Main-Formation 데이터 조회 */
-export const getLQCMainFormationData = async (
-  projectId: number
-): Promise<MainFormationItem[]> => {
+export const getLQCMainFormationData = async (projectId: number): Promise<MainFormationItem[]> => {
   const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/main-formation`, {
     withCredentials: true,
   });
@@ -302,9 +281,7 @@ export interface SealingData {
 }
 
 /** Sealing 데이터 조회 */
-export const getLQCSealingData = async (
-  projectId: number
-): Promise<SealingData[]> => {
+export const getLQCSealingData = async (projectId: number): Promise<SealingData[]> => {
   const res = await axios.get(`${API_BASE}/quality/lqc/${projectId}/sealing`, {
     withCredentials: true,
   });
