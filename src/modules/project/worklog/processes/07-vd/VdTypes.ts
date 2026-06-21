@@ -16,6 +16,10 @@ export interface VdWorklog {
   plant: string;
   shift: string;
 
+  // ===== 섹션2 - 전극 구분 =====
+  upperElectrode?: string;
+  lowerElectrode?: string;
+
   // ===== 섹션2 - LOT (오븐번호×층번호) =====
   // 상부 오븐1
   upperLot11?: string;
@@ -169,6 +173,10 @@ export interface VdWorklogPayload {
   line: string;
   plant: any;
   shift: string;
+
+  // ===== 섹션2 - 전극 구분 =====
+  upperElectrode?: string;
+  lowerElectrode?: string;
 
   // ===== 섹션2 - LOT =====
   upperLot11?: string;

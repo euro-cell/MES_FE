@@ -98,6 +98,8 @@ export default function VdRegister() {
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+    upperElectrode: ['양극', '음극'],
+    lowerElectrode: ['양극', '음극'],
     // 섹션2 - LOT (오븐번호×층번호, 양극+음극 통합)
     ...(allLots.length > 0 &&
       Object.fromEntries(

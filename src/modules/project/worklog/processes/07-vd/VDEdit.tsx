@@ -51,6 +51,10 @@ export default function VdEdit() {
           plant: data.plant ?? '',
           shift: data.shift ?? '',
 
+          // 섹션2 - 전극 구분
+          upperElectrode: data.upperElectrode ?? '',
+          lowerElectrode: data.lowerElectrode ?? '',
+
           // 섹션2 - LOT (오븐번호×층번호)
           upperLot11: data.upperLot11 ?? '',
           upperLot12: data.upperLot12 ?? '',
@@ -253,6 +257,8 @@ export default function VdEdit() {
         ? Number(formValues.lowerMoistureMeasurement3)
         : undefined,
       lowerInputOutputTime: formValues.lowerInputOutputTime || undefined,
+      upperElectrode: formValues.upperElectrode || undefined,
+      lowerElectrode: formValues.lowerElectrode || undefined,
 
       // 섹션3 - 두께 (상부)
       upperThicknessBefore1F1: formValues.upperThicknessBefore1F1
@@ -363,6 +369,8 @@ export default function VdEdit() {
   const vdSelectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
+    upperElectrode: ['양극', '음극'],
+    lowerElectrode: ['양극', '음극'],
     // 섹션2 - LOT (오븐번호×층번호, 양극+음극 통합)
     ...(allLots.length > 0 &&
       Object.fromEntries(
