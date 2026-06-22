@@ -135,6 +135,7 @@ export default function PressEdit() {
         readOnlyFields={COMMON_READONLY_FIELDS}
         selectFields={pressSelectFields}
         dateFields={['manufactureDate']}
+        multilineFields={['remark']}
       />
     </div>
   );

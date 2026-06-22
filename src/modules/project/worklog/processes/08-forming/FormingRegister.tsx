@@ -248,6 +248,7 @@ export default function FormingRegister() {
         selectFields={selectFields}
         multiSelectFields={multiSelectFields}
         dateFields={['manufactureDate']}
+        multilineFields={['remark']}
         tooltips={fieldTooltips}
         formulaRefs={formulaRefs}
       />

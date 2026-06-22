@@ -210,7 +210,7 @@ export default function CoatingRegister() {
           cellValues={formValues}
           namedRanges={namedRanges}
           onCellChange={handleCellChange}
-          multilineFields={[]}
+          multilineFields={['remark']}
           timeFields={[]}
           numericFields={COATING_NUMERIC_FIELDS}
           integerFields={COATING_INTEGER_FIELDS}

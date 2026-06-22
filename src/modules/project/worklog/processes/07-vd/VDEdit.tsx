@@ -445,6 +445,7 @@ export default function VdEdit() {
         selectFields={vdSelectFields}
         dateFields={['manufactureDate']}
         timeFields={VD_TIME_FIELDS}
+        multilineFields={['remark']}
       />
     </div>
   );

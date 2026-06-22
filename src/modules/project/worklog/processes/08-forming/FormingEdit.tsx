@@ -285,6 +285,7 @@ export default function FormingEdit() {
         selectFields={formingSelectFields}
         multiSelectFields={formingMultiSelectFields}
         dateFields={['manufactureDate']}
+        multilineFields={['remark']}
         tooltips={fieldTooltips}
         formulaRefs={formulaRefs}
       />

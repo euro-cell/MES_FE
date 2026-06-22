@@ -136,6 +136,7 @@ export default function PressRegister() {
         readOnlyFields={COMMON_READONLY_FIELDS}
         selectFields={selectFields}
         dateFields={['manufactureDate']}
+        multilineFields={['remark']}
       />
     </div>
   );

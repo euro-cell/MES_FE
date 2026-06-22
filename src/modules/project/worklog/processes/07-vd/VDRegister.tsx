@@ -186,6 +186,7 @@ export default function VdRegister() {
         selectFields={selectFields}
         dateFields={['manufactureDate']}
         timeFields={VD_TIME_FIELDS}
+        multilineFields={['remark']}
       />
     </div>
   );

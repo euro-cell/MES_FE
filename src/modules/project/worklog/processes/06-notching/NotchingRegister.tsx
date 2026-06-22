@@ -183,6 +183,7 @@ export default function NotchingRegister() {
         readOnlyFields={[...COMMON_READONLY_FIELDS, ...NOTCHING_AUTO_FILL_FIELDS]}
         selectFields={selectFields}
         dateFields={['manufactureDate']}
+        multilineFields={['remark']}
         tooltips={fieldTooltips}
         formulaRefs={formulaRefs}
       />
