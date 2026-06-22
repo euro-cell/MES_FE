@@ -56,6 +56,10 @@
   font-style: italic;
 }
 
+.cellInput[type='time']::-webkit-datetime-edit-ampm-field {
+  display: none;
+}
+
 .cellTextarea {
   width: 100%;
   min-height: 60px;
