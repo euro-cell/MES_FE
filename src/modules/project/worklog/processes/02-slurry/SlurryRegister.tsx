@@ -110,21 +110,12 @@ export default function SlurryRegister() {
       solidContent1Percentage: '= (고형분1 Dry중량 - 고형분1 Dish중량) / (고형분1 Slurry중량 - 고형분1 Dish중량) × 100',
       solidContent2Percentage: '= (고형분2 Dry중량 - 고형분2 Dish중량) / (고형분2 Slurry중량 - 고형분2 Dish중량) × 100',
       solidContent3Percentage: '= (고형분3 Dry중량 - 고형분3 Dish중량) / (고형분3 Slurry중량 - 고형분3 Dish중량) × 100',
-      // PD Mixer 1 자동계산
-      pdMixer1Input1: '= 바인더 투입량설계 × 투입율1(%) / 100',
-      pdMixer1Input2: '= 도전재1 투입량설계 × 투입율2(%) / 100',
-      pdMixer1Input3: '= 도전재2 투입량설계 × 투입율3(%) / 100',
-      pdMixer1Input4: '= 활물질1 투입량설계 × 투입율4(%) / 100',
-      pdMixer1Input5: '= 활물질2 투입량설계 × 투입율5(%) / 100',
-      pdMixer1Input6: '= 용매 추가량설계 × 투입율6(%) / 100',
       pdMixer1SolidContent1: '= SUM(투입량1 × Binder Solution) / SUM(투입량1)',
       pdMixer1SolidContent2: '= (투입량1 × Binder Solution + 투입량2) / (투입량1 + 투입량2)',
       pdMixer1SolidContent3: '= (투입량1 × Binder Solution + 투입량2 + 투입량3) / (투입량1~3)',
       pdMixer1SolidContent4: '= (투입량1 × Binder Solution + 투입량2~4) / (투입량1~4)',
       pdMixer1SolidContent5: '= (투입량1 × Binder Solution + 투입량2~5) / (투입량1~5)',
       pdMixer1SolidContent6: '= (투입량1 × Binder Solution + 투입량2~5) / (투입량1~6)',
-      // PD Mixer 2 자동계산
-      pdMixer2Input1: '= 용매 추가량설계 × PD Mixer 2 투입율1(%) / 100',
       pdMixer2SolidContent1: '= (PD1투입량1 × Binder Solution + PD1투입량2~5) / (PD1투입량1~6 + PD2투입량1)',
       // 용매 자동계산
       solventTotalPlannedInput: '= 원료1 투입량설계 / 원료1 조성(%) / Solid Content - 원료1 투입량설계 / 원료1 조성(%)',
@@ -147,7 +138,7 @@ export default function SlurryRegister() {
         const materialName = formValues[`material${i}Name`];
         if (materialName === '바인더') {
           tips[`material${i}PlannedInput`] =
-            `= 원료1 투입량설계 / 원료1 조성(%) × 원료${i} 조성(%) / Binder Solution`;
+            `= 원료1 투입량설계 / 원료1 조성(%) × 원료${i} 조성(%)`;
         } else if (materialName === '도전재') {
           tips[`material${i}PlannedInput`] =
             `= 원료1 투입량설계 / 원료1 조성(%) × 원료${i} 조성(%)`;
@@ -191,44 +182,6 @@ export default function SlurryRegister() {
           { field: 'solidContent3Dry', label: 'Dry중량', color: COLORS.blue },
           { field: 'solidContent3Dish', label: 'Dish중량', color: COLORS.green },
           { field: 'solidContent3Slurry', label: 'Slurry중량', color: COLORS.orange },
-        ],
-      },
-      // PD Mixer 1 자동계산 - 기본값 (바인더/도전재/활물질 행을 찾기 전)
-      pdMixer1Input1: {
-        formula: '= 바인더 투입량설계 × 투입율1',
-        refs: [
-          { field: 'pdMixer1InputRate1', label: '투입율1', color: COLORS.green },
-        ],
-      },
-      pdMixer1Input2: {
-        formula: '= 도전재1 투입량설계 × 투입율2',
-        refs: [
-          { field: 'pdMixer1InputRate2', label: '투입율2', color: COLORS.green },
-        ],
-      },
-      pdMixer1Input3: {
-        formula: '= 도전재2 투입량설계 × 투입율3',
-        refs: [
-          { field: 'pdMixer1InputRate3', label: '투입율3', color: COLORS.green },
-        ],
-      },
-      pdMixer1Input4: {
-        formula: '= 활물질1 투입량설계 × 투입율4',
-        refs: [
-          { field: 'pdMixer1InputRate4', label: '투입율4', color: COLORS.green },
-        ],
-      },
-      pdMixer1Input5: {
-        formula: '= 활물질2 투입량설계 × 투입율5',
-        refs: [
-          { field: 'pdMixer1InputRate5', label: '투입율5', color: COLORS.green },
-        ],
-      },
-      pdMixer1Input6: {
-        formula: '= 용매 추가량설계 × 투입율6',
-        refs: [
-          { field: 'solventAddPlannedInput', label: '용매 추가량설계', color: COLORS.blue },
-          { field: 'pdMixer1InputRate6', label: '투입율6', color: COLORS.green },
         ],
       },
       pdMixer1SolidContent1: {
@@ -279,14 +232,6 @@ export default function SlurryRegister() {
           { field: 'pdMixer1Input6', label: '투입량6', color: COLORS.orange },
         ],
       },
-      // PD Mixer 2 자동계산
-      pdMixer2Input1: {
-        formula: '= 용매 추가량설계 × PD Mixer 2 투입율1',
-        refs: [
-          { field: 'solventAddPlannedInput', label: '용매 추가량설계', color: COLORS.blue },
-          { field: 'pdMixer2InputRate1', label: 'PD Mixer 2 투입율1', color: COLORS.green },
-        ],
-      },
       pdMixer2SolidContent1: {
         formula: '= (PD1투입량1 × Binder Solution + PD1투입량2~5) / (PD1투입량1~6 + PD2투입량1)',
         refs: [
@@ -321,17 +266,7 @@ export default function SlurryRegister() {
       }
     }
 
-    // 바인더 행이 있으면 동적 수식 참조 추가
     if (binderRowNum > 0) {
-      // pdMixer1Input1 수식 참조에 바인더 투입량설계 추가
-      refs.pdMixer1Input1 = {
-        formula: '= 바인더 투입량설계 × 투입율1',
-        refs: [
-          { field: `material${binderRowNum}PlannedInput`, label: '바인더 투입량설계', color: COLORS.blue },
-          { field: 'pdMixer1InputRate1', label: '투입율1', color: COLORS.green },
-        ],
-      };
-
       // 용매 추가량 자동계산
       refs.solventAddPlannedInput = {
         formula: `= 용매 총량설계 - 바인더 투입량설계 × (1 - Binder Solution)`,
@@ -343,73 +278,17 @@ export default function SlurryRegister() {
       };
     }
 
-    // 도전재1 행이 있으면 pdMixer1Input2 수식 참조 추가
-    if (conductorRowNums[0]) {
-      refs.pdMixer1Input2 = {
-        formula: '= 도전재1 투입량설계 × 투입율2',
-        refs: [
-          { field: `material${conductorRowNums[0]}PlannedInput`, label: '도전재1 투입량설계', color: COLORS.blue },
-          { field: 'pdMixer1InputRate2', label: '투입율2', color: COLORS.green },
-        ],
-      };
-    }
-
-    // 도전재2 행이 있으면 pdMixer1Input3 수식 참조 추가
-    if (conductorRowNums[1]) {
-      refs.pdMixer1Input3 = {
-        formula: '= 도전재2 투입량설계 × 투입율3',
-        refs: [
-          { field: `material${conductorRowNums[1]}PlannedInput`, label: '도전재2 투입량설계', color: COLORS.blue },
-          { field: 'pdMixer1InputRate3', label: '투입율3', color: COLORS.green },
-        ],
-      };
-    }
-
-    // 활물질1 행이 있으면 pdMixer1Input4 수식 참조 추가
-    if (electrodeRowNums[0]) {
-      refs.pdMixer1Input4 = {
-        formula: '= 활물질1 투입량설계 × 투입율4',
-        refs: [
-          { field: `material${electrodeRowNums[0]}PlannedInput`, label: '활물질1 투입량설계', color: COLORS.blue },
-          { field: 'pdMixer1InputRate4', label: '투입율4', color: COLORS.green },
-        ],
-      };
-    }
-
-    // 활물질2 행이 있으면 pdMixer1Input5 수식 참조 추가
-    if (electrodeRowNums[1]) {
-      refs.pdMixer1Input5 = {
-        formula: '= 활물질2 투입량설계 × 투입율5',
-        refs: [
-          { field: `material${electrodeRowNums[1]}PlannedInput`, label: '활물질2 투입량설계', color: COLORS.blue },
-          { field: 'pdMixer1InputRate5', label: '투입율5', color: COLORS.green },
-        ],
-      };
-    }
-
-    // 도전재2 행이 있으면 pdMixer1Input3 수식 참조 추가
-    if (conductorRowNums[1]) {
-      refs.pdMixer1Input3 = {
-        formula: '= 도전재2 투입량설계 × 투입율3',
-        refs: [
-          { field: `material${conductorRowNums[1]}PlannedInput`, label: '도전재2 투입량설계', color: COLORS.blue },
-          { field: 'pdMixer1InputRate3', label: '투입율3', color: COLORS.green },
-        ],
-      };
-    }
-
     // 도전재/바인더 투입량설계 자동계산
     if (electrodeMaterialCount > 0) {
       for (let i = electrodeMaterialCount + 1; i <= 6; i++) {
         const materialName = formValues[`material${i}Name`];
         if (materialName === '바인더') {
           refs[`material${i}PlannedInput`] = {
-            formula: `= 원료1 투입량설계 / 원료1 조성(%) × 원료${i} 조성(%) / Binder Solution`,
+            formula: `= 원료1 투입량설계 / 원료1 조성(%) × 원료${i} 조성(%)`,
             refs: [
               { field: 'material1PlannedInput', label: '원료1 투입량설계', color: COLORS.blue },
               { field: 'material1Composition', label: '원료1 조성(%)', color: COLORS.green },
               { field: `material${i}Composition`, label: `원료${i} 조성(%)`, color: COLORS.orange },
-              { field: 'binderSolution', label: 'Binder Solution', color: COLORS.purple },
             ],
           };
         } else if (materialName === '도전재') {
@@ -515,34 +394,20 @@ export default function SlurryRegister() {
       }
 
       // 자재투입정보 투입량설계 자동 계산 (양극재/음극재 이후 행)
-      // 양극재/음극재 투입량설계 또는 binderSolution 변경 시 다음 행들(도전재, 바인더) 자동 계산
-      // 도전재: material{N}PlannedInput = material1PlannedInput / material1Composition * material{N}Composition
-      // 바인더: material{N}PlannedInput = material1PlannedInput / material1Composition * material{N}Composition / binderSolution
+      // 도전재/바인더: material{N}PlannedInput = material1PlannedInput / material1Composition * material{N}Composition
       const electrodeCount = electrodeMaterialCount || 1;
       const isElectrodePlannedInput = Array.from({ length: electrodeCount }, (_, i) => `material${i + 1}PlannedInput`).includes(rangeName);
-      const isBinderSolutionChange = rangeName === 'binderSolution';
-      if (isElectrodePlannedInput || isBinderSolutionChange) {
-        // 1행 기준으로 계산
+      if (isElectrodePlannedInput) {
         const material1Planned = parseFloat(newValues.material1PlannedInput);
         const material1Comp = parseFloat(newValues.material1Composition);
-        const binderSol = parseFloat(newValues.binderSolution);
 
         if (!isNaN(material1Planned) && !isNaN(material1Comp) && material1Comp > 0) {
           for (let i = electrodeCount + 1; i <= 6; i++) {
-            const materialName = newValues[`material${i}Name`];
             const materialComp = parseFloat(newValues[`material${i}Composition`]);
             if (!isNaN(materialComp) && materialComp > 0) {
-              // 바인더 행은 binderSolution으로 추가 나누기
-              if (materialName === '바인더' && !isNaN(binderSol) && binderSol > 0) {
-                newValues[`material${i}PlannedInput`] = Number(
-                  ((material1Planned / material1Comp) * materialComp / binderSol).toFixed(3),
-                );
-              } else if (materialName !== '바인더') {
-                // 도전재 등 다른 행
-                newValues[`material${i}PlannedInput`] = Number(
-                  ((material1Planned / material1Comp) * materialComp).toFixed(3),
-                );
-              }
+              newValues[`material${i}PlannedInput`] = Number(
+                ((material1Planned / material1Comp) * materialComp).toFixed(3),
+              );
             }
           }
         }
@@ -563,93 +428,10 @@ export default function SlurryRegister() {
         }
       }
 
-      // pdMixer1Input1 자동계산: 바인더 투입량설계 * pdMixer1InputRate1
-      const shouldRecalcPdMixer1Input1 =
-        (binderRow > 0 && rangeName === `material${binderRow}PlannedInput`) ||
-        rangeName === 'pdMixer1InputRate1' ||
-        rangeName === 'material1PlannedInput' ||
-        rangeName === 'binderSolution';
-      if (shouldRecalcPdMixer1Input1 && binderRow > 0) {
-        const binderPlannedInput = parseFloat(newValues[`material${binderRow}PlannedInput`]);
-        const inputRate1 = parseFloat(newValues.pdMixer1InputRate1);
-        if (!isNaN(binderPlannedInput) && !isNaN(inputRate1)) {
-          newValues.pdMixer1Input1 = Number((binderPlannedInput * inputRate1 / 100).toFixed(3));
-        }
-      }
-
-      // pdMixer1Input2 자동계산: 도전재1 투입량설계 * pdMixer1InputRate2
       const conductor1Row = conductorRows[0] || 0;
-      const shouldRecalcPdMixer1Input2 =
-        (conductor1Row > 0 && rangeName === `material${conductor1Row}PlannedInput`) ||
-        rangeName === 'pdMixer1InputRate2' ||
-        rangeName === 'material1PlannedInput' ||
-        rangeName === 'binderSolution';
-      if (shouldRecalcPdMixer1Input2 && conductor1Row > 0) {
-        const conductor1PlannedInput = parseFloat(newValues[`material${conductor1Row}PlannedInput`]);
-        const inputRate2 = parseFloat(newValues.pdMixer1InputRate2);
-        if (!isNaN(conductor1PlannedInput) && !isNaN(inputRate2)) {
-          newValues.pdMixer1Input2 = Number((conductor1PlannedInput * inputRate2 / 100).toFixed(3));
-        }
-      }
-
-      // pdMixer1Input3 자동계산: 도전재2 투입량설계 * pdMixer1InputRate3 (도전재2가 있을 때만)
       const conductor2Row = conductorRows[1] || 0;
-      const shouldRecalcPdMixer1Input3 =
-        (conductor2Row > 0 && rangeName === `material${conductor2Row}PlannedInput`) ||
-        rangeName === 'pdMixer1InputRate3' ||
-        rangeName === 'material1PlannedInput' ||
-        rangeName === 'binderSolution';
-      if (shouldRecalcPdMixer1Input3 && conductor2Row > 0) {
-        const conductor2PlannedInput = parseFloat(newValues[`material${conductor2Row}PlannedInput`]);
-        const inputRate3 = parseFloat(newValues.pdMixer1InputRate3);
-        if (!isNaN(conductor2PlannedInput) && !isNaN(inputRate3)) {
-          newValues.pdMixer1Input3 = Number((conductor2PlannedInput * inputRate3 / 100).toFixed(3));
-        }
-      }
-
-      // pdMixer1Input4 자동계산: 활물질1(양극재/음극재) 투입량설계 * pdMixer1InputRate4
       const electrode1Row = electrodeRows[0] || 0;
-      const shouldRecalcPdMixer1Input4 =
-        (electrode1Row > 0 && rangeName === `material${electrode1Row}PlannedInput`) ||
-        rangeName === 'pdMixer1InputRate4';
-      if (shouldRecalcPdMixer1Input4 && electrode1Row > 0) {
-        const electrode1PlannedInput = parseFloat(newValues[`material${electrode1Row}PlannedInput`]);
-        const inputRate4 = parseFloat(newValues.pdMixer1InputRate4);
-        if (!isNaN(electrode1PlannedInput) && !isNaN(inputRate4)) {
-          newValues.pdMixer1Input4 = Number((electrode1PlannedInput * inputRate4 / 100).toFixed(3));
-        }
-      }
-
-      // pdMixer1Input5 자동계산: 활물질2 투입량설계 * pdMixer1InputRate5 (활물질2가 있을 때만)
       const electrode2Row = electrodeRows[1] || 0;
-      const shouldRecalcPdMixer1Input5 =
-        (electrode2Row > 0 && rangeName === `material${electrode2Row}PlannedInput`) ||
-        rangeName === 'pdMixer1InputRate5';
-      if (shouldRecalcPdMixer1Input5 && electrode2Row > 0) {
-        const electrode2PlannedInput = parseFloat(newValues[`material${electrode2Row}PlannedInput`]);
-        const inputRate5 = parseFloat(newValues.pdMixer1InputRate5);
-        if (!isNaN(electrode2PlannedInput) && !isNaN(inputRate5)) {
-          newValues.pdMixer1Input5 = Number((electrode2PlannedInput * inputRate5 / 100).toFixed(3));
-        }
-      }
-
-      // pdMixer1Input6 자동계산: solventAddPlannedInput * pdMixer1InputRate6
-      const shouldRecalcPdMixer1Input6 =
-        rangeName === 'solventAddPlannedInput' ||
-        rangeName === 'pdMixer1InputRate6' ||
-        rangeName === 'solventTotalPlannedInput' ||
-        rangeName === 'material1PlannedInput' ||
-        rangeName === 'material1Composition' ||
-        rangeName === 'solidContent' ||
-        (binderRow > 0 && rangeName === `material${binderRow}PlannedInput`) ||
-        rangeName === 'binderSolution';
-      if (shouldRecalcPdMixer1Input6) {
-        const solventAddPlanned = parseFloat(newValues.solventAddPlannedInput);
-        const inputRate6 = parseFloat(newValues.pdMixer1InputRate6);
-        if (!isNaN(solventAddPlanned) && !isNaN(inputRate6)) {
-          newValues.pdMixer1Input6 = Number((solventAddPlanned * inputRate6 / 100).toFixed(3));
-        }
-      }
 
       // pdMixer1SolidContent1~6, pdMixer2Input1, pdMixer2SolidContent1 자동계산
       const pdMixer1InputTriggers = [
@@ -715,13 +497,6 @@ export default function SlurryRegister() {
           const sumInputs = input1 + input2 + input3 + input4 + input5 + input6;
           const weightedSum = input1 * binderSol + input2 + input3 + input4 + input5;
           newValues.pdMixer1SolidContent6 = Number((weightedSum / sumInputs).toFixed(4));
-        }
-
-        // pdMixer2Input1 자동계산: solventAddPlannedInput * pdMixer2InputRate1
-        const solventAddPlanned = parseFloat(newValues.solventAddPlannedInput);
-        const pdMixer2InputRate1 = parseFloat(newValues.pdMixer2InputRate1);
-        if (!isNaN(solventAddPlanned) && !isNaN(pdMixer2InputRate1)) {
-          newValues.pdMixer2Input1 = Number((solventAddPlanned * pdMixer2InputRate1 / 100).toFixed(3));
         }
 
         // pdMixer2SolidContent1: = (input1 * binderSolution + input2~5) / (pdMixer1Input1~6 + pdMixer2Input1)

@@ -558,6 +558,12 @@ export default function ExcelRenderer({
     return formatCellValue(cell.value, cell.numFmt);
   };
 
+  const autoFormatTime = (value: string): string => {
+    const digits = value.replace(/\D/g, '');
+    if (digits.length <= 2) return digits;
+    return `${digits.slice(0, 2)}:${digits.slice(2, 4)}`;
+  };
+
   const handleInputChange = (rangeName: string, value: string | number) => {
     if (onCellChange) {
       onCellChange(rangeName, value);
@@ -785,35 +791,43 @@ export default function ExcelRenderer({
                       ) : timeRangeFields.includes(rangeName) ? (
                         <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                           <input
-                            type='time'
+                            type='text'
                             className={styles.cellInput}
                             data-range-name={rangeName}
-                            value={parseTimeRange(cellValues[rangeName] ?? '').start}
+                            value={formatTimeValue(parseTimeRange(cellValues[rangeName] ?? '').start)}
                             onChange={e => {
+                              const formatted = autoFormatTime(e.target.value);
                               const { end } = parseTimeRange(cellValues[rangeName] ?? '');
-                              handleInputChange(rangeName, e.target.value && end ? `${e.target.value}~${end}` : e.target.value);
+                              handleInputChange(rangeName, formatted && end ? `${formatted}~${end}` : formatted);
                             }}
                             onKeyDown={e => handleKeyDown(e, rangeName)}
+                            placeholder='HH:mm'
+                            maxLength={5}
                           />
                           <span style={{ color: '#666', fontSize: 13 }}>~</span>
                           <input
-                            type='time'
+                            type='text'
                             className={styles.cellInput}
-                            value={parseTimeRange(cellValues[rangeName] ?? '').end}
+                            value={formatTimeValue(parseTimeRange(cellValues[rangeName] ?? '').end)}
                             onChange={e => {
+                              const formatted = autoFormatTime(e.target.value);
                               const { start } = parseTimeRange(cellValues[rangeName] ?? '');
-                              handleInputChange(rangeName, start && e.target.value ? `${start}~${e.target.value}` : e.target.value);
+                              handleInputChange(rangeName, start && formatted ? `${start}~${formatted}` : formatted);
                             }}
+                            placeholder='HH:mm'
+                            maxLength={5}
                           />
                         </span>
                       ) : timeFields.includes(rangeName) ? (
                         <input
-                          type='time'
+                          type='text'
                           className={styles.cellInput}
                           data-range-name={rangeName}
-                          value={cellValues[rangeName] ?? ''}
-                          onChange={e => handleInputChange(rangeName, e.target.value)}
+                          value={formatTimeValue(cellValues[rangeName] ?? '')}
+                          onChange={e => handleInputChange(rangeName, autoFormatTime(e.target.value))}
                           onKeyDown={e => handleKeyDown(e, rangeName)}
+                          placeholder='HH:mm'
+                          maxLength={5}
                         />
                       ) : integerFields.includes(rangeName) ? (
                         <input
