@@ -93,23 +93,30 @@ export default function VdRegister() {
   const editableRanges = Object.keys(namedRanges).filter(name => !COMMON_READONLY_FIELDS.includes(name));
   const plantOptions = plantEquipments.map(eq => eq.name);
 
-  const allLots = [...new Set([...cathodeLots, ...anodeLots])];
+  const upperLots = formValues.upperElectrode === '양극' ? cathodeLots
+    : formValues.upperElectrode === '음극' ? anodeLots
+    : null;
+
+  const lowerLots = formValues.lowerElectrode === '양극' ? cathodeLots
+    : formValues.lowerElectrode === '음극' ? anodeLots
+    : null;
 
   const selectFields: Record<string, string[]> = {
     line: LINE_OPTIONS,
     ...(plantOptions.length > 0 && { plant: plantOptions }),
     upperElectrode: ['양극', '음극'],
     lowerElectrode: ['양극', '음극'],
-    // 섹션2 - LOT (오븐번호×층번호, 양극+음극 통합)
-    ...(allLots.length > 0 &&
-      Object.fromEntries(
-        ['1', '2', '3'].flatMap(oven =>
-          ['1', '2', '3'].flatMap(floor => [
-            [`upperLot${oven}${floor}`, allLots],
-            [`lowerLot${oven}${floor}`, allLots],
-          ]),
-        ),
-      )),
+    // 섹션2 - LOT: 전극 구분 선택 후에만 드롭다운 활성화
+    ...(upperLots && Object.fromEntries(
+      ['1', '2', '3'].flatMap(oven =>
+        ['1', '2', '3'].map(floor => [`upperLot${oven}${floor}`, upperLots]),
+      ),
+    )),
+    ...(lowerLots && Object.fromEntries(
+      ['1', '2', '3'].flatMap(oven =>
+        ['1', '2', '3'].map(floor => [`lowerLot${oven}${floor}`, lowerLots]),
+      ),
+    )),
   };
 
   return (
