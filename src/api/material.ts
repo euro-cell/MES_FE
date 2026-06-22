@@ -38,10 +38,11 @@ export async function getMaterialsByCategory(category: string): Promise<Material
   return response.data;
 }
 
-/** 자재 LOT 목록 조회 (재고 있는 LOT만, 선입선출 정렬) */
+/** 자재 LOT 목록 조회 (선입선출 정렬) */
 export async function getMaterialLots(params?: {
   category?: string;
   type?: string;
+  isZeroStock?: boolean;
 }): Promise<MaterialLot[]> {
   const response = await axios.get(`${API_BASE}/material/lots`, {
     params,

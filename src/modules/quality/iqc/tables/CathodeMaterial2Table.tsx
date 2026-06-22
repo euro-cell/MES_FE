@@ -115,7 +115,7 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
       setSelectedCompany(autoCompany);
       setEditData((prev) => ({ ...prev, type, name: autoName, manufacturer: autoCompany, lotNo: '' }));
       if (autoCompany) {
-        getMaterialLots({ category: '양극재', type }).then((res) => {
+        getMaterialLots({ category: '양극재', type, isZeroStock: true }).then((res) => {
           const lotFiltered = res.filter((l) => l.name === autoName);
           setLots(lotFiltered);
           const autoLots = lotFiltered.length === 1 ? [lotFiltered[0].lot] : [];
@@ -145,7 +145,7 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
     setSelectedCompany(autoCompany);
     setEditData((prev) => ({ ...prev, name, manufacturer: autoCompany, lotNo: '' }));
     if (autoCompany) {
-      getMaterialLots({ category: '양극재', type: selectedType }).then((res) => {
+      getMaterialLots({ category: '양극재', type: selectedType, isZeroStock: true }).then((res) => {
         const lotFiltered = res.filter((l) => l.name === name);
         setLots(lotFiltered);
         const autoLots = lotFiltered.length === 1 ? [lotFiltered[0].lot] : [];
@@ -165,7 +165,7 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
     setLots([]);
     setEditData((prev) => ({ ...prev, manufacturer: company, lotNo: '' }));
     if (!company) return;
-    getMaterialLots({ category: '양극재', type: selectedType }).then((res) => {
+    getMaterialLots({ category: '양극재', type: selectedType, isZeroStock: true }).then((res) => {
       const lotFiltered = res.filter((l) => l.name === selectedName);
       setLots(lotFiltered);
       const autoLots = lotFiltered.length === 1 ? [lotFiltered[0].lot] : [];
@@ -363,7 +363,7 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
                   const lots = data.lotNo ? data.lotNo.split(', ') : [];
                   setSelectedLots(lots);
                   if (data.type && data.name) {
-                    getMaterialLots({ category: '양극재', type: data.type }).then((res) => {
+                    getMaterialLots({ category: '양극재', type: data.type, isZeroStock: true }).then((res) => {
                       setLots(res.filter((l) => l.name === data.name));
                     });
                   }

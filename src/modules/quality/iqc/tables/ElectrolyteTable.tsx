@@ -91,7 +91,7 @@ const ElectrolyteTable: React.FC<ElectrolyteTableProps> = ({ data, onSave }) => 
       setSelectedCompany(autoCompany);
       setEditData((prev) => ({ ...prev, type, name: autoName, manufacturer: autoCompany, lotNo: '' }));
       if (autoCompany) {
-        getMaterialLots({ category: '전해액', type }).then((res) => {
+        getMaterialLots({ category: '전해액', type, isZeroStock: true }).then((res) => {
           const lf = res.filter((l) => l.name === autoName);
           setLots(lf);
           const autoLots = lf.length === 1 ? [lf[0].lot] : [];
@@ -114,7 +114,7 @@ const ElectrolyteTable: React.FC<ElectrolyteTableProps> = ({ data, onSave }) => 
     setSelectedCompany(autoCompany);
     setEditData((prev) => ({ ...prev, name, manufacturer: autoCompany, lotNo: '' }));
     if (autoCompany) {
-      getMaterialLots({ category: '전해액', type: selectedType }).then((res) => {
+      getMaterialLots({ category: '전해액', type: selectedType, isZeroStock: true }).then((res) => {
         const lf = res.filter((l) => l.name === name);
         setLots(lf);
         const autoLots = lf.length === 1 ? [lf[0].lot] : [];
@@ -128,7 +128,7 @@ const ElectrolyteTable: React.FC<ElectrolyteTableProps> = ({ data, onSave }) => 
     setSelectedCompany(company); setSelectedLots([]); setLots([]);
     setEditData((prev) => ({ ...prev, manufacturer: company, lotNo: '' }));
     if (!company) return;
-    getMaterialLots({ category: '전해액', type: selectedType }).then((res) => {
+    getMaterialLots({ category: '전해액', type: selectedType, isZeroStock: true }).then((res) => {
       const lf = res.filter((l) => l.name === selectedName);
       setLots(lf);
       const autoLots = lf.length === 1 ? [lf[0].lot] : [];
@@ -190,7 +190,7 @@ const ElectrolyteTable: React.FC<ElectrolyteTableProps> = ({ data, onSave }) => 
                   setSelectedCompany(data.manufacturer ?? '');
                   setSelectedLots(data.lotNo ? data.lotNo.split(', ') : []);
                   if (data.type && data.name) {
-                    getMaterialLots({ category: '전해액', type: data.type }).then((res) => {
+                    getMaterialLots({ category: '전해액', type: data.type, isZeroStock: true }).then((res) => {
                       setLots(res.filter((l) => l.name === data.name));
                     });
                   }
