@@ -48,7 +48,25 @@ export default function VdRegister() {
   }, [Object.keys(formValues).length > 0]);
 
   const handleCellChange = (rangeName: string, value: any) => {
-    setFormValues(prev => ({ ...prev, [rangeName]: value }));
+    setFormValues(prev => {
+      const next = { ...prev, [rangeName]: value };
+
+      // 오븐별 LOT 투입량 변경 시 층별 합계 자동계산
+      // upperInputQuantity{층} = upperLotQty1{층} + upperLotQty2{층} + upperLotQty3{층}
+      if (rangeName.match(/^(upper|lower)LotQty[123][123]$/)) {
+        for (const side of ['upper', 'lower'] as const) {
+          for (const floor of ['1', '2', '3']) {
+            const sum = ['1', '2', '3'].reduce((acc, oven) => {
+              const v = Number(next[`${side}LotQty${oven}${floor}`]) || 0;
+              return acc + v;
+            }, 0);
+            next[`${side}InputQuantity${floor}`] = sum || '';
+          }
+        }
+      }
+
+      return next;
+    });
   };
 
   const handleSubmit = async () => {
@@ -160,7 +178,11 @@ export default function VdRegister() {
         className={styles.excelRenderer}
         numericFields={VD_NUMERIC_FIELDS}
         integerFields={VD_INTEGER_FIELDS}
-        readOnlyFields={COMMON_READONLY_FIELDS}
+        readOnlyFields={[
+          ...COMMON_READONLY_FIELDS,
+          'upperInputQuantity1', 'upperInputQuantity2', 'upperInputQuantity3',
+          'lowerInputQuantity1', 'lowerInputQuantity2', 'lowerInputQuantity3',
+        ]}
         selectFields={selectFields}
         dateFields={['manufactureDate']}
         timeFields={VD_TIME_FIELDS}
