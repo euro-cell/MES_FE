@@ -116,10 +116,10 @@ function ProcessRows({ process, daysInMonth }: ProcessRowsProps) {
 
   // 공정별 생산량 단위 결정
   const getProcessUnit = (processTitle: string): string => {
-    if (processTitle.toLowerCase().includes('mixing')) return 'KG';
+    if (processTitle.toLowerCase().includes('mixing')) return 'kg';
     if (processTitle.toLowerCase().includes('notching')) return 'ea';
     // Coating Single, Coating Double, Press, Slitting은 M
-    return 'M';
+    return 'm';
   };
   const processUnit = getProcessUnit(process.processTitle);
 

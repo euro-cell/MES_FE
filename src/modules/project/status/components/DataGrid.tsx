@@ -138,9 +138,28 @@ export default function DataGrid({ data, year, month, onTargetChange }: DataGrid
     );
   };
 
-  const processesToRender = Object.entries(data.processes).filter(
-    ([_, processData]) => processData !== undefined && processData !== null
-  );
+  // mixing 공정은 작업일지에서 g 단위로 저장되므로 표시 시 kg로 변환
+  const convertMixingGToKg = (processData: ProcessData): ProcessData => ({
+    ...processData,
+    data: processData.data.map(item => ({ ...item, output: item.output / 1000 })),
+    total: {
+      ...processData.total,
+      totalOutput: processData.total.totalOutput / 1000,
+      cumulativeOutput:
+        processData.total.cumulativeOutput != null
+          ? processData.total.cumulativeOutput / 1000
+          : processData.total.cumulativeOutput,
+    },
+  });
+
+  const processesToRender = Object.entries(data.processes)
+    .filter(([_, processData]) => processData !== undefined && processData !== null)
+    .map(([key, processData]) => {
+      if (key === 'mixing') {
+        return [key, convertMixingGToKg(processData as ProcessData)] as [string, AllProcessData];
+      }
+      return [key, processData] as [string, AllProcessData];
+    });
 
   if (processesToRender.length === 0) {
     return null;

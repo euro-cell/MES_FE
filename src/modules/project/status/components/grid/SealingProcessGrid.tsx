@@ -45,9 +45,9 @@ export default function SealingProcessGrid({
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
           const dayData = dailyDataMap[day];
-          return <td key={day}>{dayData?.output || ''}</td>;
+          return <td key={day}>{dayData?.output ? dayData.output.toLocaleString() : ''}</td>;
         })}
-        <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.totalOutput}</td>
+        <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.totalOutput.toLocaleString()}</td>
         <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
           {processData.total.cumulativeOutput !== null &&
           processData.total.cumulativeOutput !== undefined
@@ -81,12 +81,12 @@ export default function SealingProcessGrid({
           const dayData = dailyDataMap[day];
           return (
             <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-              {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
+              {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng.toLocaleString() : ''}
             </td>
           );
         })}
         <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-          {processData.total.totalNg !== null ? processData.total.totalNg : ''}
+          {processData.total.totalNg !== null ? processData.total.totalNg.toLocaleString() : ''}
         </td>
       </tr>
 
@@ -105,12 +105,12 @@ export default function SealingProcessGrid({
                 const value = dayData?.ncr?.[subType] ?? null;
                 return (
                   <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                    {value !== null && value !== undefined ? value : ''}
+                    {value !== null && value !== undefined ? value.toLocaleString() : ''}
                   </td>
                 );
               })}
               <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-                {processData.total.ncr?.[subType] ?? ''}
+                {processData.total.ncr?.[subType] != null ? processData.total.ncr[subType].toLocaleString() : ''}
               </td>
             </tr>
           );
@@ -129,7 +129,7 @@ export default function SealingProcessGrid({
               );
             })}
             <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-              {processData.total.ncr?.[subType] ?? ''}
+              {processData.total.ncr?.[subType] != null ? processData.total.ncr[subType].toLocaleString() : ''}
             </td>
           </tr>
         );

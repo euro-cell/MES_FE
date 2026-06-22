@@ -96,11 +96,11 @@ export const PROCESS_NAME_MAP: Record<string, string> = {
 // 공정별 생산량 단위 매핑
 export const PROCESS_UNIT_MAP: Record<string, string> = {
   // 전극 공정 (Electrode)
-  mixing: 'KG',
-  coatingSingle: 'M',
-  coatingDouble: 'M',
-  press: 'M',
-  slitting: 'M',
+  mixing: 'kg',
+  coatingSingle: 'm',
+  coatingDouble: 'm',
+  press: 'm',
+  slitting: 'm',
   notching: 'ea',
   // 조립 공정 (Assembly)
   vd: 'ea',

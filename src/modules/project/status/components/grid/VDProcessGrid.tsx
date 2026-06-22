@@ -37,9 +37,9 @@ export default function VDProcessGrid({
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
           const dayData = dailyDataMap[day];
-          return <td key={day}>{dayData?.cathodeOutput || ''}</td>;
+          return <td key={day}>{dayData?.cathodeOutput ? dayData.cathodeOutput.toLocaleString() : ''}</td>;
         })}
-        <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.cathode.totalOutput}</td>
+        <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.cathode.totalOutput.toLocaleString()}</td>
         {/* VD 전체 합계 - Cathode (3행 차지) */}
         <td rowSpan={3}>
           <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
@@ -80,9 +80,9 @@ export default function VDProcessGrid({
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
           const dayData = dailyDataMap[day];
-          return <td key={day}>{dayData?.anodeOutput || ''}</td>;
+          return <td key={day}>{dayData?.anodeOutput ? dayData.anodeOutput.toLocaleString() : ''}</td>;
         })}
-        <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.anode.totalOutput}</td>
+        <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.anode.totalOutput.toLocaleString()}</td>
       </tr>
 
       {/* NG - Cathode */}
@@ -97,13 +97,13 @@ export default function VDProcessGrid({
           return (
             <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
               {dayData?.cathodeNg !== null && dayData?.cathodeNg !== undefined
-                ? dayData.cathodeNg
+                ? dayData.cathodeNg.toLocaleString()
                 : ''}
             </td>
           );
         })}
         <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-          {processData.total.cathode.totalNg !== null ? processData.total.cathode.totalNg : ''}
+          {processData.total.cathode.totalNg !== null ? processData.total.cathode.totalNg.toLocaleString() : ''}
         </td>
       </tr>
       {/* NG - Anode */}
@@ -114,12 +114,12 @@ export default function VDProcessGrid({
           const dayData = dailyDataMap[day];
           return (
             <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-              {dayData?.anodeNg !== null && dayData?.anodeNg !== undefined ? dayData.anodeNg : ''}
+              {dayData?.anodeNg !== null && dayData?.anodeNg !== undefined ? dayData.anodeNg.toLocaleString() : ''}
             </td>
           );
         })}
         <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-          {processData.total.anode.totalNg !== null ? processData.total.anode.totalNg : ''}
+          {processData.total.anode.totalNg !== null ? processData.total.anode.totalNg.toLocaleString() : ''}
         </td>
         {/* VD 전체 합계 - Anode (3행 차지) */}
         <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>

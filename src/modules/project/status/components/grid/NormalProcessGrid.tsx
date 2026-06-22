@@ -43,9 +43,9 @@ export default function NormalProcessGrid({
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
           const dayData = dailyDataMap[day];
-          return <td key={day}>{dayData?.output || ''}</td>;
+          return <td key={day}>{dayData?.output ? dayData.output.toLocaleString() : ''}</td>;
         })}
-        <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.totalOutput}</td>
+        <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.totalOutput.toLocaleString()}</td>
         <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
           {processData.total.cumulativeOutput !== null &&
           processData.total.cumulativeOutput !== undefined
@@ -79,12 +79,12 @@ export default function NormalProcessGrid({
           const dayData = dailyDataMap[day];
           return (
             <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-              {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
+              {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng.toLocaleString() : ''}
             </td>
           );
         })}
         <td style={{ color: '#ef4444', fontWeight: 500, borderLeft: '2px solid #374151' }}>
-          {totalNG}
+          {totalNG.toLocaleString()}
         </td>
       </tr>
 

@@ -53,9 +53,9 @@ export default function FormingProcessGrid({
               {Array.from({ length: daysInMonth }, (_, i) => {
                 const day = i + 1;
                 const dayData = subDailyDataMap[day];
-                return <td key={day}>{dayData?.output || ''}</td>;
+                return <td key={day}>{dayData?.output ? dayData.output.toLocaleString() : ''}</td>;
               })}
-              <td style={{ borderLeft: '2px solid #374151' }}>{subData.total.totalOutput}</td>
+              <td style={{ borderLeft: '2px solid #374151' }}>{subData.total.totalOutput.toLocaleString()}</td>
               <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
                 {processData.cumulativeOutput !== null &&
                 processData.cumulativeOutput !== undefined
@@ -113,14 +113,14 @@ export default function FormingProcessGrid({
                 const dayData = subDailyDataMap[day];
                 return (
                   <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-                    {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng : ''}
+                    {dayData?.ng !== null && dayData?.ng !== undefined ? dayData.ng.toLocaleString() : ''}
                   </td>
                 );
               })}
               <td
                 style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}
               >
-                {subData.total.totalNg !== null ? subData.total.totalNg : ''}
+                {subData.total.totalNg !== null ? subData.total.totalNg.toLocaleString() : ''}
               </td>
             </tr>
           );
