@@ -1,9 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
-import type { IQCItem, IQCResult, IQCCoaRef } from '../IQCTypes';
+import type { IQCItem, IQCResult, IQCCoaRef, IQCPsdData } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
-import { uploadIQCImages, deleteIQCImage } from '../../../../api/quality/IQCService';
+import { uploadIQCImages, deleteIQCImage, updateIQCImageLabel, uploadIQCFile, deleteIQCFile } from '../../../../api/quality/IQCService';
 import { getErrorMessage } from '../../../../api/errorHandler';
+
+/** 붙여넣기 텍스트 → IQCPsdData[] 파싱 */
+function parsePsdText(text: string): IQCPsdData[] {
+  const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+  const result: IQCPsdData[] = [];
+  let sizes: number[] = [];
+  let volumes: number[] = [];
+  let mode: 'size' | 'volume' | null = null;
+
+  for (const line of lines) {
+    if (line === 'Size (μm)' || line === 'Size (µm)') {
+      if (sizes.length > 0 && volumes.length > 0) {
+        const len = Math.min(sizes.length, volumes.length);
+        for (let i = 0; i < len; i++) result.push({ size: sizes[i], volumeIn: volumes[i] });
+      }
+      sizes = []; volumes = []; mode = 'size';
+    } else if (line === '% Volume In') {
+      mode = 'volume';
+    } else if (line === 'Result') {
+      mode = null;
+    } else {
+      const num = parseFloat(line);
+      if (!isNaN(num)) {
+        if (mode === 'size') sizes.push(num);
+        else if (mode === 'volume') volumes.push(num);
+      }
+    }
+  }
+  if (sizes.length > 0 && volumes.length > 0) {
+    const len = Math.min(sizes.length, volumes.length);
+    for (let i = 0; i < len; i++) result.push({ size: sizes[i], volumeIn: volumes[i] });
+  }
+  return result;
+}
 
 interface CathodeMaterial2TableProps {
   data?: IQCItem;
@@ -64,6 +98,13 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
   const [selectedName, setSelectedName] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
   const [selectedLots, setSelectedLots] = useState<string[]>([]);
+  const [uploadingType, setUploadingType] = useState<string | null>(null);
+  const [psdText, setPsdText] = useState('');
+  const [psdData, setPsdData] = useState<IQCPsdData[]>([]);
+  const [psdRefLabels, setPsdRefLabels] = useState<string[]>(['', '']);
+  const [semRefLabels, setSemRefLabels] = useState<string[]>(['', '', '']);
+  const [psdFiles, setPsdFiles] = useState<{ id?: number; fileName: string; filePath?: string; fileUrl?: string }[]>([]);
+  const [uploadingPsdFile, setUploadingPsdFile] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -73,8 +114,21 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
         coaRefs: data.coaRefs && data.coaRefs.length > 0 ? data.coaRefs : getDefaultCoaRefs(),
         images: data.images ?? [],
       });
+      setPsdData(data.psdData ?? []);
+      const imgs = data.images ?? [];
+      const psdIdxs = imgs.filter((im) => im.imageType?.startsWith('PSD_REF_')).map((im) => parseInt(im.imageType!.replace('PSD_REF_', ''), 10)).filter((n) => !isNaN(n));
+      const psdCount = Math.max(2, psdIdxs.length > 0 ? Math.max(...psdIdxs) + 1 : 2);
+      setPsdRefLabels(Array.from({ length: psdCount }, (_, i) => imgs.find((im) => im.imageType === `PSD_REF_${i}`)?.imageLabel ?? ''));
+      const semIdxs = imgs.filter((im) => im.imageType?.startsWith('SEM_REF_')).map((im) => parseInt(im.imageType!.replace('SEM_REF_', ''), 10)).filter((n) => !isNaN(n));
+      const semCount = Math.max(3, semIdxs.length > 0 ? Math.max(...semIdxs) + 1 : 3);
+      setSemRefLabels(Array.from({ length: semCount }, (_, i) => imgs.find((im) => im.imageType === `SEM_REF_${i}`)?.imageLabel ?? ''));
+      setPsdFiles((data.files ?? []).filter((f) => f.fileType === 'PSD_DOC'));
     } else {
       setEditData(defaultItem());
+      setPsdData([]);
+      setPsdRefLabels(['', '']);
+      setSemRefLabels(['', '', '']);
+      setPsdFiles([]);
     }
   }, [data]);
 
@@ -185,22 +239,96 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
   };
 
   const handleSave = async () => {
-    if (onSave) {
-      await onSave(editData);
-      resetSelections();
-      setIsEditing(false);
-    }
+    if (onSave) { await onSave({ ...editData, psdData }); resetSelections(); setIsEditing(false); }
   };
 
   const handleCancel = () => {
     resetSelections();
-    setEditData(data ? {
-      ...data,
-      results: data.results && data.results.length > 0 ? data.results : getDefaultResults(),
-      coaRefs: data.coaRefs && data.coaRefs.length > 0 ? data.coaRefs : getDefaultCoaRefs(),
-      images: data.images ?? [],
-    } : defaultItem());
+    setPsdText('');
+    const restored = data
+      ? { ...data, results: data.results && data.results.length > 0 ? data.results : getDefaultResults(), coaRefs: data.coaRefs && data.coaRefs.length > 0 ? data.coaRefs : getDefaultCoaRefs(), images: data.images ?? [] }
+      : defaultItem();
+    setEditData(restored);
+    setPsdData(data?.psdData ?? []);
+    const imgs = data?.images ?? [];
+    const cancelPsdIdxs = imgs.filter((im) => im.imageType?.startsWith('PSD_REF_')).map((im) => parseInt(im.imageType!.replace('PSD_REF_', ''), 10)).filter((n) => !isNaN(n));
+    const cancelPsdCount = Math.max(2, cancelPsdIdxs.length > 0 ? Math.max(...cancelPsdIdxs) + 1 : 2);
+    setPsdRefLabels(Array.from({ length: cancelPsdCount }, (_, i) => imgs.find((im) => im.imageType === `PSD_REF_${i}`)?.imageLabel ?? ''));
+    const cancelSemIdxs = imgs.filter((im) => im.imageType?.startsWith('SEM_REF_')).map((im) => parseInt(im.imageType!.replace('SEM_REF_', ''), 10)).filter((n) => !isNaN(n));
+    const cancelSemCount = Math.max(3, cancelSemIdxs.length > 0 ? Math.max(...cancelSemIdxs) + 1 : 3);
+    setSemRefLabels(Array.from({ length: cancelSemCount }, (_, i) => imgs.find((im) => im.imageType === `SEM_REF_${i}`)?.imageLabel ?? ''));
+    setPsdFiles((data?.files ?? []).filter((f) => f.fileType === 'PSD_DOC'));
     setIsEditing(false);
+  };
+
+  const handlePsdTextChange = (text: string) => {
+    setPsdText(text);
+    const parsed = parsePsdText(text);
+    setPsdData(parsed);
+    setEditData((prev) => ({ ...prev, psdData: parsed }));
+  };
+
+  const handleRefLabelChange = async (imageType: string, label: string, setter: React.Dispatch<React.SetStateAction<string[]>>, idx: number) => {
+    setter((prev) => { const next = [...prev]; next[idx] = label; return next; });
+    const imgs = (editData.images ?? []).filter((im) => im.imageType === imageType);
+    for (const img of imgs) {
+      if (img.id) { try { await updateIQCImageLabel(img.id, label); } catch { /* 무시 */ } }
+    }
+    setEditData((prev) => ({
+      ...prev,
+      images: (prev.images ?? []).map((im) => im.imageType === imageType ? { ...im, imageLabel: label } : im),
+    }));
+  };
+
+  const handlePsdFileUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    if (!data?.id) { alert('먼저 저장 후 파일을 업로드해주세요.'); return; }
+    setUploadingPsdFile(true);
+    try {
+      for (const file of Array.from(files)) {
+        const uploaded = await uploadIQCFile(data.id, 'PSD_DOC', file);
+        setPsdFiles((prev) => [...prev, uploaded]);
+      }
+    } catch (err) { alert(getErrorMessage(err, '파일 업로드에 실패했습니다.')); }
+    finally { setUploadingPsdFile(false); }
+  };
+
+  const handlePsdFileDelete = async (fileId: number) => {
+    if (!confirm('파일을 삭제하시겠습니까?')) return;
+    try {
+      await deleteIQCFile(fileId);
+      setPsdFiles((prev) => prev.filter((f) => f.id !== fileId));
+    } catch (err) { alert(getErrorMessage(err, '파일 삭제에 실패했습니다.')); }
+  };
+
+  const handleAddRefSlot = (type: 'PSD' | 'SEM') => {
+    if (type === 'PSD') setPsdRefLabels((prev) => [...prev, '']);
+    else setSemRefLabels((prev) => [...prev, '']);
+  };
+
+  const handleRemoveRefSlot = async (type: 'PSD' | 'SEM', idx: number) => {
+    const imageType = `${type}_REF_${idx}`;
+    const imgs = (editData.images ?? []).filter((im) => im.imageType === imageType);
+    if (imgs.length > 0) {
+      if (!confirm('해당 슬롯의 이미지를 삭제하고 슬롯을 제거하시겠습니까?')) return;
+      for (const img of imgs) {
+        if (img.id) { try { await deleteIQCImage(img.id); } catch { /* 무시 */ } }
+      }
+    }
+    setEditData((prev) => ({
+      ...prev,
+      images: (prev.images ?? [])
+        .filter((im) => im.imageType !== imageType)
+        .map((im) => {
+          const prefix = `${type}_REF_`;
+          if (!im.imageType?.startsWith(prefix)) return im;
+          const n = parseInt(im.imageType.replace(prefix, ''), 10);
+          if (isNaN(n) || n <= idx) return im;
+          return { ...im, imageType: `${prefix}${n - 1}` };
+        }),
+    }));
+    if (type === 'PSD') setPsdRefLabels((prev) => prev.filter((_, i) => i !== idx));
+    else setSemRefLabels((prev) => prev.filter((_, i) => i !== idx));
   };
 
   const results = editData.results ?? [];
@@ -218,8 +346,6 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
     }
     setEditData({ ...editData, results: updated });
   };
-
-  const [uploadingType, setUploadingType] = useState<string | null>(null);
 
   const handleImageUpload = async (imageType: string, files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -553,6 +679,180 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
         ) : (
           <pre className={styles.remarkContent}>{editData.remark || '비고 없음'}</pre>
         )}
+      </div>
+
+      {/* PSD 자료 */}
+      <div className={styles.tableTitleRow} style={{ marginTop: '16px' }}>
+        <h3 className={styles.tableTitle}>■ PSD 자료</h3>
+      </div>
+      <div style={{ border: '1px solid #e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
+        {psdFiles.length === 0 && !isEditing ? (
+          <div style={{ padding: '20px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>첨부 파일 없음</div>
+        ) : (
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+            {psdFiles.map((f, i) => (
+              <li key={f.id ?? f.fileName} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderBottom: i < psdFiles.length - 1 ? '1px solid #f1f5f9' : undefined, background: '#fff' }}>
+                <span style={{ fontSize: '18px', flexShrink: 0 }}>📄</span>
+                <span style={{ flex: 1, fontSize: '13px', color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.fileName}</span>
+                <a href={f.fileUrl} target="_blank" rel="noreferrer" style={{ flexShrink: 0, fontSize: '12px', color: '#2563eb', border: '1px solid #93c5fd', borderRadius: '4px', padding: '3px 10px', textDecoration: 'none', whiteSpace: 'nowrap' }}>열기</a>
+                {isEditing && f.id && (
+                  <button onClick={() => handlePsdFileDelete(f.id!)} style={{ flexShrink: 0, background: 'none', border: '1px solid #fca5a5', borderRadius: '4px', color: '#dc2626', cursor: 'pointer', fontSize: '12px', padding: '3px 8px' }}>삭제</button>
+                )}
+              </li>
+            ))}
+            {isEditing && (
+              <li style={{ padding: '10px 14px', background: '#f8fafc', borderTop: psdFiles.length > 0 ? '1px solid #e2e8f0' : undefined }}>
+                <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: uploadingPsdFile ? 'not-allowed' : 'pointer', fontSize: '13px', color: uploadingPsdFile ? '#94a3b8' : '#2563eb', fontWeight: 600 }}>
+                  {uploadingPsdFile ? <><span style={{ fontSize: '16px' }}>⏳</span> 업로드 중...</> : <><span style={{ fontSize: '16px' }}>+</span> PDF 파일 추가</>}
+                  <input type="file" accept="application/pdf" multiple style={{ display: 'none' }} disabled={uploadingPsdFile} onChange={(e) => handlePsdFileUpload(e.target.files)} />
+                </label>
+              </li>
+            )}
+          </ul>
+        )}
+      </div>
+
+      {/* PSD raw data */}
+      <div className={styles.tableTitleRow} style={{ marginTop: '16px' }}>
+        <h3 className={styles.tableTitle}>■ PSD raw data</h3>
+      </div>
+      {isEditing && (
+        <div style={{ marginBottom: '8px' }}>
+          <textarea
+            style={{ width: '100%', height: '160px', fontFamily: 'monospace', fontSize: '12px', padding: '8px', boxSizing: 'border-box', resize: 'vertical' }}
+            placeholder={'여기에 PSD raw data를 붙여넣으세요.\n예)\nSize (μm)\n0.0100\n0.0114\n% Volume In\n0.12\n0.23\n...'}
+            value={psdText}
+            onChange={(e) => handlePsdTextChange(e.target.value)}
+          />
+          {psdData.length > 0 && <div style={{ fontSize: '12px', color: '#16a34a', marginTop: '4px' }}>✓ {psdData.length}개 데이터 파싱 완료</div>}
+        </div>
+      )}
+      {psdData.length > 0 ? (() => {
+        const COLS = 5;
+        const colSize = Math.ceil(psdData.length / COLS);
+        const columns: { size: number; volumeIn: number }[][] = Array.from({ length: COLS }, (_, i) => psdData.slice(i * colSize, (i + 1) * colSize));
+        const rowCount = colSize;
+        return (
+          <table className={styles.iqcTable}>
+            <thead>
+              <tr>
+                {columns.map((_, i) => (
+                  <React.Fragment key={i}>
+                    <th style={{ background: '#FFFF00', color: '#000', borderLeft: i > 0 ? '2px solid #888' : undefined }}>Size(㎛)</th>
+                    <th style={{ background: '#FFFF00', color: '#000' }}>Volume In %</th>
+                  </React.Fragment>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: rowCount }).map((_, rowIdx) => (
+                <tr key={rowIdx}>
+                  {columns.map((col, colIdx) => (
+                    <React.Fragment key={colIdx}>
+                      <td style={{ textAlign: 'right', borderLeft: colIdx > 0 ? '2px solid #888' : undefined }}>{col[rowIdx]?.size ?? ''}</td>
+                      <td style={{ textAlign: 'right' }}>{col[rowIdx]?.volumeIn ?? ''}</td>
+                    </React.Fragment>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        );
+      })() : (
+        <div style={{ padding: '16px', color: '#94a3b8', textAlign: 'center' }}>
+          {isEditing ? '위 텍스트 박스에 PSD raw data를 붙여넣으면 표로 변환됩니다.' : 'PSD raw data 없음'}
+        </div>
+      )}
+
+      {/* PSD 참조 결과 & SEM Image 참조 결과 */}
+      <div style={{ display: 'flex', gap: '0', marginTop: '16px', borderTop: '2px solid #888' }}>
+        {/* 좌: PSD 참조 결과 */}
+        <div style={{ flex: '0 0 50%', borderRight: '1px solid #ccc' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '8px 4px 8px 4px' }}>
+            <h3 className={styles.tableTitle} style={{ margin: 0 }}>■ PSD 참조 결과</h3>
+            {isEditing && (
+              <button onClick={() => handleAddRefSlot('PSD')} style={{ fontSize: '12px', color: '#2563eb', background: 'none', border: '1px solid #2563eb', borderRadius: '4px', padding: '2px 8px', cursor: 'pointer' }}>+ 슬롯 추가</button>
+            )}
+          </div>
+          {psdRefLabels.map((label, idx) => {
+            const imageType = `PSD_REF_${idx}`;
+            const imgs = (editData.images ?? []).filter((im) => im.imageType === imageType);
+            const isUploading = uploadingType === imageType;
+            return (
+              <div key={idx} className={styles.imageBox} style={{ marginBottom: '4px' }}>
+                <div className={styles.imageLabel} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', background: '#fff' }}>
+                  {isEditing ? (
+                    <>
+                      <input type="text" value={label} placeholder="레이블 입력" onChange={(e) => handleRefLabelChange(imageType, e.target.value, setPsdRefLabels, idx)} className={styles.tableInput} style={{ width: '160px' }} />
+                      <button onClick={() => handleRemoveRefSlot('PSD', idx)} style={{ fontSize: '11px', color: '#dc2626', background: 'none', border: '1px solid #dc2626', borderRadius: '4px', padding: '1px 6px', cursor: 'pointer' }}>슬롯 삭제</button>
+                    </>
+                  ) : label}
+                </div>
+                <div className={styles.imageContent}>
+                  {imgs.length > 0 ? (
+                    <div className={styles.imageList}>
+                      {imgs.map((img) => (
+                        <div key={img.id} className={styles.imageItem}>
+                          <img src={img.fileUrl} alt={label} className={styles.resultImage} />
+                          {isEditing && img.id && <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!)}>✕</button>}
+                        </div>
+                      ))}
+                    </div>
+                  ) : isEditing ? (
+                    <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', cursor: isUploading ? 'not-allowed' : 'pointer', color: '#94a3b8', fontSize: '13px', flexDirection: 'column', gap: '4px' }}>
+                      {isUploading ? '업로드 중...' : <><span style={{ fontSize: '24px' }}>+</span><span>이미지 업로드</span></>}
+                      <input type="file" accept="image/*" multiple style={{ display: 'none' }} disabled={isUploading} onChange={(e) => handleImageUpload(imageType, e.target.files)} />
+                    </label>
+                  ) : <span className={styles.noImage}>이미지 없음</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 우: SEM Image 참조 결과 */}
+        <div style={{ flex: '0 0 50%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '8px 4px 8px 4px' }}>
+            <h3 className={styles.tableTitle} style={{ margin: 0 }}>■ SEM Image 참조 결과</h3>
+            {isEditing && (
+              <button onClick={() => handleAddRefSlot('SEM')} style={{ fontSize: '12px', color: '#2563eb', background: 'none', border: '1px solid #2563eb', borderRadius: '4px', padding: '2px 8px', cursor: 'pointer' }}>+ 슬롯 추가</button>
+            )}
+          </div>
+          {semRefLabels.map((label, idx) => {
+            const imageType = `SEM_REF_${idx}`;
+            const imgs = (editData.images ?? []).filter((im) => im.imageType === imageType);
+            const isUploading = uploadingType === imageType;
+            return (
+              <div key={idx} className={styles.imageBox} style={{ marginBottom: '4px' }}>
+                <div className={styles.imageLabel} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', background: '#fff' }}>
+                  {isEditing ? (
+                    <>
+                      <input type="text" value={label} placeholder="레이블 입력" onChange={(e) => handleRefLabelChange(imageType, e.target.value, setSemRefLabels, idx)} className={styles.tableInput} style={{ width: '160px' }} />
+                      <button onClick={() => handleRemoveRefSlot('SEM', idx)} style={{ fontSize: '11px', color: '#dc2626', background: 'none', border: '1px solid #dc2626', borderRadius: '4px', padding: '1px 6px', cursor: 'pointer' }}>슬롯 삭제</button>
+                    </>
+                  ) : label}
+                </div>
+                <div className={styles.imageContent}>
+                  {imgs.length > 0 ? (
+                    <div className={styles.imageList}>
+                      {imgs.map((img) => (
+                        <div key={img.id} className={styles.imageItem}>
+                          <img src={img.fileUrl} alt={label} className={styles.resultImage} />
+                          {isEditing && img.id && <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!)}>✕</button>}
+                        </div>
+                      ))}
+                    </div>
+                  ) : isEditing ? (
+                    <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', cursor: isUploading ? 'not-allowed' : 'pointer', color: '#94a3b8', fontSize: '13px', flexDirection: 'column', gap: '4px' }}>
+                      {isUploading ? '업로드 중...' : <><span style={{ fontSize: '24px' }}>+</span><span>이미지 업로드</span></>}
+                      <input type="file" accept="image/*" multiple style={{ display: 'none' }} disabled={isUploading} onChange={(e) => handleImageUpload(imageType, e.target.files)} />
+                    </label>
+                  ) : <span className={styles.noImage}>이미지 없음</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
