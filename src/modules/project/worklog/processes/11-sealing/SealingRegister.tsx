@@ -119,7 +119,6 @@ export default function SealingRegister() {
       if (rangeName === workField || rangeName === defectField || rangeName === discardField) {
         const workQty = rangeName === workField ? value || 0 : prev[workField] || 0;
         const defectQty = rangeName === defectField ? value || 0 : prev[defectField] || 0;
-        const discardQty = rangeName === discardField ? value || 0 : prev[discardField] || 0;
         // 양품 수량 = 작업 수량 - 불량 수량
         updates[goodField] = Math.max(0, Number(workQty) - Number(defectQty));
         // 불량률 = (불량 수량 / 작업 수량) * 100

@@ -120,7 +120,7 @@ export default function FormingProcessGrid({
               <td
                 style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}
               >
-                {subData.total.totalNg !== null ? subData.total.totalNg.toLocaleString() : ''}
+                {subData.total.totalNg?.toLocaleString() ?? ''}
               </td>
             </tr>
           );
