@@ -69,3 +69,26 @@
   border: 0;
   border-top: 1px solid #e2e8f0;
 }
+
+.projectItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.projectName {
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.divider {
+  width: 1px;
+  height: 14px;
+  background: #cbd5e1;
+  flex-shrink: 0;
+}
+
+.customerName {
+  color: #64748b;
+  font-size: 13px;
+}

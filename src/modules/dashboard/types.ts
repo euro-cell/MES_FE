@@ -2,7 +2,8 @@
 export interface DashboardProject {
   id: number;
   name: string;
-  company: string;
+  company: string;       // 약어 (shortName)
+  customerName?: string; // 회사명 (Customer.name)
   mode: string;
   year: number;
   month: number;
@@ -57,6 +58,7 @@ export interface DashboardSummaryItem {
   id: number;
   name: string;
   company: string;
+  customerName?: string;
   mode: string;
   year: number;
   month: number;

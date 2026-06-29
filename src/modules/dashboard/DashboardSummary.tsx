@@ -18,7 +18,15 @@ export default function DashboardSummary({ projects, onSelectProject, hasError }
         ) : projects.length > 0 ? (
           projects.map(p => (
             <li key={p.id} onClick={() => onSelectProject(p)}>
-              {p.name}
+              <div className={styles.projectItem}>
+                <span className={styles.projectName}>{p.name}</span>
+                {p.customerName && (
+                  <>
+                    <span className={styles.divider} />
+                    <span className={styles.customerName}>{p.customerName}</span>
+                  </>
+                )}
+              </div>
             </li>
           ))
         ) : (
