@@ -102,12 +102,13 @@ export const formatCellValue = (value: any, numFmt?: string): string => {
     return formatCellValue(value.result, numFmt);
   }
 
-  // 숫자 처리
-  if (typeof value === 'number') {
+  // 숫자 처리 (number 타입 또는 숫자 형태의 string)
+  const num = typeof value === 'number' ? value : (typeof value === 'string' && value.trim() !== '' ? Number(value) : NaN);
+  if (!isNaN(num) && typeof value !== 'boolean') {
     if (numFmt?.includes('%')) {
-      return (value * 100).toFixed(1) + '%';
+      return (num * 100).toFixed(1) + '%';
     }
-    return String(value);
+    return Number.isInteger(num) ? String(num) : String(parseFloat(num.toFixed(10)));
   }
 
   // 날짜 처리
