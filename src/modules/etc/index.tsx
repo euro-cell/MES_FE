@@ -5,14 +5,7 @@ import styles from '../../styles/components/moduleIndex.module.css';
 import ConditionPage from './condition/ConditionPage';
 import UserList from './user/UserList';
 import PermissionPage from './perm/PermissionPage';
-
-// 임시 플레이스홀더 컴포넌트
-const PlaceholderPage = ({ title }: { title: string }) => (
-  <div style={{ padding: '20px' }}>
-    <h2>{title}</h2>
-    <p>준비 중입니다.</p>
-  </div>
-);
+import CustomerList from './customer/CustomerList';
 
 export default function EtcIndex() {
   const { sub } = MENU_CONFIG.etc;
@@ -26,7 +19,7 @@ export default function EtcIndex() {
           <Route path='users' element={<UserList />} />
           <Route path='permission' element={<PermissionPage />} />
           <Route path='condition/*' element={<ConditionPage />} />
-          <Route path='customer' element={<PlaceholderPage title='고객 코드 관리 대장' />} />
+          <Route path='customer' element={<CustomerList />} />
         </Routes>
       </div>
     </div>
