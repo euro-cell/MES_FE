@@ -10,6 +10,7 @@ import CathodeMaterial1Table from './tables/CathodeMaterial1Table';
 import CathodeMaterial2Table from './tables/CathodeMaterial2Table';
 import AnodeMaterialTable from './tables/AnodeMaterialTable';
 import ConductiveAdditiveTable from './tables/ConductiveAdditiveTable';
+import ConductiveAdditive2Table from './tables/ConductiveAdditive2Table';
 import CurrentCollectorTable from './tables/CurrentCollectorTable';
 import SeparatorTable from './tables/SeparatorTable';
 import ElectrolyteTable from './tables/ElectrolyteTable';
@@ -193,6 +194,28 @@ export default function IQCPage() {
                 const saved = existing
                   ? await updateIQC(existing.id, body)
                   : await createIQC(Number(projectId), { ...body, category: '도전재', type: body.type ?? '', name: body.name ?? '' });
+                setIqcItems((prev) =>
+                  existing ? prev.map((item) => (item.id === existing.id ? saved : item)) : [...prev, saved]
+                );
+                alert('저장되었습니다.');
+              } catch {
+                alert('저장에 실패했습니다.');
+              }
+            }}
+          />
+        );
+      case 'ConductiveAdditive2':
+        return (
+          <ConductiveAdditive2Table
+            data={getItemByCategory('도전재2')}
+            projectId={Number(projectId)}
+            onSave={async (data) => {
+              try {
+                const existing = getItemByCategory('도전재2');
+                const body = toRequestBody(data);
+                const saved = existing
+                  ? await updateIQC(existing.id, body)
+                  : await createIQC(Number(projectId), { ...body, category: '도전재2', type: body.type ?? '', name: body.name ?? '' });
                 setIqcItems((prev) =>
                   existing ? prev.map((item) => (item.id === existing.id ? saved : item)) : [...prev, saved]
                 );

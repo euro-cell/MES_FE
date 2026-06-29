@@ -10,6 +10,7 @@ export type IQCMenuType =
   | 'CathodeMaterial2'
   | 'AnodeMaterial'
   | 'ConductiveAdditive'
+  | 'ConductiveAdditive2'
   | 'CurrentCollector'
   | 'Separator'
   | 'Electrolyte'
@@ -21,6 +22,7 @@ export const CATEGORY_MAP: Record<string, IQCMenuType> = {
   '양극재': 'CathodeMaterial1',
   '음극재': 'AnodeMaterial',
   '도전재': 'ConductiveAdditive',
+  '도전재2': 'ConductiveAdditive2',
   '집전체': 'CurrentCollector',
   '분리막': 'Separator',
   '전해액': 'Electrolyte',
