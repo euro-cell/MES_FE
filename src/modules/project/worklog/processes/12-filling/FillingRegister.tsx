@@ -137,9 +137,8 @@ export default function FillingRegister() {
       if (rangeName === workField || rangeName === defectField || rangeName === discardField) {
         const workQty = rangeName === workField ? value || 0 : prev[workField] || 0;
         const defectQty = rangeName === defectField ? value || 0 : prev[defectField] || 0;
-        const discardQty = rangeName === discardField ? value || 0 : prev[discardField] || 0;
-        // 양품 수량 = 작업 수량 - 불량 수량 - 폐기 수량
-        updates[goodField] = Math.max(0, Number(workQty) - Number(defectQty) - Number(discardQty));
+        // 양품 수량 = 작업 수량 - 불량 수량
+        updates[goodField] = Math.max(0, Number(workQty) - Number(defectQty));
         // 불량률 = (불량 수량 / 작업 수량) * 100
         updates[defectRateField] =
           Number(workQty) > 0 ? Math.round((Number(defectQty) / Number(workQty)) * 10000) / 100 : 0;

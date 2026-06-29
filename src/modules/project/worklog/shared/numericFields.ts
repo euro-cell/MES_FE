@@ -430,6 +430,9 @@ export const SEALING_NUMERIC_FIELDS = [
   'topSealingTime',
   'sideSealingTime',
   'bottomSealingTime',
+  // 공정 조건 - 하이팟
+  'hipotVoltage',
+  'hipotTime',
 ];
 
 // Sealing 정수 필드 (수량)
@@ -449,9 +452,6 @@ export const SEALING_INTEGER_FIELDS = [
   'hipot3GoodQuantity',
   'hipot3DefectQuantity',
   'hipot3DiscardQuantity',
-  // 공정 조건 - 하이팟
-  'hipotVoltage',
-  'hipotTime',
 ];
 
 // Filling 소수점 필드 (공정 조건, 불량률, 사용량)
