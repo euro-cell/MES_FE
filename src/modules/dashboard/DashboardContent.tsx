@@ -29,7 +29,7 @@ export default function DashboardContent() {
     company: '',
     mode: '',
     year: new Date().getFullYear(),
-    month: 1,
+    month: new Date().getMonth() + 1,
     round: 1,
     batteryType: '',
     capacity: '',

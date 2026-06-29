@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { DashboardProject, DashboardFormState } from './types';
 import { updateProject } from '../../api/dashboard/dashboardService';
 import styles from '../../styles/dashboard/modal.module.css';
 import { getErrorMessage } from '../../api/errorHandler';
+import { getCustomers } from '../../api/etc/customerService';
+import type { Customer } from '../../api/etc/customerService';
 
 interface Props {
   projects: DashboardProject[];
@@ -16,13 +18,18 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
     company: '',
     mode: '',
     year: new Date().getFullYear(),
-    month: 1,
+    month: new Date().getMonth() + 1,
     round: 1,
     batteryType: '',
     capacity: '',
     targetQuantity: 0,
   });
   const [loading, setLoading] = useState(false);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  useEffect(() => {
+    getCustomers().then(setCustomers).catch(() => {});
+  }, []);
 
   /** ✅ 리스트 클릭 → 폼 세팅 */
   const handleSelect = (project: DashboardProject) => {
@@ -85,8 +92,15 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
                 <h4>{selected.name} 수정</h4>
 
                 <div className={styles.formRow}>
-                  <label>회사 약어</label>
-                  <input name='company' value={form.company} onChange={handleChange} />
+                  <label>고객사</label>
+                  <select name='company' value={form.company} onChange={handleChange}>
+                    <option value=''>선택</option>
+                    {customers.map(c => (
+                      <option key={c.id} value={c.shortName}>
+                        {c.name}({c.shortName})
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className={styles.formRow}>
