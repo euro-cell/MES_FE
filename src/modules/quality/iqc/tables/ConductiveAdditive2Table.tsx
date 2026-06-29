@@ -18,6 +18,10 @@ const getDefaultCoaRefs = (): IQCCoaRef[] => [
   { attrName: 'pH', attrValue: '' },
   { attrName: 'Fe(ppm)', attrValue: '' },
   { attrName: 'Ni(ppm)', attrValue: '' },
+  { attrName: '', attrValue: '' },
+  { attrName: '', attrValue: '' },
+  { attrName: '', attrValue: '' },
+  { attrName: '', attrValue: '' },
 ];
 
 const defaultItem = (): IQCItem => ({
@@ -281,7 +285,7 @@ const ConductiveAdditive2Table: React.FC<ConductiveAdditive2TableProps> = ({ dat
       </div>
       <table className={styles.iqcTable}>
         <colgroup>{coaRefs.map((_, i) => <col key={i} style={{ width: `${100 / coaRefs.length}%` }} />)}</colgroup>
-        <thead><tr>{coaRefs.map((ref, i) => <th key={i}>{ref.attrName}</th>)}</tr></thead>
+        <thead><tr>{coaRefs.map((ref, i) => <th key={i}>{isEditing ? <input type="text" value={ref.attrName} onChange={(e) => { const updated = [...coaRefs]; updated[i] = { ...updated[i], attrName: e.target.value }; setEditData({ ...editData, coaRefs: updated }); }} className={styles.tableInput} placeholder="항목명" /> : ref.attrName}</th>)}</tr></thead>
         <tbody>
           <tr>
             {coaRefs.map((ref, i) => (

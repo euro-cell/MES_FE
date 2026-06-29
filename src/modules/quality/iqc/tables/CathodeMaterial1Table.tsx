@@ -67,6 +67,8 @@ const getDefaultCoaRefs = (): IQCCoaRef[] => [
   { attrName: 'LiOH(%)',      attrValue: '' },
   { attrName: 'Li₂CO₃(%)',   attrValue: '' },
   { attrName: 'Fe(ppm)',      attrValue: '' },
+  { attrName: '', attrValue: '' },
+  { attrName: '', attrValue: '' },
 ];
 
 const defaultItem = (): IQCItem => ({
@@ -684,7 +686,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
         <thead>
           <tr>
             {coaRefs.map((ref, i) => (
-              <th key={i}>{ref.attrName}</th>
+              <th key={i}>{isEditing ? <input type="text" value={ref.attrName} onChange={(e) => { const updated = [...coaRefs]; updated[i] = { ...updated[i], attrName: e.target.value }; setEditData({ ...editData, coaRefs: updated }); }} className={styles.tableInput} placeholder="항목명" /> : ref.attrName}</th>
             ))}
           </tr>
         </thead>

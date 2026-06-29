@@ -22,6 +22,9 @@ const getDefaultCoaRefs = (): IQCCoaRef[] => [
   { attrName: 'Pin puncture strength(gf)', attrValue: '' },
   { attrName: 'Air permeability(sec/100㎖)', attrValue: '' },
   { attrName: 'Porosity(%)', attrValue: '' },
+  { attrName: '', attrValue: '' },
+  { attrName: '', attrValue: '' },
+  { attrName: '', attrValue: '' },
 ];
 
 const defaultItem = (): IQCItem => ({
@@ -334,7 +337,7 @@ const SeparatorTable: React.FC<SeparatorTableProps> = ({ data, onSave }) => {
       </div>
       <table className={styles.iqcTable}>
         <colgroup>{coaRefs.map((_, i) => <col key={i} style={{ width: `${100 / coaRefs.length}%` }} />)}</colgroup>
-        <thead><tr>{coaRefs.map((ref, i) => <th key={i}>{ref.attrName}</th>)}</tr></thead>
+        <thead><tr>{coaRefs.map((ref, i) => <th key={i}>{isEditing ? <input type="text" value={ref.attrName} onChange={(e) => { const updated = [...coaRefs]; updated[i] = { ...updated[i], attrName: e.target.value }; setEditData({ ...editData, coaRefs: updated }); }} className={styles.tableInput} placeholder="항목명" /> : ref.attrName}</th>)}</tr></thead>
         <tbody>
           <tr>
             {coaRefs.map((ref, i) => (
