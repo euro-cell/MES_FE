@@ -12,14 +12,22 @@ function parsePsdText(text: string): IQCPsdData[] {
   let sizes: number[] = [];
   let volumes: number[] = [];
   let mode: 'size' | 'volume' | null = null;
+  let cumulative = 0;
+
+  const flush = () => {
+    if (sizes.length > 0 && volumes.length > 0) {
+      const len = Math.min(sizes.length, volumes.length);
+      for (let i = 0; i < len; i++) {
+        cumulative += volumes[i];
+        result.push({ size: sizes[i], volumeIn: volumes[i], integralV: parseFloat(cumulative.toFixed(4)) });
+      }
+    }
+    sizes = []; volumes = [];
+  };
 
   for (const line of lines) {
     if (line === 'Size (μm)' || line === 'Size (µm)') {
-      if (sizes.length > 0 && volumes.length > 0) {
-        const len = Math.min(sizes.length, volumes.length);
-        for (let i = 0; i < len; i++) result.push({ size: sizes[i], volumeIn: volumes[i] });
-      }
-      sizes = []; volumes = []; mode = 'size';
+      flush(); mode = 'size';
     } else if (line === '% Volume In') {
       mode = 'volume';
     } else if (line === 'Result') {
@@ -32,10 +40,7 @@ function parsePsdText(text: string): IQCPsdData[] {
       }
     }
   }
-  if (sizes.length > 0 && volumes.length > 0) {
-    const len = Math.min(sizes.length, volumes.length);
-    for (let i = 0; i < len; i++) result.push({ size: sizes[i], volumeIn: volumes[i] });
-  }
+  flush();
   return result;
 }
 
@@ -733,7 +738,7 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
       {psdData.length > 0 ? (() => {
         const COLS = 5;
         const colSize = Math.ceil(psdData.length / COLS);
-        const columns: { size: number; volumeIn: number }[][] = Array.from({ length: COLS }, (_, i) => psdData.slice(i * colSize, (i + 1) * colSize));
+        const columns = Array.from({ length: COLS }, (_, i) => psdData.slice(i * colSize, (i + 1) * colSize));
         const rowCount = colSize;
         return (
           <table className={styles.iqcTable}>
@@ -743,6 +748,7 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
                   <React.Fragment key={i}>
                     <th style={{ background: '#FFFF00', color: '#000', borderLeft: i > 0 ? '2px solid #888' : undefined }}>Size(㎛)</th>
                     <th style={{ background: '#FFFF00', color: '#000' }}>Volume In %</th>
+                    <th style={{ background: '#e8e8e8', color: '#000' }}>Integral V. %</th>
                   </React.Fragment>
                 ))}
               </tr>
@@ -754,6 +760,7 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
                     <React.Fragment key={colIdx}>
                       <td style={{ textAlign: 'right', borderLeft: colIdx > 0 ? '2px solid #888' : undefined }}>{col[rowIdx]?.size ?? ''}</td>
                       <td style={{ textAlign: 'right' }}>{col[rowIdx]?.volumeIn ?? ''}</td>
+                      <td style={{ textAlign: 'right' }}>{col[rowIdx]?.integralV ?? ''}</td>
                     </React.Fragment>
                   ))}
                 </tr>

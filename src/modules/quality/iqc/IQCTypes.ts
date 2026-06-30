@@ -76,6 +76,7 @@ export interface IQCFile {
 export interface IQCPsdData {
   size: number;
   volumeIn: number;
+  integralV?: number;
 }
 
 /** IQC 단건 (목록 및 상세 공통) */
