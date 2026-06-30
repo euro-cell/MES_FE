@@ -264,7 +264,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
   };
 
   const handleSave = async () => {
-    if (onSave) { await onSave({ ...editData, psdData }); resetSelections(); setIsEditing(false); }
+    if (onSave) { const coaRefs = (editData.coaRefs ?? []).map((c, i) => ({ ...c, order: i })); await onSave({ ...editData, psdData, coaRefs }); resetSelections(); setIsEditing(false); }
   };
 
   const handleCancel = () => {

@@ -236,7 +236,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
   };
 
   const handleSave = async () => {
-    if (onSave) { await onSave({ ...editData, psdData }); resetSelections(); setIsEditing(false); }
+    if (onSave) { const coaRefs = (editData.coaRefs ?? []).map((c, i) => ({ ...c, order: i })); await onSave({ ...editData, psdData, coaRefs }); resetSelections(); setIsEditing(false); }
   };
 
   const handleCancel = () => {

@@ -50,6 +50,7 @@ export interface IQCResult {
 /** IQC CoA 참조 결과 */
 export interface IQCCoaRef {
   id?: number;
+  order?: number;
   attrName: string;       // 속성명 (BET(㎡/g) 등)
   attrValue?: string;     // 속성값
 }

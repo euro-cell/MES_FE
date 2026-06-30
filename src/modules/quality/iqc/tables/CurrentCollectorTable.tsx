@@ -146,7 +146,7 @@ const CurrentCollectorTable: React.FC<CurrentCollectorTableProps> = ({ data, onS
   };
 
   const handleSave = async () => {
-    if (onSave) { await onSave(editData); resetSelections(); setIsEditing(false); }
+    if (onSave) { const coaRefs = (editData.coaRefs ?? []).map((c, i) => ({ ...c, order: i })); await onSave({ ...editData, coaRefs }); resetSelections(); setIsEditing(false); }
   };
 
   const handleCancel = () => {
