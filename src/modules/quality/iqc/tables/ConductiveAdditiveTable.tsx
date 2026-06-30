@@ -57,7 +57,7 @@ const ConductiveAdditiveTable: React.FC<ConductiveAdditiveTableProps> = ({ data,
       setEditData({
         ...data,
         results: data.results && data.results.length > 0 ? data.results : getDefaultResults(),
-        coaRefs: data.coaRefs && data.coaRefs.length > 0 ? data.coaRefs : getDefaultCoaRefs(),
+        coaRefs: (() => { const saved = data.coaRefs && data.coaRefs.length > 0 ? data.coaRefs : getDefaultCoaRefs(); const defaults = getDefaultCoaRefs(); return saved.length >= defaults.length ? saved : [...saved, ...defaults.slice(saved.length)]; })(),
         images: data.images ?? [],
       });
     } else {
