@@ -760,7 +760,7 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
                     <React.Fragment key={colIdx}>
                       <td style={{ textAlign: 'right', borderLeft: colIdx > 0 ? '2px solid #888' : undefined }}>{col[rowIdx]?.size ?? ''}</td>
                       <td style={{ textAlign: 'right' }}>{col[rowIdx]?.volumeIn ?? ''}</td>
-                      <td style={{ textAlign: 'right' }}>{col[rowIdx]?.integralV ?? ''}</td>
+                      <td style={{ textAlign: 'right', background: '#e8e8e8' }}>{col[rowIdx]?.integralV ?? ''}</td>
                     </React.Fragment>
                   ))}
                 </tr>
