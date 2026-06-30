@@ -595,7 +595,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
             {psdFiles.map((f, i) => (
               <li key={f.id ?? f.fileName} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderBottom: i < psdFiles.length - 1 ? '1px solid #f1f5f9' : undefined, background: '#fff' }}>
                 <span style={{ fontSize: '18px', flexShrink: 0 }}>📄</span>
-                <span style={{ flex: 1, fontSize: '13px', color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.fileName}</span>
+                <a href={f.fileUrl} target="_blank" rel="noreferrer" style={{ flex: 1, fontSize: '13px', color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none' }} onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')} onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}>{f.fileName}</a>
                 <a
                   href={f.fileUrl}
                   target="_blank"
