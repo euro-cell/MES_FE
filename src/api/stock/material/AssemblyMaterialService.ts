@@ -98,6 +98,19 @@ export const importAssemblyMaterials = async (
   }
 };
 
+export const deleteAssemblyHistories = async (ids: number[]): Promise<void> => {
+  await axios.delete(`${API_BASE}/material/history/assembly`, {
+    data: { ids },
+    withCredentials: true,
+  });
+};
+
+export const deleteAllAssemblyHistories = async (): Promise<void> => {
+  await axios.delete(`${API_BASE}/material/history/assembly/all`, {
+    withCredentials: true,
+  });
+};
+
 /** 조립 자재 엑셀 다운로드 */
 export const downloadAssemblyExcel = async (): Promise<void> => {
   const res = await axios.get(`${API_BASE}/material/assembly/export`, {

@@ -222,3 +222,146 @@
   padding: 20px;
   font-size: 14px;
 }
+
+/* 이력 툴바 */
+.historyToolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 8px 4px;
+}
+
+.historySelectedInfo {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.historyActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deleteSelectedButton {
+  padding: 6px 14px;
+  background-color: #f97316;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.deleteSelectedButton:hover:not(:disabled) {
+  background-color: #ea6c0a;
+}
+
+.deleteSelectedButton:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.deleteAllButton {
+  padding: 6px 14px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.deleteAllButton:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+.deleteAllButton:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* 체크박스 셀 */
+.checkboxCell {
+  width: 40px;
+  text-align: center !important;
+  padding: 11px 8px !important;
+}
+
+/* 선택된 행 */
+.selectedRow {
+  background-color: #fef3c7 !important;
+}
+
+/* 삭제 확인 모달 */
+.confirmOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirmDialog {
+  background: white;
+  border-radius: 12px;
+  padding: 28px 32px;
+  min-width: 320px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.confirmMessage {
+  font-size: 15px;
+  color: #1e293b;
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.confirmButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.confirmCancelButton {
+  padding: 8px 24px;
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.confirmCancelButton:hover {
+  background-color: #e2e8f0;
+}
+
+.confirmDeleteButton {
+  padding: 8px 24px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.confirmDeleteButton:hover {
+  background-color: #dc2626;
+}

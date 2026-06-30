@@ -7,6 +7,8 @@ import {
   getElectrodeHistory,
   importElectrodeMaterials,
   downloadElectrodeExcel,
+  deleteElectrodeHistories,
+  deleteAllElectrodeHistories,
 } from '../../../../api/stock/material/ElectrodeMaterialService';
 import type { ElectrodeMaterial, MaterialHistory } from './types';
 import AddMaterialModal from './AddMaterialModal';
@@ -49,6 +51,8 @@ export default function ElectrodeList() {
   const [totalPages, setTotalPages] = useState(1);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [coaMaterial, setCoaMaterial] = useState<ElectrodeMaterial | null>(null);
+  const [selectedHistoryIds, setSelectedHistoryIds] = useState<Set<number>>(new Set());
+  const [showDeleteHistoryConfirm, setShowDeleteHistoryConfirm] = useState<'selected' | 'all' | null>(null);
 
   const loadMaterials = async (includeZero: boolean = false) => {
     try {
@@ -79,8 +83,52 @@ export default function ElectrodeList() {
   const handleShowHistoryChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setShowHistory(checked);
+    setSelectedHistoryIds(new Set());
     if (checked && histories.length === 0) {
       await loadHistory(1);
+    }
+  };
+
+  const handleToggleHistorySelect = (id: number) => {
+    setSelectedHistoryIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleToggleSelectAll = () => {
+    if (selectedHistoryIds.size === histories.length) {
+      setSelectedHistoryIds(new Set());
+    } else {
+      setSelectedHistoryIds(new Set(histories.map(h => h.id)));
+    }
+  };
+
+  const handleDeleteSelectedHistories = async () => {
+    try {
+      await deleteElectrodeHistories(Array.from(selectedHistoryIds));
+      setSelectedHistoryIds(new Set());
+      setShowDeleteHistoryConfirm(null);
+      await loadHistory(1);
+    } catch (err) {
+      console.error('이력 삭제 실패:', err);
+      alert(`이력 삭제에 실패했습니다.\n${getErrorMessage(err)}`);
+    }
+  };
+
+  const handleDeleteAllHistories = async () => {
+    try {
+      await deleteAllElectrodeHistories();
+      setSelectedHistoryIds(new Set());
+      setShowDeleteHistoryConfirm(null);
+      setHistories([]);
+      setCurrentPage(1);
+      setTotalPages(1);
+    } catch (err) {
+      console.error('전체 이력 삭제 실패:', err);
+      alert(`이력 삭제에 실패했습니다.\n${getErrorMessage(err)}`);
     }
   };
 
@@ -279,9 +327,38 @@ export default function ElectrodeList() {
         )
       ) : (
         <>
+          <div className={styles.historyToolbar}>
+            <div className={styles.historyActions}>
+              {selectedHistoryIds.size > 0 && (
+                <span className={styles.historySelectedInfo}>{selectedHistoryIds.size}개 선택됨</span>
+              )}
+              <button
+                className={styles.deleteSelectedButton}
+                onClick={() => setShowDeleteHistoryConfirm('selected')}
+                disabled={selectedHistoryIds.size === 0}
+              >
+                선택 삭제
+              </button>
+              <button
+                className={styles.deleteAllButton}
+                onClick={() => setShowDeleteHistoryConfirm('all')}
+                disabled={histories.length === 0}
+              >
+                전체 삭제
+              </button>
+            </div>
+          </div>
           <table className={styles.historyTable}>
             <thead>
               <tr>
+                <th className={styles.checkboxCell}>
+                  <input
+                    type='checkbox'
+                    className={styles.checkbox}
+                    checked={histories.length > 0 && selectedHistoryIds.size === histories.length}
+                    onChange={handleToggleSelectAll}
+                  />
+                </th>
                 <th>날짜</th>
                 <th>제품명</th>
                 <th>Lot No.</th>
@@ -292,7 +369,15 @@ export default function ElectrodeList() {
             <tbody>
               {histories.length > 0 ? (
                 histories.map(history => (
-                  <tr key={history.id}>
+                  <tr key={history.id} className={selectedHistoryIds.has(history.id) ? styles.selectedRow : ''}>
+                    <td className={styles.checkboxCell}>
+                      <input
+                        type='checkbox'
+                        className={styles.checkbox}
+                        checked={selectedHistoryIds.has(history.id)}
+                        onChange={() => handleToggleHistorySelect(history.id)}
+                      />
+                    </td>
                     <td>{new Date(history.createdAt).toLocaleString('ko-KR')}</td>
                     <td>{history.material?.name || '-'}</td>
                     <td>{history.material?.lotNo || '-'}</td>
@@ -304,7 +389,7 @@ export default function ElectrodeList() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className={styles.emptyMessage}>
+                  <td colSpan={6} className={styles.emptyMessage}>
                     입/출고 이력이 없습니다.
                   </td>
                 </tr>
@@ -322,6 +407,31 @@ export default function ElectrodeList() {
               <button className={styles.pageButton} onClick={handleNextPage} disabled={currentPage === totalPages}>
                 다음
               </button>
+            </div>
+          )}
+          {showDeleteHistoryConfirm && (
+            <div className={styles.confirmOverlay}>
+              <div className={styles.confirmDialog}>
+                <p className={styles.confirmMessage}>
+                  {showDeleteHistoryConfirm === 'all'
+                    ? '입/출고 이력을 전체 삭제하시겠습니까?'
+                    : `선택한 ${selectedHistoryIds.size}개의 이력을 삭제하시겠습니까?`}
+                </p>
+                <div className={styles.confirmButtons}>
+                  <button
+                    className={styles.confirmCancelButton}
+                    onClick={() => setShowDeleteHistoryConfirm(null)}
+                  >
+                    취소
+                  </button>
+                  <button
+                    className={styles.confirmDeleteButton}
+                    onClick={showDeleteHistoryConfirm === 'all' ? handleDeleteAllHistories : handleDeleteSelectedHistories}
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </>

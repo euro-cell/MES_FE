@@ -98,6 +98,19 @@ export const importElectrodeMaterials = async (
   }
 };
 
+export const deleteElectrodeHistories = async (ids: number[]): Promise<void> => {
+  await axios.delete(`${API_BASE}/material/history/electrode`, {
+    data: { ids },
+    withCredentials: true,
+  });
+};
+
+export const deleteAllElectrodeHistories = async (): Promise<void> => {
+  await axios.delete(`${API_BASE}/material/history/electrode/all`, {
+    withCredentials: true,
+  });
+};
+
 /** 전극 자재 엑셀 다운로드 */
 export const downloadElectrodeExcel = async (): Promise<void> => {
   const res = await axios.get(`${API_BASE}/material/electrode/export`, {
