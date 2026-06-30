@@ -69,6 +69,7 @@ export interface IQCFile {
   fileType: string;       // PSD_DOC 등
   fileName: string;       // 원본 파일명
   filePath?: string;
+  fileUrl?: string;
 }
 
 /** PSD raw data 항목 */

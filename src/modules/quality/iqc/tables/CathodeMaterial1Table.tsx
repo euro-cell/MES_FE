@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
-import type { IQCItem, IQCResult, IQCCoaRef, IQCPsdData } from '../IQCTypes';
+import type { IQCItem, IQCResult, IQCCoaRef, IQCPsdData, IQCFile } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
 import { uploadIQCImages, deleteIQCImage, updateIQCImageLabel, uploadIQCFile, deleteIQCFile } from '../../../../api/quality/IQCService';
 import { getErrorMessage } from '../../../../api/errorHandler';
@@ -104,7 +104,7 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
   const [psdData, setPsdData] = useState<IQCPsdData[]>([]);
   const [psdRefLabels, setPsdRefLabels] = useState<string[]>(['', '']);
   const [semRefLabels, setSemRefLabels] = useState<string[]>(['', '', '']);
-  const [psdFiles, setPsdFiles] = useState<{ id?: number; fileName: string; filePath?: string; fileUrl?: string }[]>([]);
+  const [psdFiles, setPsdFiles] = useState<IQCFile[]>([]);
   const [uploadingPsdFile, setUploadingPsdFile] = useState(false);
 
   useEffect(() => {
@@ -308,8 +308,9 @@ const CathodeMaterial1Table: React.FC<CathodeMaterial1TableProps> = ({ data, onS
     setUploadingPsdFile(true);
     try {
       for (const file of Array.from(files)) {
+        const localUrl = URL.createObjectURL(file);
         const uploaded = await uploadIQCFile(data.id, 'PSD_DOC', file);
-        setPsdFiles((prev) => [...prev, uploaded]);
+        setPsdFiles((prev) => [...prev, { ...uploaded, fileUrl: uploaded.fileUrl ?? localUrl }]);
       }
     } catch (err) { alert(getErrorMessage(err, '파일 업로드에 실패했습니다.')); }
     finally { setUploadingPsdFile(false); }
