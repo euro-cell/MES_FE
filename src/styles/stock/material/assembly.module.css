@@ -226,9 +226,21 @@
 /* 이력 툴바 */
 .historyToolbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   padding: 8px 4px;
+}
+
+.historyNotice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #3b82f6;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 6px 12px;
 }
 
 .historySelectedInfo {

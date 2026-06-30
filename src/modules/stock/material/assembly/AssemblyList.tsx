@@ -328,6 +328,7 @@ export default function AssemblyList() {
       ) : (
         <>
           <div className={styles.historyToolbar}>
+            <span className={styles.historyNotice}>ℹ️ 생성일 기준 6개월이 경과한 이력은 자동으로 삭제됩니다.</span>
             <div className={styles.historyActions}>
               {selectedHistoryIds.size > 0 && (
                 <span className={styles.historySelectedInfo}>{selectedHistoryIds.size}개 선택됨</span>
