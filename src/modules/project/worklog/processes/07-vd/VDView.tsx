@@ -45,6 +45,10 @@ export default function VdView() {
           plant: data.plant,
           shift: data.shift,
 
+          // 섹션2 - 전극 구분
+          upperElectrode: data.upperElectrode,
+          lowerElectrode: data.lowerElectrode,
+
           // 섹션2 - LOT (오븐번호×층번호)
           upperLot11: data.upperLot11,
           upperLot12: data.upperLot12,
