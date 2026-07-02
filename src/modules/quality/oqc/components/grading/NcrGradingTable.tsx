@@ -1,5 +1,5 @@
-import styles from '../../../../styles/quality/oqc/OQCTable.module.css';
-import type { GradingCell } from '../../../../api/quality/OQCService';
+import styles from '../../../../../styles/quality/oqc/OQCTable.module.css';
+import type { GradingCell } from '../../../../../api/quality/OQCService';
 
 interface NcrGradingTableProps {
   rows: GradingCell[];

@@ -1,19 +1,20 @@
-import DistributionChart from '../../lqc/components/formation/DistributionChart';
+import DistributionChart from '../../../lqc/components/formation/DistributionChart';
 
 const BINS: number[] = [];
 for (let i = 0; i <= 40; i++) {
   BINS.push(parseFloat((2.160 + i * 0.001).toFixed(3)));
 }
 
-interface Ocv3DistChartProps {
-  ocv3Values: number[];
+interface Ocv4DistChartProps {
+  ocv4Values: number[];
   lsl?: number;
+  usl?: number;
 }
 
-export default function Ocv3DistChart({ ocv3Values, lsl }: Ocv3DistChartProps) {
+export default function Ocv4DistChart({ ocv4Values, lsl, usl }: Ocv4DistChartProps) {
   const frequencies = BINS.map((bin, i) => {
     const lower = i === 0 ? -Infinity : BINS[i - 1];
-    return ocv3Values.filter(v => v > lower && v <= bin).length;
+    return ocv4Values.filter(v => v > lower && v <= bin).length;
   });
 
   const data = BINS.map((bin, i) => ({ x: bin, y: frequencies[i] }));
@@ -22,7 +23,7 @@ export default function Ocv3DistChart({ ocv3Values, lsl }: Ocv3DistChartProps) {
 
   return (
     <DistributionChart
-      title="출하충전 OCV3 분포"
+      title="출하보관(1개월) OCV4 분포"
       data={data}
       xMin={2.18}
       xMax={2.20}
@@ -33,6 +34,7 @@ export default function Ocv3DistChart({ ocv3Values, lsl }: Ocv3DistChartProps) {
       yLabel="빈도수(EA)"
       xLabel="OCV(V)"
       lsl={lsl}
+      usl={usl}
     />
   );
 }

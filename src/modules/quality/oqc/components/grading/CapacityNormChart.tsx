@@ -1,4 +1,4 @@
-import DistributionChart from '../../lqc/components/formation/DistributionChart';
+import DistributionChart from '../../../lqc/components/formation/DistributionChart';
 
 const BINS = [
   35.0, 35.2, 35.4, 35.6, 35.9, 36.0, 36.2, 36.4, 36.6, 36.8,
