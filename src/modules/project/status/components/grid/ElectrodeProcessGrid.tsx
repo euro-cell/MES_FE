@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '../../../../../styles/project/status/ProductionStatusGrid.module.css';
-import { PROCESS_NAME_MAP, PROCESS_UNIT_MAP, CHANGE_BUTTON_STYLE } from './constants';
+import { PROCESS_NAME_MAP, PROCESS_UNIT_MAP, CHANGE_BUTTON_STYLE, GOOD_CELL_STYLE, GOOD_TOTAL_CELL_STYLE } from './constants';
 import type { ProcessData, DayData, ProcessGridProps } from './types';
 
 interface ElectrodeProcessGridProps extends ProcessGridProps {
@@ -29,15 +29,18 @@ export default function ElectrodeProcessGrid({
   const totalNG = processData.data.reduce((sum, item) => sum + (item.ng || 0), 0);
   const totalInput = processData.total.totalOutput + totalNG;
   const averageYield = totalInput > 0 ? (processData.total.totalOutput / totalInput) * 100 : 0;
+  const totalGood = processData.total.totalOutput - totalNG;
 
-  // Mixing과 Coating Single만 회색 배경 적용
+  // Mixing과 Coating Single만 회색 배경 적용 (양품 행 미표시)
   const shouldApplyGrayBg = processKey === 'mixing' || processKey === 'coatingSingle';
+  const showGoodRow = !shouldApplyGrayBg;
+  const totalRowSpan = showGoodRow ? 4 : 3;
 
   return (
     <React.Fragment>
       {/* 생산량 행 */}
       <tr>
-        <td rowSpan={3} className={styles.processHeader}>
+        <td rowSpan={totalRowSpan} className={styles.processHeader}>
           {processName}
         </td>
         <td className={styles.rowLabel} colSpan={hasSubTypeProcess ? 2 : 1}>
@@ -49,16 +52,23 @@ export default function ElectrodeProcessGrid({
           return <td key={day}>{dayData?.output ? dayData.output.toLocaleString() : ''}</td>;
         })}
         <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.totalOutput.toLocaleString()}</td>
-        <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
-          {processData.total.cumulativeOutput !== null &&
-          processData.total.cumulativeOutput !== undefined
-            ? processData.total.cumulativeOutput.toLocaleString()
-            : ''}
+        <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+          <div>
+            {processData.total.cumulativeOutput !== null &&
+            processData.total.cumulativeOutput !== undefined
+              ? processData.total.cumulativeOutput.toLocaleString()
+              : ''}
+          </div>
+          {showGoodRow && (
+            <div style={{ fontSize: '11px', color: '#6b7280' }}>
+              {`양품 ${totalGood.toLocaleString()}`}
+            </div>
+          )}
         </td>
-        <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
+        <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
           {processData.total.progress !== null ? `${processData.total.progress}%` : ''}
         </td>
-        <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
+        <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
           <div>
             {processData.total.targetQuantity !== null
               ? processData.total.targetQuantity.toLocaleString()
@@ -71,6 +81,27 @@ export default function ElectrodeProcessGrid({
           )}
         </td>
       </tr>
+
+      {/* 양품 행 (mixing, coatingSingle 제외) */}
+      {showGoodRow && (
+        <tr>
+          <td className={styles.rowLabel} colSpan={hasSubTypeProcess ? 2 : 1}>
+            양품
+          </td>
+          {Array.from({ length: daysInMonth }, (_, i) => {
+            const day = i + 1;
+            const dayData = dailyDataMap[day];
+            const good =
+              dayData?.output !== undefined && dayData?.ng !== null && dayData?.ng !== undefined
+                ? dayData.output - dayData.ng
+                : dayData?.output
+                  ? dayData.output
+                  : null;
+            return <td key={day} style={GOOD_CELL_STYLE}>{good !== null ? good.toLocaleString() : ''}</td>;
+          })}
+          <td style={GOOD_TOTAL_CELL_STYLE}>{totalGood.toLocaleString()}</td>
+        </tr>
+      )}
 
       {/* NG 행 */}
       <tr>

@@ -6,6 +6,8 @@ import {
   FORMING_SUBTYPES,
   FORMING_SUBTYPE_LABELS,
   CHANGE_BUTTON_STYLE,
+  GOOD_CELL_STYLE,
+  GOOD_TOTAL_CELL_STYLE,
 } from './constants';
 import type { FormingProcessData, FormingSubTypeDayData, ProcessGridProps } from './types';
 
@@ -43,7 +45,7 @@ export default function FormingProcessGrid({
           // 첫 번째 서브타입 (Cutting) - 진행률과 목표수량은 1칸씩
           return (
             <tr key={`${processKey}-output-${subType}`}>
-              <td rowSpan={9} className={styles.processHeader}>
+              <td rowSpan={10} className={styles.processHeader}>
                 {processName}
               </td>
               <td rowSpan={4} className={styles.rowLabel}>
@@ -56,16 +58,24 @@ export default function FormingProcessGrid({
                 return <td key={day}>{dayData?.output ? dayData.output.toLocaleString() : ''}</td>;
               })}
               <td style={{ borderLeft: '2px solid #374151' }}>{subData.total.totalOutput.toLocaleString()}</td>
-              <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
-                {processData.cumulativeOutput !== null &&
-                processData.cumulativeOutput !== undefined
-                  ? processData.cumulativeOutput.toLocaleString()
-                  : ''}
+              <td rowSpan={10} style={{ borderBottom: '2px solid #9ca3af' }}>
+                <div>
+                  {processData.cumulativeOutput !== null &&
+                  processData.cumulativeOutput !== undefined
+                    ? processData.cumulativeOutput.toLocaleString()
+                    : ''}
+                </div>
+                <div style={{ fontSize: '11px', color: '#6b7280' }}>
+                  {`양품 ${(
+                    FORMING_SUBTYPES.reduce((s, st) => s + processData[st].total.totalOutput, 0) -
+                    FORMING_SUBTYPES.reduce((s, st) => s + (processData[st].total.totalNg ?? 0), 0)
+                  ).toLocaleString()}`}
+                </div>
               </td>
-              <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
+              <td rowSpan={10} style={{ borderBottom: '2px solid #9ca3af' }}>
                 {processData.progress !== null ? `${processData.progress}%` : ''}
               </td>
-              <td rowSpan={9} style={{ borderBottom: '2px solid #9ca3af' }}>
+              <td rowSpan={10} style={{ borderBottom: '2px solid #9ca3af' }}>
                 <div>
                   {processData.targetQuantity !== null
                     ? processData.targetQuantity.toLocaleString()
@@ -93,6 +103,38 @@ export default function FormingProcessGrid({
         );
       })}
 
+      {/* 양품 - 단일 행 (서브타입 합산) */}
+      <tr key={`${processKey}-good`}>
+        <td className={styles.rowLabel} colSpan={2}>
+          양품
+        </td>
+        {Array.from({ length: daysInMonth }, (_, i) => {
+          const day = i + 1;
+          let totalOutput = 0;
+          let totalNg = 0;
+          let hasData = false;
+          FORMING_SUBTYPES.forEach(subType => {
+            const subDailyMap: Record<number, { output: number; ng: number | null }> = {};
+            processData[subType].data.forEach(item => { subDailyMap[item.day] = item; });
+            const d = subDailyMap[day];
+            if (d && d.output) {
+              hasData = true;
+              totalOutput += d.output;
+              totalNg += d.ng ?? 0;
+            }
+          });
+          const good = hasData ? totalOutput - totalNg : null;
+          return <td key={day} style={GOOD_CELL_STYLE}>{good !== null ? good.toLocaleString() : ''}</td>;
+        })}
+        <td style={GOOD_TOTAL_CELL_STYLE}>
+          {(() => {
+            const totalOut = FORMING_SUBTYPES.reduce((s, st) => s + processData[st].total.totalOutput, 0);
+            const totalNg = FORMING_SUBTYPES.reduce((s, st) => s + (processData[st].total.totalNg ?? 0), 0);
+            return (totalOut - totalNg).toLocaleString();
+          })()}
+        </td>
+      </tr>
+
       {/* NG - 4개 서브타입 */}
       {FORMING_SUBTYPES.map((subType, idx) => {
         const subData = processData[subType];
@@ -117,9 +159,7 @@ export default function FormingProcessGrid({
                   </td>
                 );
               })}
-              <td
-                style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}
-              >
+              <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
                 {subData.total.totalNg?.toLocaleString() ?? ''}
               </td>
             </tr>

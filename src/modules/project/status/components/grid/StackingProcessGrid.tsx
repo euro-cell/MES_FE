@@ -6,6 +6,8 @@ import {
   STACKING_NCR_SUBTYPES,
   STACKING_NCR_SUBTYPE_LABELS,
   CHANGE_BUTTON_STYLE,
+  GOOD_CELL_STYLE,
+  GOOD_TOTAL_CELL_STYLE,
 } from './constants';
 import type { StackingProcessData, StackingDayData, ProcessGridProps } from './types';
 
@@ -33,7 +35,7 @@ export default function StackingProcessGrid({
     <React.Fragment>
       {/* 생산량 행 */}
       <tr>
-        <td rowSpan={7} className={styles.processHeader}>
+        <td rowSpan={8} className={styles.processHeader}>
           {processName}
         </td>
         <td className={styles.rowLabel} colSpan={2}>
@@ -45,16 +47,23 @@ export default function StackingProcessGrid({
           return <td key={day}>{dayData?.output ? dayData.output.toLocaleString() : ''}</td>;
         })}
         <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.totalOutput.toLocaleString()}</td>
-        <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
-          {processData.total.cumulativeOutput !== null &&
-          processData.total.cumulativeOutput !== undefined
-            ? processData.total.cumulativeOutput.toLocaleString()
-            : ''}
+        <td rowSpan={8} style={{ borderBottom: '2px solid #9ca3af' }}>
+          <div>
+            {processData.total.cumulativeOutput !== null &&
+            processData.total.cumulativeOutput !== undefined
+              ? processData.total.cumulativeOutput.toLocaleString()
+              : ''}
+          </div>
+          <div style={{ fontSize: '11px', color: '#6b7280' }}>
+            {processData.total.totalNg !== null
+              ? `양품 ${(processData.total.totalOutput - processData.total.totalNg).toLocaleString()}`
+              : `양품 ${processData.total.totalOutput.toLocaleString()}`}
+          </div>
         </td>
-        <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
+        <td rowSpan={8} style={{ borderBottom: '2px solid #9ca3af' }}>
           {processData.total.progress !== null ? `${processData.total.progress}%` : ''}
         </td>
-        <td rowSpan={7} style={{ borderBottom: '2px solid #9ca3af' }}>
+        <td rowSpan={8} style={{ borderBottom: '2px solid #9ca3af' }}>
           <div>
             {processData.total.targetQuantity !== null
               ? processData.total.targetQuantity.toLocaleString()
@@ -65,6 +74,29 @@ export default function StackingProcessGrid({
               변경
             </button>
           )}
+        </td>
+      </tr>
+
+      {/* 양품 행 */}
+      <tr>
+        <td className={styles.rowLabel} colSpan={2}>
+          양품
+        </td>
+        {Array.from({ length: daysInMonth }, (_, i) => {
+          const day = i + 1;
+          const dayData = dailyDataMap[day];
+          const good =
+            dayData?.output !== undefined && dayData?.ng !== null && dayData?.ng !== undefined
+              ? dayData.output - dayData.ng
+              : dayData?.output
+                ? dayData.output
+                : null;
+          return <td key={day} style={GOOD_CELL_STYLE}>{good !== null ? good.toLocaleString() : ''}</td>;
+        })}
+        <td style={GOOD_TOTAL_CELL_STYLE}>
+          {processData.total.totalNg !== null
+            ? (processData.total.totalOutput - processData.total.totalNg).toLocaleString()
+            : processData.total.totalOutput.toLocaleString()}
         </td>
       </tr>
 

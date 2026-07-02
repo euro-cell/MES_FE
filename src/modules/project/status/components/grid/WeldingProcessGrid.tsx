@@ -8,6 +8,8 @@ import {
   MAIN_WELDING_NCR_SUBTYPES,
   MAIN_WELDING_NCR_SUBTYPE_LABELS,
   CHANGE_BUTTON_STYLE,
+  GOOD_CELL_STYLE,
+  GOOD_TOTAL_CELL_STYLE,
 } from './constants';
 import type { WeldingProcessData, WeldingDayData, ProcessGridProps } from './types';
 
@@ -38,7 +40,7 @@ export default function WeldingProcessGrid({
     ? PRE_WELDING_NCR_SUBTYPE_LABELS
     : MAIN_WELDING_NCR_SUBTYPE_LABELS;
   const ncrRowCount = ncrSubtypes.length;
-  const totalRowSpan = 3 + ncrRowCount; // 생산량 + NG + NCR 서브타입들 + 수율
+  const totalRowSpan = 4 + ncrRowCount; // 생산량 + 양품 + NG + NCR 서브타입들 + 수율
 
   return (
     <React.Fragment>
@@ -57,10 +59,17 @@ export default function WeldingProcessGrid({
         })}
         <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.totalOutput.toLocaleString()}</td>
         <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
-          {processData.total.cumulativeOutput !== null &&
-          processData.total.cumulativeOutput !== undefined
-            ? processData.total.cumulativeOutput.toLocaleString()
-            : ''}
+          <div>
+            {processData.total.cumulativeOutput !== null &&
+            processData.total.cumulativeOutput !== undefined
+              ? processData.total.cumulativeOutput.toLocaleString()
+              : ''}
+          </div>
+          <div style={{ fontSize: '11px', color: '#6b7280' }}>
+            {processData.total.totalNg !== null
+              ? `양품 ${(processData.total.totalOutput - processData.total.totalNg).toLocaleString()}`
+              : `양품 ${processData.total.totalOutput.toLocaleString()}`}
+          </div>
         </td>
         <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
           {processData.total.progress !== null ? `${processData.total.progress}%` : ''}
@@ -76,6 +85,29 @@ export default function WeldingProcessGrid({
               변경
             </button>
           )}
+        </td>
+      </tr>
+
+      {/* 양품 행 */}
+      <tr>
+        <td className={styles.rowLabel} colSpan={2}>
+          양품
+        </td>
+        {Array.from({ length: daysInMonth }, (_, i) => {
+          const day = i + 1;
+          const dayData = dailyDataMap[day];
+          const good =
+            dayData?.output !== undefined && dayData?.ng !== null && dayData?.ng !== undefined
+              ? dayData.output - dayData.ng
+              : dayData?.output
+                ? dayData.output
+                : null;
+          return <td key={day} style={GOOD_CELL_STYLE}>{good !== null ? good.toLocaleString() : ''}</td>;
+        })}
+        <td style={GOOD_TOTAL_CELL_STYLE}>
+          {processData.total.totalNg !== null
+            ? (processData.total.totalOutput - processData.total.totalNg).toLocaleString()
+            : processData.total.totalOutput.toLocaleString()}
         </td>
       </tr>
 

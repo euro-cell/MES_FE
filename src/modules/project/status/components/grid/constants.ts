@@ -151,6 +151,17 @@ export const FORMATION_PROCESS_KEYS = [
 ] as const;
 
 // 변경 버튼 스타일
+export const GOOD_CELL_STYLE: React.CSSProperties = {
+  color: '#3b82f6',
+  fontWeight: 600,
+};
+
+export const GOOD_TOTAL_CELL_STYLE: React.CSSProperties = {
+  color: '#3b82f6',
+  fontWeight: 600,
+  borderLeft: '2px solid #374151',
+};
+
 export const CHANGE_BUTTON_STYLE: React.CSSProperties = {
   marginTop: '4px',
   padding: '2px 8px',

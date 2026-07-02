@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '../../../../../styles/project/status/ProductionStatusGrid.module.css';
-import { PROCESS_NAME_MAP, PROCESS_UNIT_MAP, CHANGE_BUTTON_STYLE } from './constants';
+import { PROCESS_NAME_MAP, PROCESS_UNIT_MAP, CHANGE_BUTTON_STYLE, GOOD_CELL_STYLE, GOOD_TOTAL_CELL_STYLE } from './constants';
 import type { VDProcessData, VDDayData, ProcessGridProps } from './types';
 
 interface VDProcessGridProps extends ProcessGridProps {
@@ -23,11 +23,15 @@ export default function VDProcessGrid({
     dailyDataMap[item.day] = item;
   });
 
+  // 행 순서: 생산량C(1) / 생산량A(2) / 양품C(3) / 양품A(4) / NG C(5) / NG A(6) / 수율C(7) / 수율A(8)
+  // Cathode 전체합계: 행1 rowSpan=4 (1~4)
+  // Anode 전체합계: 행5 rowSpan=4 (5~8)
+
   return (
     <React.Fragment>
-      {/* 생산량 - Cathode */}
+      {/* 생산량 - Cathode (행1) */}
       <tr>
-        <td rowSpan={6} className={styles.processHeader}>
+        <td rowSpan={8} className={styles.processHeader}>
           {processName}
         </td>
         <td rowSpan={2} className={styles.rowLabel}>
@@ -40,8 +44,8 @@ export default function VDProcessGrid({
           return <td key={day}>{dayData?.cathodeOutput ? dayData.cathodeOutput.toLocaleString() : ''}</td>;
         })}
         <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.cathode.totalOutput.toLocaleString()}</td>
-        {/* VD 전체 합계 - Cathode (3행 차지) */}
-        <td rowSpan={3}>
+        {/* 전체 합계 - Cathode (행1~4) */}
+        <td rowSpan={4}>
           <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
           <div>
             {processData.total.cathode.cumulativeOutput !== null &&
@@ -49,9 +53,14 @@ export default function VDProcessGrid({
               ? processData.total.cathode.cumulativeOutput.toLocaleString()
               : ''}
           </div>
+          <div style={{ fontSize: '11px', color: '#6b7280' }}>
+            {processData.total.cathode.totalNg !== null
+              ? `양품 ${(processData.total.cathode.totalOutput - processData.total.cathode.totalNg).toLocaleString()}`
+              : `양품 ${processData.total.cathode.totalOutput.toLocaleString()}`}
+          </div>
         </td>
-        {/* VD 진행률 - Cathode (3행 차지) */}
-        <td rowSpan={3}>
+        {/* 진행률 - Cathode (행1~4) */}
+        <td rowSpan={4}>
           <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
           <div>
             {processData.total.cathode.progress !== null
@@ -59,8 +68,8 @@ export default function VDProcessGrid({
               : ''}
           </div>
         </td>
-        {/* VD 목표수량 - Cathode (3행 차지) */}
-        <td rowSpan={3}>
+        {/* 목표수량 - Cathode (행1~4) */}
+        <td rowSpan={4}>
           <div style={{ fontSize: '11px', color: '#6b7280' }}>Cathode</div>
           <div>
             {processData.total.cathode.targetQuantity !== null
@@ -74,7 +83,8 @@ export default function VDProcessGrid({
           )}
         </td>
       </tr>
-      {/* 생산량 - Anode */}
+
+      {/* 생산량 - Anode (행2) */}
       <tr>
         <td className={styles.subTypeLabel}>Anode</td>
         {Array.from({ length: daysInMonth }, (_, i) => {
@@ -85,7 +95,56 @@ export default function VDProcessGrid({
         <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.anode.totalOutput.toLocaleString()}</td>
       </tr>
 
-      {/* NG - Cathode */}
+      {/* 양품 - Cathode (행3) */}
+      <tr>
+        <td rowSpan={2} className={styles.rowLabel}>
+          양품
+        </td>
+        <td className={styles.subTypeLabel}>Cathode</td>
+        {Array.from({ length: daysInMonth }, (_, i) => {
+          const day = i + 1;
+          const dayData = dailyDataMap[day];
+          const good =
+            dayData?.cathodeOutput !== undefined &&
+            dayData?.cathodeNg !== null &&
+            dayData?.cathodeNg !== undefined
+              ? dayData.cathodeOutput - dayData.cathodeNg
+              : dayData?.cathodeOutput
+                ? dayData.cathodeOutput
+                : null;
+          return <td key={day} style={GOOD_CELL_STYLE}>{good !== null ? good.toLocaleString() : ''}</td>;
+        })}
+        <td style={GOOD_TOTAL_CELL_STYLE}>
+          {processData.total.cathode.totalNg !== null
+            ? (processData.total.cathode.totalOutput - processData.total.cathode.totalNg).toLocaleString()
+            : processData.total.cathode.totalOutput.toLocaleString()}
+        </td>
+      </tr>
+
+      {/* 양품 - Anode (행4) */}
+      <tr>
+        <td className={styles.subTypeLabel}>Anode</td>
+        {Array.from({ length: daysInMonth }, (_, i) => {
+          const day = i + 1;
+          const dayData = dailyDataMap[day];
+          const good =
+            dayData?.anodeOutput !== undefined &&
+            dayData?.anodeNg !== null &&
+            dayData?.anodeNg !== undefined
+              ? dayData.anodeOutput - dayData.anodeNg
+              : dayData?.anodeOutput
+                ? dayData.anodeOutput
+                : null;
+          return <td key={day} style={GOOD_CELL_STYLE}>{good !== null ? good.toLocaleString() : ''}</td>;
+        })}
+        <td style={GOOD_TOTAL_CELL_STYLE}>
+          {processData.total.anode.totalNg !== null
+            ? (processData.total.anode.totalOutput - processData.total.anode.totalNg).toLocaleString()
+            : processData.total.anode.totalOutput.toLocaleString()}
+        </td>
+      </tr>
+
+      {/* NG - Cathode (행5) */}
       <tr>
         <td rowSpan={2} className={styles.rowLabel}>
           NG
@@ -105,24 +164,8 @@ export default function VDProcessGrid({
         <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
           {processData.total.cathode.totalNg !== null ? processData.total.cathode.totalNg.toLocaleString() : ''}
         </td>
-      </tr>
-      {/* NG - Anode */}
-      <tr>
-        <td className={styles.subTypeLabel}>Anode</td>
-        {Array.from({ length: daysInMonth }, (_, i) => {
-          const day = i + 1;
-          const dayData = dailyDataMap[day];
-          return (
-            <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
-              {dayData?.anodeNg !== null && dayData?.anodeNg !== undefined ? dayData.anodeNg.toLocaleString() : ''}
-            </td>
-          );
-        })}
-        <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
-          {processData.total.anode.totalNg !== null ? processData.total.anode.totalNg.toLocaleString() : ''}
-        </td>
-        {/* VD 전체 합계 - Anode (3행 차지) */}
-        <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
+        {/* 전체 합계 - Anode (행5~8) */}
+        <td rowSpan={4} style={{ borderBottom: '2px solid #9ca3af' }}>
           <div style={{ fontSize: '11px', color: '#6b7280' }}>Anode</div>
           <div>
             {processData.total.anode.cumulativeOutput !== null &&
@@ -130,9 +173,14 @@ export default function VDProcessGrid({
               ? processData.total.anode.cumulativeOutput.toLocaleString()
               : ''}
           </div>
+          <div style={{ fontSize: '11px', color: '#6b7280' }}>
+            {processData.total.anode.totalNg !== null
+              ? `양품 ${(processData.total.anode.totalOutput - processData.total.anode.totalNg).toLocaleString()}`
+              : `양품 ${processData.total.anode.totalOutput.toLocaleString()}`}
+          </div>
         </td>
-        {/* VD 진행률 - Anode (3행 차지) */}
-        <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
+        {/* 진행률 - Anode (행5~8) */}
+        <td rowSpan={4} style={{ borderBottom: '2px solid #9ca3af' }}>
           <div style={{ fontSize: '11px', color: '#6b7280' }}>Anode</div>
           <div>
             {processData.total.anode.progress !== null
@@ -140,8 +188,8 @@ export default function VDProcessGrid({
               : ''}
           </div>
         </td>
-        {/* VD 목표수량 - Anode (3행 차지) */}
-        <td rowSpan={3} style={{ borderBottom: '2px solid #9ca3af' }}>
+        {/* 목표수량 - Anode (행5~8) */}
+        <td rowSpan={4} style={{ borderBottom: '2px solid #9ca3af' }}>
           <div style={{ fontSize: '11px', color: '#6b7280' }}>Anode</div>
           <div>
             {processData.total.anode.targetQuantity !== null
@@ -156,7 +204,24 @@ export default function VDProcessGrid({
         </td>
       </tr>
 
-      {/* 수율 - Cathode */}
+      {/* NG - Anode (행6) */}
+      <tr>
+        <td className={styles.subTypeLabel}>Anode</td>
+        {Array.from({ length: daysInMonth }, (_, i) => {
+          const day = i + 1;
+          const dayData = dailyDataMap[day];
+          return (
+            <td key={day} style={{ color: '#ef4444', fontWeight: 500 }}>
+              {dayData?.anodeNg !== null && dayData?.anodeNg !== undefined ? dayData.anodeNg.toLocaleString() : ''}
+            </td>
+          );
+        })}
+        <td style={{ borderLeft: '2px solid #374151', color: '#ef4444', fontWeight: 500 }}>
+          {processData.total.anode.totalNg !== null ? processData.total.anode.totalNg.toLocaleString() : ''}
+        </td>
+      </tr>
+
+      {/* 수율 - Cathode (행7) */}
       <tr>
         <td rowSpan={2} className={styles.rowLabel} style={{ borderBottom: '2px solid #9ca3af' }}>
           수율(%)
@@ -179,7 +244,8 @@ export default function VDProcessGrid({
             : ''}
         </td>
       </tr>
-      {/* 수율 - Anode */}
+
+      {/* 수율 - Anode (행8) */}
       <tr>
         <td className={styles.subTypeLabel} style={{ borderBottom: '2px solid #9ca3af' }}>
           Anode
