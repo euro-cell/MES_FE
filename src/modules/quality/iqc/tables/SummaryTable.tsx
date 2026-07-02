@@ -1,10 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import summaryStyles from '../../../../styles/quality/iqc/SummaryTable.module.css';
-import type { IQCItem, IQCResult } from '../IQCTypes';
+import type { IQCItem, IQCResult, IQCSummary } from '../IQCTypes';
+import { getIQCSummary, updateIQCSummary } from '../../../../api/quality/IQCService';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 interface SummaryTableProps {
   items: IQCItem[];
+  projectId: number;
+  projectName: string;
 }
 
 interface DashboardRow {
@@ -85,14 +89,50 @@ function calcRowSpans(rows: DashboardRow[], key: keyof DashboardRow): number[] {
   return spans;
 }
 
-const REMARK_TEXT = `※ Reference data 비교 첨부 (직전 수입검사 결과)
-- 4M 변경 시 유사품 대체 전의 원부자재 수입검사 결과
-- 지속 사용 제품: 현재 Lot vs. 직전 입고 Lot
-- 재고품: IQC 재진행 후 신규 결과 vs. 직전 수입검사 결과
-- 재고품은 6개월 이내 수입검사 data 있을 경우 추가 IQC 보류`;
+const defaultSummary = (): IQCSummary => ({
+  modelName: '',
+  version: '',
+  lotNo: '',
+  usage: '',
+  manager: '',
+  specialNotes: '',
+  remark: '',
+});
 
-const SummaryTable: React.FC<SummaryTableProps> = ({ items }) => {
-  const [specialNotes, setSpecialNotes] = useState('');
+const SummaryTable: React.FC<SummaryTableProps> = ({ items, projectId, projectName }) => {
+  const [summary, setSummary] = useState<IQCSummary>(defaultSummary());
+  const [isEditing, setIsEditing] = useState(false);
+  const [editSummary, setEditSummary] = useState<IQCSummary>(defaultSummary());
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    getIQCSummary(projectId)
+      .then((data) => setSummary({ ...defaultSummary(), ...data }))
+      .catch((err) => console.error('IQC Summary 조회 실패:', err));
+  }, [projectId]);
+
+  const handleEdit = () => {
+    setEditSummary(summary);
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    setEditSummary(summary);
+    setIsEditing(false);
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const saved = await updateIQCSummary(projectId, editSummary);
+      setSummary({ ...defaultSummary(), ...saved });
+      setIsEditing(false);
+    } catch (err) {
+      alert(getErrorMessage(err, 'Summary 저장에 실패했습니다.'));
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const rows = useMemo(() => buildRows(items), [items]);
   const rowSpans품목 = calcRowSpans(rows, '품목');
@@ -109,6 +149,16 @@ const SummaryTable: React.FC<SummaryTableProps> = ({ items }) => {
         <div>
           <div className={styles.tableTitleRow}>
             <h3 className={styles.tableTitle}>■ 프로젝트 개요</h3>
+            {!isEditing ? (
+              <button className={styles.specButton} onClick={handleEdit}>수정</button>
+            ) : (
+              <>
+                <button className={styles.saveButton} onClick={handleSave} disabled={saving} style={{ marginRight: '8px' }}>
+                  {saving ? '저장 중...' : '저장'}
+                </button>
+                <button className={styles.cancelButton} onClick={handleCancel}>취소</button>
+              </>
+            )}
           </div>
           <table className={styles.iqcTable}>
             <colgroup>
@@ -116,18 +166,37 @@ const SummaryTable: React.FC<SummaryTableProps> = ({ items }) => {
               <col />
             </colgroup>
             <tbody>
-              <tr><td className={styles.itemCell}>프로젝트 명</td><td style={{ textAlign: 'left' }}>Navitas향 UFC 시제품</td></tr>
-              <tr><td className={styles.itemCell}>모델명</td><td style={{ textAlign: 'left' }}>UFC-L37C</td></tr>
-              <tr><td className={styles.itemCell}>Version</td><td style={{ textAlign: 'left' }}>V5.8</td></tr>
+              <tr><td className={styles.itemCell}>프로젝트 명</td><td style={{ textAlign: 'left' }}>{projectName}</td></tr>
+              <tr>
+                <td className={styles.itemCell}>모델명</td>
+                <td>{isEditing ? (
+                  <input type="text" value={editSummary.modelName ?? ''} onChange={(e) => setEditSummary({ ...editSummary, modelName: e.target.value })} className={styles.tableInput} placeholder="입력" />
+                ) : <span style={{ textAlign: 'left' }}>{summary.modelName || '-'}</span>}</td>
+              </tr>
+              <tr>
+                <td className={styles.itemCell}>Version</td>
+                <td>{isEditing ? (
+                  <input type="text" value={editSummary.version ?? ''} onChange={(e) => setEditSummary({ ...editSummary, version: e.target.value })} className={styles.tableInput} placeholder="입력" />
+                ) : <span style={{ textAlign: 'left' }}>{summary.version || '-'}</span>}</td>
+              </tr>
               <tr>
                 <td className={styles.itemCell}>Lot No.</td>
-                <td><input type="text" placeholder="입력" className={styles.tableInput} /></td>
+                <td>{isEditing ? (
+                  <input type="text" value={editSummary.lotNo ?? ''} onChange={(e) => setEditSummary({ ...editSummary, lotNo: e.target.value })} className={styles.tableInput} placeholder="입력" />
+                ) : <span style={{ textAlign: 'left' }}>{summary.lotNo || '-'}</span>}</td>
               </tr>
               <tr>
                 <td className={styles.itemCell}>사용처</td>
-                <td><input type="text" placeholder="입력" className={styles.tableInput} /></td>
+                <td>{isEditing ? (
+                  <input type="text" value={editSummary.usage ?? ''} onChange={(e) => setEditSummary({ ...editSummary, usage: e.target.value })} className={styles.tableInput} placeholder="입력" />
+                ) : <span style={{ textAlign: 'left' }}>{summary.usage || '-'}</span>}</td>
               </tr>
-              <tr><td className={styles.itemCell}>책임자</td><td style={{ textAlign: 'left' }}>심윤성 책임연구원</td></tr>
+              <tr>
+                <td className={styles.itemCell}>책임자</td>
+                <td>{isEditing ? (
+                  <input type="text" value={editSummary.manager ?? ''} onChange={(e) => setEditSummary({ ...editSummary, manager: e.target.value })} className={styles.tableInput} placeholder="입력" />
+                ) : <span style={{ textAlign: 'left' }}>{summary.manager || '-'}</span>}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -164,15 +233,38 @@ const SummaryTable: React.FC<SummaryTableProps> = ({ items }) => {
             <h3 className={styles.tableTitle}>■ 특이사항</h3>
           </div>
           <div className={styles.remarkBox}>
+            {isEditing ? (
+              <textarea
+                className={styles.remarkTextarea}
+                rows={4}
+                value={editSummary.specialNotes ?? ''}
+                onChange={(e) => setEditSummary({ ...editSummary, specialNotes: e.target.value })}
+                placeholder="특이사항을 입력하세요..."
+                style={{ minHeight: '100px' }}
+              />
+            ) : (
+              <pre className={styles.remarkContent} style={{ minHeight: '100px' }}>{summary.specialNotes || '특이사항 없음'}</pre>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Remark */}
+      <div>
+        <div className={styles.tableTitleRow}>
+          <h3 className={styles.tableTitle}>■ Remark</h3>
+        </div>
+        <div className={styles.remarkBox}>
+          {isEditing ? (
             <textarea
               className={styles.remarkTextarea}
-              rows={4}
-              value={specialNotes}
-              onChange={(e) => setSpecialNotes(e.target.value)}
-              placeholder="특이사항을 입력하세요..."
-              style={{ minHeight: '100px' }}
+              value={editSummary.remark ?? ''}
+              onChange={(e) => setEditSummary({ ...editSummary, remark: e.target.value })}
+              placeholder="Remark를 입력하세요..."
             />
-          </div>
+          ) : (
+            <pre className={styles.remarkContent}>{summary.remark || 'Remark 없음'}</pre>
+          )}
         </div>
       </div>
 
@@ -258,16 +350,6 @@ const SummaryTable: React.FC<SummaryTableProps> = ({ items }) => {
             })}
           </tbody>
         </table>
-      </div>
-
-      {/* Remark */}
-      <div>
-        <div className={styles.tableTitleRow}>
-          <h3 className={styles.tableTitle}>■ Remark</h3>
-        </div>
-        <div className={styles.remarkBox}>
-          <pre className={styles.remarkContent}>{REMARK_TEXT}</pre>
-        </div>
       </div>
 
     </div>

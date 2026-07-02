@@ -120,7 +120,7 @@ export default function IQCPage() {
 
     switch (menu) {
       case 'Summary':
-        return <SummaryTable items={iqcItems} />;
+        return <SummaryTable items={iqcItems} projectId={Number(projectId)} projectName={project.name} />;
       case 'CathodeMaterial1':
         return (
           <CathodeMaterial1Table

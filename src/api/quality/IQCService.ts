@@ -1,5 +1,5 @@
 import axios from '../axiosInstance';
-import type { IQCProject, IQCItem, IQCItemRequest, IQCImage, IQCFile } from '../../modules/quality/iqc/IQCTypes';
+import type { IQCProject, IQCItem, IQCItemRequest, IQCImage, IQCFile, IQCSummary } from '../../modules/quality/iqc/IQCTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -129,4 +129,23 @@ export const deleteIQCFile = async (fileId: number): Promise<void> => {
   await axios.delete(`${API_BASE}/quality/iqc/files/${fileId}`, {
     withCredentials: true,
   });
+};
+
+/** IQC Summary 조회 */
+export const getIQCSummary = async (projectId: number): Promise<IQCSummary> => {
+  const res = await axios.get(`${API_BASE}/quality/iqc/summary/${projectId}`, {
+    withCredentials: true,
+  });
+  return res.data;
+};
+
+/** IQC Summary 저장(upsert) */
+export const updateIQCSummary = async (
+  projectId: number,
+  data: IQCSummary
+): Promise<IQCSummary> => {
+  const res = await axios.put(`${API_BASE}/quality/iqc/summary/${projectId}`, data, {
+    withCredentials: true,
+  });
+  return res.data;
 };

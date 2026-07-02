@@ -103,3 +103,14 @@ export interface IQCItem {
 
 /** IQC 생성/수정 요청 바디 */
 export type IQCItemRequest = Omit<IQCItem, 'id' | 'isPassed'>;
+
+/** IQC Summary(프로젝트 개요/특이사항/Remark) */
+export interface IQCSummary {
+  modelName?: string | null;
+  version?: string | null;
+  lotNo?: string | null;
+  usage?: string | null;
+  manager?: string | null;
+  specialNotes?: string | null;
+  remark?: string | null;
+}
