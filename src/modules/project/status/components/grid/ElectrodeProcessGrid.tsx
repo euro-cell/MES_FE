@@ -31,8 +31,10 @@ export default function ElectrodeProcessGrid({
   const averageYield = totalInput > 0 ? (processData.total.totalOutput / totalInput) * 100 : 0;
   const totalGood = processData.total.totalOutput - totalNG;
 
-  // Mixing과 Coating Single만 회색 배경 적용 (양품 행 미표시)
-  const shouldApplyGrayBg = processKey === 'mixing' || processKey === 'coatingSingle';
+  // Mixing, Coating Single, Slitting은 NG/수율 미구현 — 회색 배경 + 양품 행 미표시
+  const shouldApplyGrayBg = processKey === 'mixing' || processKey === 'coatingSingle' || processKey === 'slitting';
+  // Slitting은 생산량 행까지 전체 회색 (미구현 공정)
+  const shouldApplyOutputGrayBg = processKey === 'slitting';
   const showGoodRow = !shouldApplyGrayBg;
   const totalRowSpan = showGoodRow ? 4 : 3;
 
@@ -40,19 +42,33 @@ export default function ElectrodeProcessGrid({
     <React.Fragment>
       {/* 생산량 행 */}
       <tr>
-        <td rowSpan={totalRowSpan} className={styles.processHeader}>
+        <td
+          rowSpan={totalRowSpan}
+          className={styles.processHeader}
+          style={shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}}
+        >
           {processName}
         </td>
-        <td className={styles.rowLabel} colSpan={hasSubTypeProcess ? 2 : 1}>
+        <td
+          className={styles.rowLabel}
+          colSpan={hasSubTypeProcess ? 2 : 1}
+          style={shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}}
+        >
           생산량({processUnit})
         </td>
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
           const dayData = dailyDataMap[day];
-          return <td key={day}>{dayData?.output ? dayData.output.toLocaleString() : ''}</td>;
+          return (
+            <td key={day} style={shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}}>
+              {dayData?.output ? dayData.output.toLocaleString() : ''}
+            </td>
+          );
         })}
-        <td style={{ borderLeft: '2px solid #374151' }}>{processData.total.totalOutput.toLocaleString()}</td>
-        <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+        <td style={shouldApplyOutputGrayBg ? { background: '#d1d5db', borderLeft: '2px solid #374151' } : { borderLeft: '2px solid #374151' }}>
+          {processData.total.totalOutput.toLocaleString()}
+        </td>
+        <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af', ...(shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}) }}>
           <div>
             {processData.total.cumulativeOutput !== null &&
             processData.total.cumulativeOutput !== undefined
@@ -65,10 +81,10 @@ export default function ElectrodeProcessGrid({
             </div>
           )}
         </td>
-        <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+        <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af', ...(shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}) }}>
           {processData.total.progress !== null ? `${processData.total.progress}%` : ''}
         </td>
-        <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af' }}>
+        <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af', ...(shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}) }}>
           <div>
             {processData.total.targetQuantity !== null
               ? processData.total.targetQuantity.toLocaleString()
@@ -105,7 +121,7 @@ export default function ElectrodeProcessGrid({
 
       {/* NG 행 */}
       <tr>
-        <td className={styles.rowLabel} colSpan={hasSubTypeProcess ? 2 : 1}>
+        <td className={styles.rowLabel} colSpan={hasSubTypeProcess ? 2 : 1} style={shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}}>
           NG
         </td>
         {Array.from({ length: daysInMonth }, (_, i) => {
@@ -138,7 +154,7 @@ export default function ElectrodeProcessGrid({
         <td
           className={styles.rowLabel}
           colSpan={hasSubTypeProcess ? 2 : 1}
-          style={{ borderBottom: '2px solid #9ca3af' }}
+          style={{ borderBottom: '2px solid #9ca3af', ...(shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}) }}
         >
           수율(%)
         </td>
