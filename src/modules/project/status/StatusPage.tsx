@@ -47,6 +47,7 @@ export default function StatusPage() {
   const [monthlyData, setMonthlyData] = useState<MonthlyStatusData | null>(null);
   const [realData, setRealData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [realDataLoading, setRealDataLoading] = useState(false);
   const [excelDownloading, setExcelDownloading] = useState(false);
 
   // 목표수량 변경 모달 상태
@@ -101,6 +102,11 @@ export default function StatusPage() {
     loadData();
   }, [projectId, category, electrodeType, monthParam]);
 
+  // 공정 카테고리 변경 시 이전 데이터 초기화
+  useEffect(() => {
+    setRealData(null);
+  }, [category, electrodeType]);
+
   // 실제 데이터 로드
   useEffect(() => {
     const loadRealData = async () => {
@@ -109,12 +115,16 @@ export default function StatusPage() {
       // 전극 공정인 경우 electrodeType 필수 체크
       if (category === 'Electrode' && !electrodeType) return;
 
+      setRealData(null);
+      setRealDataLoading(true);
       try {
         const { year, month } = parseMonthParam(monthParam);
         const data = await getRealMonthlyData(Number(projectId), category, electrodeType, year, month);
         setRealData(data);
       } catch (err) {
         console.error('실제 데이터 조회 실패:', err);
+      } finally {
+        setRealDataLoading(false);
       }
     };
 
@@ -305,8 +315,31 @@ export default function StatusPage() {
         )}
       </div>
 
+      {/* 로딩 스피너 */}
+      {realDataLoading && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            paddingTop: '60px',
+            marginTop: '40px',
+          }}
+        >
+          <div
+            style={{
+              width: '40px',
+              height: '40px',
+              border: '4px solid #e5e7eb',
+              borderTop: '4px solid #3b82f6',
+              borderRadius: '50%',
+              animation: 'spin 0.8s linear infinite',
+            }}
+          />
+        </div>
+      )}
+
       {/* 실제 데이터 표시 */}
-      {realData && monthlyData && (
+      {!realDataLoading && realData && monthlyData && (
         <div style={{ marginTop: '40px' }}>
           <DataGrid
             data={realData}
