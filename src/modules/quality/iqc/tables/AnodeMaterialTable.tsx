@@ -4,6 +4,7 @@ import type { IQCItem, IQCResult, IQCCoaRef, IQCPsdData, IQCFile } from '../IQCT
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
 import { uploadIQCImages, deleteIQCImage, updateIQCImageLabel, uploadIQCFile, deleteIQCFile } from '../../../../api/quality/IQCService';
 import { getErrorMessage } from '../../../../api/errorHandler';
+import ImageLightbox from '../components/ImageLightbox';
 
 /** 붙여넣기 텍스트 → IQCPsdData[] 파싱 */
 function parsePsdText(text: string): IQCPsdData[] {
@@ -112,6 +113,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
   const [semRefLabels, setSemRefLabels] = useState<string[]>(['', '', '']);
   const [psdFiles, setPsdFiles] = useState<IQCFile[]>([]);
   const [uploadingPsdFile, setUploadingPsdFile] = useState(false);
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
 
   useEffect(() => {
     if (data) {
@@ -455,7 +457,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
                 <div className={styles.imageList}>
                   {imgs.map((img) => (
                     <div key={img.id} className={styles.imageItem}>
-                      <img src={img.fileUrl} alt={label} className={styles.resultImage} />
+                      <img src={img.fileUrl} alt={label} className={styles.resultImage} onClick={() => img.fileUrl && setLightboxSrc(img.fileUrl)} />
                       {isEditing && img.id && <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!)}>✕</button>}
                     </div>
                   ))}
@@ -740,7 +742,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
                     <div className={styles.imageList}>
                       {imgs.map((img) => (
                         <div key={img.id} className={styles.imageItem}>
-                          <img src={img.fileUrl} alt={label} className={styles.resultImage} />
+                          <img src={img.fileUrl} alt={label} className={styles.resultImage} onClick={() => img.fileUrl && setLightboxSrc(img.fileUrl)} />
                           {isEditing && img.id && <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!)}>✕</button>}
                         </div>
                       ))}
@@ -791,7 +793,7 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
                     <div className={styles.imageList}>
                       {imgs.map((img) => (
                         <div key={img.id} className={styles.imageItem}>
-                          <img src={img.fileUrl} alt={label} className={styles.resultImage} />
+                          <img src={img.fileUrl} alt={label} className={styles.resultImage} onClick={() => img.fileUrl && setLightboxSrc(img.fileUrl)} />
                           {isEditing && img.id && <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!)}>✕</button>}
                         </div>
                       ))}
@@ -809,6 +811,8 @@ const AnodeMaterialTable: React.FC<AnodeMaterialTableProps> = ({ data, onSave })
         </div>
 
       </div>
+
+      {lightboxSrc && <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />}
     </div>
   );
 };

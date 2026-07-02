@@ -4,6 +4,7 @@ import type { IQCItem, IQCResult, IQCCoaRef } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
 import { uploadIQCImages, deleteIQCImage } from '../../../../api/quality/IQCService';
 import { getErrorMessage } from '../../../../api/errorHandler';
+import ImageLightbox from '../components/ImageLightbox';
 
 const IMAGE_TYPES = ['모식도면'];
 
@@ -58,6 +59,7 @@ const defaultItem = (): IQCItem => ({
 
 const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [editData, setEditData] = useState<IQCItem>(defaultItem());
 
   const [materials, setMaterials] = useState<{ id: number; type: string; name: string; company: string }[]>([]);
@@ -421,7 +423,7 @@ const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
                   <div className={styles.imageList}>
                     {imgs.map((img) => (
                       <div key={img.id} className={styles.imageItem}>
-                        <img src={img.fileUrl} alt={label} className={styles.resultImage} />
+                        <img src={img.fileUrl} alt={label} className={styles.resultImage} onClick={() => img.fileUrl && setLightboxSrc(img.fileUrl)} />
                         {isEditing && img.id && (
                           <button className={styles.imageDeleteBtn} onClick={() => handleImageDelete(img.id!)}>✕</button>
                         )}
@@ -441,6 +443,8 @@ const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
           );
         })}
       </div>
+
+      {lightboxSrc && <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />}
     </div>
   );
 };
