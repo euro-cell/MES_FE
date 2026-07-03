@@ -25,11 +25,19 @@ export default function ElectrodeProcessGrid({
     dailyDataMap[item.day] = item;
   });
 
+  // coatingDouble, press는 작업일지에 NG를 기록하지 않고 이전 공정 수량과의 차이로 역산하므로
+  // output이 이미 NG가 제외된 생산량 (투입량 = output + ng)
+  const isDerivedNgProcess = processKey === 'coatingDouble' || processKey === 'press';
+  // notching은 작업일지에 양품/불량이 별도 기록되어 output = 양품 (타발수량 = output + ng)
+  const isGoodOutputProcess = isDerivedNgProcess || processKey === 'notching';
+
   // NG와 수율 합계 계산
   const totalNG = processData.data.reduce((sum, item) => sum + (item.ng || 0), 0);
   const totalInput = processData.total.totalOutput + totalNG;
   const averageYield = totalInput > 0 ? (processData.total.totalOutput / totalInput) * 100 : 0;
-  const totalGood = processData.total.totalOutput - totalNG;
+  const totalGood = isGoodOutputProcess
+    ? processData.total.totalOutput
+    : processData.total.totalOutput - totalNG;
 
   // Mixing, Coating Single, Slitting은 NG/수율 미구현 — 회색 배경 + 양품 행 미표시
   const shouldApplyGrayBg = processKey === 'mixing' || processKey === 'coatingSingle' || processKey === 'slitting';
@@ -54,30 +62,38 @@ export default function ElectrodeProcessGrid({
           colSpan={hasSubTypeProcess ? 2 : 1}
           style={shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}}
         >
-          생산량({processUnit})
+          {isDerivedNgProcess ? '투입량' : '생산량'}({processUnit})
         </td>
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
           const dayData = dailyDataMap[day];
+          const value = isGoodOutputProcess
+            ? (dayData?.output || 0) + (dayData?.ng || 0)
+            : dayData?.output;
           return (
             <td key={day} style={shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}}>
-              {dayData?.output ? dayData.output.toLocaleString() : ''}
+              {value ? value.toLocaleString() : ''}
             </td>
           );
         })}
         <td style={shouldApplyOutputGrayBg ? { background: '#d1d5db', borderLeft: '2px solid #374151' } : { borderLeft: '2px solid #374151' }}>
-          {processData.total.totalOutput.toLocaleString()}
+          {(isGoodOutputProcess ? totalInput : processData.total.totalOutput).toLocaleString()}
         </td>
         <td rowSpan={totalRowSpan} style={{ borderBottom: '2px solid #9ca3af', ...(shouldApplyOutputGrayBg ? { background: '#d1d5db' } : {}) }}>
           <div>
             {processData.total.cumulativeOutput !== null &&
             processData.total.cumulativeOutput !== undefined
-              ? processData.total.cumulativeOutput.toLocaleString()
+              ? (isGoodOutputProcess
+                  ? processData.total.cumulativeOutput + (processData.total.cumulativeNg || 0)
+                  : processData.total.cumulativeOutput
+                ).toLocaleString()
               : ''}
           </div>
           {showGoodRow && (
             <div style={{ fontSize: '11px', color: '#6b7280' }}>
-              {`양품 ${totalGood.toLocaleString()}`}
+              {isGoodOutputProcess
+                ? `${isDerivedNgProcess ? '생산량' : '양품'} ${(processData.total.cumulativeOutput ?? 0).toLocaleString()}`
+                : `양품 ${totalGood.toLocaleString()}`}
             </div>
           )}
         </td>
@@ -102,13 +118,14 @@ export default function ElectrodeProcessGrid({
       {showGoodRow && (
         <tr>
           <td className={styles.rowLabel} colSpan={hasSubTypeProcess ? 2 : 1}>
-            양품
+            {isDerivedNgProcess ? `생산량(${processUnit})` : '양품'}
           </td>
           {Array.from({ length: daysInMonth }, (_, i) => {
             const day = i + 1;
             const dayData = dailyDataMap[day];
-            const good =
-              dayData?.output !== undefined && dayData?.ng !== null && dayData?.ng !== undefined
+            const good = isGoodOutputProcess
+              ? dayData?.output || null
+              : dayData?.output !== undefined && dayData?.ng !== null && dayData?.ng !== undefined
                 ? dayData.output - dayData.ng
                 : dayData?.output
                   ? dayData.output

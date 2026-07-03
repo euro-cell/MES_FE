@@ -42,6 +42,7 @@ export interface ProcessData {
   total: {
     totalOutput: number;
     cumulativeOutput?: number | null;
+    cumulativeNg?: number | null;
     targetQuantity: number | null;
     progress: number | null;
     totalNg?: number | null;
