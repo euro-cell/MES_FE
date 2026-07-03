@@ -6,6 +6,7 @@ import styles from '../../styles/dashboard/manager.module.css';
 import { getErrorMessage } from '../../api/errorHandler';
 import { getCustomers } from '../../api/etc/customerService';
 import type { Customer } from '../../api/etc/customerService';
+import CustomerModal from '../etc/customer/CustomerModal';
 
 interface Props {
   form: DashboardFormState;
@@ -22,9 +23,12 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
   const [showDelete, setShowDelete] = useState(false);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [showCustomerModal, setShowCustomerModal] = useState(false);
+
+  const fetchCustomers = () => getCustomers().then(setCustomers).catch(() => {});
 
   useEffect(() => {
-    getCustomers().then(setCustomers).catch(() => {});
+    fetchCustomers();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -91,19 +95,24 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
         <div className={styles.formRow}>
           <label>고객사</label>
           <div className={styles.fieldWrap}>
-            <select
-              name='company'
-              value={form.company}
-              onChange={handleChange}
-              className={errors.company ? styles.inputError : ''}
-            >
-              <option value=''>선택</option>
-              {customers.map(c => (
-                <option key={c.id} value={c.shortName}>
-                  {c.name}({c.shortName})
-                </option>
-              ))}
-            </select>
+            <div className={styles.selectWithBtn}>
+              <select
+                name='company'
+                value={form.company}
+                onChange={handleChange}
+                className={errors.company ? styles.inputError : ''}
+              >
+                <option value=''>선택</option>
+                {customers.map(c => (
+                  <option key={c.id} value={c.shortName}>
+                    {c.name}({c.shortName})
+                  </option>
+                ))}
+              </select>
+              <button type='button' className={styles.addCustomerBtn} onClick={() => setShowCustomerModal(true)}>
+                + 추가
+              </button>
+            </div>
             {errors.company && <span className={styles.errorMsg}>{errors.company}</span>}
           </div>
         </div>
@@ -201,6 +210,16 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
           등록하기
         </button>
       </form>
+
+      {showCustomerModal && (
+        <CustomerModal
+          onClose={() => setShowCustomerModal(false)}
+          onSave={() => {
+            setShowCustomerModal(false);
+            fetchCustomers();
+          }}
+        />
+      )}
 
       {showEdit && (
         <DashboardEditModal projects={projects} onClose={() => setShowEdit(false)} refreshProjects={refreshProjects} />

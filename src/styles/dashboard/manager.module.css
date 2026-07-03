@@ -127,6 +127,33 @@
   flex: 1;
 }
 
+.selectWithBtn {
+  display: flex;
+  gap: 6px;
+}
+
+.selectWithBtn select {
+  flex: 1;
+}
+
+.addCustomerBtn {
+  padding: 0 10px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.addCustomerBtn:hover {
+  background: #bfdbfe;
+}
+
 .formRow input:focus,
 .formRow select:focus {
   border-color: #3b82f6;
