@@ -22,7 +22,10 @@ export default function SlittingGrid({ data }: SlittingGridProps) {
   }
 
   return (
-    <div className={styles.slittingGrid}>
+    <div className={styles.slittingGrid} style={{ position: 'relative' }}>
+      <div className={styles.comingSoonOverlay}>
+        <span>준비중</span>
+      </div>
       <table className={styles.slittingTable}>
         <thead>
           {/* 대분류 헤더 (1행) */}
