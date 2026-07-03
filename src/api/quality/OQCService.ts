@@ -5,9 +5,9 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export interface GradingCell {
   lotNo: string;
-  capacity: number;
-  acIr: number;
-  ocv3: number;
+  capacity: number | null;
+  acIr: number | null;
+  ocv3: number | null;
   ocv4: number | null;
 }
 

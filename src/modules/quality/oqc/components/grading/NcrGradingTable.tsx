@@ -3,7 +3,7 @@ import type { GradingCell } from '../../../../../api/quality/OQCService';
 
 interface NcrGradingTableProps {
   rows: GradingCell[];
-  calcDeltaV: (ocv3: number, ocv4: number | null) => number | null;
+  calcDeltaV: (ocv3: number | null, ocv4: number | null) => number | null;
 }
 
 interface NcrTableData {
@@ -49,10 +49,10 @@ export default function NcrGradingTable({ rows, calcDeltaV }: NcrGradingTablePro
   const ncr1: NcrTableData = {
     title: 'NCR1_기준용량',
     grades: {
-      BA: rows.filter(r => r.capacity > 37.2 && r.capacity <= 37.8).length,
-      BB: rows.filter(r => r.capacity > 36.6 && r.capacity <= 37.2).length,
-      BC: rows.filter(r => r.capacity > 35.9 && r.capacity <= 36.6).length,
-      C:  rows.filter(r => r.capacity <= 35.9).length,
+      BA: rows.filter(r => r.capacity !== null && r.capacity > 37.2 && r.capacity <= 37.8).length,
+      BB: rows.filter(r => r.capacity !== null && r.capacity > 36.6 && r.capacity <= 37.2).length,
+      BC: rows.filter(r => r.capacity !== null && r.capacity > 35.9 && r.capacity <= 36.6).length,
+      C:  rows.filter(r => r.capacity !== null && r.capacity <= 35.9).length,
     },
   };
 
@@ -60,10 +60,10 @@ export default function NcrGradingTable({ rows, calcDeltaV }: NcrGradingTablePro
   const ncr2: NcrTableData = {
     title: 'NCR2_출하충전 OCV3',
     grades: {
-      BA: rows.filter(r => r.ocv3 > 2.189 && r.ocv3 <= 2.190).length,
-      BB: rows.filter(r => r.ocv3 > 2.180 && r.ocv3 <= 2.189).length,
-      BC: rows.filter(r => r.ocv3 > 2.160 && r.ocv3 <= 2.180).length,
-      C:  rows.filter(r => r.ocv3 <= 2.160).length,
+      BA: rows.filter(r => r.ocv3 !== null && r.ocv3 > 2.189 && r.ocv3 <= 2.190).length,
+      BB: rows.filter(r => r.ocv3 !== null && r.ocv3 > 2.180 && r.ocv3 <= 2.189).length,
+      BC: rows.filter(r => r.ocv3 !== null && r.ocv3 > 2.160 && r.ocv3 <= 2.180).length,
+      C:  rows.filter(r => r.ocv3 !== null && r.ocv3 <= 2.160).length,
     },
   };
 
