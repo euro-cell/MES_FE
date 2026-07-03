@@ -1,9 +1,10 @@
 .gridContainer {
-  overflow-x: auto;
   margin: 20px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   background: white;
+  width: max-content;
+  min-width: calc(100% - 40px);
 }
 
 .statusTable {
