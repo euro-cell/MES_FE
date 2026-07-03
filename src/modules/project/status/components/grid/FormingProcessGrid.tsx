@@ -66,10 +66,12 @@ export default function FormingProcessGrid({
                     : ''}
                 </div>
                 <div style={{ fontSize: '11px', color: '#6b7280' }}>
-                  {`양품 ${(
-                    FORMING_SUBTYPES.reduce((s, st) => s + processData[st].total.totalOutput, 0) -
-                    FORMING_SUBTYPES.reduce((s, st) => s + (processData[st].total.totalNg ?? 0), 0)
-                  ).toLocaleString()}`}
+                  {(() => {
+                    const lastSubType = [...FORMING_SUBTYPES].reverse().find(st => processData[st].total.totalOutput > 0);
+                    if (!lastSubType) return '';
+                    const { totalOutput, totalNg } = processData[lastSubType].total;
+                    return `양품 ${(totalOutput - (totalNg ?? 0)).toLocaleString()}`;
+                  })()}
                 </div>
               </td>
               <td rowSpan={10} style={{ borderBottom: '2px solid #9ca3af' }}>
@@ -103,34 +105,33 @@ export default function FormingProcessGrid({
         );
       })}
 
-      {/* 양품 - 단일 행 (서브타입 합산) */}
+      {/* 양품 - 각 날짜/합계별 마지막으로 데이터가 있는 단계 기준 */}
       <tr key={`${processKey}-good`}>
         <td className={styles.rowLabel} colSpan={2}>
           양품
         </td>
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
-          let totalOutput = 0;
-          let totalNg = 0;
-          let hasData = false;
-          FORMING_SUBTYPES.forEach(subType => {
-            const subDailyMap: Record<number, { output: number; ng: number | null }> = {};
-            processData[subType].data.forEach(item => { subDailyMap[item.day] = item; });
-            const d = subDailyMap[day];
-            if (d && d.output) {
-              hasData = true;
-              totalOutput += d.output;
-              totalNg += d.ng ?? 0;
-            }
+          // 역순으로 탐색해 해당 날짜에 output이 있는 마지막 단계 찾기
+          const lastSubType = [...FORMING_SUBTYPES].reverse().find(st => {
+            const map: Record<number, FormingSubTypeDayData> = {};
+            processData[st].data.forEach(item => { map[item.day] = item; });
+            return map[day]?.output;
           });
-          const good = hasData ? totalOutput - totalNg : null;
-          return <td key={day} style={GOOD_CELL_STYLE}>{good !== null ? good.toLocaleString() : ''}</td>;
+          if (!lastSubType) return <td key={day} style={GOOD_CELL_STYLE}></td>;
+          const map: Record<number, FormingSubTypeDayData> = {};
+          processData[lastSubType].data.forEach(item => { map[item.day] = item; });
+          const d = map[day];
+          const good = d.output - (d.ng ?? 0);
+          return <td key={day} style={GOOD_CELL_STYLE}>{good.toLocaleString()}</td>;
         })}
         <td style={GOOD_TOTAL_CELL_STYLE}>
           {(() => {
-            const totalOut = FORMING_SUBTYPES.reduce((s, st) => s + processData[st].total.totalOutput, 0);
-            const totalNg = FORMING_SUBTYPES.reduce((s, st) => s + (processData[st].total.totalNg ?? 0), 0);
-            return (totalOut - totalNg).toLocaleString();
+            // 합계도 마지막으로 totalOutput이 있는 단계 기준
+            const lastSubType = [...FORMING_SUBTYPES].reverse().find(st => processData[st].total.totalOutput > 0);
+            if (!lastSubType) return '0';
+            const { totalOutput, totalNg } = processData[lastSubType].total;
+            return (totalOutput - (totalNg ?? 0)).toLocaleString();
           })()}
         </td>
       </tr>
