@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import type { StackingData } from '../../LotTypes';
 import styles from '../../../../../styles/project/lot/06-StackingGrid.module.css';
 
@@ -59,7 +59,7 @@ export default function StackingGrid({ data }: StackingGridProps) {
         </thead>
         <tbody>
           {data.map(row => (
-            <>
+            <React.Fragment key={row.id}>
               {/* 1행 */}
               <tr key={`${row.id}-row1`} className={row.isDefective ? styles.defectiveRow : ''}>
                 <td rowSpan={2} className={`${styles.stickyCol} ${styles.stickyFirst} ${styles.groupBasic}`}>{row.productionDate}</td>
@@ -80,7 +80,7 @@ export default function StackingGrid({ data }: StackingGridProps) {
                 <td>{row.magazine.notchingAnode.row2}</td>
                 <td className={styles.groupMagazineEnd}>{row.magazine.notchingCathode.row2}</td>
               </tr>
-            </>
+            </React.Fragment>
           ))}
         </tbody>
       </table>
