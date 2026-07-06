@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { DashboardFormState, DashboardProject } from './types';
 import DashboardEditModal from './DashboardEditModal';
 import DashboardDeleteModal from './DashboardDeleteModal';
@@ -24,6 +25,8 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [errors, setErrors] = useState<FormErrors>({});
   const [showCustomerModal, setShowCustomerModal] = useState(false);
+  const [showNavigateConfirm, setShowNavigateConfirm] = useState(false);
+  const navigate = useNavigate();
 
   const fetchCustomers = () => getCustomers().then(setCustomers).catch(() => {});
 
@@ -93,7 +96,7 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
 
       <form onSubmit={handleSubmit} className={styles.managerForm}>
         <div className={styles.formRow}>
-          <label>고객사</label>
+          <label onClick={() => setShowNavigateConfirm(true)} className={styles.labelLink}>고객사</label>
           <div className={styles.fieldWrap}>
             <div className={styles.selectWithBtn}>
               <select
@@ -210,6 +213,18 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
           등록하기
         </button>
       </form>
+
+      {showNavigateConfirm && (
+        <div className={styles.confirmBackdrop}>
+          <div className={styles.confirmModal}>
+            <p>고객 코드 관리 대장 페이지로 이동하시겠습니까?</p>
+            <div className={styles.confirmFooter}>
+              <button className={styles.confirmCancelBtn} onClick={() => setShowNavigateConfirm(false)}>취소</button>
+              <button className={styles.confirmOkBtn} onClick={() => { setShowNavigateConfirm(false); navigate('/etc/customer'); }}>이동</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showCustomerModal && (
         <CustomerModal
