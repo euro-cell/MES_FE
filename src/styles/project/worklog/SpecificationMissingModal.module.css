@@ -1,0 +1,37 @@
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 20px 20px;
+}
+
+.cancelButton,
+.confirmButton {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.cancelButton {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #9ca3af;
+}
+
+.cancelButton:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.confirmButton {
+  background: #2563eb;
+  color: white;
+}
+
+.confirmButton:hover {
+  background: #1d4ed8;
+}

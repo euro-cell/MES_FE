@@ -7,6 +7,7 @@ import { useLineEquipmentLoader } from '../../shared/useLineEquipmentLoader';
 import { useMaterialLots } from '../../shared/useMaterialLots';
 import { useBinderLots } from '../../shared/useBinderLots';
 import { useProjectSpecification } from '../../shared/useProjectSpecification';
+import SpecificationMissingModal from '../../shared/SpecificationMissingModal';
 import ExcelRenderer from '../../shared/ExcelRenderer';
 import { mapFormToPayload } from '../../shared/excelUtils';
 import { getSlurryWorklog, updateSlurryWorklog } from '../../../../../api/project/worklog';
@@ -44,7 +45,7 @@ export default function SlurryEdit() {
   const [saving, setSaving] = useState(false);
 
   const plantEquipments = useLineEquipmentLoader(formValues.line);
-  const { specification } = useProjectSpecification(projectId);
+  const { specification, notFound: specificationNotFound } = useProjectSpecification(projectId);
 
   // 자재 1~6에 대한 LOT 목록 조회
   const { lotOptions: material1LotOptions } = useMaterialLots(formValues.material1Name);
@@ -61,10 +62,19 @@ export default function SlurryEdit() {
   const [activeMaterialCount, setActiveMaterialCount] = useState(0);
   // 양극재/음극재(activeMaterial) 행 수 - 이 행까지는 투입량설계 입력 가능
   const [electrodeMaterialCount, setElectrodeMaterialCount] = useState(0);
+  // 설계정보를 사용할 수 없어 자재투입정보를 직접입력 모드로 전환했는지 여부
+  const [manualMaterialEntry, setManualMaterialEntry] = useState(false);
+  // 설계정보 누락 안내 모달 상태
+  const [specMissingModal, setSpecMissingModal] = useState<{ reason: 'notFound' | 'empty' } | null>(null);
 
   // 동적 readOnly 필드 계산: 설계정보에서 가져온 자재 수에 따라 사용하지 않는 행은 전체 readOnly
   const dynamicReadOnlyFields = useMemo(() => {
     const fields: string[] = [...SLURRY_READONLY_FIELDS];
+
+    // 설계정보를 사용할 수 없어 직접입력 모드로 전환된 경우, 자재투입정보 1~6행은 모두 직접 입력 가능
+    if (manualMaterialEntry) {
+      return fields;
+    }
 
     // 1~6행 조성(%)은 항상 readOnly (설계정보에서 자동 채움)
     for (let i = 1; i <= 6; i++) {
@@ -97,7 +107,7 @@ export default function SlurryEdit() {
     }
 
     return fields;
-  }, [activeMaterialCount, electrodeMaterialCount]);
+  }, [activeMaterialCount, electrodeMaterialCount, manualMaterialEntry]);
 
   // 자동계산 필드 툴팁 생성
   const fieldTooltips = useMemo(() => {
@@ -380,9 +390,21 @@ export default function SlurryEdit() {
       const newValues = { ...prev, [rangeName]: value };
 
       // 양극재/음극재 선택 시 설계정보에서 자재투입정보 자동 채움
-      if (rangeName === 'material1Name' && specification) {
-        const electrode = value === '양극재' ? specification.cathode : specification.anode;
+      if (rangeName === 'material1Name') {
+        const electrode = specification ? (value === '양극재' ? specification.cathode : specification.anode) : null;
+        const hasElectrodeData =
+          !!electrode &&
+          (electrode.activeMaterial.length > 0 || electrode.conductor.length > 0 || electrode.binder.length > 0);
+
+        if (!hasElectrodeData) {
+          // 생산계획/설계정보를 사용할 수 없음 - 사용자에게 안내 후 직접입력 여부 확인
+          setSpecMissingModal({ reason: specificationNotFound ? 'notFound' : 'empty' });
+          setManualMaterialEntry(false);
+          return newValues;
+        }
+
         if (electrode) {
+          setManualMaterialEntry(false);
           // activeMaterial, conductor(도전재), binder를 순서대로 합침
           const activeMaterialItems = electrode.activeMaterial.map(m => ({ name: value, composition: m.value }));
           const allMaterials = [
@@ -643,6 +665,20 @@ export default function SlurryEdit() {
     }
   };
 
+  // 설계정보 누락 안내 모달 - 직접입력 확인
+  const handleConfirmManualMaterialEntry = () => {
+    setSpecMissingModal(null);
+    setActiveMaterialCount(0);
+    setElectrodeMaterialCount(0);
+    setManualMaterialEntry(true);
+  };
+
+  // 설계정보 누락 안내 모달 - 취소 (material1Name 선택 되돌림)
+  const handleCancelManualMaterialEntry = () => {
+    setSpecMissingModal(null);
+    setFormValues(prev => ({ ...prev, material1Name: '' }));
+  };
+
   if (templateLoading || loading) {
     return (
       <div className={styles.container}>
@@ -750,6 +786,14 @@ export default function SlurryEdit() {
           formulaRefs={formulaRefs}
         />
       </div>
+
+      {specMissingModal && (
+        <SpecificationMissingModal
+          reason={specMissingModal.reason}
+          onConfirm={handleConfirmManualMaterialEntry}
+          onCancel={handleCancelManualMaterialEntry}
+        />
+      )}
     </div>
   );
 }
