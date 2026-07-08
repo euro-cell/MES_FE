@@ -16,6 +16,7 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
   const [selected, setSelected] = useState<DashboardProject | null>(null);
   const [form, setForm] = useState<DashboardFormState>({
     company: '',
+    customerId: null,
     mode: '',
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
@@ -36,6 +37,7 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
     setSelected(project);
     setForm({
       company: project.company || '',
+      customerId: project.customerId ?? null,
       mode: project.mode || '',
       year: project.year,
       month: project.month,
@@ -50,6 +52,13 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  /** ✅ 고객사 선택 변경 */
+  const handleCustomerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const shortName = e.target.value;
+    const customer = customers.find(c => c.shortName === shortName);
+    setForm(prev => ({ ...prev, company: shortName, customerId: customer?.id ?? null }));
   };
 
   /** ✅ 수정 완료 */
@@ -93,7 +102,7 @@ export default function DashboardEditModal({ projects, onClose, refreshProjects 
 
                 <div className={styles.formRow}>
                   <label>고객사</label>
-                  <select name='company' value={form.company} onChange={handleChange}>
+                  <select name='company' value={form.company} onChange={handleCustomerChange}>
                     <option value=''>선택</option>
                     {customers.map(c => (
                       <option key={c.id} value={c.shortName}>

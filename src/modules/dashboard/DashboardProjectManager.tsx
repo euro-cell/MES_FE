@@ -42,6 +42,15 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
     }
   };
 
+  const handleCustomerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const shortName = e.target.value;
+    const customer = customers.find(c => c.shortName === shortName);
+    setForm(prev => ({ ...prev, company: shortName, customerId: customer?.id ?? null }));
+    if (errors.company) {
+      setErrors(prev => ({ ...prev, company: undefined }));
+    }
+  };
+
   const validate = (): FormErrors => {
     const errs: FormErrors = {};
     if (!form.company) errs.company = '고객사를 선택해주세요.';
@@ -66,6 +75,7 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
       setErrors({});
       setForm({
         company: '',
+        customerId: null,
         mode: '',
         year: new Date().getFullYear(),
         month: new Date().getMonth() + 1,
@@ -102,7 +112,7 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
               <select
                 name='company'
                 value={form.company}
-                onChange={handleChange}
+                onChange={handleCustomerChange}
                 className={errors.company ? styles.inputError : ''}
               >
                 <option value=''>선택</option>

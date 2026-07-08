@@ -3,6 +3,7 @@ export interface DashboardProject {
   id: number;
   name: string;
   company: string;       // 약어 (shortName)
+  customerId?: number | null; // Customer FK
   customerName?: string; // 회사명 (Customer.name)
   mode: string;
   year: number;
@@ -44,6 +45,7 @@ export interface DashboardProjectWithPlan {
 /** ✅ 등록 폼 상태 */
 export interface DashboardFormState {
   company: string;
+  customerId?: number | null;
   mode: string;
   year: number;
   month: number;
@@ -58,6 +60,7 @@ export interface DashboardSummaryItem {
   id: number;
   name: string;
   company: string;
+  customerId?: number | null;
   customerName?: string;
   mode: string;
   year: number;

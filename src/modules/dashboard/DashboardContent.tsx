@@ -27,6 +27,7 @@ export default function DashboardContent() {
 
   const [form, setForm] = useState<DashboardFormState>({
     company: '',
+    customerId: null,
     mode: '',
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
