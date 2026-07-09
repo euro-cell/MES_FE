@@ -17,21 +17,22 @@
 }
 
 .cancelButton {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #9ca3af;
+  background: #475569;
+  color: white;
+  border: none;
+  border-radius: 8px;
 }
 
 .cancelButton:hover {
-  background: #e5e7eb;
-  color: #1f2937;
+  background: #334155;
 }
 
 .confirmButton {
-  background: #2563eb;
+  background: #1d4ed8;
   color: white;
+  border-radius: 8px;
 }
 
 .confirmButton:hover {
-  background: #1d4ed8;
+  background: #1e40af;
 }

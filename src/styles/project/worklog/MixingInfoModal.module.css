@@ -127,21 +127,24 @@
 }
 
 .cancelButton {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #475569;
+  color: white;
+  border: none;
+  border-radius: 8px;
 }
 
 .cancelButton:hover {
-  background-color: #e0e0e0;
+  background-color: #334155;
 }
 
 .selectButton {
-  background-color: #3b82f6;
+  background-color: #1d4ed8;
   color: white;
+  border-radius: 8px;
 }
 
 .selectButton:hover:not(:disabled) {
-  background-color: #2563eb;
+  background-color: #1e40af;
 }
 
 .selectButton:disabled {

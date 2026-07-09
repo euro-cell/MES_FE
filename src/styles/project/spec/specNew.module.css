@@ -76,27 +76,33 @@
 }
 
 .addBtn {
-  background: #2db86c;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  border-radius: 50%;
   transition: background 0.2s;
 }
 .addBtn:hover {
-  background: #25a35e;
+  background: #dbeafe;
 }
 
 .removeBtn {
-  background: #e74c3c;
+  background: #fff1f2;
+  color: #e11d48;
+  border: 1px solid #fecdd3;
+  border-radius: 50%;
   transition: background 0.2s;
 }
 .removeBtn:hover {
-  background: #d13b2d;
+  background: #ffe4e6;
 }
 
 .backBtn {
-  background: #1a73e8;
+  background: #475569;
   color: #fff;
   padding: 6px 14px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   transition: 0.2s;
@@ -104,7 +110,7 @@
 }
 
 .backBtn:hover {
-  background: #155bc1;
+  background: #334155;
 }
 
 .specNewTable input {
@@ -148,17 +154,17 @@
 }
 
 .saveBtn {
-  background: #1a73e8;
+  background: #1d4ed8;
   color: #fff;
   padding: 8px 18px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   transition: 0.2s;
 }
 .saveBtn:hover {
-  background: #155bc1;
+  background: #1e40af;
 }
 
 @media (max-width: 1400px) {
