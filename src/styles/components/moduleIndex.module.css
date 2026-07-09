@@ -20,17 +20,18 @@
 
 .downloadBtn {
   padding: 8px 16px;
-  background: #10b981;
+  background: #6366f1;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .downloadBtn:hover {
-  background: #059669;
+  background: #4f46e5;
 }
 
 .downloadBtn:disabled {
