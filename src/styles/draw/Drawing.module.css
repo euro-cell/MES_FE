@@ -73,18 +73,18 @@
 
 .addButton {
   padding: 8px 16px;
-  background: #3b82f6;
+  background: #1d4ed8;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .addButton:hover {
-  background: #2563eb;
+  background: #1e40af;
 }
 
 .loading,
@@ -216,7 +216,7 @@
 .cancelButton,
 .submitButton {
   padding: 10px 20px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -224,23 +224,23 @@
 }
 
 .cancelButton {
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  color: #475569;
+  background: #475569;
+  border: none;
+  color: white;
 }
 
 .cancelButton:hover {
-  background: #e2e8f0;
+  background: #334155;
 }
 
 .submitButton {
-  background: #3b82f6;
+  background: #1d4ed8;
   border: none;
   color: #fff;
 }
 
 .submitButton:hover {
-  background: #2563eb;
+  background: #1e40af;
 }
 
 .submitButton:disabled {
@@ -349,17 +349,18 @@
 
 .backButton {
   padding: 8px 16px;
-  background: #3b82f6;
+  background: #475569;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
+  font-weight: 600;
   color: #fff;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .backButton:hover {
-  background: #2563eb;
+  background: #334155;
 }
 
 .detailSection {
