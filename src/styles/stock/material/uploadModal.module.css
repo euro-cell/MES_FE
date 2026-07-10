@@ -201,16 +201,16 @@
 .clearButton {
   margin-left: auto;
   padding: 4px 10px;
-  background: #ef4444;
-  color: white;
-  border: none;
+  background: #fff1f2;
+  color: #e11d48;
+  border: 1px solid #fecdd3;
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
 }
 
 .clearButton:hover {
-  background: #dc2626;
+  background: #ffe4e6;
 }
 
 /* 테이블 래퍼 */
@@ -266,16 +266,16 @@
 
 .cancelButton {
   padding: 8px 20px;
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
+  background: #475569;
+  color: white;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
 }
 
 .cancelButton:hover {
-  background: #e2e8f0;
+  background: #334155;
 }
 
 .cancelButton:disabled {
@@ -285,10 +285,10 @@
 
 .importButton {
   padding: 8px 20px;
-  background: #22c55e;
+  background: #1d4ed8;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   display: inline-flex;
@@ -297,7 +297,7 @@
 }
 
 .importButton:hover {
-  background: #16a34a;
+  background: #1e40af;
 }
 
 .importButton:disabled {

@@ -116,32 +116,32 @@
 
 .cancelButton {
   padding: 8px 18px;
-  border: 1px solid #e2e8f0;
-  border-radius: 7px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  background-color: #f8fafc;
-  color: #475569;
+  background-color: #475569;
+  color: white;
   transition: background-color 0.15s;
 }
 
 .cancelButton:hover {
-  background-color: #e2e8f0;
+  background-color: #334155;
 }
 
 .deleteButton {
   padding: 8px 18px;
   border: none;
-  border-radius: 7px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  background-color: #ef4444;
+  background-color: #e11d48;
   color: white;
   transition: background-color 0.15s;
 }
 
 .deleteButton:hover {
-  background-color: #dc2626;
+  background-color: #be123c;
 }

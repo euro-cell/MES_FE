@@ -64,10 +64,10 @@
 /* 버튼 */
 .addButton {
   padding: 8px 16px;
-  background-color: #16a34a;
+  background-color: #1d4ed8;
   color: white;
   border: none;
-  border-radius: 7px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
@@ -76,15 +76,15 @@
 }
 
 .addButton:hover {
-  background-color: #15803d;
+  background-color: #1e40af;
 }
 
 .downloadButton {
   padding: 7px 13px;
-  background-color: #16a34a;
+  background-color: #6366f1;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -93,15 +93,15 @@
 }
 
 .downloadButton:hover {
-  background-color: #15803d;
+  background-color: #4f46e5;
 }
 
 .uploadButton {
   padding: 7px 13px;
-  background-color: #2563eb;
+  background-color: #0891b2;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -110,7 +110,7 @@
 }
 
 .uploadButton:hover {
-  background-color: #1d4ed8;
+  background-color: #0e7490;
 }
 
 /* 입/출고 이력 테이블 */
@@ -189,10 +189,10 @@
 
 .pageButton {
   padding: 6px 14px;
-  background-color: #16a34a;
+  background-color: #475569;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -200,7 +200,7 @@
 }
 
 .pageButton:hover:not(:disabled) {
-  background-color: #15803d;
+  background-color: #334155;
 }
 
 .pageButton:disabled {
@@ -257,10 +257,10 @@
 
 .deleteSelectedButton {
   padding: 6px 14px;
-  background-color: #f97316;
+  background-color: #e11d48;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -268,7 +268,7 @@
 }
 
 .deleteSelectedButton:hover:not(:disabled) {
-  background-color: #ea6c0a;
+  background-color: #be123c;
 }
 
 .deleteSelectedButton:disabled {
@@ -278,10 +278,10 @@
 
 .deleteAllButton {
   padding: 6px 14px;
-  background-color: #ef4444;
+  background-color: #e11d48;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -289,7 +289,7 @@
 }
 
 .deleteAllButton:hover:not(:disabled) {
-  background-color: #dc2626;
+  background-color: #be123c;
 }
 
 .deleteAllButton:disabled {
@@ -348,10 +348,10 @@
 
 .confirmCancelButton {
   padding: 8px 24px;
-  background-color: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
-  border-radius: 7px;
+  background-color: #475569;
+  color: white;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
@@ -359,15 +359,15 @@
 }
 
 .confirmCancelButton:hover {
-  background-color: #e2e8f0;
+  background-color: #334155;
 }
 
 .confirmDeleteButton {
   padding: 8px 24px;
-  background-color: #ef4444;
+  background-color: #e11d48;
   color: white;
   border: none;
-  border-radius: 7px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
@@ -375,5 +375,5 @@
 }
 
 .confirmDeleteButton:hover {
-  background-color: #dc2626;
+  background-color: #be123c;
 }
