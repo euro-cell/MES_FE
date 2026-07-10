@@ -215,11 +215,45 @@
   font-size: 11px;
   font-weight: 600;
   padding: 3px 7px;
-  transition: background-color 0.15s;
+  transition: background-color 0.15s, border-color 0.15s, transform 0.1s;
 }
 
 .coaButton:hover {
   background-color: #cffafe;
+  border-color: #67e8f9;
+}
+
+.coaButton:focus-visible {
+  outline: 2px solid #0891b2;
+  outline-offset: 1px;
+}
+
+.coaButton:active {
+  background-color: #a5f3fc;
+  transform: scale(0.97);
+}
+
+/* CoA 미등록: 클릭 시 업로드 폼이 열려야 하므로 disabled로 두지 않는다 */
+.coaButton.unregistered {
+  background-color: transparent;
+  color: #67a8b8;
+  border: 1px dashed #a5f3fc;
+}
+
+.coaButton.unregistered:hover {
+  background-color: #ecfeff;
+  border-color: #67e8f9;
+  border-style: solid;
+}
+
+.coaButton.unregistered:focus-visible {
+  outline: 2px solid #67a8b8;
+  outline-offset: 1px;
+}
+
+.coaButton.unregistered:active {
+  background-color: #cffafe;
+  transform: scale(0.97);
 }
 
 .editButton {

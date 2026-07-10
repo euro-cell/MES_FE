@@ -1,5 +1,5 @@
 import axios from '../../axiosInstance';
-import type { AssemblyMaterial } from '../../../modules/stock/material/assembly/types';
+import type { AssemblyMaterial, AssemblyMaterialInput } from '../../../modules/stock/material/assembly/types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -16,7 +16,7 @@ export const getAssemblyMaterials = async (isZeroStock: boolean = false): Promis
   }
 };
 
-export const createAssemblyMaterial = async (material: Omit<AssemblyMaterial, 'id'>) => {
+export const createAssemblyMaterial = async (material: AssemblyMaterialInput) => {
   try {
     const response = await axios.post<AssemblyMaterial>(`${API_BASE}/material/assembly`, material, {
       withCredentials: true,
@@ -28,7 +28,7 @@ export const createAssemblyMaterial = async (material: Omit<AssemblyMaterial, 'i
   }
 };
 
-export const updateAssemblyMaterial = async (id: number, material: Omit<AssemblyMaterial, 'id'>) => {
+export const updateAssemblyMaterial = async (id: number, material: AssemblyMaterialInput) => {
   try {
     const response = await axios.patch<AssemblyMaterial>(`${API_BASE}/material/assembly/${id}`, material, {
       withCredentials: true,

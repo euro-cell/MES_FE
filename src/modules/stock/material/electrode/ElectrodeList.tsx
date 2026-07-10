@@ -10,7 +10,7 @@ import {
   deleteElectrodeHistories,
   deleteAllElectrodeHistories,
 } from '../../../../api/stock/material/ElectrodeMaterialService';
-import type { ElectrodeMaterial, MaterialHistory } from './types';
+import type { ElectrodeMaterial, ElectrodeMaterialInput, MaterialHistory } from './types';
 import AddMaterialModal from './AddMaterialModal';
 import DeleteMaterialModal from './DeleteMaterialModal';
 import UploadMaterialModal, { type MaterialUploadData } from '../shared/UploadMaterialModal';
@@ -19,7 +19,7 @@ import MaterialTable from '../shared/MaterialTable';
 import { getErrorMessage } from '../../../../api/errorHandler';
 import styles from '../../../../styles/stock/material/electrode.module.css';
 
-const INITIAL_FORM_DATA: Omit<ElectrodeMaterial, 'id'> = {
+const INITIAL_FORM_DATA: ElectrodeMaterialInput = {
   process: '전극',
   category: '',
   type: '',
@@ -45,7 +45,7 @@ export default function ElectrodeList() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [formData, setFormData] = useState<Omit<ElectrodeMaterial, 'id'>>(INITIAL_FORM_DATA);
+  const [formData, setFormData] = useState<ElectrodeMaterialInput>(INITIAL_FORM_DATA);
   const [showHistory, setShowHistory] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -256,6 +256,8 @@ export default function ElectrodeList() {
 
   const handleCloseCoAModal = () => {
     setCoaMaterial(null);
+    // CoA 업로드/삭제 결과를 목록의 hasCoa에 반영
+    loadMaterials(includeZeroStock);
   };
 
   const handleImportMaterials = async (data: MaterialUploadData[]) => {

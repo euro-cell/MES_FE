@@ -13,7 +13,11 @@ export interface AssemblyMaterial {
   price?: number; // 가격
   note?: string; // 비고
   stock?: number; // 재고
+  hasCoa: boolean; // CoA 등록 여부 (조회 전용)
 }
+
+/** 자재 등록/수정 요청 본문. hasCoa는 조회 전용 파생 필드라 제외한다. */
+export type AssemblyMaterialInput = Omit<AssemblyMaterial, 'id' | 'hasCoa'>;
 
 export interface MaterialHistory {
   id: number;

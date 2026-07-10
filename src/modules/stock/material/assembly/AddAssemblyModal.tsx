@@ -1,10 +1,10 @@
-import type { AssemblyMaterial } from './types';
+import type { AssemblyMaterialInput } from './types';
 import styles from '../../../../styles/stock/material/addMaterialModal.module.css';
 
 interface AddAssemblyModalProps {
   show: boolean;
   isEditing: boolean;
-  formData: Omit<AssemblyMaterial, 'id'>;
+  formData: AssemblyMaterialInput;
   onFormChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;

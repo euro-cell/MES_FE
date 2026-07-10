@@ -1,10 +1,10 @@
-import type { ElectrodeMaterial } from './types';
+import type { ElectrodeMaterialInput } from './types';
 import styles from '../../../../styles/stock/material/addMaterialModal.module.css';
 
 interface AddMaterialModalProps {
   show: boolean;
   isEditing: boolean;
-  formData: Omit<ElectrodeMaterial, 'id'>;
+  formData: ElectrodeMaterialInput;
   onFormChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;

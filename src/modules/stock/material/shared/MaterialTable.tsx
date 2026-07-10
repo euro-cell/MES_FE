@@ -27,6 +27,7 @@ export interface MaterialRow {
   price?: number;
   note?: string;
   stock?: number;
+  hasCoa: boolean;
 }
 
 interface MaterialTableProps {
@@ -259,7 +260,10 @@ export default function MaterialTable({ data, onEdit, onDelete, onCoA }: Materia
         header: '관리',
         cell: ({ row }) => (
           <div className={styles.managementCell}>
-            <button className={styles.coaButton} onClick={() => onCoA(row.original)}>
+            <button
+              className={`${styles.coaButton} ${row.original.hasCoa ? '' : styles.unregistered}`}
+              onClick={() => onCoA(row.original)}
+            >
               CoA
             </button>
             <button className={styles.editButton} onClick={() => onEdit(row.original)}>

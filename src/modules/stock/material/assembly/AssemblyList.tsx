@@ -10,7 +10,7 @@ import {
   deleteAssemblyHistories,
   deleteAllAssemblyHistories,
 } from '../../../../api/stock/material/AssemblyMaterialService';
-import type { AssemblyMaterial, MaterialHistory } from './types';
+import type { AssemblyMaterial, AssemblyMaterialInput, MaterialHistory } from './types';
 import AddAssemblyModal from './AddAssemblyModal';
 import DeleteAssemblyModal from './DeleteAssemblyModal';
 import UploadMaterialModal, { type MaterialUploadData } from '../shared/UploadMaterialModal';
@@ -19,7 +19,7 @@ import MaterialTable from '../shared/MaterialTable';
 import { getErrorMessage } from '../../../../api/errorHandler';
 import styles from '../../../../styles/stock/material/assembly.module.css';
 
-const INITIAL_FORM_DATA: Omit<AssemblyMaterial, 'id'> = {
+const INITIAL_FORM_DATA: AssemblyMaterialInput = {
   process: '조립',
   category: '',
   type: '',
@@ -45,7 +45,7 @@ export default function AssemblyList() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [formData, setFormData] = useState<Omit<AssemblyMaterial, 'id'>>(INITIAL_FORM_DATA);
+  const [formData, setFormData] = useState<AssemblyMaterialInput>(INITIAL_FORM_DATA);
   const [showHistory, setShowHistory] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -256,6 +256,8 @@ export default function AssemblyList() {
 
   const handleCloseCoAModal = () => {
     setCoaMaterial(null);
+    // CoA 업로드/삭제 결과를 목록의 hasCoa에 반영
+    loadMaterials(includeZeroStock);
   };
 
   const handleImportMaterials = async (data: MaterialUploadData[]) => {

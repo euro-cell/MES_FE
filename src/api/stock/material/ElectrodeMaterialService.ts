@@ -1,5 +1,5 @@
 import axios from '../../axiosInstance';
-import type { ElectrodeMaterial } from '../../../modules/stock/material/electrode/types';
+import type { ElectrodeMaterial, ElectrodeMaterialInput } from '../../../modules/stock/material/electrode/types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -16,7 +16,7 @@ export const getElectrodeMaterials = async (isZeroStock: boolean = false): Promi
   }
 };
 
-export const createElectrodeMaterial = async (material: Omit<ElectrodeMaterial, 'id'>) => {
+export const createElectrodeMaterial = async (material: ElectrodeMaterialInput) => {
   try {
     const response = await axios.post<ElectrodeMaterial>(`${API_BASE}/material/electrode`, material, {
       withCredentials: true,
@@ -28,7 +28,7 @@ export const createElectrodeMaterial = async (material: Omit<ElectrodeMaterial, 
   }
 };
 
-export const updateElectrodeMaterial = async (id: number, material: Omit<ElectrodeMaterial, 'id'>) => {
+export const updateElectrodeMaterial = async (id: number, material: ElectrodeMaterialInput) => {
   try {
     const response = await axios.patch<ElectrodeMaterial>(`${API_BASE}/material/electrode/${id}`, material, {
       withCredentials: true,
