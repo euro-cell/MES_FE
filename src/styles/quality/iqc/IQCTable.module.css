@@ -28,9 +28,9 @@
 
 .specButton {
   padding: 6px 12px;
-  border: 1px solid #3b82f6;
-  border-radius: 6px;
-  background: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  background: #1d4ed8;
   color: #fff;
   font-size: 13px;
   font-weight: 500;
@@ -39,15 +39,14 @@
 }
 
 .specButton:hover {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: #1e40af;
 }
 
 .saveButton {
   padding: 6px 12px;
-  border: 1px solid #16a34a;
-  border-radius: 6px;
-  background: #16a34a;
+  border: none;
+  border-radius: 8px;
+  background: #1d4ed8;
   color: #fff;
   font-size: 13px;
   font-weight: 500;
@@ -56,15 +55,14 @@
 }
 
 .saveButton:hover {
-  background: #15803d;
-  border-color: #15803d;
+  background: #1e40af;
 }
 
 .cancelButton {
   padding: 6px 12px;
-  border: 1px solid #64748b;
-  border-radius: 6px;
-  background: #64748b;
+  border: none;
+  border-radius: 8px;
+  background: #475569;
   color: #fff;
   font-size: 13px;
   font-weight: 500;
@@ -73,15 +71,14 @@
 }
 
 .cancelButton:hover {
-  background: #475569;
-  border-color: #475569;
+  background: #334155;
 }
 
 .deleteButton {
   padding: 6px 12px;
-  border: 1px solid #dc2626;
-  border-radius: 6px;
-  background: #dc2626;
+  border: none;
+  border-radius: 8px;
+  background: #e11d48;
   color: #fff;
   font-size: 13px;
   font-weight: 500;
@@ -90,8 +87,7 @@
 }
 
 .deleteButton:hover {
-  background: #b91c1c;
-  border-color: #b91c1c;
+  background: #be123c;
 }
 
 .tableInput {
@@ -390,7 +386,7 @@
   display: inline-block;
   padding: 2px 8px;
   font-size: 12px;
-  background: #3b82f6;
+  background: #0891b2;
   color: #fff;
   border-radius: 4px;
   cursor: pointer;
@@ -398,7 +394,7 @@
 }
 
 .imageUploadBtn:hover {
-  background: #2563eb;
+  background: #0e7490;
 }
 
 .imageList {

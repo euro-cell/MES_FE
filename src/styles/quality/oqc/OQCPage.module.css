@@ -18,18 +18,18 @@
 
 .backButton {
   padding: 8px 16px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  color: #475569;
+  background: #475569;
+  border: none;
+  border-radius: 8px;
+  color: white;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .backButton:hover {
-  background: #e2e8f0;
-  color: #1e293b;
+  background: #334155;
 }
 
 .content {
