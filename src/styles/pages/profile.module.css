@@ -82,10 +82,10 @@
 .submitBtn {
   width: 100%;
   padding: 10px;
-  background: #1b263b;
+  background: #1d4ed8;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -94,7 +94,7 @@
 }
 
 .submitBtn:hover {
-  background: #2e3f5c;
+  background: #1e40af;
 }
 
 .submitBtn:disabled {

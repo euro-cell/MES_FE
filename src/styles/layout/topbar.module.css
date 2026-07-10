@@ -39,7 +39,7 @@
 }
 
 .profileBtn {
-  background: #1b263b;
+  background: #475569;
   color: white;
   border: none;
   border-radius: 6px;
@@ -51,12 +51,12 @@
 }
 
 .profileBtn:hover {
-  background: #2e3f5c;
+  background: #334155;
 }
 
 /* 로그아웃 버튼 */
 .logoutBtn {
-  background: #e74c3c;
+  background: #e11d48;
   color: white;
   border: none;
   border-radius: 6px;
@@ -68,5 +68,5 @@
 }
 
 .logoutBtn:hover {
-  background: #c0392b;
+  background: #be123c;
 }
