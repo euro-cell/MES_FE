@@ -308,7 +308,7 @@ export default function DrawDetailPage() {
       <div className={styles.detailSection}>
         <div className={styles.sectionHeader}>
           <h3>버전 히스토리</h3>
-          <TooltipButton label='버전 추가' variant='register' onClick={openVersionModal} />
+          <TooltipButton label='버전 추가' variant='register' solid onClick={openVersionModal} />
         </div>
         <table className={styles.ledgerTable}>
           <thead>

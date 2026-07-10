@@ -6,6 +6,8 @@ interface TooltipButtonProps {
   disabled?: boolean;
   tooltip?: string;
   variant?: 'register' | 'view' | 'edit' | 'delete';
+  /** 헤더에 놓이는 버튼은 solid, 테이블 행 내부는 기본값(outlined) */
+  solid?: boolean;
 }
 
 export default function TooltipButton({
@@ -14,6 +16,7 @@ export default function TooltipButton({
   disabled = false,
   tooltip,
   variant = 'view',
+  solid = false,
 }: TooltipButtonProps) {
   const variantClass = {
     register: styles.registerBtn,
@@ -22,7 +25,7 @@ export default function TooltipButton({
     delete: styles.deleteBtn,
   }[variant];
 
-  const className = `${variantClass} ${disabled ? styles.disabled : ''}`;
+  const className = `${variantClass} ${solid ? styles.solid : ''} ${disabled ? styles.disabled : ''}`;
 
   return (
     <div className={styles.tooltipWrapper}>

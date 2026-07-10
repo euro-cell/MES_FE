@@ -375,6 +375,7 @@ export default function WorklogList({ projectId, processId, processTitle }: Work
           <TooltipButton
             label='등록'
             variant='register'
+            solid
             onClick={() => navigate(`/project/log/${projectId}/${processId.toLowerCase()}/register`)}
           />
         </div>
