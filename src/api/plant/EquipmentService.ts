@@ -1,5 +1,10 @@
 import axios from '../axiosInstance';
-import type { Equipment, EquipmentPayload, EquipmentCategory } from '../../modules/plant/register/EquipmentTypes';
+import type {
+  Equipment,
+  EquipmentListItem,
+  EquipmentPayload,
+  EquipmentCategory,
+} from '../../modules/plant/register/EquipmentTypes';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -11,7 +16,7 @@ const CATEGORY_MAP: Record<EquipmentCategory, string> = {
 };
 
 /** 설비 목록 조회 */
-export const getEquipments = async (category: EquipmentCategory): Promise<Equipment[]> => {
+export const getEquipments = async (category: EquipmentCategory): Promise<EquipmentListItem[]> => {
   const res = await axios.get(`${API_BASE}/equipment`, {
     params: { category: CATEGORY_MAP[category] },
     withCredentials: true,

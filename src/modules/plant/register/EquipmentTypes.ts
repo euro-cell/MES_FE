@@ -24,4 +24,13 @@ export interface Equipment {
   calibrationAgency?: string;  // 검교정 기관
 }
 
+/**
+ * 설비 관리 대장 목록(GET /equipment)의 응답 항목.
+ * hasManual은 서버가 계산해 내려주는 조회 전용 필드로,
+ * mixers/lines 조회에는 포함되지 않는다.
+ */
+export type EquipmentListItem = Equipment & {
+  hasManual: boolean; // 매뉴얼 등록 여부
+};
+
 export type EquipmentPayload = Omit<Equipment, 'id'>;

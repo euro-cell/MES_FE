@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../../styles/plant/Equipment.module.css';
 import { getEquipments, deleteEquipment } from '../../../api/plant/EquipmentService';
-import type { Equipment, EquipmentCategory } from './EquipmentTypes';
+import type { Equipment, EquipmentListItem, EquipmentCategory } from './EquipmentTypes';
 import ManualModal from './ManualModal';
 import { getErrorMessage } from '../../../api/errorHandler';
 
@@ -18,7 +18,7 @@ const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
 
 export default function EquipmentList({ category }: Props) {
   const navigate = useNavigate();
-  const [equipments, setEquipments] = useState<Equipment[]>([]);
+  const [equipments, setEquipments] = useState<EquipmentListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
   const [manualTarget, setManualTarget] = useState<{ id: number; name: string } | null>(null);
@@ -138,7 +138,10 @@ export default function EquipmentList({ category }: Props) {
                 <td>{eq.remark || '-'}</td>
                 <td>
                   <div className={styles.actionButtons}>
-                    <button className={styles.manualBtn} onClick={() => setManualTarget({ id: eq.id, name: eq.name })}>
+                    <button
+                      className={`${styles.manualBtn} ${eq.hasManual ? '' : styles.unregistered}`}
+                      onClick={() => setManualTarget({ id: eq.id, name: eq.name })}
+                    >
                       매뉴얼
                     </button>
                     <button className={styles.editBtn} onClick={() => handleEdit(eq)}>
@@ -159,7 +162,11 @@ export default function EquipmentList({ category }: Props) {
         show={manualTarget !== null}
         equipmentId={manualTarget?.id ?? 0}
         equipmentName={manualTarget?.name ?? ''}
-        onClose={() => setManualTarget(null)}
+        onClose={() => {
+          setManualTarget(null);
+          // 매뉴얼 업로드/삭제 결과를 목록의 hasManual에 반영
+          loadData();
+        }}
       />
     </div>
   );

@@ -123,10 +123,10 @@
 
 .registerBtn {
   padding: 8px 16px;
-  background: #3b82f6;
+  background: #1d4ed8;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -134,15 +134,15 @@
 }
 
 .registerBtn:hover {
-  background: #2563eb;
+  background: #1e40af;
 }
 
 .downloadBtn {
   padding: 8px 16px;
-  background: #10b981;
+  background: #6366f1;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -150,43 +150,82 @@
 }
 
 .downloadBtn:hover {
-  background: #059669;
+  background: #4f46e5;
 }
 
 .manualBtn,
 .editBtn,
 .deleteBtn {
   padding: 4px 8px;
-  border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
   font-size: 12px;
   transition: background 0.2s;
-  color: #fff;
 }
 
 .manualBtn {
-  background: #6366f1;
+  background: #ecfeff;
+  color: #0891b2;
+  border: 1px solid #a5f3fc;
+  transition: background 0.2s, border-color 0.15s, transform 0.1s;
 }
 
 .manualBtn:hover {
-  background: #4f46e5;
+  background: #cffafe;
+  border-color: #67e8f9;
+}
+
+.manualBtn:focus-visible {
+  outline: 2px solid #0891b2;
+  outline-offset: 1px;
+}
+
+.manualBtn:active {
+  background: #a5f3fc;
+  transform: scale(0.97);
+}
+
+/* 매뉴얼 미등록: 클릭 시 업로드 모달이 열려야 하므로 disabled로 두지 않는다 */
+.manualBtn.unregistered {
+  background: transparent;
+  color: #67a8b8;
+  border: 1px dashed #a5f3fc;
+}
+
+.manualBtn.unregistered:hover {
+  background: #ecfeff;
+  border-color: #67e8f9;
+  border-style: solid;
+}
+
+.manualBtn.unregistered:focus-visible {
+  outline: 2px solid #67a8b8;
+  outline-offset: 1px;
+}
+
+.manualBtn.unregistered:active {
+  background: #cffafe;
+  transform: scale(0.97);
 }
 
 .editBtn {
-  background: #f97316;
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
 }
 
 .editBtn:hover {
-  background: #ea580c;
+  background: #fde68a;
 }
 
 .deleteBtn {
-  background: #e11d48;
+  background: #fff1f2;
+  color: #e11d48;
+  border: 1px solid #fecdd3;
 }
 
 .deleteBtn:hover {
-  background: #be123c;
+  background: #ffe4e6;
 }
 
 /* ======================
@@ -216,17 +255,18 @@
 
 .backBtn {
   padding: 8px 14px;
-  background: #64748b;
+  background: #475569;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .backBtn:hover {
-  background: #475569;
+  background: #334155;
 }
 
 .formGrid {
@@ -311,33 +351,32 @@
 
 .cancelBtn {
   padding: 10px 20px;
-  background: #fff;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  background: #475569;
+  color: white;
+  border: none;
+  border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .cancelBtn:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: #334155;
 }
 
 .saveBtn {
   padding: 10px 24px;
-  background: #3b82f6;
+  background: #1d4ed8;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .saveBtn:hover {
-  background: #2563eb;
+  background: #1e40af;
 }
 
 /* ======================
@@ -414,20 +453,20 @@
 .uploadButton {
   display: inline-block;
   padding: 8px 18px;
-  background: #3b82f6;
+  background: #0891b2;
   color: #fff;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .uploadButton:hover {
-  background: #2563eb;
+  background: #0e7490;
 }
 
 .uploadButton.disabled {
-  background: #94a3b8;
+  background: #a5f3fc;
   cursor: not-allowed;
 }
 
@@ -467,22 +506,22 @@
 
 .downloadButton {
   padding: 3px 10px;
-  background: #10b981;
+  background: #6366f1;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .downloadButton:hover {
-  background: #059669;
+  background: #4f46e5;
 }
 
 .deleteButton {
   padding: 3px 10px;
-  background: #ef4444;
+  background: #e11d48;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -492,7 +531,7 @@
 }
 
 .deleteButton:hover {
-  background: #dc2626;
+  background: #be123c;
 }
 
 .loadingText,
