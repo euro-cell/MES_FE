@@ -97,20 +97,25 @@
 }
 
 .modalActions .cancelBtn {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  background: #475569;
+  color: white;
+  border: none;
 }
 
 .cancelBtn {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  background: #475569;
+  color: white;
+  border: none;
 }
 
 .modalActions button:not(.cancelBtn) {
   background: #1d4ed8;
   color: #fff;
+}
+
+.modalActions .cancelBtn:hover {
+  background: #334155;
+  opacity: 1;
 }
 
 /* Edit Modal Specific */
