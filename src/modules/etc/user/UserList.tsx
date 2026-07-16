@@ -130,14 +130,10 @@ export default function UserList() {
                   </td>
                   <td>{new Date(u.createdAt).toLocaleDateString()}</td>
                   <td>
-                    <button className={styles.btnSecondary} onClick={() => handleEdit(u)}>
+                    <button className={styles.btnEdit} onClick={() => handleEdit(u)}>
                       수정
                     </button>
-                    <button
-                      className={styles.btnSecondary}
-                      onClick={() => handlePasswordChange(u)}
-                      style={{ backgroundColor: '#3b82f6', borderColor: '#3b82f6' }}
-                    >
+                    <button className={styles.btnAccent} onClick={() => handlePasswordChange(u)}>
                       비밀번호
                     </button>
                     <button className={styles.btnDanger} onClick={() => handleDelete(u.id)}>
