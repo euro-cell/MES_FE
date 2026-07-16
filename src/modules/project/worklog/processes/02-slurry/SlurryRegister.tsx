@@ -120,13 +120,6 @@ export default function SlurryRegister() {
       solidContent1Percentage: '= (고형분1 Dry중량 - 고형분1 Dish중량) / (고형분1 Slurry중량 - 고형분1 Dish중량) × 100',
       solidContent2Percentage: '= (고형분2 Dry중량 - 고형분2 Dish중량) / (고형분2 Slurry중량 - 고형분2 Dish중량) × 100',
       solidContent3Percentage: '= (고형분3 Dry중량 - 고형분3 Dish중량) / (고형분3 Slurry중량 - 고형분3 Dish중량) × 100',
-      pdMixer1SolidContent1: '= SUM(투입량1 × Binder Solution) / SUM(투입량1)',
-      pdMixer1SolidContent2: '= (투입량1 × Binder Solution + 투입량2) / (투입량1 + 투입량2)',
-      pdMixer1SolidContent3: '= (투입량1 × Binder Solution + 투입량2 + 투입량3) / (투입량1~3)',
-      pdMixer1SolidContent4: '= (투입량1 × Binder Solution + 투입량2~4) / (투입량1~4)',
-      pdMixer1SolidContent5: '= (투입량1 × Binder Solution + 투입량2~5) / (투입량1~5)',
-      pdMixer1SolidContent6: '= (투입량1 × Binder Solution + 투입량2~5) / (투입량1~6)',
-      pdMixer2SolidContent1: '= (PD1투입량1 × Binder Solution + PD1투입량2~5) / (PD1투입량1~6 + PD2투입량1)',
       // 용매 자동계산
       solventTotalPlannedInput: '= 원료1 투입량설계 / 원료1 조성(%) / Solid Content - 원료1 투입량설계 / 원료1 조성(%)',
       solventAddPlannedInput: '= 용매 총량설계 - 바인더 투입량설계 × (1 - Binder Solution)',
@@ -192,62 +185,6 @@ export default function SlurryRegister() {
           { field: 'solidContent3Dry', label: 'Dry중량', color: COLORS.blue },
           { field: 'solidContent3Dish', label: 'Dish중량', color: COLORS.green },
           { field: 'solidContent3Slurry', label: 'Slurry중량', color: COLORS.orange },
-        ],
-      },
-      pdMixer1SolidContent1: {
-        formula: '= SUM(투입량1 × Binder Solution) / SUM(투입량1)',
-        refs: [
-          { field: 'pdMixer1Input1', label: '투입량1', color: COLORS.blue },
-          { field: 'binderSolution', label: 'Binder Solution', color: COLORS.green },
-        ],
-      },
-      pdMixer1SolidContent2: {
-        formula: '= (투입량1 × Binder Solution + 투입량2) / (투입량1 + 투입량2)',
-        refs: [
-          { field: 'pdMixer1Input1', label: '투입량1', color: COLORS.blue },
-          { field: 'binderSolution', label: 'Binder Solution', color: COLORS.green },
-          { field: 'pdMixer1Input2', label: '투입량2', color: COLORS.orange },
-        ],
-      },
-      pdMixer1SolidContent3: {
-        formula: '= (투입량1 × Binder Solution + 투입량2 + 투입량3) / (투입량1~3)',
-        refs: [
-          { field: 'pdMixer1Input1', label: '투입량1', color: COLORS.blue },
-          { field: 'binderSolution', label: 'Binder Solution', color: COLORS.green },
-          { field: 'pdMixer1Input2', label: '투입량2', color: COLORS.orange },
-          { field: 'pdMixer1Input3', label: '투입량3', color: COLORS.purple },
-        ],
-      },
-      pdMixer1SolidContent4: {
-        formula: '= (투입량1 × Binder Solution + 투입량2~4) / (투입량1~4)',
-        refs: [
-          { field: 'pdMixer1Input1', label: '투입량1', color: COLORS.blue },
-          { field: 'binderSolution', label: 'Binder Solution', color: COLORS.green },
-          { field: 'pdMixer1Input4', label: '투입량4', color: COLORS.orange },
-        ],
-      },
-      pdMixer1SolidContent5: {
-        formula: '= (투입량1 × Binder Solution + 투입량2~5) / (투입량1~5)',
-        refs: [
-          { field: 'pdMixer1Input1', label: '투입량1', color: COLORS.blue },
-          { field: 'binderSolution', label: 'Binder Solution', color: COLORS.green },
-          { field: 'pdMixer1Input5', label: '투입량5', color: COLORS.orange },
-        ],
-      },
-      pdMixer1SolidContent6: {
-        formula: '= (투입량1 × Binder Solution + 투입량2~5) / (투입량1~6)',
-        refs: [
-          { field: 'pdMixer1Input1', label: '투입량1', color: COLORS.blue },
-          { field: 'binderSolution', label: 'Binder Solution', color: COLORS.green },
-          { field: 'pdMixer1Input6', label: '투입량6', color: COLORS.orange },
-        ],
-      },
-      pdMixer2SolidContent1: {
-        formula: '= (PD1투입량1 × Binder Solution + PD1투입량2~5) / (PD1투입량1~6 + PD2투입량1)',
-        refs: [
-          { field: 'pdMixer1Input1', label: 'PD1투입량1', color: COLORS.blue },
-          { field: 'binderSolution', label: 'Binder Solution', color: COLORS.green },
-          { field: 'pdMixer2Input1', label: 'PD2투입량1', color: COLORS.orange },
         ],
       },
       // 용매 총량 자동계산
@@ -432,101 +369,6 @@ export default function SlurryRegister() {
               );
             }
           }
-        }
-      }
-
-      // 바인더 행, 도전재 행, 활물질(양극재/음극재) 행 찾기
-      let binderRow = 0;
-      const conductorRows: number[] = [];
-      const electrodeRows: number[] = [];
-      for (let i = 1; i <= 6; i++) {
-        const materialName = newValues[`material${i}Name`];
-        if (materialName === '바인더') {
-          binderRow = i;
-        } else if (materialName === '도전재') {
-          conductorRows.push(i);
-        } else if (materialName === '양극재' || materialName === '음극재') {
-          electrodeRows.push(i);
-        }
-      }
-
-      const conductor1Row = conductorRows[0] || 0;
-      const conductor2Row = conductorRows[1] || 0;
-      const electrode1Row = electrodeRows[0] || 0;
-      const electrode2Row = electrodeRows[1] || 0;
-
-      // pdMixer1SolidContent1~6, pdMixer2Input1, pdMixer2SolidContent1 자동계산
-      const pdMixer1InputTriggers = [
-        'pdMixer1Input1', 'pdMixer1Input2', 'pdMixer1Input3', 'pdMixer1Input4', 'pdMixer1Input5', 'pdMixer1Input6',
-        'pdMixer2Input1', 'pdMixer2InputRate1',
-        'binderSolution',
-        'pdMixer1InputRate1', 'pdMixer1InputRate2', 'pdMixer1InputRate3', 'pdMixer1InputRate4', 'pdMixer1InputRate5', 'pdMixer1InputRate6',
-        'material1PlannedInput', 'material2PlannedInput',
-        'solventAddPlannedInput', 'solventTotalPlannedInput', 'solidContent', 'material1Composition',
-      ];
-      if (binderRow > 0) pdMixer1InputTriggers.push(`material${binderRow}PlannedInput`);
-      if (conductor1Row > 0) pdMixer1InputTriggers.push(`material${conductor1Row}PlannedInput`);
-      if (conductor2Row > 0) pdMixer1InputTriggers.push(`material${conductor2Row}PlannedInput`);
-      if (electrode1Row > 0) pdMixer1InputTriggers.push(`material${electrode1Row}PlannedInput`);
-      if (electrode2Row > 0) pdMixer1InputTriggers.push(`material${electrode2Row}PlannedInput`);
-
-      const shouldRecalcPdMixer1SolidContent = pdMixer1InputTriggers.includes(rangeName);
-      if (shouldRecalcPdMixer1SolidContent) {
-        const input1 = parseFloat(newValues.pdMixer1Input1) || 0;
-        const input2 = parseFloat(newValues.pdMixer1Input2) || 0;
-        const input3 = parseFloat(newValues.pdMixer1Input3) || 0;
-        const input4 = parseFloat(newValues.pdMixer1Input4) || 0;
-        const input5 = parseFloat(newValues.pdMixer1Input5) || 0;
-        const binderSol = parseFloat(newValues.binderSolution);
-
-        // pdMixer1SolidContent1: = SUM(input1 * binderSolution) / SUM(input1) = binderSolution
-        if (input1 > 0 && !isNaN(binderSol)) {
-          newValues.pdMixer1SolidContent1 = binderSol;
-        }
-
-        // pdMixer1SolidContent2: = (input1 * binderSolution + input2) / (input1 + input2)
-        if (input1 > 0 && input2 > 0 && !isNaN(binderSol)) {
-          const sumInputs = input1 + input2;
-          const weightedSum = input1 * binderSol + input2;
-          newValues.pdMixer1SolidContent2 = Number((weightedSum / sumInputs).toFixed(4));
-        }
-
-        // pdMixer1SolidContent3: = (input1 * binderSolution + input2 + input3) / (input1 + input2 + input3)
-        if (input1 > 0 && input2 > 0 && input3 > 0 && !isNaN(binderSol)) {
-          const sumInputs = input1 + input2 + input3;
-          const weightedSum = input1 * binderSol + input2 + input3;
-          newValues.pdMixer1SolidContent3 = Number((weightedSum / sumInputs).toFixed(4));
-        }
-
-        // pdMixer1SolidContent4: = (input1 * binderSolution + input2 + input3 + input4) / (input1 + input2 + input3 + input4)
-        if (input1 > 0 && input2 > 0 && input3 > 0 && input4 > 0 && !isNaN(binderSol)) {
-          const sumInputs = input1 + input2 + input3 + input4;
-          const weightedSum = input1 * binderSol + input2 + input3 + input4;
-          newValues.pdMixer1SolidContent4 = Number((weightedSum / sumInputs).toFixed(4));
-        }
-
-        // pdMixer1SolidContent5: = (input1 * binderSolution + input2 + input3 + input4 + input5) / (input1 + ... + input5)
-        if (input1 > 0 && input2 > 0 && input3 > 0 && input4 > 0 && input5 > 0 && !isNaN(binderSol)) {
-          const sumInputs = input1 + input2 + input3 + input4 + input5;
-          const weightedSum = input1 * binderSol + input2 + input3 + input4 + input5;
-          newValues.pdMixer1SolidContent5 = Number((weightedSum / sumInputs).toFixed(4));
-        }
-
-        // pdMixer1SolidContent6: = (input1 * binderSolution + input2 + input3 + input4 + input5) / (input1 + ... + input6)
-        // 분자는 input1~5까지, 분모는 input1~6까지 (용매는 분자에 포함 안됨)
-        const input6 = parseFloat(newValues.pdMixer1Input6) || 0;
-        if (input1 > 0 && input6 > 0 && !isNaN(binderSol)) {
-          const sumInputs = input1 + input2 + input3 + input4 + input5 + input6;
-          const weightedSum = input1 * binderSol + input2 + input3 + input4 + input5;
-          newValues.pdMixer1SolidContent6 = Number((weightedSum / sumInputs).toFixed(4));
-        }
-
-        // pdMixer2SolidContent1: = (input1 * binderSolution + input2~5) / (pdMixer1Input1~6 + pdMixer2Input1)
-        const pdMixer2Input1Val = parseFloat(newValues.pdMixer2Input1) || 0;
-        if (input1 > 0 && pdMixer2Input1Val > 0 && !isNaN(binderSol)) {
-          const sumInputs = input1 + input2 + input3 + input4 + input5 + input6 + pdMixer2Input1Val;
-          const weightedSum = input1 * binderSol + input2 + input3 + input4 + input5;
-          newValues.pdMixer2SolidContent1 = Number((weightedSum / sumInputs).toFixed(4));
         }
       }
 
