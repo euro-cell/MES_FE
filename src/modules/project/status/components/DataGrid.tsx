@@ -350,42 +350,48 @@ export default function DataGrid({ data, year, month, onTargetChange }: DataGrid
     }, 0);
   };
 
-  // target이 있는 공정만 output/target 합산하여 진행률 계산
-  const calculateProgressOnlyOutput = (): number => {
-    return processesToRender.reduce((sum, [key, processData]) => {
-      if (!processData) return sum;
+  // 공정별 progress(%)의 평균으로 전체 진행률을 계산 (공정마다 생산량 단위가 달라 output/target 합산 방식은 사용 불가)
+  const calculateOverallProgressAverage = (): number => {
+    const rates: number[] = [];
+
+    processesToRender.forEach(([key, processData]) => {
+      if (!processData) return;
       if (isVDProcess(key) && isVDProcessData(processData)) {
         const vd = processData as VDProcessData;
-        let s = sum;
-        if (vd.total.cathode.targetQuantity) s += vd.total.cathode.totalOutput;
-        if (vd.total.anode.targetQuantity) s += vd.total.anode.totalOutput;
-        return s;
+        if (vd.total.cathode.targetQuantity && vd.total.cathode.progress !== null) rates.push(vd.total.cathode.progress);
+        if (vd.total.anode.targetQuantity && vd.total.anode.progress !== null) rates.push(vd.total.anode.progress);
+        return;
       }
       if (isFormingProcess(key) && isFormingProcessData(processData)) {
         const forming = processData as FormingProcessData;
-        return (processData as FormingProcessData).targetQuantity
-          ? sum + FORMING_SUBTYPES.reduce((s, subType) => s + forming[subType].total.totalOutput, 0)
-          : sum;
+        if (forming.targetQuantity && forming.progress !== null) rates.push(forming.progress);
+        return;
       }
       if (isStackingProcess(key) && isStackingProcessData(processData)) {
         const pd = processData as StackingProcessData;
-        return pd.total.targetQuantity ? sum + pd.total.totalOutput : sum;
+        if (pd.total.targetQuantity && pd.total.progress !== null) rates.push(pd.total.progress);
+        return;
       }
       if (isWeldingProcess(key) && isWeldingProcessData(processData)) {
         const pd = processData as WeldingProcessData;
-        return pd.total.targetQuantity ? sum + pd.total.totalOutput : sum;
+        if (pd.total.targetQuantity && pd.total.progress !== null) rates.push(pd.total.progress);
+        return;
       }
       if (isSealingProcess(key) && isSealingProcessData(processData)) {
         const pd = processData as SealingProcessData;
-        return pd.total.targetQuantity ? sum + pd.total.totalOutput : sum;
+        if (pd.total.targetQuantity && pd.total.progress !== null) rates.push(pd.total.progress);
+        return;
       }
       if (isVisualInspectionProcess(key) && isVisualInspectionProcessData(processData)) {
         const pd = processData as VisualInspectionProcessData;
-        return pd.total.targetQuantity ? sum + pd.total.totalOutput : sum;
+        if (pd.total.targetQuantity && pd.total.progress !== null) rates.push(pd.total.progress);
+        return;
       }
       const pd = processData as ProcessData;
-      return pd.total.targetQuantity ? sum + (pd.total.totalOutput || 0) : sum;
-    }, 0);
+      if (pd.total.targetQuantity && pd.total.progress !== null) rates.push(pd.total.progress);
+    });
+
+    return rates.length > 0 ? rates.reduce((sum, rate) => sum + rate, 0) / rates.length : 0;
   };
 
   // NG 데이터가 있는 공정만 output/ng 합산하여 수율 계산
@@ -427,10 +433,9 @@ export default function DataGrid({ data, year, month, onTargetChange }: DataGrid
 
   const totalNG = calculateTotalNG();
   const totalTarget = calculateTotalTarget();
-  const progressOnlyOutput = calculateProgressOnlyOutput();
   const yieldOnlyOutput = calculateYieldOnlyOutput();
   const overallYield = yieldOnlyOutput > 0 ? ((yieldOnlyOutput - totalNG) / yieldOnlyOutput) * 100 : 0;
-  const overallProgress = totalTarget > 0 ? (progressOnlyOutput / totalTarget) * 100 : 0;
+  const overallProgress = calculateOverallProgressAverage();
 
   return (
     <div className={styles.gridContainer}>

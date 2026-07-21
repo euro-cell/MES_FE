@@ -49,20 +49,16 @@ export default function ProductionStatusGrid({ data }: ProductionStatusGridProps
     return totalProduction > 0 ? ((totalProduction - totalNG) / totalProduction) * 100 : 0;
   };
 
-  // 전체 진행률 계산
+  // 전체 진행률 계산 (공정별 진행률의 평균 - 공정마다 생산량 단위가 달라 합산 방식은 사용 불가)
   const calculateOverallProgress = (): number => {
-    let totalProduction = 0;
-    let totalTarget = 0;
+    const rates = data.processes
+      .filter(process => process.targetQuantity)
+      .map(process => {
+        const processProduction = process.subItems.reduce((sum, item) => sum + item.totalProduction, 0);
+        return (processProduction / process.targetQuantity!) * 100;
+      });
 
-    data.processes.forEach(process => {
-      const processProduction = process.subItems.reduce((sum, item) => sum + item.totalProduction, 0);
-      totalProduction += processProduction;
-      if (process.targetQuantity) {
-        totalTarget += process.targetQuantity;
-      }
-    });
-
-    return totalTarget > 0 ? (totalProduction / totalTarget) * 100 : 0;
+    return rates.length > 0 ? rates.reduce((sum, rate) => sum + rate, 0) / rates.length : 0;
   };
 
   return (
