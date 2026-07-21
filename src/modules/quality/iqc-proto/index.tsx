@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { uploadIQCProtoXlsx } from '../../../api/quality/IQCProtoService';
+import { uploadIQCProtoXlsx, exportIQCProtoXlsx } from '../../../api/quality/IQCProtoService';
 import { getErrorMessage } from '../../../api/errorHandler';
 import '@univerjs/preset-sheets-core/lib/index.css';
 import '@univerjs/preset-sheets-drawing/lib/index.css';
@@ -55,6 +55,7 @@ export default function IQCProtoIndex() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [toggles, setToggles] = useState<UIToggles>(loadStoredToggles);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -131,6 +132,33 @@ export default function IQCProtoIndex() {
     }
   };
 
+  const handleExport = async () => {
+    const univerAPI = univerRef.current?.univerAPI;
+    if (!univerAPI) return;
+
+    setIsExporting(true);
+    setErrorMsg('');
+
+    try {
+      const workbookData = univerAPI.getActiveWorkbook().save();
+      const { blob, filename } = await exportIQCProtoXlsx(workbookData);
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('IQC Proto xlsx 내보내기 실패:', err);
+      setErrorMsg(getErrorMessage(err, 'xlsx 내보내기에 실패했습니다.'));
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div style={{ padding: 16 }}>
       <h2>IQC 프로토타입 (Univer, 검증용)</h2>
@@ -139,7 +167,26 @@ export default function IQCProtoIndex() {
         값/서식/PNG·JPEG 이미지는 재현되지만 EMF 이미지와 PDF 첨부(OLE 임베디드 객체)는 재현되지 않습니다.
       </p>
 
-      <input type='file' accept='.xlsx' onChange={handleFileChange} disabled={status === 'loading'} />
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <input type='file' accept='.xlsx' onChange={handleFileChange} disabled={status === 'loading'} />
+        <button
+          type='button'
+          onClick={handleExport}
+          disabled={status !== 'ready' || isExporting}
+          title={status !== 'ready' ? '파일을 먼저 업로드해주세요' : undefined}
+          style={{
+            padding: '6px 14px',
+            fontSize: 13,
+            borderRadius: 6,
+            border: '1px solid #16a34a',
+            background: status !== 'ready' || isExporting ? '#f3f4f6' : '#f0fdf4',
+            color: status !== 'ready' || isExporting ? '#9ca3af' : '#16a34a',
+            cursor: status !== 'ready' || isExporting ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {isExporting ? '내보내는 중...' : '엑셀로 내보내기'}
+        </button>
+      </div>
 
       <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
         {(Object.keys(TOGGLE_LABELS) as (keyof UIToggles)[]).map(key => {

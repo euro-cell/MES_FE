@@ -19,3 +19,24 @@ export const uploadIQCProtoXlsx = async (file: File): Promise<Record<string, unk
 
   return res.data.workbookData;
 };
+
+/** IQC 프로토타입: 워크북 JSON → Univer CLI로 xlsx 변환 → { blob, filename } 반환 */
+export const exportIQCProtoXlsx = async (
+  workbookData: Record<string, unknown>
+): Promise<{ blob: Blob; filename: string }> => {
+  const res = await axios.post(
+    `${API_BASE}/quality/iqc-proto/export`,
+    { workbookData },
+    {
+      withCredentials: true,
+      responseType: 'blob',
+      timeout: 120000,
+    }
+  );
+
+  const disposition = res.headers['content-disposition'] as string | undefined;
+  const match = disposition?.match(/filename="?([^"]+)"?/);
+  const filename = match?.[1] ?? 'export.xlsx';
+
+  return { blob: res.data as Blob, filename };
+};
