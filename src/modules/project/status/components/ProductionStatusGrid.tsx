@@ -1,5 +1,5 @@
 import { getDaysInMonth } from '../utils/dateUtils';
-import * as holidaysKr from '@hyunbinseo/holidays-kr';
+import * as holidaysKr from '@hyunbinseo/holidays-kr/all';
 import type { MonthlyStatusData, ProcessMonthlyData } from '../StatusTypes';
 import styles from '../../../../styles/project/status/ProductionStatusGrid.module.css';
 
