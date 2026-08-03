@@ -3,6 +3,7 @@ import {
   uploadIQCProtoXlsx,
   exportIQCProtoXlsx,
   getLatestIQCProtoWorkbook,
+  fetchWorkbookDataFromUrl,
 } from '../../../api/quality/IQCProtoService';
 import { getErrorMessage } from '../../../api/errorHandler';
 import '@univerjs/preset-sheets-core/lib/index.css';
@@ -59,6 +60,7 @@ function loadStoredToggles(): UIToggles {
  * 버튼으로 켜고 끌 수 있음.
  * 실제 서비스 메뉴가 아니며 검증이 끝나면 폴더째로 삭제 가능.
  * 백엔드: POST /quality/iqc-proto/upload (multipart, xlsx) -> { workbookData }
+ * GET /quality/iqc-proto/latest -> { workbookDataUrl } (RustFS presigned URL, 본문은 별도 fetch 필요)
  */
 export default function IQCProtoIndex() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -82,9 +84,12 @@ export default function IQCProtoIndex() {
         const latest = await getLatestIQCProtoWorkbook();
         if (cancelled) return;
 
-        if (latest.workbookData) {
-          workbookDataRef.current = latest.workbookData;
-          await renderWorkbook(latest.workbookData, toggles);
+        if (latest.workbookDataUrl) {
+          const workbookData = await fetchWorkbookDataFromUrl(latest.workbookDataUrl);
+          if (cancelled) return;
+
+          workbookDataRef.current = workbookData;
+          await renderWorkbook(workbookData, toggles);
           if (latest.fileName && latest.uploadedAt) {
             setSavedInfo({ fileName: latest.fileName, uploadedAt: latest.uploadedAt });
           }
