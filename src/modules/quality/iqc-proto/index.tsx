@@ -10,6 +10,12 @@ interface UIToggles {
   footer: boolean;
   formulaBar: boolean;
   contextMenu: boolean;
+  customSheetTabs: boolean;
+}
+
+interface SheetTabInfo {
+  sheetId: string;
+  name: string;
 }
 
 const DEFAULT_TOGGLES: UIToggles = {
@@ -18,6 +24,7 @@ const DEFAULT_TOGGLES: UIToggles = {
   footer: true,
   formulaBar: true,
   contextMenu: true,
+  customSheetTabs: true,
 };
 
 const TOGGLE_LABELS: Record<keyof UIToggles, string> = {
@@ -26,6 +33,7 @@ const TOGGLE_LABELS: Record<keyof UIToggles, string> = {
   footer: '시트탭/푸터',
   formulaBar: '수식 입력줄',
   contextMenu: '우클릭 메뉴',
+  customSheetTabs: '커스텀 시트 메뉴',
 };
 
 const TOGGLES_STORAGE_KEY = 'xlsxUiToggles';
@@ -56,12 +64,28 @@ export default function IQCProtoIndex() {
   const [errorMsg, setErrorMsg] = useState('');
   const [toggles, setToggles] = useState<UIToggles>(loadStoredToggles);
   const [isExporting, setIsExporting] = useState(false);
+  const [sheetTabs, setSheetTabs] = useState<SheetTabInfo[]>([]);
+  const [activeSheetId, setActiveSheetId] = useState<string | null>(null);
 
   useEffect(() => {
     return () => {
       univerRef.current?.univer?.dispose?.();
     };
   }, []);
+
+  const syncSheetTabs = () => {
+    const fWorkbook = univerRef.current?.univerAPI?.getActiveWorkbook?.();
+    if (!fWorkbook) return;
+    const sheets = fWorkbook
+      .getSheets()
+      .filter((sheet: any) => !sheet.isSheetHidden())
+      .map((sheet: any) => ({
+        sheetId: sheet.getSheetId(),
+        name: sheet.getSheetName(),
+      }));
+    setSheetTabs(sheets);
+    setActiveSheetId(fWorkbook.getActiveSheet()?.getSheetId() ?? null);
+  };
 
   const renderWorkbook = async (workbookData: Record<string, unknown>, uiToggles: UIToggles) => {
     if (!containerRef.current) return;
@@ -92,7 +116,14 @@ export default function IQCProtoIndex() {
     });
 
     univerRef.current = { univer, univerAPI };
-    univerAPI.createWorkbook(workbookData);
+    const fWorkbook = univerAPI.createWorkbook(workbookData);
+
+    fWorkbook.onCommandExecuted((command: { id: string }) => {
+      if (command.id === 'sheet.operation.set-worksheet-active') {
+        syncSheetTabs();
+      }
+    });
+    syncSheetTabs();
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,9 +158,23 @@ export default function IQCProtoIndex() {
 
     setToggles(next);
     localStorage.setItem(TOGGLES_STORAGE_KEY, JSON.stringify(next));
+
+    // customSheetTabs는 Univer 프리셋 옵션이 아니라 화면에 커스텀 메뉴를 그릴지 여부일 뿐이라
+    // 워크북 재생성 없이 즉시 반영됨
+    if (key === 'customSheetTabs') return;
+
     if (workbookDataRef.current) {
       await renderWorkbook(workbookDataRef.current, next);
     }
+  };
+
+  const handleSheetTabClick = (sheetId: string) => {
+    const fWorkbook = univerRef.current?.univerAPI?.getActiveWorkbook?.();
+    if (!fWorkbook) return;
+    const sheet = fWorkbook.getSheetBySheetId(sheetId);
+    if (!sheet) return;
+    fWorkbook.setActiveSheet(sheet);
+    syncSheetTabs();
   };
 
   const handleExport = async () => {
@@ -229,7 +274,53 @@ export default function IQCProtoIndex() {
       {status === 'loading' && <p>업로드 및 변환 중... (파일 크기에 따라 다소 걸릴 수 있습니다)</p>}
       {status === 'error' && <p style={{ color: 'crimson' }}>오류: {errorMsg}</p>}
 
-      <div ref={containerRef} style={{ width: '100%', height: '80vh', marginTop: 16, border: '1px solid #ddd' }} />
+      {toggles.customSheetTabs && sheetTabs.length > 0 && (
+        <div
+          style={{
+            display: 'flex',
+            gap: 6,
+            marginTop: 16,
+            padding: '8px 8px 0',
+            flexWrap: 'wrap',
+            borderBottom: '1px solid #ddd',
+          }}
+        >
+          {sheetTabs.map(tab => {
+            const isActive = tab.sheetId === activeSheetId;
+            return (
+              <button
+                key={tab.sheetId}
+                type='button'
+                onClick={() => handleSheetTabClick(tab.sheetId)}
+                style={{
+                  padding: '6px 14px',
+                  fontSize: 13,
+                  borderRadius: '6px 6px 0 0',
+                  border: '1px solid ' + (isActive ? '#2563eb' : '#d1d5db'),
+                  borderBottom: isActive ? '1px solid #fff' : '1px solid #d1d5db',
+                  marginBottom: -1,
+                  background: isActive ? '#fff' : '#f9fafb',
+                  color: isActive ? '#2563eb' : '#374151',
+                  cursor: 'pointer',
+                  fontWeight: isActive ? 600 : 400,
+                }}
+              >
+                {tab.name}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      <div
+        ref={containerRef}
+        style={{
+          width: '100%',
+          height: '80vh',
+          marginTop: toggles.customSheetTabs && sheetTabs.length > 0 ? 0 : 16,
+          border: '1px solid #ddd',
+        }}
+      />
     </div>
   );
 }
