@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { uploadIQCProtoXlsx, exportIQCProtoXlsx } from '../../../api/quality/IQCProtoService';
+import {
+  uploadIQCProtoXlsx,
+  exportIQCProtoXlsx,
+  getLatestIQCProtoWorkbook,
+} from '../../../api/quality/IQCProtoService';
 import { getErrorMessage } from '../../../api/errorHandler';
 import '@univerjs/preset-sheets-core/lib/index.css';
 import '@univerjs/preset-sheets-drawing/lib/index.css';
@@ -66,11 +70,43 @@ export default function IQCProtoIndex() {
   const [isExporting, setIsExporting] = useState(false);
   const [sheetTabs, setSheetTabs] = useState<SheetTabInfo[]>([]);
   const [activeSheetId, setActiveSheetId] = useState<string | null>(null);
+  const [savedInfo, setSavedInfo] = useState<{ fileName: string; uploadedAt: string } | null>(null);
+  const [isFetchingInitial, setIsFetchingInitial] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      setStatus('loading');
+      try {
+        const latest = await getLatestIQCProtoWorkbook();
+        if (cancelled) return;
+
+        if (latest.workbookData) {
+          workbookDataRef.current = latest.workbookData;
+          await renderWorkbook(latest.workbookData, toggles);
+          if (latest.fileName && latest.uploadedAt) {
+            setSavedInfo({ fileName: latest.fileName, uploadedAt: latest.uploadedAt });
+          }
+          setStatus('ready');
+        } else {
+          setStatus('idle');
+        }
+      } catch (err) {
+        if (cancelled) return;
+        console.error('IQC Proto 저장된 워크북 조회 실패:', err);
+        setErrorMsg(getErrorMessage(err, '저장된 워크북을 불러오지 못했습니다.'));
+        setStatus('error');
+      } finally {
+        if (!cancelled) setIsFetchingInitial(false);
+      }
+    })();
+
     return () => {
+      cancelled = true;
       univerRef.current?.univer?.dispose?.();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const syncSheetTabs = () => {
@@ -137,6 +173,7 @@ export default function IQCProtoIndex() {
       const workbookData = await uploadIQCProtoXlsx(file);
       workbookDataRef.current = workbookData;
       await renderWorkbook(workbookData, toggles);
+      setSavedInfo({ fileName: file.name, uploadedAt: new Date().toISOString() });
       setStatus('ready');
     } catch (err) {
       console.error('IQC Proto xlsx 업로드/렌더링 실패:', err);
@@ -212,6 +249,12 @@ export default function IQCProtoIndex() {
         값/서식/PNG·JPEG 이미지는 재현되지만 EMF 이미지와 PDF 첨부(OLE 임베디드 객체)는 재현되지 않습니다.
       </p>
 
+      {savedInfo && (
+        <p style={{ color: '#888', fontSize: 12, marginTop: -8 }}>
+          현재 표시 중: {savedInfo.fileName} (업로드: {new Date(savedInfo.uploadedAt).toLocaleString()})
+        </p>
+      )}
+
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <input type='file' accept='.xlsx' onChange={handleFileChange} disabled={status === 'loading'} />
         <button
@@ -271,7 +314,13 @@ export default function IQCProtoIndex() {
         })}
       </div>
 
-      {status === 'loading' && <p>업로드 및 변환 중... (파일 크기에 따라 다소 걸릴 수 있습니다)</p>}
+      {status === 'loading' && (
+        <p>
+          {isFetchingInitial
+            ? '서버에 저장된 워크북을 불러오는 중...'
+            : '업로드 및 변환 중... (파일 크기에 따라 다소 걸릴 수 있습니다)'}
+        </p>
+      )}
       {status === 'error' && <p style={{ color: 'crimson' }}>오류: {errorMsg}</p>}
 
       {toggles.customSheetTabs && sheetTabs.length > 0 && (

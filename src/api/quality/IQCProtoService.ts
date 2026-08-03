@@ -6,6 +6,12 @@ interface IQCProtoUploadResponse {
   workbookData: Record<string, unknown>;
 }
 
+interface IQCProtoLatestResponse {
+  workbookData: Record<string, unknown> | null;
+  fileName?: string;
+  uploadedAt?: string;
+}
+
 /** IQC 프로토타입: xlsx 업로드 → Univer CLI 변환 → 워크북 JSON(IWorkbookData) 반환 */
 export const uploadIQCProtoXlsx = async (file: File): Promise<Record<string, unknown>> => {
   const formData = new FormData();
@@ -18,6 +24,15 @@ export const uploadIQCProtoXlsx = async (file: File): Promise<Record<string, unk
   });
 
   return res.data.workbookData;
+};
+
+/** IQC 프로토타입: 서버에 마지막으로 저장된 워크북 조회 (없으면 workbookData: null) */
+export const getLatestIQCProtoWorkbook = async (): Promise<IQCProtoLatestResponse> => {
+  const res = await axios.get<IQCProtoLatestResponse>(`${API_BASE}/quality/iqc-proto/latest`, {
+    withCredentials: true,
+  });
+
+  return res.data;
 };
 
 /** IQC 프로토타입: 워크북 JSON → Univer CLI로 xlsx 변환 → { blob, filename } 반환 */
