@@ -41,7 +41,7 @@ const TOGGLE_LABELS: Record<keyof UIToggles, string> = {
   customSheetTabs: '커스텀 시트 메뉴',
 };
 
-const TOGGLES_STORAGE_KEY = 'xlsxUiToggles';
+const TOGGLES_STORAGE_KEY = 'xlsx_ui_toggles';
 
 function loadStoredToggles(): UIToggles {
   try {
