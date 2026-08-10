@@ -5,6 +5,7 @@ import { getMaterialsByCategory, getMaterialLots } from '../../../../api/materia
 import { uploadIQCImages, deleteIQCImage } from '../../../../api/quality/IQCService';
 import { getErrorMessage } from '../../../../api/errorHandler';
 import ImageLightbox from '../components/ImageLightbox';
+import WorkbookAttachment from '../components/WorkbookAttachment';
 
 const IMAGE_TYPES = ['모식도면'];
 
@@ -445,6 +446,8 @@ const LeadTabTable: React.FC<LeadTabTableProps> = ({ data, onSave }) => {
       </div>
 
       {lightboxSrc && <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />}
+
+      <WorkbookAttachment iqcId={data?.id} />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import type { IQCItem, IQCResult, IQCCoaRef } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
+import WorkbookAttachment from '../components/WorkbookAttachment';
 
 interface SeparatorTableProps {
   data?: IQCItem;
@@ -362,6 +363,8 @@ const SeparatorTable: React.FC<SeparatorTableProps> = ({ data, onSave }) => {
           <pre className={styles.remarkContent}>{editData.remark || '비고 없음'}</pre>
         )}
       </div>
+
+      <WorkbookAttachment iqcId={data?.id} />
     </div>
   );
 };
