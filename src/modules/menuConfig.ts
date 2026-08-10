@@ -31,6 +31,7 @@ export const MENU_CONFIG = {
       { title: 'LQC', path: '/quality/lqc' },
       { title: 'OQC', path: '/quality/oqc' },
       { title: 'IQC Proto', path: '/quality/iqc-proto' },
+      { title: 'IQC Proto2', path: '/quality/iqc-proto2' },
     ],
   },
 
