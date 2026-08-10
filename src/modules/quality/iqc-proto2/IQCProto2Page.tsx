@@ -120,9 +120,39 @@ export default function IQCProto2Page() {
     const { UniverSheetsDrawingPreset } = await import('@univerjs/preset-sheets-drawing');
     const sheetsDrawingKoKR = (await import('@univerjs/preset-sheets-drawing/locales/ko-KR')).default;
 
+    // 읽기 전용 모드 경고 문구를 뷰어 화면에 맞게 오버라이드
+    const VIEWER_ONLY_MESSAGE = '이 화면은 열람용입니다.';
+    const permissionDialogOverride = {
+      dialog: {
+        alertContent: VIEWER_ONLY_MESSAGE,
+        commonErr: VIEWER_ONLY_MESSAGE,
+        editErr: VIEWER_ONLY_MESSAGE,
+        formulaErr: VIEWER_ONLY_MESSAGE,
+        pasteErr: VIEWER_ONLY_MESSAGE,
+        setStyleErr: VIEWER_ONLY_MESSAGE,
+        copyErr: VIEWER_ONLY_MESSAGE,
+        workbookCopyErr: VIEWER_ONLY_MESSAGE,
+        setRowColStyleErr: VIEWER_ONLY_MESSAGE,
+        moveRowColErr: VIEWER_ONLY_MESSAGE,
+        moveRangeErr: VIEWER_ONLY_MESSAGE,
+        insertRowColErr: VIEWER_ONLY_MESSAGE,
+        removeRowColErr: VIEWER_ONLY_MESSAGE,
+        autoFillErr: VIEWER_ONLY_MESSAGE,
+        filterErr: VIEWER_ONLY_MESSAGE,
+        operatorSheetErr: VIEWER_ONLY_MESSAGE,
+        printErr: VIEWER_ONLY_MESSAGE,
+        hyperLinkErr: VIEWER_ONLY_MESSAGE,
+        commentErr: VIEWER_ONLY_MESSAGE,
+      },
+    };
+    const viewerLocaleOverride = {
+      sheets: { permission: permissionDialogOverride },
+      'sheets-ui': { permission: permissionDialogOverride },
+    };
+
     const { univer, univerAPI } = createUniver({
       locale: LocaleType.KO_KR,
-      locales: { [LocaleType.KO_KR]: mergeLocales(sheetsCoreKoKR, sheetsDrawingKoKR) },
+      locales: { [LocaleType.KO_KR]: mergeLocales(sheetsCoreKoKR, sheetsDrawingKoKR, viewerLocaleOverride) },
       presets: [
         UniverSheetsCorePreset({
           container: containerRef.current,
