@@ -11,56 +11,17 @@ import { getErrorMessage } from '../../../api/errorHandler';
 import type { IQCProject } from '../iqc/IQCTypes';
 import submenuStyles from '../../../styles/components/moduleIndex.module.css';
 import pageStyles from '../../../styles/quality/iqc/IQCPage.module.css';
+import fileButtonStyles from '../../../styles/stock/material/electrode.module.css';
 import '@univerjs/preset-sheets-core/lib/index.css';
 import '@univerjs/preset-sheets-drawing/lib/index.css';
-
-interface UIToggles {
-  header: boolean;
-  toolbar: boolean;
-  footer: boolean;
-  formulaBar: boolean;
-  contextMenu: boolean;
-  customSheetTabs: boolean;
-}
 
 interface SheetTabInfo {
   sheetId: string;
   name: string;
 }
 
-const DEFAULT_TOGGLES: UIToggles = {
-  header: true,
-  toolbar: true,
-  footer: true,
-  formulaBar: true,
-  contextMenu: true,
-  customSheetTabs: true,
-};
-
-const TOGGLE_LABELS: Record<keyof UIToggles, string> = {
-  header: '헤더',
-  toolbar: '리본 툴바',
-  footer: '시트탭/푸터',
-  formulaBar: '수식 입력줄',
-  contextMenu: '우클릭 메뉴',
-  customSheetTabs: '커스텀 시트 메뉴',
-};
-
-const TOGGLES_STORAGE_KEY = 'xlsx_ui_toggles';
-
-function loadStoredToggles(): UIToggles {
-  try {
-    const raw = localStorage.getItem(TOGGLES_STORAGE_KEY);
-    if (!raw) return DEFAULT_TOGGLES;
-    const parsed = JSON.parse(raw);
-    return { ...DEFAULT_TOGGLES, ...parsed };
-  } catch {
-    return DEFAULT_TOGGLES;
-  }
-}
-
 /**
- * 프로젝트에 등록된 IQC 검사 엑셀을 그대로 열람하는 화면.
+ * 프로젝트에 등록된 IQC 검사 엑셀을 그대로 열람하는 화면 (읽기 전용 뷰어).
  * 워크북이 등록되어 있으면 시트탭이 정식 메뉴처럼(submenuBar 스타일) 상단에 노출되고,
  * 클릭 시 페이지 이동 없이 해당 시트로 전환된다. 미등록 프로젝트는 업로드 화면만 표시.
  * 백엔드: POST /quality/iqc-proto2/detail/:projectId/workbook/upload
@@ -75,13 +36,11 @@ export default function IQCProto2Page() {
   const [project, setProject] = useState<IQCProject | null>(null);
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
-  const [toggles, setToggles] = useState<UIToggles>(loadStoredToggles);
   const [isExporting, setIsExporting] = useState(false);
   const [sheetTabs, setSheetTabs] = useState<SheetTabInfo[]>([]);
   const [activeSheetId, setActiveSheetId] = useState<string | null>(null);
   const [savedInfo, setSavedInfo] = useState<{ fileName: string; uploadedAt: string } | null>(null);
   const [isFetchingInitial, setIsFetchingInitial] = useState(true);
-  const [showOptions, setShowOptions] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
@@ -109,7 +68,7 @@ export default function IQCProto2Page() {
           if (cancelled) return;
 
           workbookDataRef.current = workbookData;
-          await renderWorkbook(workbookData, toggles);
+          await renderWorkbook(workbookData);
           if (latest.fileName && latest.uploadedAt) {
             setSavedInfo({ fileName: latest.fileName, uploadedAt: latest.uploadedAt });
           }
@@ -149,7 +108,7 @@ export default function IQCProto2Page() {
     setActiveSheetId(fWorkbook.getActiveSheet()?.getSheetId() ?? null);
   };
 
-  const renderWorkbook = async (workbookData: Record<string, unknown>, uiToggles: UIToggles) => {
+  const renderWorkbook = async (workbookData: Record<string, unknown>) => {
     if (!containerRef.current) return;
 
     univerRef.current?.univer?.dispose?.();
@@ -167,11 +126,11 @@ export default function IQCProto2Page() {
       presets: [
         UniverSheetsCorePreset({
           container: containerRef.current,
-          header: uiToggles.header,
-          toolbar: uiToggles.toolbar,
-          footer: uiToggles.footer ? undefined : false,
-          formulaBar: uiToggles.formulaBar,
-          contextMenu: uiToggles.contextMenu,
+          header: false,
+          toolbar: false,
+          footer: false,
+          formulaBar: false,
+          contextMenu: false,
         }),
         UniverSheetsDrawingPreset(),
       ],
@@ -179,6 +138,9 @@ export default function IQCProto2Page() {
 
     univerRef.current = { univer, univerAPI };
     const fWorkbook = univerAPI.createWorkbook(workbookData);
+
+    // 뷰어 전용: 셀 내용을 고칠 수 없도록 읽기 전용 모드로 고정
+    await fWorkbook.getWorkbookPermission().setReadOnly();
 
     fWorkbook.onCommandExecuted((command: { id: string }) => {
       if (command.id === 'sheet.operation.set-worksheet-active') {
@@ -204,7 +166,7 @@ export default function IQCProto2Page() {
     try {
       const workbookData = await uploadIQCProto2Workbook(id, file);
       workbookDataRef.current = workbookData;
-      await renderWorkbook(workbookData, toggles);
+      await renderWorkbook(workbookData);
       setSavedInfo({ fileName: file.name, uploadedAt: new Date().toISOString() });
       setStatus('ready');
     } catch (err) {
@@ -227,25 +189,6 @@ export default function IQCProto2Page() {
     if (file) await uploadFile(file);
   };
 
-  const handleToggle = async (key: keyof UIToggles) => {
-    const value = !toggles[key];
-    const next = { ...toggles, [key]: value };
-
-    if (key === 'header' && !value) {
-      next.toolbar = false;
-      next.formulaBar = false;
-    }
-
-    setToggles(next);
-    localStorage.setItem(TOGGLES_STORAGE_KEY, JSON.stringify(next));
-
-    if (key === 'customSheetTabs') return;
-
-    if (workbookDataRef.current) {
-      await renderWorkbook(workbookDataRef.current, next);
-    }
-  };
-
   const handleSheetTabClick = (sheetId: string) => {
     const fWorkbook = univerRef.current?.univerAPI?.getActiveWorkbook?.();
     if (!fWorkbook) return;
@@ -255,7 +198,7 @@ export default function IQCProto2Page() {
     syncSheetTabs();
   };
 
-  const handleExport = async () => {
+  const handleDownload = async () => {
     const univerAPI = univerRef.current?.univerAPI;
     const id = Number(projectId);
     if (!univerAPI || !id) return;
@@ -276,8 +219,8 @@ export default function IQCProto2Page() {
       a.remove();
       URL.revokeObjectURL(url);
     } catch (err) {
-      console.error('IQC Proto2 xlsx 내보내기 실패:', err);
-      setErrorMsg(getErrorMessage(err, 'xlsx 내보내기에 실패했습니다.'));
+      console.error('IQC Proto2 xlsx 다운로드 실패:', err);
+      setErrorMsg(getErrorMessage(err, 'xlsx 다운로드에 실패했습니다.'));
     } finally {
       setIsExporting(false);
     }
@@ -342,7 +285,7 @@ export default function IQCProto2Page() {
       <div style={{ display: hasWorkbook ? 'block' : 'none' }}>
         <>
           {/* 시트탭을 정식 메뉴(submenuBar)와 동일한 스타일로 렌더링. 페이지 이동 없이 로컬 상태로 시트 전환 */}
-          {toggles.customSheetTabs && sheetTabs.length > 0 && (
+          {sheetTabs.length > 0 && (
             <div className={submenuStyles.submenuWrapper}>
               <div className={submenuStyles.submenuBar}>
                 {sheetTabs.map(tab => (
@@ -357,58 +300,19 @@ export default function IQCProto2Page() {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <label className={submenuStyles.downloadBtn} style={{ cursor: 'pointer' }}>
-                  엑셀 재업로드
+                <label className={fileButtonStyles.uploadButton} style={{ cursor: 'pointer' }}>
+                  📤 엑셀 재업로드
                   <input type='file' accept='.xlsx' onChange={handleFileChange} style={{ display: 'none' }} />
                 </label>
                 <button
                   type='button'
-                  className={submenuStyles.downloadBtn}
-                  onClick={handleExport}
+                  className={fileButtonStyles.downloadButton}
+                  onClick={handleDownload}
                   disabled={isExporting}
                 >
-                  {isExporting ? '내보내는 중...' : '엑셀로 내보내기'}
-                </button>
-                <button
-                  type='button'
-                  className={submenuStyles.downloadBtn}
-                  onClick={() => setShowOptions(prev => !prev)}
-                >
-                  {showOptions ? '옵션 숨기기' : '옵션'}
+                  📥 {isExporting ? '다운로드 중...' : '엑셀 다운로드'}
                 </button>
               </div>
-            </div>
-          )}
-
-          {showOptions && (
-            <div style={{ display: 'flex', gap: 8, margin: '0 0 12px 15px', flexWrap: 'wrap' }}>
-              {(Object.keys(TOGGLE_LABELS) as (keyof UIToggles)[]).map(key => {
-                const isOn = toggles[key];
-                const isDependentOnHeader = (key === 'toolbar' || key === 'formulaBar') && !toggles.header;
-                return (
-                  <button
-                    key={key}
-                    type='button'
-                    onClick={() => {
-                      if (isDependentOnHeader) return;
-                      handleToggle(key);
-                    }}
-                    title={isDependentOnHeader ? '헤더를 먼저 켜야 사용할 수 있습니다' : undefined}
-                    style={{
-                      padding: '6px 12px',
-                      fontSize: 13,
-                      borderRadius: 6,
-                      border: '1px solid ' + (isOn ? '#2563eb' : '#d1d5db'),
-                      background: isOn ? '#eff6ff' : '#f9fafb',
-                      color: isOn ? '#2563eb' : '#6b7280',
-                      cursor: isDependentOnHeader ? 'not-allowed' : 'pointer',
-                      opacity: isDependentOnHeader ? 0.5 : 1,
-                    }}
-                  >
-                    {TOGGLE_LABELS[key]} {isOn ? 'ON' : 'OFF'}
-                  </button>
-                );
-              })}
             </div>
           )}
 
