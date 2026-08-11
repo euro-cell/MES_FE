@@ -1,58 +1,64 @@
 import { useState } from 'react';
+import { uploadIQCProto3Xlsx } from '../../../api/quality/IQCProto3Service';
+import { getErrorMessage } from '../../../api/errorHandler';
 
 /**
  * Univer CLI daemon 웹뷰어를 iframe으로 임베드하는 실험 화면.
  * 브라우저 SDK(preset-sheets-advanced) 경로는 Pro 라이선스 워터마크가 뜨지만,
- * daemon이 서빙하는 뷰어(univer open으로 얻는 URL)는 워터마크 없이 차트까지 렌더링됨을
- * 앞선 검증(로컬 daemon + Chrome DevTools 테스트)으로 확인했다. 이 화면은 그 뷰어를
- * iframe으로 감싸 우리 앱 안에 띄울 수 있는지 확인하는 목적의 임시 실험 화면이다.
+ * daemon이 서빙하는 뷰어(univer open으로 얻는 URL)는 워터마크 없이 차트/이미지까지
+ * 렌더링됨을 앞선 검증으로 확인했다. 이 화면은 xlsx를 업로드하면 백엔드가 daemon에
+ * import하고 뷰어 URL을 반환해, 그 URL을 자동으로 iframe에 붙이는 흐름을 확인한다.
  *
- * 지금은 daemon이 로컬(127.0.0.1:9123)에서만 떠 있으므로 이 화면도 로컬 개발 환경에서만
- * 동작한다. daemon을 서버에 상시 구동시키는 배포 방식은 별도 검증이 필요하다.
- * 편집은 daemon 뷰어가 기본적으로 읽기 전용이라 지원되지 않으며, IQC 열람 용도로는 문제없다.
+ * daemon은 백엔드 서버 프로세스 안에서 로컬(127.0.0.1)로 구동되며, 뷰어 URL도 백엔드
+ * 기준 로컬 주소이므로 지금은 백엔드와 프론트가 같은 머신에서 개발 서버로 동작할 때만
+ * 정상적으로 열린다. 실제 배포 환경에서 daemon을 상시 구동하고 nginx로 프록시하는 것은
+ * 별도 검증이 필요하다. 편집은 daemon 뷰어가 기본적으로 읽기 전용이라 지원되지 않으며,
+ * IQC 열람 용도로는 문제없다.
+ * 백엔드: POST /quality/iqc-proto3/upload (multipart, xlsx) -> { viewerUrl, fileName }
  */
 export default function IQCProto3Index() {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
   const [viewerUrl, setViewerUrl] = useState('');
-  const [inputUrl, setInputUrl] = useState('');
+  const [fileName, setFileName] = useState('');
 
-  const handleLoad = () => {
-    setViewerUrl(inputUrl.trim());
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setStatus('loading');
+    setErrorMsg('');
+
+    try {
+      const result = await uploadIQCProto3Xlsx(file);
+      setViewerUrl(result.viewerUrl);
+      setFileName(result.fileName);
+      setStatus('ready');
+    } catch (err) {
+      console.error('IQC Proto3 xlsx 업로드/뷰어 조회 실패:', err);
+      setErrorMsg(getErrorMessage(err, 'xlsx 변환에 실패했습니다.'));
+      setStatus('error');
+    }
   };
 
   return (
     <div style={{ padding: 16 }}>
       <h2>IQC 프로토타입3 (Univer CLI daemon 뷰어 iframe 실험)</h2>
       <p style={{ color: '#666', fontSize: 13 }}>
-        실제 서비스 메뉴가 아닙니다. Univer CLI daemon이 로컬(127.0.0.1:9123)에서 구동 중이어야 동작합니다.
-        터미널에서 <code>univer open &lt;file.univer&gt; --worktree &lt;id&gt; --unit &lt;unitId&gt;</code>로 얻은
-        뷰어 URL을 아래에 붙여넣으세요. 이 뷰어는 읽기 전용이며 워터마크 없이 차트까지 렌더링됩니다.
+        실제 서비스 메뉴가 아닙니다. xlsx 업로드 시 백엔드가 Univer CLI daemon에 import하고 뷰어 URL을 반환하며, 그
+        URL을 아래 iframe에 자동으로 표시합니다. 이 뷰어는 읽기 전용이며 워터마크 없이 차트까지 렌더링됩니다. 백엔드
+        서버에서 daemon이 상시 구동 중이어야 동작합니다.
       </p>
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
-        <input
-          type='text'
-          value={inputUrl}
-          onChange={e => setInputUrl(e.target.value)}
-          placeholder='http://127.0.0.1:9123/?file=...&worktree=...&unit=...'
-          style={{ flex: 1, padding: '6px 10px', fontSize: 13, border: '1px solid #d1d5db', borderRadius: 6 }}
-        />
-        <button
-          type='button'
-          onClick={handleLoad}
-          disabled={!inputUrl.trim()}
-          style={{
-            padding: '6px 14px',
-            fontSize: 13,
-            borderRadius: 6,
-            border: '1px solid #2563eb',
-            background: '#eff6ff',
-            color: '#2563eb',
-            cursor: inputUrl.trim() ? 'pointer' : 'not-allowed',
-          }}
-        >
-          뷰어 불러오기
-        </button>
+        <input type='file' accept='.xlsx' onChange={handleFileChange} disabled={status === 'loading'} />
+        {fileName && status === 'ready' && (
+          <span style={{ color: '#888', fontSize: 12 }}>현재 표시 중: {fileName}</span>
+        )}
       </div>
+
+      {status === 'loading' && <p>업로드 및 daemon import 중... (파일 크기에 따라 다소 걸릴 수 있습니다)</p>}
+      {status === 'error' && <p style={{ color: 'crimson' }}>오류: {errorMsg}</p>}
 
       {viewerUrl ? (
         <iframe
@@ -72,7 +78,7 @@ export default function IQCProto3Index() {
             color: '#999',
           }}
         >
-          뷰어 URL을 입력하고 불러오세요
+          xlsx 파일을 업로드하세요
         </div>
       )}
     </div>
