@@ -9,6 +9,7 @@ const LQCIndex = lazy(() => import('./lqc'));
 const OQCIndex = lazy(() => import('./oqc'));
 const IQCProtoIndex = lazy(() => import('./iqc-proto'));
 const IQCProto2Index = lazy(() => import('./iqc-proto2'));
+const IQCProto3Index = lazy(() => import('./iqc-proto3'));
 
 export default function QualityIndex() {
   const { sub } = MENU_CONFIG.quality;
@@ -25,6 +26,7 @@ export default function QualityIndex() {
             <Route path='oqc/*' element={<OQCIndex />} />
             <Route path='iqc-proto/*' element={<IQCProtoIndex />} />
             <Route path='iqc-proto2/*' element={<IQCProto2Index />} />
+            <Route path='iqc-proto3/*' element={<IQCProto3Index />} />
           </Routes>
         </Suspense>
       </div>
