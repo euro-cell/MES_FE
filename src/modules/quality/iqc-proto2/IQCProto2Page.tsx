@@ -121,33 +121,25 @@ export default function IQCProto2Page() {
     const sheetsDrawingKoKR = (await import('@univerjs/preset-sheets-drawing/locales/ko-KR')).default;
 
     // 읽기 전용 모드 경고 문구를 뷰어 화면에 맞게 오버라이드
+    // mergeLocales는 얕은 병합이라 dialog 객체를 통째로 새로 지정하면 원본의 다른 키(제목 "경고" 등)가
+    // 사라지므로, 원본 dialog 전체를 베이스로 두고 에러 메시지 값만 덮어쓴다.
     const VIEWER_ONLY_MESSAGE = '이 화면은 열람용입니다.';
-    const permissionDialogOverride = {
-      dialog: {
-        alertContent: VIEWER_ONLY_MESSAGE,
-        commonErr: VIEWER_ONLY_MESSAGE,
-        editErr: VIEWER_ONLY_MESSAGE,
-        formulaErr: VIEWER_ONLY_MESSAGE,
-        pasteErr: VIEWER_ONLY_MESSAGE,
-        setStyleErr: VIEWER_ONLY_MESSAGE,
-        copyErr: VIEWER_ONLY_MESSAGE,
-        workbookCopyErr: VIEWER_ONLY_MESSAGE,
-        setRowColStyleErr: VIEWER_ONLY_MESSAGE,
-        moveRowColErr: VIEWER_ONLY_MESSAGE,
-        moveRangeErr: VIEWER_ONLY_MESSAGE,
-        insertRowColErr: VIEWER_ONLY_MESSAGE,
-        removeRowColErr: VIEWER_ONLY_MESSAGE,
-        autoFillErr: VIEWER_ONLY_MESSAGE,
-        filterErr: VIEWER_ONLY_MESSAGE,
-        operatorSheetErr: VIEWER_ONLY_MESSAGE,
-        printErr: VIEWER_ONLY_MESSAGE,
-        hyperLinkErr: VIEWER_ONLY_MESSAGE,
-        commentErr: VIEWER_ONLY_MESSAGE,
-      },
+    const overrideErrorMessages = (dialog: Record<string, string>) => {
+      const next = { ...dialog };
+      for (const key of Object.keys(next)) {
+        if (key.endsWith('Err') || key === 'alertContent') {
+          next[key] = VIEWER_ONLY_MESSAGE;
+        }
+      }
+      return next;
     };
     const viewerLocaleOverride = {
-      sheets: { permission: permissionDialogOverride },
-      'sheets-ui': { permission: permissionDialogOverride },
+      sheets: {
+        permission: { dialog: overrideErrorMessages(sheetsCoreKoKR.sheets.permission.dialog) },
+      },
+      'sheets-ui': {
+        permission: { dialog: overrideErrorMessages(sheetsCoreKoKR['sheets-ui'].permission.dialog) },
+      },
     };
 
     const { univer, univerAPI } = createUniver({
