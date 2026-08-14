@@ -12,7 +12,7 @@
   "dependencies": {
     "@hyunbinseo/holidays-kr": "5.2027.1",
     "@tanstack/react-query": "5.101.4",
-    "@tanstack/react-table": "8.21.3",
+    "@tanstack/react-table": "9.1.2",
     "@tanstack/react-virtual": "3.14.9",
     "@univerjs/preset-sheets-core": "0.25.1",
     "@univerjs/preset-sheets-drawing": "0.25.1",

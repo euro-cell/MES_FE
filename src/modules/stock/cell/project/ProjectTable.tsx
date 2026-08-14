@@ -1,16 +1,14 @@
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
+  useTable,
   flexRender,
   type ColumnDef,
   type SortingState,
   type FilterFn,
   type Column,
 } from '@tanstack/react-table';
+import { stockTableFeatures } from '../../tableFeatures';
 import type { CellInventoryDetail } from '../../../../api/stock/ProjectService';
 import styles from '../../../../styles/stock/cell/ProjectDetail.module.css';
 
@@ -18,7 +16,7 @@ interface ProjectTableProps {
   data: CellInventoryDetail[];
 }
 
-const multiSelectFilter: FilterFn<CellInventoryDetail> = (row, columnId, filterValue: string[]) => {
+const multiSelectFilter: FilterFn<typeof stockTableFeatures, CellInventoryDetail> = (row, columnId, filterValue: string[]) => {
   if (!filterValue || filterValue.length === 0) return true;
   const cellValue = String(row.getValue(columnId) ?? '');
   return filterValue.includes(cellValue);
@@ -26,7 +24,7 @@ const multiSelectFilter: FilterFn<CellInventoryDetail> = (row, columnId, filterV
 
 // ── 컬럼 필터 드롭다운 ────────────────────────────────────────────
 interface ColumnFilterDropdownProps {
-  column: Column<CellInventoryDetail>;
+  column: Column<typeof stockTableFeatures, CellInventoryDetail>;
   allData: CellInventoryDetail[];
   label: string;
 }
@@ -174,8 +172,8 @@ export default function ProjectTable({ data }: ProjectTableProps) {
   const hasAllModel = data.every(item => item.model);
   const showProjectNoAndModel = hasAllProjectNo && hasAllModel;
 
-  const columns = useMemo<ColumnDef<CellInventoryDetail>[]>(() => {
-    const baseCols: ColumnDef<CellInventoryDetail>[] = [
+  const columns = useMemo<ColumnDef<typeof stockTableFeatures, CellInventoryDetail>[]>(() => {
+    const baseCols: ColumnDef<typeof stockTableFeatures, CellInventoryDetail>[] = [
       {
         id: 'no',
         header: 'No.',
@@ -249,7 +247,8 @@ export default function ProjectTable({ data }: ProjectTableProps) {
     return baseCols;
   }, [showProjectNoAndModel]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features: stockTableFeatures,
     data,
     columns,
     state: { sorting, columnFilters, columnSizing },
@@ -261,9 +260,6 @@ export default function ProjectTable({ data }: ProjectTableProps) {
     },
     onColumnSizingChange: setColumnSizing,
     columnResizeMode: 'onChange',
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
   });
 
   // 더블클릭: 해당 컬럼의 모든 셀 내용 중 가장 긴 것에 맞춰 너비 자동 조정

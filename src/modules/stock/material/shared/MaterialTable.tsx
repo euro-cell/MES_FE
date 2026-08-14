@@ -1,15 +1,13 @@
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
+  useTable,
   flexRender,
   type ColumnDef,
   type SortingState,
   type FilterFn,
   type Column,
 } from '@tanstack/react-table';
+import { stockTableFeatures } from '../../tableFeatures';
 import styles from '../../../../styles/stock/material/materialTable.module.css';
 
 export interface MaterialRow {
@@ -37,7 +35,7 @@ interface MaterialTableProps {
   onCoA: (material: MaterialRow) => void;
 }
 
-const multiSelectFilter: FilterFn<MaterialRow> = (row, columnId, filterValue: string[]) => {
+const multiSelectFilter: FilterFn<typeof stockTableFeatures, MaterialRow> = (row, columnId, filterValue: string[]) => {
   if (!filterValue || filterValue.length === 0) return true;
   const cellValue = String(row.getValue(columnId) ?? '');
   return filterValue.includes(cellValue);
@@ -45,7 +43,7 @@ const multiSelectFilter: FilterFn<MaterialRow> = (row, columnId, filterValue: st
 
 // ── 컬럼 필터 드롭다운 ────────────────────────────────────────────
 interface ColumnFilterDropdownProps {
-  column: Column<MaterialRow>;
+  column: Column<typeof stockTableFeatures, MaterialRow>;
   allData: MaterialRow[];
   label: string;
 }
@@ -184,7 +182,7 @@ export default function MaterialTable({ data, onEdit, onDelete, onCoA }: Materia
   const [columnSizing, setColumnSizing] = useState<Record<string, number>>({});
   const tableRef = useRef<HTMLTableElement>(null);
 
-  const columns = useMemo<ColumnDef<MaterialRow>[]>(
+  const columns = useMemo<ColumnDef<typeof stockTableFeatures, MaterialRow>[]>(
     () => [
       {
         id: 'no',
@@ -299,7 +297,8 @@ export default function MaterialTable({ data, onEdit, onDelete, onCoA }: Materia
     actions: '관리',
   };
 
-  const table = useReactTable({
+  const table = useTable({
+    features: stockTableFeatures,
     data,
     columns,
     state: { sorting, columnFilters, columnSizing },
@@ -311,9 +310,6 @@ export default function MaterialTable({ data, onEdit, onDelete, onCoA }: Materia
     },
     onColumnSizingChange: setColumnSizing,
     columnResizeMode: 'onChange',
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
   });
 
   const autoSizeColumn = useCallback((columnId: string) => {
