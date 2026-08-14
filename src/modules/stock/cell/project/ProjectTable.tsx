@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
+import { useMemo, useState, useRef, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   useTable,
@@ -6,9 +6,9 @@ import {
   type ColumnDef,
   type SortingState,
   type FilterFn,
-  type Column,
 } from '@tanstack/react-table';
-import { stockTableFeatures } from '../../tableFeatures';
+import { stockTableFeatures, autoSizeColumn as autoSizeColumnImpl } from '../../tableFeatures';
+import { ColumnFilterDropdown } from '../../ColumnFilterDropdown';
 import type { CellInventoryDetail } from '../../../../api/stock/ProjectService';
 import styles from '../../../../styles/stock/cell/ProjectDetail.module.css';
 
@@ -22,141 +22,10 @@ const multiSelectFilter: FilterFn<typeof stockTableFeatures, CellInventoryDetail
   return filterValue.includes(cellValue);
 };
 
-// ── 컬럼 필터 드롭다운 ────────────────────────────────────────────
-interface ColumnFilterDropdownProps {
-  column: Column<typeof stockTableFeatures, CellInventoryDetail>;
-  allData: CellInventoryDetail[];
-  label: string;
-}
-
-function ColumnFilterDropdown({ column, allData, label }: ColumnFilterDropdownProps) {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [pending, setPending] = useState<Set<string>>(new Set());
-  const ref = useRef<HTMLDivElement>(null);
-
-  const allValues = useMemo(() => {
-    const set = new Set<string>();
-    for (const row of allData) {
-      const raw = (row as unknown as Record<string, unknown>)[column.id];
-      let val: string;
-      if (column.id === 'isShipped') val = raw ? '출고' : '';
-      else if (column.id === 'isRestocked') val = raw ? '재입고' : '';
-      else val = String(raw ?? '');
-      set.add(val);
-    }
-    return Array.from(set).sort((a, b) => a.localeCompare(b, 'ko'));
-  }, [allData, column.id]);
-
-  const currentFilter = (column.getFilterValue() as string[] | undefined) ?? [];
-  const isActive = currentFilter.length > 0;
-
-  const openDropdown = useCallback(() => {
-    setPending(new Set(currentFilter.length > 0 ? currentFilter : allValues));
-    setSearch('');
-    setOpen(true);
-  }, [currentFilter, allValues]);
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [open]);
-
-  const filtered = useMemo(
-    () => allValues.filter(v => v.toLowerCase().includes(search.toLowerCase())),
-    [allValues, search],
-  );
-
-  const allChecked = filtered.every(v => pending.has(v));
-
-  const toggle = (val: string) => {
-    setPending(prev => {
-      const next = new Set(prev);
-      next.has(val) ? next.delete(val) : next.add(val);
-      return next;
-    });
-  };
-
-  const toggleAll = () => {
-    if (allChecked) {
-      setPending(prev => {
-        const next = new Set(prev);
-        filtered.forEach(v => next.delete(v));
-        return next;
-      });
-    } else {
-      setPending(prev => {
-        const next = new Set(prev);
-        filtered.forEach(v => next.add(v));
-        return next;
-      });
-    }
-  };
-
-  const apply = () => {
-    const selected = Array.from(pending);
-    column.setFilterValue(selected.length === allValues.length ? undefined : selected);
-    setOpen(false);
-  };
-
-  const reset = () => {
-    column.setFilterValue(undefined);
-    setOpen(false);
-  };
-
-  return (
-    <div className={styles.dropdownWrapper} ref={ref}>
-      <div className={styles.thInner}>
-        <span
-          style={{
-            cursor: column.getCanSort() ? 'pointer' : 'default',
-            userSelect: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 3,
-          }}
-          onClick={column.getToggleSortingHandler()}
-        >
-          {label}
-          {column.getIsSorted() === 'asc' && <span className={styles.sortIcon}>▲</span>}
-          {column.getIsSorted() === 'desc' && <span className={styles.sortIcon}>▼</span>}
-        </span>
-        <button className={`${styles.filterBtn} ${isActive ? styles.active : ''}`} onClick={openDropdown} title='필터'>
-          ▼
-        </button>
-      </div>
-
-      {open && (
-        <div className={styles.dropdown}>
-          <div className={styles.dropdownSearch}>
-            <input autoFocus placeholder='검색...' value={search} onChange={e => setSearch(e.target.value)} />
-          </div>
-          <div className={styles.dropdownList}>
-            <label className={styles.dropdownItem}>
-              <input type='checkbox' checked={allChecked} onChange={toggleAll} />
-              (전체 선택)
-            </label>
-            {filtered.map(val => (
-              <label key={val} className={styles.dropdownItem}>
-                <input type='checkbox' checked={pending.has(val)} onChange={() => toggle(val)} />
-                {val === '' ? '(빈 값)' : val}
-              </label>
-            ))}
-          </div>
-          <div className={styles.dropdownFooter}>
-            <button className={styles.btnApply} onClick={apply}>
-              적용
-            </button>
-            <button onClick={reset}>초기화</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+function formatFilterValue(columnId: string, raw: unknown): string {
+  if (columnId === 'isShipped') return raw ? '출고' : '';
+  if (columnId === 'isRestocked') return raw ? '재입고' : '';
+  return String(raw ?? '');
 }
 
 // ── 메인 테이블 컴포넌트 ──────────────────────────────────────────
@@ -167,10 +36,10 @@ export default function ProjectTable({ data }: ProjectTableProps) {
   const tableRef = useRef<HTMLTableElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-
-  const hasAllProjectNo = data.every(item => item.projectNo);
-  const hasAllModel = data.every(item => item.model);
-  const showProjectNoAndModel = hasAllProjectNo && hasAllModel;
+  const showProjectNoAndModel = useMemo(
+    () => data.every(item => item.projectNo) && data.every(item => item.model),
+    [data],
+  );
 
   const columns = useMemo<ColumnDef<typeof stockTableFeatures, CellInventoryDetail>[]>(() => {
     const baseCols: ColumnDef<typeof stockTableFeatures, CellInventoryDetail>[] = [
@@ -262,22 +131,10 @@ export default function ProjectTable({ data }: ProjectTableProps) {
     columnResizeMode: 'onChange',
   });
 
-  // 더블클릭: 해당 컬럼의 모든 셀 내용 중 가장 긴 것에 맞춰 너비 자동 조정
-  const autoSizeColumn = useCallback((columnId: string) => {
-    if (!tableRef.current) return;
-    const cells = tableRef.current.querySelectorAll<HTMLElement>(`[data-col="${columnId}"]`);
-    let maxWidth = 0;
-    cells.forEach(cell => {
-      // 임시로 overflow visible로 실제 scrollWidth 측정
-      const prev = cell.style.overflow;
-      cell.style.overflow = 'visible';
-      maxWidth = Math.max(maxWidth, cell.scrollWidth);
-      cell.style.overflow = prev;
-    });
-    if (maxWidth > 0) {
-      setColumnSizing(prev => ({ ...prev, [columnId]: maxWidth + 16 }));
-    }
-  }, []);
+  const autoSizeColumn = useCallback(
+    (columnId: string) => autoSizeColumnImpl(tableRef.current, columnId, setColumnSizing),
+    [],
+  );
 
   const headerLabelMap: Record<string, string> = {
     no: 'No.',
@@ -337,6 +194,8 @@ export default function ProjectTable({ data }: ProjectTableProps) {
                       column={header.column}
                       allData={data}
                       label={headerLabelMap[header.column.id] ?? header.column.id}
+                      styles={styles}
+                      formatValue={formatFilterValue}
                     />
                   ) : (
                     <div className={styles.thInner}>
