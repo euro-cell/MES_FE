@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuthStatus } from '../api/auth/authService';
+import { getAuthStatus } from '../api/auth/AuthService';
 import { setSessionRefreshHandler } from '../api/axiosInstance';
 
 interface AuthUser {

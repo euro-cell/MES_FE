@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { createCustomer, updateCustomer } from '../../../api/etc/customerService';
-import type { Customer, CustomerCreateInput } from '../../../api/etc/customerService';
+import { createCustomer, updateCustomer } from '../../../api/etc/CustomerService';
+import type { Customer, CustomerCreateInput } from '../../../api/etc/CustomerService';
 import { getErrorMessage } from '../../../api/errorHandler';
 import styles from '../../../styles/etc/customer.module.css';
 

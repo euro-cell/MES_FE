@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchUserPermissions, updateUserPermission } from '../../../api/etc/permissionService';
+import { fetchUserPermissions, updateUserPermission } from '../../../api/etc/PermissionService';
 import styles from '../../../styles/etc/permission.module.css';
 import { getErrorMessage } from '../../../api/errorHandler';
 

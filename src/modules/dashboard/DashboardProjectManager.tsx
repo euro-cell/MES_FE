@@ -5,8 +5,8 @@ import DashboardEditModal from './DashboardEditModal';
 import DashboardDeleteModal from './DashboardDeleteModal';
 import styles from '../../styles/dashboard/manager.module.css';
 import { getErrorMessage } from '../../api/errorHandler';
-import { getCustomers } from '../../api/etc/customerService';
-import type { Customer } from '../../api/etc/customerService';
+import { getCustomers } from '../../api/etc/CustomerService';
+import type { Customer } from '../../api/etc/CustomerService';
 import CustomerModal from '../etc/customer/CustomerModal';
 
 interface Props {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { changePassword } from '../../../api/etc/userService';
-import type { User } from '../../../api/etc/userService';
+import { changePassword } from '../../../api/etc/UserService';
+import type { User } from '../../../api/etc/UserService';
 import styles from '../../../styles/etc/users.module.css';
 import { getErrorMessage } from '../../../api/errorHandler';
 

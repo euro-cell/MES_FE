@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createUser } from '../../../api/etc/userService';
+import { createUser } from '../../../api/etc/UserService';
 import { ROLE_LABELS } from './userRoleMap';
 import styles from '../../../styles/etc/users.module.css';
 import { getErrorMessage } from '../../../api/errorHandler';

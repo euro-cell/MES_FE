@@ -2,7 +2,7 @@ import styles from '../styles/auth/auth.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { login } from '../api/auth/authService';
+import { login } from '../api/auth/AuthService';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {

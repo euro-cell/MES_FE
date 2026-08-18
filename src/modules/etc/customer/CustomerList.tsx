@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getCustomers, deleteCustomer } from '../../../api/etc/customerService';
-import type { Customer } from '../../../api/etc/customerService';
+import { getCustomers, deleteCustomer } from '../../../api/etc/CustomerService';
+import type { Customer } from '../../../api/etc/CustomerService';
 import { getErrorMessage } from '../../../api/errorHandler';
 import CustomerModal from './CustomerModal';
 import styles from '../../../styles/etc/customer.module.css';

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getDashboardSummary, getProjectProgress } from '../../api/dashboard/dashboardService';
+import { getDashboardSummary, getProjectProgress } from '../../api/dashboard/DashboardService';
 import type { DashboardProject, DashboardProjectWithPlan } from './types';
 
 export const useDashboardProjects = () => {

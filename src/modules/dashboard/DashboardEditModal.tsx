@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import type { DashboardProject, DashboardFormState } from './types';
-import { updateProject } from '../../api/dashboard/dashboardService';
+import { updateProject } from '../../api/dashboard/DashboardService';
 import styles from '../../styles/dashboard/modal.module.css';
 import { getErrorMessage } from '../../api/errorHandler';
-import { getCustomers } from '../../api/etc/customerService';
-import type { Customer } from '../../api/etc/customerService';
+import { getCustomers } from '../../api/etc/CustomerService';
+import type { Customer } from '../../api/etc/CustomerService';
 
 interface Props {
   projects: DashboardProject[];

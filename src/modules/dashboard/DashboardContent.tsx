@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import Chart from 'chart.js/auto';
 import { renderProcessChart } from './chartUtils';
-import { createProject, getProjectProgress } from '../../api/dashboard/dashboardService';
+import { createProject, getProjectProgress } from '../../api/dashboard/DashboardService';
 import { useDashboardProjects } from './useDashboardQueries';
 import type { DashboardProject, DashboardProgressData, DashboardFormState } from './types';
 import DashboardSummary from './DashboardSummary';

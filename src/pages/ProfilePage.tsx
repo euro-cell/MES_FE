@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
-import { changePassword } from '../api/profile/profileService';
+import { changePassword } from '../api/profile/ProfileService';
 import { ROLE_LABELS } from '../modules/etc/user/userRoleMap';
 import styles from '../styles/pages/profile.module.css';
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { DashboardProject } from './types';
-import { deleteProject } from '../../api/dashboard/dashboardService';
+import { deleteProject } from '../../api/dashboard/DashboardService';
 import { getErrorMessage } from '../../api/errorHandler';
 import styles from '../../styles/dashboard/modal.module.css';
 
