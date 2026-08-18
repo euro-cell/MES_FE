@@ -148,7 +148,7 @@ export default function AddAssemblyModal({
               <input
                 type='number'
                 name='price'
-                value={formData.price ?? ''}
+                value={formData.price || formData.price === 0 ? Number(formData.price) : ''}
                 onChange={onFormChange}
                 placeholder='0'
                 step='any'
@@ -159,7 +159,7 @@ export default function AddAssemblyModal({
               <input
                 type='number'
                 name='stock'
-                value={formData.stock ?? ''}
+                value={formData.stock || formData.stock === 0 ? Number(formData.stock) : ''}
                 onChange={onFormChange}
                 placeholder='0'
                 step='any'
