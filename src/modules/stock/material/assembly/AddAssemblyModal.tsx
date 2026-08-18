@@ -148,10 +148,10 @@ export default function AddAssemblyModal({
               <input
                 type='number'
                 name='price'
-                value={formData.price ? Math.floor(formData.price) : ''}
+                value={formData.price ?? ''}
                 onChange={onFormChange}
                 placeholder='0'
-                step='1'
+                step='any'
               />
             </div>
             <div className={styles.formGroup}>
@@ -159,10 +159,10 @@ export default function AddAssemblyModal({
               <input
                 type='number'
                 name='stock'
-                value={formData.stock ? Math.floor(formData.stock) : ''}
+                value={formData.stock ?? ''}
                 onChange={onFormChange}
                 placeholder='0'
-                step='1'
+                step='any'
               />
             </div>
           </div>
