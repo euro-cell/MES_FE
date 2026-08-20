@@ -107,6 +107,10 @@
   background: #f8fafc;
 }
 
+.clickableRow {
+  cursor: pointer;
+}
+
 .equipmentTable td.multiline {
   white-space: pre-line;
   text-align: center;
@@ -153,6 +157,7 @@
   background: #4f46e5;
 }
 
+.viewBtn,
 .manualBtn,
 .editBtn,
 .deleteBtn {
@@ -161,6 +166,16 @@
   cursor: pointer;
   font-size: 12px;
   transition: background 0.2s;
+}
+
+.viewBtn {
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+
+.viewBtn:hover {
+  background: #e0e7ff;
 }
 
 .manualBtn {

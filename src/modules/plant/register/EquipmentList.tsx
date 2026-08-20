@@ -58,6 +58,10 @@ export default function EquipmentList({ category }: Props) {
     navigate('form', { state: { equipment, category } });
   };
 
+  const handleRowClick = (equipment: Equipment) => {
+    navigate('detail', { state: { equipment, category } });
+  };
+
   const handleRegister = () => {
     navigate('form', { state: { category } });
   };
@@ -119,7 +123,7 @@ export default function EquipmentList({ category }: Props) {
           </thead>
           <tbody>
             {equipments.map(eq => (
-              <tr key={eq.id}>
+              <tr key={eq.id} className={styles.clickableRow} onClick={() => handleRowClick(eq)}>
                 <td>{eq.assetNo}</td>
                 <td>{eq.equipmentNo}</td>
                 <td>{eq.name}</td>
@@ -136,13 +140,16 @@ export default function EquipmentList({ category }: Props) {
                 <td>{eq.grade}</td>
                 <td>{eq.maintenanceMethod}</td>
                 <td>{eq.remark || '-'}</td>
-                <td>
+                <td onClick={e => e.stopPropagation()}>
                   <div className={styles.actionButtons}>
                     <button
                       className={`${styles.manualBtn} ${eq.hasManual ? '' : styles.unregistered}`}
                       onClick={() => setManualTarget({ id: eq.id, name: eq.name })}
                     >
                       매뉴얼
+                    </button>
+                    <button className={styles.viewBtn} onClick={() => handleRowClick(eq)}>
+                      조회
                     </button>
                     <button className={styles.editBtn} onClick={() => handleEdit(eq)}>
                       수정

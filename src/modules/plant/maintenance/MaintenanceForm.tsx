@@ -10,13 +10,15 @@ import type { Equipment } from '../register/EquipmentTypes';
 export default function MaintenanceForm() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const editingRecord = state?.record as MaintenanceRecord | undefined;
+  const recordFromState = state?.record as MaintenanceRecord | { equipmentId: number } | undefined;
+  const editingRecord = recordFromState && 'id' in recordFromState ? recordFromState : undefined;
   const isEdit = !!editingRecord;
+  const presetEquipmentId = recordFromState?.equipmentId;
 
   const [equipments, setEquipments] = useState<Equipment[]>([]);
 
   const [formData, setFormData] = useState({
-    equipmentId: editingRecord?.equipmentId || 0,
+    equipmentId: editingRecord?.equipmentId || presetEquipmentId || 0,
     inspectionDate: editingRecord?.inspectionDate || '',
     replacementHistory: editingRecord?.replacementHistory || '',
     usedParts: editingRecord?.usedParts || '',

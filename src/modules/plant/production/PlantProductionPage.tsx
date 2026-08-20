@@ -3,6 +3,7 @@ import SubmenuBar from '../../../components/SubmenuBar';
 import styles from '../../../styles/plant/production/PlantProductionPage.module.css';
 import EquipmentList from '../register/EquipmentList';
 import EquipmentForm from '../register/EquipmentForm';
+import EquipmentDetail from '../register/EquipmentDetail';
 import MaintenanceList from '../maintenance/MaintenanceList';
 import MaintenanceForm from '../maintenance/MaintenanceForm';
 
@@ -20,6 +21,7 @@ export default function PlantProductionPage() {
         <Routes>
           <Route path='list' element={<EquipmentList category='생산' />} />
           <Route path='list/form' element={<EquipmentForm />} />
+          <Route path='list/detail' element={<EquipmentDetail />} />
           <Route path='history' element={<MaintenanceList />} />
           <Route path='history/form' element={<MaintenanceForm />} />
           <Route path='*' element={

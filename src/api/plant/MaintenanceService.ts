@@ -8,10 +8,11 @@ const sanitizePayload = (payload: MaintenancePayload) => {
   return Object.fromEntries(Object.entries(payload).map(([key, value]) => [key, value === '' ? null : value]));
 };
 
-/** 유지보수 기록 목록 조회 */
-export const getMaintenanceRecords = async (): Promise<MaintenanceRecord[]> => {
+/** 유지보수 기록 목록 조회 (equipmentId 지정 시 해당 설비만 필터링) */
+export const getMaintenanceRecords = async (equipmentId?: number): Promise<MaintenanceRecord[]> => {
   const res = await axios.get(`${API_BASE}/equipment/maintenance`, {
     withCredentials: true,
+    params: equipmentId ? { equipmentId } : undefined,
   });
   return res.data;
 };
