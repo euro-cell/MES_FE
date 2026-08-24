@@ -51,6 +51,12 @@ export default defineConfig(() => {
               changeOrigin: true,
               ws: true,
             },
+            // daemon 클라이언트가 라이선스 등 런타임 설정을 프록시 접두사 없이 절대경로로 조회
+            '/runtime-config': {
+              target: apiTarget,
+              changeOrigin: true,
+              ws: true,
+            },
           }
         : undefined,
     },
