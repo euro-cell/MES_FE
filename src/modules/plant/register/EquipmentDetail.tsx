@@ -43,7 +43,7 @@ export default function EquipmentDetail() {
 
   if (!equipment || !category) {
     return (
-      <div className={styles.equipmentPage}>
+      <div className={styles.detailPage}>
         <div className={styles.errorState}>설비 정보를 찾을 수 없습니다.</div>
       </div>
     );
@@ -61,59 +61,88 @@ export default function EquipmentDetail() {
   };
 
   return (
-    <div className={styles.equipmentPage}>
-      <div className={styles.formHeader}>
-        <h3>{CATEGORY_LABELS[category]} 설비 상세 - {equipment.name}</h3>
+    <div className={styles.detailPage}>
+      <div className={styles.detailHeader}>
+        <div className={styles.detailTitleGroup}>
+          <h3>{equipment.name}</h3>
+          <span className={styles.categoryBadge}>{CATEGORY_LABELS[category]} 설비</span>
+        </div>
         <button className={styles.backBtn} onClick={() => navigate(-1)}>
           ← 돌아가기
         </button>
       </div>
 
-      <table className={styles.equipmentTable} style={{ marginBottom: '24px' }}>
-        <thead>
-          <tr>
-            <th>자산번호</th>
-            <th>설비번호</th>
-            <th>설비명</th>
-            <th>제조사</th>
-            {isMeasurement && <th>기기번호</th>}
-            <th>구입일자</th>
-            {isMeasurement && (
-              <>
-                <th>교정일</th>
-                <th>차기 교정일</th>
-                <th>검교정 기관</th>
-              </>
-            )}
-            <th>설비등급</th>
-            <th>보전방법</th>
-            <th>비고</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{equipment.assetNo}</td>
-            <td>{equipment.equipmentNo}</td>
-            <td>{equipment.name}</td>
-            <td>{equipment.manufacturer}</td>
-            {isMeasurement && <td>{equipment.deviceNo || '-'}</td>}
-            <td>{equipment.purchaseDate}</td>
-            {isMeasurement && (
-              <>
-                <td>{equipment.calibrationDate || '-'}</td>
-                <td>{equipment.nextCalibrationDate || '-'}</td>
-                <td>{equipment.calibrationAgency || '-'}</td>
-              </>
-            )}
-            <td>{equipment.grade}</td>
-            <td>{equipment.maintenanceMethod}</td>
-            <td>{equipment.remark || '-'}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className={styles.infoCard}>
+        <dl className={styles.infoGrid}>
+          <div className={styles.infoItem}>
+            <dt>자산번호</dt>
+            <dd>{equipment.assetNo || '-'}</dd>
+          </div>
+          <div className={styles.infoItem}>
+            <dt>설비번호</dt>
+            <dd>{equipment.equipmentNo}</dd>
+          </div>
+          <div className={styles.infoItem}>
+            <dt>설비명</dt>
+            <dd>{equipment.name}</dd>
+          </div>
+          <div className={styles.infoItem}>
+            <dt>제조사</dt>
+            <dd>{equipment.manufacturer}</dd>
+          </div>
 
-      <div className={styles.header}>
-        <h3>유지보수 이력</h3>
+          <div className={styles.infoItem}>
+            <dt>구입일자</dt>
+            <dd>{equipment.purchaseDate || '-'}</dd>
+          </div>
+          <div className={styles.infoItem}>
+            <dt>설비등급</dt>
+            <dd>{equipment.grade}</dd>
+          </div>
+          <div className={styles.infoItem}>
+            <dt>보전방법</dt>
+            <dd>{equipment.maintenanceMethod}</dd>
+          </div>
+          {!isMeasurement && (
+            <div className={styles.infoItem}>
+              <dt>비고</dt>
+              <dd>{equipment.remark || '-'}</dd>
+            </div>
+          )}
+
+          {isMeasurement && (
+            <>
+              <hr className={styles.infoDivider} />
+              <div className={styles.infoItem}>
+                <dt>기기번호</dt>
+                <dd>{equipment.deviceNo || '-'}</dd>
+              </div>
+              <div className={styles.infoItem}>
+                <dt>교정일</dt>
+                <dd>{equipment.calibrationDate || '-'}</dd>
+              </div>
+              <div className={styles.infoItem}>
+                <dt>차기 교정일</dt>
+                <dd>{equipment.nextCalibrationDate || '-'}</dd>
+              </div>
+              <div className={styles.infoItem}>
+                <dt>검교정 기관</dt>
+                <dd>{equipment.calibrationAgency || '-'}</dd>
+              </div>
+              <div className={`${styles.infoItem} ${styles.fullWidth}`}>
+                <dt>비고</dt>
+                <dd>{equipment.remark || '-'}</dd>
+              </div>
+            </>
+          )}
+        </dl>
+      </div>
+
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionTitleGroup}>
+          <h3>유지보수 이력</h3>
+          {!loading && !fetchError && <span className={styles.countBadge}>{records.length}건</span>}
+        </div>
         {category === '생산' && (
           <button className={styles.registerBtn} onClick={handleRegisterMaintenance}>
             + 유지보수 등록
