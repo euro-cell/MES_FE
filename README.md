@@ -12,9 +12,11 @@ Eurocell 배터리 셀 제조 실행 시스템(MES)의 프론트엔드입니다.
 - **테이블**: TanStack React Table v8 + Virtual
 - **차트**: Chart.js v4, react-chartjs-2, chartjs-plugin-annotation, chartjs-plugin-datalabels
 - **엑셀 내보내기**: ExcelJS + file-saver
+- **스프레드시트(IQC)**: Univer (`@univerjs/presets`, preset-sheets-core, preset-sheets-drawing)
 - **PDF 뷰어**: react-pdf
 - **날짜**: react-datepicker, date-fns
 - **알림**: react-hot-toast
+- **한/영 오타 변환**: hangul-js (한글 자모 분해 → 영문 자판 매핑)
 - **한국 공휴일**: @hyunbinseo/holidays-kr
 - **스타일**: CSS Modules
 
@@ -25,6 +27,8 @@ Eurocell 배터리 셀 제조 실행 시스템(MES)의 프론트엔드입니다.
 ```env
 VITE_API_BASE_URL=/api
 VITE_API_TARGET=http://localhost:8000
+# 백엔드가 /api 프리픽스 없이 라우팅하는 경우 true (프록시가 /api를 제거하고 전달)
+VITE_API_REWRITE=true
 ```
 
 ## 실행
@@ -41,6 +45,9 @@ npm run build
 
 # 빌드 결과물 미리보기
 npm run preview
+
+# 린트
+npm run lint
 ```
 
 ## 모듈 구조
