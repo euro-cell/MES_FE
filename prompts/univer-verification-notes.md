@@ -120,6 +120,25 @@
 브라우저 캐시 때문에 "배포가 안 됐다"고 여러 번 오판할 뻔했다가, 컨테이너 내부 curl로
 서버 사이드가 이미 정상이라는 걸 먼저 확인하고 나서야 원인을 좁혔다.
 
+이후 배포 환경에서 추가로 발견/수정한 프록시 버그 (같은 미들웨어 파일):
+
+9. **`req.headers`를 통째로 전달하면서 값이 `undefined`인 헤더가 섞여 500 에러**:
+   `Invalid value "undefined" for header "accept"` — Node의 `http.request`는 헤더 값이
+   `undefined`면 예외를 던진다(브라우저가 `accept` 등을 안 보내는 요청, 특정 동적 import
+   에서 발생). 값이 실제로 존재하는 헤더만 골라 담도록 수정.
+10. **슬래시 없는 상대경로 재작성 시 이중 슬래시 버그**: Vite의 `__vite__mapDeps`/
+    `preload-helper`는 상대경로 문자열(`"assets/xxx.js"`, 슬래시 없음)을 받아 내부적으로
+    `'/' + e`로 절대경로화하는 하드코딩된 로직을 쓴다(`import.meta.url`이나 `<base>`
+    태그는 전혀 참조하지 않음 — `<base href="/univer-viewer/">` 삽입 시도는 그래서 효과
+    없었고 롤백함). 이 상대경로 문자열을 `/univer-viewer/assets/...`(슬래시로 시작)로
+    바꾸면 최종적으로 `'/' + '/univer-viewer/...'` = `//univer-viewer/...`(슬래시 2개,
+    `ERR_NAME_NOT_RESOLVED`)가 되어버림. `univer-viewer/assets/...`(슬래시 없이)로 바꿔야
+    그 `'/'+` 연산 후 정확한 경로가 나온다.
+11. 위 9, 10을 겪으며 `./ko-KR-xxx.js` 같은 **진짜 상대경로 동적 import**(점-슬래시로
+    시작, ESM 네이티브 문법)는 건드리지 않아야 한다는 것도 확인 — 이건 그 import를
+    실행하는 모듈 자신의 로드 URL을 기준으로 브라우저가 알아서 해석하므로, 메인 스크립트
+    (`human-*.js`)만 `/univer-viewer/assets/...`로 정확히 로드되면 문제없이 따라온다.
+
 ## 워터마크 근본 원인 확정 (Univer 측 확인, 2026-08-20)
 
 - 로컬(`127.0.0.1`) 직접 접속은 워터마크 없음, 배포 서버의 사설 IP(회사 공유기망,
@@ -141,23 +160,149 @@
   있어 이번에도 일정이 그대로 지켜질지는 불확실 — 임시 라이선스로 지금 구조를 유지하며
   기다리는 쪽으로 결정.
 
+## 라이선스 발급 후에도 워터마크 해결 실패 (2026-08-21 ~ 08-24)
+
+- 이메일로 `license.zip` 수신. 안에 `license.txt`(`<id>-1-<base64 JSON payload>-<서명>-
+  <타임스탬프>` 형태의 긴 서명 토큰, payload를 디코딩해 `dm: ["192.168.0.164",
+  "192.168.0.41"]`로 두 IP가 정확히 포함된 것 확인)와 `licenseKey.txt`(훨씬 짧은
+  랜덤 문자열) 두 파일이 있었음. 어느 값을 `univer config set univerRuntime.license`에
+  넣어야 하는지 CLI 문서에 안내가 없어 Stan에게 크로스체크 질문 → "license.txt 맞다"
+  확인받음.
+- 그런데도 `192.168.0.41`(사설 IP) 경유 접근 시 워터마크가 계속 재현됨. 다음 조합을
+  전부 시도했지만 전혀 해소 안 됨:
+  - `license.txt` 값 / `licenseKey.txt` 값 각각 단독으로 설정
+  - CLI 0.4.3 / 0.4.4(Stan이 "워터마크 관련 fix"라며 안내한 버전) 양쪽
+  - 매 시도마다 `univer daemon stop && start`로 재기동, 새 worktree로 캐시 영향 배제
+  - Sheet 파일뿐 아니라 Doc 파일(`.docx`)로도 동일하게 재현 — 파일 종류는 원인이 아님
+- 값 자체가 정확한지 직접 검증: `univer config get`으로 저장값이 원본과 바이트 단위로
+  일치함을 확인. 0.4.4 daemon이 서빙하는 JS 번들도 직접 까봄 — 도메인 검증 로직
+  (`{ time, domain: location.domain }`을 서명해 `x-univer-host` 헤더로 보내는 것)은
+  0.4.3과 완전히 동일하게 남아있었고, 그 서명에 쓰는 키를 `window.__Key__`에서
+  읽어오는데 daemon이 서빙하는 HTML 어디에도 그 값을 주입하는 코드가 없다는 것까지
+  확인함 — 즉 서버가 설정한 라이선스가 브라우저 쪽으로 아예 전달되지 않는 것으로 보임.
+  이 분석을 Stan에게 전달했으나, Stan이 직접 재현했을 때는 "no issue"라는 답변과 함께
+  스크린샷(Doc 파일 열람 화면, 워터마크 없음)을 보내옴 — 포트가 9124였던 점, UI가
+  Sheet가 아니라 Doc 레이아웃이었던 점을 근거로 "다른 실행 방식 아니냐"고 되물었으나,
+  이후 스스로 재확인해보니 **Doc과 Sheet는 원래 UI 레이아웃이 다른 게 정상**이고
+  포트도 daemon이 임의로 잡는 값이라 이 두 근거는 무효였음(성급한 추측이었고, 실제로
+  우리 쪽에서도 Doc 파일로 재현해보니 이 환경에서는 Sheet와 동일하게 워터마크가 뜸).
+  최종적으로는 "값 일치 확인, 재현 스크린샷(버전/설정/워터마크 한 화면)"만 사실로
+  남기고 그 이상의 추측은 보내지 않는 방향으로 정리함.
+- **교훈**: 벤더에 보내는 원인 분석 메시지에 "~로 보인다", "~것 같다" 수준의 추측
+  (예: 포트 차이, UI 차이)을 근거로 세우면, 나중에 그 추측이 틀렸을 때 정정하는 비용이
+  더 크다. 실측 사실(값 일치 여부, 버전, 재현 스크린샷)과 추측을 분리해서, 확실한 것만
+  먼저 전달하는 게 더 빠르게 수렴한다.
+
+## SDK 대기로 결정 (2026-08-24)
+
+- Stan이 "SDK가 이번 주(1~2일 내) 출시 예정"이라고 안내하며, daemon 워터마크 버그를
+  계속 팔지 SDK를 기다릴지 물어옴.
+- daemon 라이선스 워터마크 원인이 여러 차례 시도에도 해소되지 않았고, 이 daemon
+  iframe 구조는 애초에 "SDK 정식 출시 전까지의 임시 방편"으로 시작한 것이었으므로,
+  **SDK 출시를 기다리기로 결정**. 계속 daemon 버그를 파고드는 것보다 새 SDK로 바로
+  통합하는 게 더 합리적이라고 판단.
+- 단, "다음 주 SDK"라는 예고가 과거에도 있었고 그때는 실제로 CLI 정식 런칭(Office
+  Harness)으로 나왔던 전례가 있어, 이번 일정도 정확히 지켜질지는 불확실.
+
+## 워터마크 진짜 원인 발견: 우리 쪽 프록시 설정 누락 (2026-08-24)
+
+- SDK 대기로 결정한 뒤, Stan의 엔지니어가 "daemon 뷰어가 실제로 라이선스 config를 받고
+  있는지 DevTools Network에서 `runtime-config` 요청의 `license` 필드를 확인해달라"고
+  재요청. 이전까지는 "CLI의 의도된 도메인 검증 로직" 자체를 의심했지만, 이번엔 뷰어가
+  라이선스 값을 실제로 *받고 있는지*를 짚은 것이 결정적이었다.
+- 검증 순서:
+  1. `127.0.0.1:9123/runtime-config`에 직접 요청 → `license` 필드 정상 포함.
+  2. `192.168.0.41/univer-viewer/runtime-config`(프록시 접두사 포함 경로)로 curl →
+     역시 정상.
+  3. 그러나 브라우저에서 실제 daemon 뷰어를 열고 DevTools Network(XHR/fetch)를 보니,
+     daemon 클라이언트 JS가 실제로 호출하는 요청은 `GET http://192.168.0.41/runtime-config`
+     — **`/univer-viewer` 접두사 없이** 나가고 있었다. 다른 모든 daemon 요청(`/univer-viewer/uf/...`)
+     과 달리 이 요청만 예외적으로 절대경로 루트를 호출하는 방식.
+  4. 이 경로가 `univer-viewer-proxy.middleware.ts`의 `DAEMON_NATIVE_PATH_PREFIXES`
+     (`['/assets/', '/uf/']`)에 없어서 프록시를 그냥 통과(`next()`)했고, 결국 프론트
+     서버(Vite dev / 배포 시 프론트 컨테이너)가 자신의 SPA 폴백(`index.html`)으로
+     응답하고 있었다. 실제로 이 요청의 응답을 확인해보니 `content-type: text/html`에
+     유로셀 MES 앱의 `index.html`(React Refresh 스크립트, `/src/main.tsx` 등)이 그대로
+     찍혀 있었다 — JSON도 아니고 daemon 응답도 아니었다.
+  5. 즉 daemon과 백엔드 프록시 자체는 (curl로는) 항상 정상적으로 license를 반환했지만,
+     **브라우저의 실제 클라이언트 JS는 이 요청 경로가 프록시 화이트리스트에서 빠져 있어
+     license 값을 한 번도 전달받지 못하고 있었다.** 이게 몇 주간 워터마크가 계속
+     재현된 진짜 원인이었다 — CLI의 "의도된 도메인 검증"이 원인이 아니라, 우리 쪽
+     프록시 설정 누락이었다.
+- 수정: `DAEMON_NATIVE_EXACT_PATHS = ['/runtime-config']`를
+  `univer-viewer-proxy.middleware.ts`에 추가(접두사 매칭이 아니라 정확히 일치하는
+  단일 전역 엔드포인트라 별도 처리), 로컬 `vite.config.ts`에도 동일하게
+  `/runtime-config` 프록시 규칙 추가.
+- 로컬 dev 환경에서 먼저 재검증: 백엔드/프론트 dev 서버 재기동 후 daemon 뷰어를 다시
+  열어 `/runtime-config` 요청을 확인 — `content-type: application/json`,
+  `x-powered-by: Express`로 daemon 자체 응답이 정상적으로 오고, 응답 본문에 실제
+  `license` 값(1개월 임시 라이선스 토큰)이 포함됨을 확인. 화면에도 워터마크가 사라짐을
+  확인.
+
+### 배포 환경까지 반영 (2026-08-24)
+
+- 배포 환경(Docker+nginx blue-green)에 `UNIVER_LICENSE` 환경변수를 설정하고 코드를
+  배포했는데도 워터마크가 계속 떠서 추가로 원인을 좁혔다. 순서대로 확인:
+  1. `docker exec`로 백엔드 컨테이너(`eurocell-mes-be-blue`)에 접속해 `printenv
+     UNIVER_LICENSE`, `univer config get univerRuntime.license --json` 모두 정상
+     값 확인 → 환경변수 주입과 config 반영 자체는 문제없었음.
+  2. `univer daemon status --json`도 `running` 정상.
+  3. 컨테이너 안에서 `node -e "http.get('http://127.0.0.1:9123/runtime-config', ...)"`
+     로 daemon에 직접 요청 → **"Not found"**. daemon 자체가 이 엔드포인트를 모르고 있었다.
+  4. `univer --version` 확인 → 배포 컨테이너는 **0.4.0**, 로컬 PC는 **0.4.4**. 원인은
+     `Dockerfile`의 `RUN npm install -g univer-cli`가 버전을 고정하지 않아서, 이미지가
+     처음 빌드됐을 때의 `latest`(0.4.0)가 캐시된 레이어에 그대로 굳어 있었던 것. 로컬은
+     그 사이 별도로 CLI를 업그레이드해서 0.4.4였고, `runtime-config` 엔드포인트는 0.4.4
+     이후에 추가된 기능이라 0.4.0에는 아예 없었다.
+  5. `Dockerfile`에서 `univer-cli@0.4.4`로 버전 고정.
+  6. 그런데 브라우저에서 직접 `http://192.168.0.164/runtime-config`를 열어보니 **200
+     OK인데 응답이 유로셀 MES 프론트 앱의 `index.html`**이었다 — 로컬 dev에서 겪었던
+     것과 동일한 증상. nginx conf를 확인해보니 **`location /univer-viewer/`만
+     백엔드로 프록시하고, 그 외 전부(`location /`, `/runtime-config` 포함)는 프론트
+     컨테이너로 가도록** 되어 있었다. 즉 백엔드 미들웨어 코드가 아무리 `/runtime-config`
+     를 처리하도록 고쳐도, **nginx 단계에서부터 이 요청이 백엔드로 전달되지 않고
+     있었던 것**이 배포 환경에서의 진짜 원인.
+  7. nginx conf에 `location = /runtime-config { proxy_pass
+     http://eurocell-mes-be-active:8080/runtime-config; ... }`를 `/univer-viewer/`와
+     같은 프록시 헤더 설정으로 추가하고 리로드 → 브라우저에서 `/quality/iqc-proto3`
+     화면을 다시 열어 워터마크 없이 정상 렌더링됨을 최종 확인.
+- **정리하면 원인은 두 겹이었다**: (1) `Dockerfile`이 `univer-cli` 버전을 고정하지
+  않아 배포 이미지가 `runtime-config`를 지원하지 않는 구버전(0.4.0)에 머물러 있었던
+  것, (2) 설령 버전이 맞아도 nginx conf에 `/runtime-config` location이 없어서 이
+  요청이 애초에 백엔드까지 도달하지 못했던 것. 로컬 dev에서 겪은 문제(Vite 프록시
+  누락)와 증상은 같았지만 배포 환경에서의 실제 원인은 nginx 설정 쪽이었다.
+- **결론**: 우리 쪽 인프라 설정(이미지 버전 고정 누락 + nginx 라우팅 누락) 두 가지가
+  겹쳐서 라이선스가 브라우저까지 전달되지 못했던 것이 몇 주간 워터마크가 재현된 진짜
+  원인이었다. CLI의 도메인 검증 로직 자체는 정상 동작이었고, Univer 측 문제가 아니었다.
+
 ## 남은 과제
 
-1. **라이선스 키 발급 후 적용 방법 확인 필요**: `univer config`에 `univerRuntime.license`
-   라는 키가 있는 걸 확인해뒀음 (`univer config set univerRuntime.license <값>` 형태로
-   추정) — 실제 키를 받으면 정확한 사용법을 다시 확인해야 함.
+1. **daemon iframe 코드는 삭제하지 말고 보존**: `eurocell-mes-be`의
+   `univer-viewer-proxy.middleware.ts`, `univer-cli.service.ts`의 daemon 관련 부분,
+   프론트의 `vite.config.ts` 로컬 프록시 설정. SDK가 늦어지거나 기대에 못 미치면
+   이 경로로 다시 돌아올 수 있다.
 2. **인증 연동**: daemon 뷰어 자체엔 인증이 없음. 지금은 백엔드의 `SessionAuthGuard`가
    업로드 API(`/quality/iqc-proto3/upload`)만 보호하고, 일단 뷰어 URL을 발급받으면 그
-   URL 자체는 인증 없이 열람 가능한 구조. 프로덕션에서는 이 URL 접근도 제한할지 검토 필요.
+   URL 자체는 인증 없이 열람 가능한 구조. daemon 경로를 실사용하게 되면 검토 필요.
 3. **CLI 자체 버그 2건**: 산점도 import 시 `scatterMapping` 누락, 폰트 테마(`scheme="minor"`)
    매핑 오류. 전자는 Univer 측에 공유했고 엔지니어링팀에 전달됐다는 답변을 받음. 후자는
    급한 이슈가 아니라 리포트 보류 중. 둘 다 우리 쪽에서 우회할 방법은 없음(원인이 CLI 내부).
-4. 다음 주 예정된 정식 SDK가 나오면, 이번에 겪은 문제들(도메인 워터마크, daemon 프록시의
-   여러 우회 로직)이 얼마나 해소되는지 다시 검토.
+4. SDK가 나오면 이번에 겪은 문제들(도메인 워터마크, daemon 프록시의 여러 우회 로직)이
+   얼마나 해소되는지, 그리고 편집 가능 여부/인증 연동이 SDK에서는 어떻게 되는지 재검토.
 
 ## 결론 / 다음 행동
 
-- 임시 라이선스로 워터마크를 없애고, 지금 완성된 daemon iframe 구조(Proto3)를 그대로
-  운영하면서 실사용 데이터로 검증을 이어가기로 함.
-- 라이선스 키가 도착하면 적용 방법을 확인하고 실제로 워터마크가 사라지는지 재검증.
-- 다음 주 SDK 출시 소식을 계속 지켜보고, 나오면 지금 구조 대비 이점이 있는지 비교.
+- daemon iframe(Proto3) 구조는 표/이미지/대부분 차트 정상, 프록시 버그 전부 수정,
+  그리고 **라이선스 워터마크 문제도 원인 규명 및 로컬/배포 환경 모두 해결 확인** —
+  기능적으로는 실사용 가능한 상태.
+- 원인은 우리 쪽 인프라 설정 누락 두 가지였다: Vite/nginx 양쪽에서 `/runtime-config`
+  프록시 경로가 빠져 있었던 것, 그리고 배포 이미지의 `univer-cli` 버전이 고정되지
+  않아 구버전(0.4.0)에 머물러 있었던 것. CLI의 도메인 검증 로직 자체는 문제가 아니었음.
+- Stan에게 진행 상황("runtime-config 요청이 프록시를 안 거쳐 라이선스가 브라우저에
+  전달 안 되고 있었다")까지는 회신했으나, 배포 환경에서 추가로 찾은 두 번째 원인
+  (nginx 라우팅 누락, CLI 버전 고정 누락)과 최종 해결 완료는 **Stan에게 별도 회신하지
+  않기로 결정**(2026-08-24) — 워터마크는 실질적으로 해결됐지만, **daemon 경로를
+  실사용으로 확정하지 않고 이전에 안내받은 SDK 출시를 계속 기다리는 쪽으로 유지**.
+- 남은 것은 CLI 자체의 사소한 버그 2건(산점도 import, 폰트 매핑)과 인증 연동 검토.
+  SDK가 나오면 이번에 겪은 문제들이 SDK에서는 어떻게 되는지와 함께 daemon 경로
+  계속 사용 여부를 재검토.
