@@ -1,6 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { uploadIQCProto3Xlsx } from '../../../api/quality/IQCProto3Service';
 import { getErrorMessage } from '../../../api/errorHandler';
+
+/**
+ * daemon 뷰어는 localStorage 키 `univer-collab-client-sidebar-collapsed`가 'true'면
+ * 좌측 사이드바를 접힌 상태로 렌더링한다 (뷰어 앱이 부팅 시 이 값을 읽기만 하고, 값이
+ * 없으면 기본값=펼침으로 뜬다). 뷰어를 iframe에 붙이기 전에 미리 심어둔다.
+ * 뷰어 URL이 이 페이지와 same-origin일 때(배포: nginx가 /univer-viewer/로 프록시, 로컬
+ * dev: vite가 /univer-viewer 프록시) 부모 window.localStorage에 쓰면 iframe이 그대로
+ * 읽는다. 뷰어가 다른 origin(예: 127.0.0.1:9123 직접 접속)이면 적용되지 않는다.
+ */
+const SIDEBAR_COLLAPSED_KEY = 'univer-collab-client-sidebar-collapsed';
 
 /**
  * Univer CLI daemon 웹뷰어를 iframe으로 임베드하는 실험 화면.
@@ -21,6 +31,14 @@ export default function IQCProto3Index() {
   const [errorMsg, setErrorMsg] = useState('');
   const [viewerUrl, setViewerUrl] = useState('');
   const [fileName, setFileName] = useState('');
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, 'true');
+    } catch {
+      // localStorage 접근 불가 환경은 무시
+    }
+  }, []);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
