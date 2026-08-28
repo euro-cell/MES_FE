@@ -5,7 +5,6 @@ import { getMaterialsByCategory, getMaterialLots } from '../../../../api/materia
 import { uploadIQCImages, deleteIQCImage, updateIQCImageLabel, uploadIQCFile, deleteIQCFile } from '../../../../api/quality/IQCService';
 import { getErrorMessage } from '../../../../api/errorHandler';
 import ImageLightbox from '../components/ImageLightbox';
-import WorkbookAttachment from '../components/WorkbookAttachment';
 
 /** 붙여넣기 텍스트 → IQCPsdData[] 파싱 */
 function parsePsdText(text: string): IQCPsdData[] {
@@ -870,7 +869,6 @@ const CathodeMaterial2Table: React.FC<CathodeMaterial2TableProps> = ({ data, onS
 
       {lightboxSrc && <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />}
 
-      <WorkbookAttachment iqcId={data?.id} />
     </div>
   );
 };

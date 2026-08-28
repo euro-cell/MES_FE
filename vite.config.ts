@@ -34,7 +34,7 @@ export default defineConfig(() => {
                 });
               },
             },
-            // IQC Proto3: Univer CLI daemon 뷰어 릴레이용 경로 (로컬 dev 서버 전용 프록시)
+            // IQC Proto2: Univer CLI daemon 뷰어 릴레이용 경로 (로컬 dev 서버 전용 프록시)
             '/univer-viewer': {
               target: apiTarget,
               changeOrigin: true,

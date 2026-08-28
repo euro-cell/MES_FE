@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styles from '../../../../styles/quality/iqc/IQCTable.module.css';
 import type { IQCItem, IQCResult, IQCCoaRef } from '../IQCTypes';
 import { getMaterialsByCategory, getMaterialLots } from '../../../../api/material';
-import WorkbookAttachment from '../components/WorkbookAttachment';
 
 interface PouchTableProps {
   data?: IQCItem;
@@ -328,7 +327,6 @@ const PouchTable: React.FC<PouchTableProps> = ({ data, onSave }) => {
         )}
       </div>
 
-      <WorkbookAttachment iqcId={data?.id} />
     </div>
   );
 };
