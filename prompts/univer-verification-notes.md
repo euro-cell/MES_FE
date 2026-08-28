@@ -275,6 +275,13 @@
   겹쳐서 라이선스가 브라우저까지 전달되지 못했던 것이 몇 주간 워터마크가 재현된 진짜
   원인이었다. CLI의 도메인 검증 로직 자체는 정상 동작이었고, Univer 측 문제가 아니었다.
 
+## SDK Developer Preview 출시 안내 (2026-08-27)
+
+- Stan이 SDK Developer Preview 출시를 안내(`https://office.univer.ai/llms.txt`),
+  "이제 막 실험해볼 수 있는 단계이고 아직 다듬어지지 않은 부분이 있을 수 있다"는
+  코멘트와 함께. 실제로 설치/실행해서 검증한 것은 아직 없음 — 직접 사용해보고
+  판단 필요.
+
 ## 남은 과제
 
 1. **daemon iframe 코드는 삭제하지 말고 보존**: `eurocell-mes-be`의
