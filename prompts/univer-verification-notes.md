@@ -68,6 +68,13 @@
   CLI import 시 스크립트별 매핑(`Hang`→맑은 고딕)이 아니라 라틴 기본값(`Aptos Narrow` 등)
   으로 잘못 치환되는 버그를 발견. 브라우저 폰트 폴백에 따라 화면에 等线(중국어 기본
   산세리프)로 보이는 경우도 있었음. 급한 이슈가 아니라 리포트는 보류.
+  - (2026-08-28 재확인, Proto3/신버전 SDK) 실제 OQC 파일 응답을 까봐서 실측: 워크북
+    `styles`에 `_fontScheme: "minor"`인 스타일이 220개 있는데 전부 `ff: "Aptos Narrow"`로
+    잘못 들어가 있고, 정확히 `ff: "맑은 고딕"`으로 저장된 건 스타일이 원본에서 폰트를
+    직접(테마 아님) 지정한 62개뿐이었음. 즉 CSS 폰트 폴백으로 해결 가능한 문제가 아니라
+    (셀 스타일 데이터 자체에 잘못된 폰트명이 박혀 있음) CLI import 버그가 원인이라는 게
+    다시 확인됨. 신버전 SDK로 바뀌어도 이 버그는 그대로 재현됨(CLI 쪽 문제라 SDK 버전과
+    무관).
 
 ## 서버 배포 (2026-08-20)
 
@@ -313,3 +320,33 @@
 - 남은 것은 CLI 자체의 사소한 버그 2건(산점도 import, 폰트 매핑)과 인증 연동 검토.
   SDK가 나오면 이번에 겪은 문제들이 SDK에서는 어떻게 되는지와 함께 daemon 경로
   계속 사용 여부를 재검토.
+
+## Proto3(신버전 SDK) 심화 검증 (2026-08-28)
+
+Proto2/Proto3 정리 후, Proto3(iframe 없이 npm 단일 트리로 직접 렌더링)가 실사용
+전환에 문제없는지 세 가지를 추가로 확인했다.
+
+1. **이미지(drawing) 렌더링**: 실제 IQC 파일(`IQC Data Sheet_UFC-L37B_V5.10
+   (NAE26E1-TNP37)_260529.xlsx`)로 확인. 이 파일에는 PSD 그래프, Half cell
+   충방전 그래프가 셀에 이미지로 삽입되어 있는데, 좌우 두 컬럼(측정값/Reference)
+   모두 정상 렌더링됨. `UniverSheetsDrawingPreset()`을 preset 목록에 추가해둔
+   덕분(이전에 UI 레이아웃 버그를 고치며 이미 추가함).
+2. **차트 종류별 렌더링**: Column(기존 확인)에 이어 Pie, Line을 Facade API
+   (`newChart` → `insertChart`)로 직접 삽입해서 확인. 처음엔 텍스트 셀(예:
+   "등급"/"내용" 헤더)을 소스 범위로 잡아 "Add a series to start visualizing
+   your data"(빈 상태)가 떴는데, 원인은 소스 범위가 숫자 데이터가 아니었던
+   것 — 실제 숫자 컬럼(예: 기준용량 Ave/Max/Min/Stdev)으로 범위를 바꾸니 Pie
+   (범례/라벨/색상 정상), Line 둘 다 정상 렌더링됨. Univer 자체의 문제가 아니라
+   테스트 스크립트의 소스 범위 실수였음.
+3. **다중 파일 전환(메모리 누수 확인)**: 같은 화면에서 OQC → IQC → OQC로
+   연속 3회 파일을 갈아끼우면서 `document.querySelectorAll('canvas').length`
+   (항상 3개로 유지, 누적 안 됨)와 `performance.memory.usedJSHeapSize`(약
+   270~286MB 사이에서 완만히 오르내림, 급격한 누적 증가 없음)를 확인. 콘솔
+   에러도 매 전환마다 없었음. `renderWorkbook`이 매번 `univer.dispose()`
+   호출 후 `container.innerHTML = ''`로 정리하고 새로 `createUniver`하는
+   방식인데, 이게 제대로 동작하는 것으로 보임.
+
+세 가지 모두 문제없이 확인되어, Proto3(신버전 SDK) 구조가 daemon(Proto2)을
+대체할 실사용 후보로서 기능적 결함이 없음을 추가로 확인했다. 남은 것은 여전히
+CLI 자체 버그(산점도, 폰트 매핑)뿐이며 이건 SDK를 어느 쪽으로 쓰든 동일하게
+남는 문제다.
