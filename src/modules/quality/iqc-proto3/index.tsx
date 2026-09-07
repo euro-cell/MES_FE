@@ -32,6 +32,9 @@ export default function IQCProto3Index() {
     univerRef.current?.univer?.dispose?.();
     containerRef.current.innerHTML = '';
 
+    // Univer SDK 번들이 무겁기 때문에(신버전 preset-sheets-advanced 포함 시 gzip 후에도
+    // 수 MB) 정적 import 대신 동적 import로 둔다. 페이지 진입(라우트 lazy load)만으로는
+    // 로드되지 않고, 실제로 xlsx를 업로드해 이 함수가 처음 호출되는 시점에만 받아온다.
     const { createUniver, LocaleType, LogLevel, mergeLocales } = await import('@univerjs/presets');
     const { UniverInstanceType } = await import('@univerjs/core');
     const { UniverSheetsCorePreset } = await import('@univerjs/preset-sheets-core');
