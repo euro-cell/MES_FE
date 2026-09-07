@@ -30,6 +30,19 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
 
   const fetchCustomers = () => getCustomers().then(setCustomers).catch(() => {});
 
+  // 백엔드 generateProjectName 규칙과 동일하게 미리보기 생성
+  const previewName = (() => {
+    const { company, mode, year, month, round, batteryType, capacity } = form;
+    if (!company || !mode || !batteryType.trim() || !capacity) return '';
+    const type = mode === 'OEM' ? 'E' : mode === 'ODM' ? 'D' : '';
+    if (!type) return '';
+    const yearShort = String(year).slice(-2);
+    const monthNum = Number(month);
+    const monthCode = monthNum >= 1 && monthNum <= 12 ? String.fromCharCode(64 + monthNum) : 'X';
+    const capShort = String(capacity).slice(0, 2);
+    return `${company}${type}${yearShort}${monthCode}${round}-${batteryType.trim()}${capShort}`;
+  })();
+
   useEffect(() => {
     fetchCustomers();
   }, []);
@@ -219,9 +232,16 @@ export default function DashboardProjectManager({ form, setForm, onSubmit, refre
           </div>
         </div>
 
-        <button type='submit' className={styles.managerBtn}>
-          등록하기
-        </button>
+        <div className={styles.submitRow}>
+          <button type='submit' className={styles.managerBtn}>
+            등록하기
+          </button>
+          {previewName && (
+            <span className={styles.previewName}>
+              프로젝트명: <strong>{previewName}</strong>
+            </span>
+          )}
+        </div>
       </form>
 
       {showNavigateConfirm && (

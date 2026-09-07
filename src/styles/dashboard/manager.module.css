@@ -193,6 +193,29 @@
   background: #1e40af;
 }
 
+.submitRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.submitRow .managerBtn {
+  margin-top: 0;
+}
+
+.previewName {
+  font-size: 13px;
+  color: #475569;
+}
+
+.previewName strong {
+  color: #1d4ed8;
+  font-family: monospace;
+  font-size: 14px;
+}
+
 /* 확인 모달 */
 .confirmBackdrop {
   position: fixed;
