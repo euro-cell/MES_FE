@@ -57,6 +57,13 @@
   font-weight: 500;
 }
 
+.dateInputs select {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
 .weekResult {
   background: #f8fafc;
   padding: 10px 14px;

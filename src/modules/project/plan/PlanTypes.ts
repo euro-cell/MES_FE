@@ -21,4 +21,21 @@ export interface PlanPayload {
   endDate: string;
   weekInfo: string;
   processPlans: ProcessPlans;
+  templateId: number;
+}
+
+export interface ProcessTemplateItem {
+  id: number;
+  group: string;
+  name: string;
+  types: string[];
+  order: number;
+}
+
+export interface ProcessTemplate {
+  id: number;
+  name: string;
+  formFactor: string;
+  items: ProcessTemplateItem[];
+  updatedAt: string;
 }

@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import styles from '../../../styles/project/plan/PlanRegister.module.css';
 import { savePlan, getPlanProjects } from '../../../api/project/plan';
-import type { PlanPayload } from './PlanTypes';
+import type { PlanPayload, ProcessTemplate } from './PlanTypes';
+import { getTemplates } from './template/templateApi';
 import DateInput from '../../../components/DateInput';
 import { getErrorMessage } from '../../../api/errorHandler';
 
@@ -27,6 +28,9 @@ export default function PlanRegister() {
   const [weekInfo, setWeekInfo] = useState('');
   const [processPlans, setProcessPlans] = useState<Record<string, { start: string; end: string }>>({});
 
+  const [templates, setTemplates] = useState<ProcessTemplate[]>([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<number | ''>('');
+
   useEffect(() => {
     if (!projectId) return;
     getPlanProjects().then(projects => {
@@ -34,6 +38,15 @@ export default function PlanRegister() {
       if (found) setProjectName(found.name);
     });
   }, [projectId]);
+
+  useEffect(() => {
+    getTemplates().then(setTemplates);
+  }, []);
+
+  const handleTemplateChange = (value: string) => {
+    setSelectedTemplateId(value ? Number(value) : '');
+    setProcessPlans({});
+  };
 
   /** 주차 계산 */
   const getWeekOfMonth = (date: Date): number => {
@@ -79,8 +92,12 @@ export default function PlanRegister() {
       alert('시작일과 종료일을 입력해주세요.');
       return;
     }
+    if (!selectedTemplateId) {
+      alert('공정 템플릿을 선택해주세요.');
+      return;
+    }
 
-    const payload: PlanPayload = { startDate, endDate, weekInfo, processPlans };
+    const payload: PlanPayload = { startDate, endDate, weekInfo, processPlans, templateId: selectedTemplateId };
 
     try {
       await savePlan(projectId!, payload);
@@ -96,62 +113,35 @@ export default function PlanRegister() {
     }
   };
 
-  /** 공정 구조 */
-  const processList = [
-    {
-      group: 'Electrode',
-      items: [
-        { name: 'Slurry Mixing', types: ['Cathode', 'Anode'] },
-        { name: 'Coating', types: ['Cathode', 'Anode'] },
-        { name: 'Calendering', types: ['Cathode', 'Anode'] },
-        { name: 'Notching', types: ['Cathode', 'Anode'] },
-      ],
-    },
-    {
-      group: 'Cell Assembly',
-      items: [
-        { name: 'Pouch Forming', types: [] },
-        { name: 'Vacuum Drying', types: ['Cathode', 'Anode'] },
-        { name: 'Stacking', types: [] },
-        { name: 'Tab Welding', types: [] },
-        { name: 'Sealing', types: [] },
-        { name: 'E/L Filling', types: [] },
-      ],
-    },
-    {
-      group: 'Cell Formation',
-      items: [
-        { name: 'PF/MF', types: [] },
-        { name: 'Grading', types: [] },
-      ],
-    },
-  ];
-
-  /** 테이블 데이터 */
-  const tableData: ProcessRow[] = processList.flatMap((group): ProcessRow[] => {
-    return group.items.flatMap((item): ProcessRow[] => {
-      if (item.types.length === 0) {
-        return [
-          {
-            group: group.group,
-            name: item.name,
-            type: null,
-            key: `${group.group}_${item.name}`,
-            hasElectrode: false,
-          },
-        ];
-      }
-      return item.types.map(
-        (type): ProcessRow => ({
-          group: group.group,
-          name: item.name,
-          type,
-          key: `${group.group}_${item.name}_${type}`,
-          hasElectrode: true,
-        })
-      );
-    });
-  });
+  /** 선택된 템플릿의 공정 리스트를 테이블 데이터로 변환 */
+  const selectedTemplate = templates.find(t => t.id === selectedTemplateId);
+  const tableData: ProcessRow[] = !selectedTemplate
+    ? []
+    : selectedTemplate.items
+        .slice()
+        .sort((a, b) => a.order - b.order)
+        .flatMap((item): ProcessRow[] => {
+          if (item.types.length === 0) {
+            return [
+              {
+                group: item.group,
+                name: item.name,
+                type: null,
+                key: `${item.group}_${item.name}`,
+                hasElectrode: false,
+              },
+            ];
+          }
+          return item.types.map(
+            (type): ProcessRow => ({
+              group: item.group,
+              name: item.name,
+              type,
+              key: `${item.group}_${item.name}_${type}`,
+              hasElectrode: true,
+            }),
+          );
+        });
 
   /** rowspan 계산 */
   const getRowSpans = () => {
@@ -167,7 +157,7 @@ export default function PlanRegister() {
         const sameName = sameGroup.filter(r => r.name === name);
         const nameCount = sameName.length;
         const startIndex = tableData.findIndex(
-          r => r.group === group && r.name === name && r.type === sameName[0].type
+          r => r.group === group && r.name === name && r.type === sameName[0].type,
         );
         spans[startIndex] = { groupSpan: 0, nameSpan: nameCount };
         if (j === 0) spans[startIndex].groupSpan = groupCount;
@@ -198,10 +188,21 @@ export default function PlanRegister() {
           종료일:
           <DateInput value={endDate} onChange={value => handleChange('end', value)} />
         </label>
+        <label>
+          공정 템플릿:
+          <select value={selectedTemplateId} onChange={e => handleTemplateChange(e.target.value)}>
+            <option value=''>선택</option>
+            {templates.map(template => (
+              <option key={template.id} value={template.id}>
+                {template.name}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
-      {/* ✅ 주차 계산 후에만 아래 공정표 렌더링 */}
-      {weekInfo && (
+      {/* ✅ 주차 계산 + 템플릿 선택 후에만 아래 공정표 렌더링 */}
+      {weekInfo && selectedTemplate && (
         <>
           <div className={styles.weekResult}>
             <strong>🗓 {weekInfo}</strong>

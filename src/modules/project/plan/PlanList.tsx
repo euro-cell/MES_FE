@@ -24,76 +24,82 @@ export default function PlanList() {
 
   return (
     <div className={styles.planListContainer}>
+      <div className={styles.planListHeader}>
+        <h2>생산계획</h2>
+        <button className={styles.templateManageBtn} onClick={() => navigate('template')}>
+          🧩 공정 템플릿 관리
+        </button>
+      </div>
       <div className={styles.tableWrapper}>
         <table className={styles.planTable}>
-        <thead>
-          <tr>
-            <th>프로젝트명</th>
-            <th>회사</th>
-            <th>유형</th>
-            <th>년도</th>
-            <th>월</th>
-            <th>회차</th>
-            <th>전지 타입</th>
-            <th>용량</th>
-            <th>목표수량</th>
-            <th>관리</th>
-          </tr>
-        </thead>
-        <tbody>
-          {planData.map((item: PlanProject) => (
-            <tr key={item.id}>
-              <td>{item.name}</td>
-              <td>{item.company}</td>
-              <td>{item.mode}</td>
-              <td>{item.year}</td>
-              <td>{item.month}</td>
-              <td>{item.round}</td>
-              <td>{item.batteryType}</td>
-              <td>{item.capacity}</td>
-              <td>{item.targetQuantity}</td>
-              <td>
-                <div className={styles.actionButtons}>
-                  <TooltipButton
-                    label='등록'
-                    variant='register'
-                    disabled={item.isPlan}
-                    tooltip='이미 계획이 등록되어 있습니다.'
-                    onClick={() => !item.isPlan && navigate(`register/${item.id}`)}
-                  />
-
-                  <TooltipButton
-                    label='조회'
-                    variant='view'
-                    disabled={!item.isPlan}
-                    tooltip='계획이 등록되어 있지 않습니다.'
-                    onClick={() => item.isPlan && navigate(`view/${item.id}`)}
-                  />
-
-                  <TooltipButton
-                    label='수정'
-                    variant='edit'
-                    disabled={!item.isPlan}
-                    tooltip='계획이 등록되어 있지 않습니다.'
-                    onClick={() => navigate(`edit/${item.id}`)}
-                  />
-
-                  <TooltipButton
-                    label='삭제'
-                    variant='delete'
-                    disabled={!item.isPlan}
-                    tooltip='계획이 등록되어 있지 않습니다.'
-                    onClick={() => {
-                      if (confirm('생산 계획을 삭제하시겠습니까?')) {
-                        deleteProjectPlan(item.id).then(loadData);
-                      }
-                    }}
-                  />
-                </div>
-              </td>
+          <thead>
+            <tr>
+              <th>프로젝트명</th>
+              <th>회사</th>
+              <th>유형</th>
+              <th>년도</th>
+              <th>월</th>
+              <th>회차</th>
+              <th>전지 타입</th>
+              <th>용량</th>
+              <th>목표수량</th>
+              <th>관리</th>
             </tr>
-          ))}
-        </tbody>
+          </thead>
+          <tbody>
+            {planData.map((item: PlanProject) => (
+              <tr key={item.id}>
+                <td>{item.name}</td>
+                <td>{item.company}</td>
+                <td>{item.mode}</td>
+                <td>{item.year}</td>
+                <td>{item.month}</td>
+                <td>{item.round}</td>
+                <td>{item.batteryType}</td>
+                <td>{item.capacity}</td>
+                <td>{item.targetQuantity}</td>
+                <td>
+                  <div className={styles.actionButtons}>
+                    <TooltipButton
+                      label='등록'
+                      variant='register'
+                      disabled={item.isPlan}
+                      tooltip='이미 계획이 등록되어 있습니다.'
+                      onClick={() => !item.isPlan && navigate(`register/${item.id}`)}
+                    />
+
+                    <TooltipButton
+                      label='조회'
+                      variant='view'
+                      disabled={!item.isPlan}
+                      tooltip='계획이 등록되어 있지 않습니다.'
+                      onClick={() => item.isPlan && navigate(`view/${item.id}`)}
+                    />
+
+                    <TooltipButton
+                      label='수정'
+                      variant='edit'
+                      disabled={!item.isPlan}
+                      tooltip='계획이 등록되어 있지 않습니다.'
+                      onClick={() => navigate(`edit/${item.id}`)}
+                    />
+
+                    <TooltipButton
+                      label='삭제'
+                      variant='delete'
+                      disabled={!item.isPlan}
+                      tooltip='계획이 등록되어 있지 않습니다.'
+                      onClick={() => {
+                        if (confirm('생산 계획을 삭제하시겠습니까?')) {
+                          deleteProjectPlan(item.id).then(loadData);
+                        }
+                      }}
+                    />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>
