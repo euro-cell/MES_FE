@@ -21,7 +21,7 @@ export interface PlanPayload {
   endDate: string;
   weekInfo: string;
   processPlans: ProcessPlans;
-  templateId: number;
+  templateId?: number;
 }
 
 export interface ProcessTemplateItem {
@@ -37,5 +37,6 @@ export interface ProcessTemplate {
   name: string;
   formFactor: string;
   items: ProcessTemplateItem[];
+  createdAt?: string;
   updatedAt: string;
 }

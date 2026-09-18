@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from '../../../../styles/project/plan/PlanTemplate.module.css';
 import type { ProcessTemplate } from '../PlanTypes';
 import { getTemplates, duplicateTemplate, deleteTemplate } from './templateApi';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 export default function PlanTemplateList() {
   const navigate = useNavigate();
@@ -27,8 +28,12 @@ export default function PlanTemplateList() {
 
   const handleDelete = async (id: number) => {
     if (!confirm('이 템플릿을 삭제하시겠습니까?')) return;
-    await deleteTemplate(id);
-    load();
+    try {
+      await deleteTemplate(id);
+      load();
+    } catch (err) {
+      alert(getErrorMessage(err, '템플릿 삭제 중 오류가 발생했습니다.'));
+    }
   };
 
   return (

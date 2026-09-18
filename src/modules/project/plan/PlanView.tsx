@@ -35,6 +35,7 @@ interface PlanResponse {
   id: number;
   startDate: string;
   endDate: string;
+  templateId?: number;
   project: {
     id: number;
     name: string;

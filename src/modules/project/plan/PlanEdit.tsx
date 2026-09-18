@@ -2,7 +2,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styles from '../../../styles/project/plan/PlanRegister.module.css';
 import { getProjectPlan, updateProjectPlan } from '../../../api/project/plan';
-import type { PlanPayload } from './PlanTypes';
+import type { PlanPayload, ProcessTemplate } from './PlanTypes';
+import { getTemplate } from './template/templateApi';
 import DateInput from '../../../components/DateInput';
 import { getErrorMessage } from '../../../api/errorHandler';
 
@@ -25,6 +26,8 @@ export default function PlanEdit() {
   const [endDate, setEndDate] = useState('');
   const [weekInfo, setWeekInfo] = useState('');
   const [processPlans, setProcessPlans] = useState<Record<string, { start: string; end: string }>>({});
+  const [template, setTemplate] = useState<ProcessTemplate | null>(null);
+  const [templateId, setTemplateId] = useState<number | null>(null);
 
   /** 📅 주차 계산 */
   const getWeekOfMonth = (date: Date): number => {
@@ -47,38 +50,20 @@ export default function PlanEdit() {
         setStartDate(data.startDate.split('T')[0]);
         setEndDate(data.endDate.split('T')[0]);
 
-        const keyMap: Record<string, string> = {
-          mixingCathode: 'Electrode_Slurry Mixing_Cathode',
-          mixingAnode: 'Electrode_Slurry Mixing_Anode',
-          coatingCathode: 'Electrode_Coating_Cathode',
-          coatingAnode: 'Electrode_Coating_Anode',
-          calenderingCathode: 'Electrode_Calendering_Cathode',
-          calenderingAnode: 'Electrode_Calendering_Anode',
-          notchingCathode: 'Electrode_Notching_Cathode',
-          notchingAnode: 'Electrode_Notching_Anode',
-          pouchForming: 'Cell Assembly_Pouch Forming',
-          vacuumDryingCathode: 'Cell Assembly_Vacuum Drying_Cathode',
-          vacuumDryingAnode: 'Cell Assembly_Vacuum Drying_Anode',
-          stacking: 'Cell Assembly_Stacking',
-          tabWelding: 'Cell Assembly_Tab Welding',
-          sealing: 'Cell Assembly_Sealing',
-          elFilling: 'Cell Assembly_E/L Filling',
-          pfMf: 'Cell Formation_PF/MF',
-          grading: 'Cell Formation_Grading',
-        };
+        if (data.templateId) {
+          setTemplateId(data.templateId);
+          const loadedTemplate = await getTemplate(data.templateId);
+          if (loadedTemplate) setTemplate(loadedTemplate);
+        }
 
         const converted: Record<string, { start: string; end: string }> = {};
         Object.entries(data.planData || {}).forEach(([key, value]) => {
-          const mappedKey = keyMap[key];
-          if (!mappedKey) return;
-
-          if (typeof value === 'string') {
-            if (value.includes('~')) {
-              const [s, e] = value.split('~').map(v => v.trim());
-              converted[mappedKey] = { start: s, end: e };
-            } else {
-              converted[mappedKey] = { start: value, end: '' }; // ✅ 단일 날짜는 end 비움
-            }
+          if (typeof value !== 'string' || !value) return;
+          if (value.includes('~')) {
+            const [s, e] = value.split('~').map(v => v.trim());
+            converted[key] = { start: s, end: e };
+          } else {
+            converted[key] = { start: value, end: '' };
           }
         });
 
@@ -137,7 +122,13 @@ export default function PlanEdit() {
       return;
     }
 
-    const payload: PlanPayload = { startDate, endDate, weekInfo, processPlans };
+    const payload: PlanPayload = {
+      startDate,
+      endDate,
+      weekInfo,
+      processPlans,
+      ...(templateId ? { templateId } : {}),
+    };
 
     try {
       await updateProjectPlan(projectId!, payload); // ✅ 수정용 PATCH
@@ -149,62 +140,34 @@ export default function PlanEdit() {
     }
   };
 
-  /** 공정 구조 */
-  const processList = [
-    {
-      group: 'Electrode',
-      items: [
-        { name: 'Slurry Mixing', types: ['Cathode', 'Anode'] },
-        { name: 'Coating', types: ['Cathode', 'Anode'] },
-        { name: 'Calendering', types: ['Cathode', 'Anode'] },
-        { name: 'Notching', types: ['Cathode', 'Anode'] },
-      ],
-    },
-    {
-      group: 'Cell Assembly',
-      items: [
-        { name: 'Pouch Forming', types: [] },
-        { name: 'Vacuum Drying', types: ['Cathode', 'Anode'] },
-        { name: 'Stacking', types: [] },
-        { name: 'Tab Welding', types: [] },
-        { name: 'Sealing', types: [] },
-        { name: 'E/L Filling', types: [] },
-      ],
-    },
-    {
-      group: 'Cell Formation',
-      items: [
-        { name: 'PF/MF', types: [] },
-        { name: 'Grading', types: [] },
-      ],
-    },
-  ];
-
-  /** ✅ 타입 명시로 flatMap 오류 해결 */
-  const tableData: ProcessRow[] = processList.flatMap((group): ProcessRow[] => {
-    return group.items.flatMap((item): ProcessRow[] => {
-      if (item.types.length === 0) {
-        return [
-          {
-            group: group.group,
-            name: item.name,
-            type: null,
-            key: `${group.group}_${item.name}`,
-            hasElectrode: false,
-          },
-        ];
-      }
-      return item.types.map(
-        (type): ProcessRow => ({
-          group: group.group,
-          name: item.name,
-          type,
-          key: `${group.group}_${item.name}_${type}`,
-          hasElectrode: true,
-        }),
-      );
-    });
-  });
+  /** 템플릿의 공정 리스트를 테이블 데이터로 변환 */
+  const tableData: ProcessRow[] = !template
+    ? []
+    : template.items
+        .slice()
+        .sort((a, b) => a.order - b.order)
+        .flatMap((item): ProcessRow[] => {
+          if (item.types.length === 0) {
+            return [
+              {
+                group: item.group,
+                name: item.name,
+                type: null,
+                key: `${item.group}_${item.name}`,
+                hasElectrode: false,
+              },
+            ];
+          }
+          return item.types.map(
+            (type): ProcessRow => ({
+              group: item.group,
+              name: item.name,
+              type,
+              key: `${item.group}_${item.name}_${type}`,
+              hasElectrode: true,
+            }),
+          );
+        });
 
   /** rowspan 계산 */
   const getRowSpans = () => {
@@ -263,41 +226,45 @@ export default function PlanEdit() {
 
           <div className={styles.processTable}>
             <h4>공정별 일정 수정</h4>
-            <table className={styles.planProcessTable}>
-              <thead>
-                <tr>
-                  <th colSpan={3}>Process</th>
-                  <th>일정 (시작 ~ 종료)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableData.map((row, index) => {
-                  const span = spans[index] || { groupSpan: 0, nameSpan: 0 };
-                  return (
-                    <tr key={row.key}>
-                      {span.groupSpan > 0 && <td rowSpan={span.groupSpan}>{row.group}</td>}
-                      {row.hasElectrode ? (
-                        span.nameSpan > 0 && <td rowSpan={span.nameSpan}>{row.name}</td>
-                      ) : (
-                        <td colSpan={2}>{row.name}</td>
-                      )}
-                      {row.hasElectrode && <td>{row.type}</td>}
-                      <td>
-                        <DateInput
-                          value={processPlans[row.key]?.start || ''}
-                          onChange={value => handleProcessChange(row.key, 'start', value)}
-                        />
-                        {' ~ '}
-                        <DateInput
-                          value={processPlans[row.key]?.end || ''}
-                          onChange={value => handleProcessChange(row.key, 'end', value)}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            {!template ? (
+              <p>공정 템플릿 정보를 불러올 수 없습니다.</p>
+            ) : (
+              <table className={styles.planProcessTable}>
+                <thead>
+                  <tr>
+                    <th colSpan={3}>Process</th>
+                    <th>일정 (시작 ~ 종료)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableData.map((row, index) => {
+                    const span = spans[index] || { groupSpan: 0, nameSpan: 0 };
+                    return (
+                      <tr key={row.key}>
+                        {span.groupSpan > 0 && <td rowSpan={span.groupSpan}>{row.group}</td>}
+                        {row.hasElectrode ? (
+                          span.nameSpan > 0 && <td rowSpan={span.nameSpan}>{row.name}</td>
+                        ) : (
+                          <td colSpan={2}>{row.name}</td>
+                        )}
+                        {row.hasElectrode && <td>{row.type}</td>}
+                        <td>
+                          <DateInput
+                            value={processPlans[row.key]?.start || ''}
+                            onChange={value => handleProcessChange(row.key, 'start', value)}
+                          />
+                          {' ~ '}
+                          <DateInput
+                            value={processPlans[row.key]?.end || ''}
+                            onChange={value => handleProcessChange(row.key, 'end', value)}
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
 
             <div className={styles.saveArea}>
               <button onClick={handleSave} className={styles.saveBtn}>

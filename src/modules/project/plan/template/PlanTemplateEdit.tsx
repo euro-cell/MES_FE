@@ -4,6 +4,7 @@ import styles from '../../../../styles/project/plan/PlanTemplate.module.css';
 import type { ProcessTemplateItem } from '../PlanTypes';
 import { getTemplate, createTemplate, saveTemplate } from './templateApi';
 import { MOCK_TEMPLATES } from './mockTemplates';
+import { getErrorMessage } from '../../../../api/errorHandler';
 
 const GROUP_OPTIONS = ['Electrode', 'Cell Assembly', 'Cell Formation'];
 const BATTERY_TYPE_OPTIONS = ['파우치형', '원통형'];
@@ -183,7 +184,7 @@ export default function PlanTemplateEdit() {
       navigate('/project/plan/template');
     } catch (err) {
       console.error(err);
-      alert('저장 중 오류가 발생했습니다.');
+      alert(getErrorMessage(err, '저장 중 오류가 발생했습니다.'));
     }
   };
 
